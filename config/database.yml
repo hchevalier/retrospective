@@ -1,0 +1,24 @@
+defaults: &defaults
+  adapter: postgresql
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  connections: <%= ENV.fetch("RAILS_CONNECTIONS") { 5 } %>
+  prepared_statements: false
+
+development:
+  <<: *defaults
+  url: <%= "postgres://#{ENV['USER']}:@localhost:5432/retrospective-development" %>
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *defaults
+  url: <%= "postgres://#{ENV['USER']}:@localhost:5432/retrospective-test" %>
+
+production:
+  <<: *defaults
+  database: '<%= Figaro.env.database_name %>'
+  host: <%= Figaro.env.database_host %>
+  port: <%= Figaro.env.database_port || 5432 %>
+  password: <%= Figaro.env.database_password %>
+  username: <%= Figaro.env.database_username %>
