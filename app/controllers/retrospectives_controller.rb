@@ -1,4 +1,6 @@
 class RetrospectivesController < ApplicationController
+  def new; end
+
   def create
     organizer = Participant.new(surname: 'The Organizer', email: 'organizer@doctolib.com')
     Retrospective.create(**retrospective_params, participants: [organizer])
