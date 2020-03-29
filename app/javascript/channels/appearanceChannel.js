@@ -1,6 +1,6 @@
 import consumer from "./consumer"
 
-export const join = (retrospectiveId) => {
+export const join = ({ retrospectiveId, onParticipantAppears }) => {
   const appearanceChannel = consumer.subscriptions.create({ channel: 'AppearanceChannel', retrospective_id: retrospectiveId }, {
     connected() {
       console.log('You are connected to the appearance channel!')
@@ -12,6 +12,7 @@ export const join = (retrospectiveId) => {
     received(data) {
       if (data.new_participant) {
         console.log('New participant', data.new_participant)
+        onParticipantAppears(data.new_participant)
       } else if (data.body) {
         console.log(data.body)
       }

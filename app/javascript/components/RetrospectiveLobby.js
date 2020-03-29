@@ -6,9 +6,10 @@ import { post } from 'lib/httpClient'
 import { join as joinAppearanceChannel } from "channels/appearanceChannel"
 import { join as joinOrchestratorChannel } from "channels/orchestratorChannel"
 import RetrospectiveBottomBar from './RetrospectiveBottomBar'
+import ParticipantsList from './ParticipantsList'
 
-const subscribeToRetrospectiveChannels = ({ retrospectiveId, setChannels }) => {
-  const appearanceChannel = joinAppearanceChannel(retrospectiveId)
+const subscribeToRetrospectiveChannels = ({ retrospectiveId, setChannels, onParticipantAppears }) => {
+  const appearanceChannel = joinAppearanceChannel({ retrospectiveId, onParticipantAppears })
   const orchestratorChannel = joinOrchestratorChannel(retrospectiveId)
 
   setChannels({ appearanceChannel, orchestratorChannel })
@@ -57,18 +58,25 @@ const RetrospectiveLobby = ({ id, name, kind, initialProfile }) => {
   const [channels, setChannels] = React.useState({})
   const [loggedIn, setLoggedIn] = React.useState(Cookies.get('user_id') !== undefined)
   const [profile, setProfile] = React.useState(initialProfile)
+  const [participants, setParticipants] = React.useState([profile?.surname])
 
-  React.useEffect(() => loggedIn && subscribeToRetrospectiveChannels({ retrospectiveId: id, setChannels }), [])
+  React.useEffect(() => loggedIn && subscribeToRetrospectiveChannels({
+    retrospectiveId: id,
+    onParticipantAppears: (newParticipant) => { setParticipants([...participants, newParticipant]) },
+    setChannels
+  }), [])
 
   const finalizeLogin = (profile) => {
     setLoggedIn(true)
     setProfile(profile)
+    setParticipants([profile.surname, ...participants])
     subscribeToRetrospectiveChannels({ retrospectiveId: id, setChannels })
   }
 
   return (
     <div>
       <h3>Lobby {name} ({id}) - {kind}</h3>
+      <ParticipantsList participants={participants} profile={profile} />
       {loggedIn && <>
         <div>Logged in as {profile.surname}</div>
         <AvatarPicker />
