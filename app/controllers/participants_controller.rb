@@ -5,7 +5,7 @@ class ParticipantsController < ApplicationController
     if participant
       cookies.signed[:user_id] = participant.id
       participant.join
-      render json: participant.profile # TODO: return list of already present participants
+      render json: participant.profile
     else
       render json: { status: 422, errors: participant.errors }
     end

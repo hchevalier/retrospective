@@ -1,9 +1,14 @@
 import React from 'react'
+import classNames from 'classnames'
 
 const ParticipantsList = ({ participants, profile }) => {
   return (
-    <div style={{ border: '1px solid gray' }}>
-      {participants.map((participant, index) => <div key={index}>{participant}</div>)}
+    <div id='participants-list'>
+      {participants.map(({ surname, organizer, uuid }, index) => (
+        <div key={index} className={classNames({ 'organizer': organizer, 'yourself': profile?.uuid === uuid })}>
+          {surname}
+        </div>
+      ))}
     </div>
   )
 }

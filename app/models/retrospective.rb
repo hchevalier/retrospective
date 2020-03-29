@@ -22,6 +22,15 @@ class Retrospective < ApplicationRecord
     postcard: 'postcard'
   }
 
+  def as_json
+    {
+      id: id,
+      name: name,
+      kind: kind,
+      initialParticipants: participants.map(&:profile)
+    }
+  end
+
   def broadcast_order(action)
     OrchestratorChannel.broadcast_to(self, action: action)
   end

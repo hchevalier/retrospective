@@ -4,6 +4,7 @@ class Participant < ApplicationRecord
 
   def profile
     {
+      uuid: id,
       surname: surname,
       organizer: organizer?
     }
@@ -15,6 +16,6 @@ class Participant < ApplicationRecord
 
   def join
     puts "Broacasting that #{surname} (#{id}) joined"
-    AppearanceChannel.broadcast_to(retrospective, new_participant: surname)
+    AppearanceChannel.broadcast_to(retrospective, new_participant: profile)
   end
 end

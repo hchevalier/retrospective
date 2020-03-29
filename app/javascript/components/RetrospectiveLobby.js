@@ -1,15 +1,13 @@
 import React from 'react'
-import Cookies from 'js-cookie'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
-import { post } from 'lib/httpClient'
-import { join as joinAppearanceChannel } from "channels/appearanceChannel"
-import { join as joinOrchestratorChannel } from "channels/orchestratorChannel"
+import { join as joinAppearanceChannel } from 'channels/appearanceChannel'
+import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
+import { uniqBy } from 'lib/helpers/array'
 import RetrospectiveBottomBar from './RetrospectiveBottomBar'
 import ParticipantsList from './ParticipantsList'
+import LoginForm from './LoginForm'
+import './RetrospectiveLobby.scss'
 
-const subscribeToRetrospectiveChannels = ({ retrospectiveId, setChannels, onParticipantAppears }) => {
-  const appearanceChannel = joinAppearanceChannel({ retrospectiveId, onParticipantAppears })
+const subscribeToRetrospectiveChannels = ({ retrospectiveId, setChannels }) => {
   const orchestratorChannel = joinOrchestratorChannel(retrospectiveId)
 
   setChannels({ appearanceChannel, orchestratorChannel })
@@ -23,66 +21,44 @@ const AvatarPicker = () => {
   )
 }
 
-const LoginForm = ({ retrospectiveId, onLogIn }) => {
-  const [surname, setSurname] = React.useState('')
-  const [email, setEmail] = React.useState('')
+const RetrospectiveLobby = ({ id: retrospectiveId, name, kind, initialProfile, initialParticipants }) => {
+  const [participants, setParticipants] = React.useState([...initialParticipants])
 
-  const login = () => {
-    post({
-      url: '/participants',
-      payload: {
-        retrospective_id: retrospectiveId,
-        surname: surname,
-        email: email
-      }
-    })
-    .then(profile => onLogIn(profile))
-    .catch(error => console.warn(error))
-  }
+  const handleNewParticipant = React.useCallback((newParticipant) => {
+    setParticipants(prevParticipants => uniqBy([...prevParticipants, newParticipant], 'uuid'))
+  }, [])
+  const appearanceChannel = joinAppearanceChannel({ onParticipantAppears: handleNewParticipant, retrospectiveId })
+  const [channels, setChannels] = React.useState({ appearanceChannel })
 
-  return (
-    <form noValidate autoComplete='off'>
-      <div>
-        <div>
-          You:<br />
-          <TextField label='Surname' name='surname' value={surname} onChange={(event) => setSurname(event.target.value)} />
-          <TextField label='E-mail' name='email' value={email} onChange={(event) => setEmail(event.target.value)} style={{ marginLeft: '20px' }} />
-        </div>
-        <Button variant='contained' color='primary' onClick={login}>Join</Button>
-      </div>
-    </form>
-  )
-}
-
-const RetrospectiveLobby = ({ id, name, kind, initialProfile }) => {
-  const [channels, setChannels] = React.useState({})
-  const [loggedIn, setLoggedIn] = React.useState(Cookies.get('user_id') !== undefined)
   const [profile, setProfile] = React.useState(initialProfile)
-  const [participants, setParticipants] = React.useState([profile?.surname])
 
-  React.useEffect(() => loggedIn && subscribeToRetrospectiveChannels({
-    retrospectiveId: id,
-    onParticipantAppears: (newParticipant) => { setParticipants([...participants, newParticipant]) },
-    setChannels
-  }), [])
+  const loggedIn = () => !!profile
 
-  const finalizeLogin = (profile) => {
-    setLoggedIn(true)
-    setProfile(profile)
-    setParticipants([profile.surname, ...participants])
-    subscribeToRetrospectiveChannels({ retrospectiveId: id, setChannels })
-  }
+  React.useEffect(() => {
+    // On login
+    if (profile) {
+      setParticipants(uniqBy([profile, ...participants], 'uuid'))
+      console.log(`Added own name (${profile.surname}) before participants list (${participants.map(p => p.surname).join(', ')})`)
+
+      const orchestratorChannel = joinOrchestratorChannel(retrospectiveId)
+      setChannels({ ...channels, orchestratorChannel })
+    }
+  }, [profile])
 
   return (
-    <div>
-      <h3>Lobby {name} ({id}) - {kind}</h3>
-      <ParticipantsList participants={participants} profile={profile} />
-      {loggedIn && <>
-        <div>Logged in as {profile.surname}</div>
-        <AvatarPicker />
-      </>}
-      {!loggedIn && <LoginForm onLogIn={finalizeLogin} retrospectiveId={id} />}
-      <RetrospectiveBottomBar organizer={loggedIn && profile.organizer} channels={channels} />
+    <div id='main-container'>
+      <h3>Lobby {name} ({retrospectiveId}) - {kind}</h3>
+      <div id='lobby'>
+        <ParticipantsList participants={participants} profile={profile} />
+        <div id='right-pannel'>
+          {loggedIn() && <>
+            <div>Logged in as {profile.surname}</div>
+            <AvatarPicker />
+          </>}
+          {!loggedIn() && <LoginForm onLogIn={setProfile} retrospectiveId={retrospectiveId} />}
+        </div>
+      </div>
+      <RetrospectiveBottomBar profile={profile} channels={channels} />
     </div>
   )
 }
