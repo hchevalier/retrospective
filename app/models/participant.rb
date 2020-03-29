@@ -5,8 +5,12 @@ class Participant < ApplicationRecord
   def profile
     {
       surname: surname,
-      organizer: retrospective.organizer == self
+      organizer: organizer?
     }
+  end
+
+  def organizer?
+    retrospective.organizer == self
   end
 
   def join

@@ -12,7 +12,7 @@ class OrchestratorChannel < ApplicationCable::Channel
     return unless current_user.organizer?
 
     retrospective = Retrospective.find(current_user.retrospective_id)
-    case data.fetch('action')
+    case data.fetch('intent')
     when 'next'
       retrospective.broadcast_order(:next)
     end

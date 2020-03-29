@@ -23,6 +23,6 @@ class Retrospective < ApplicationRecord
   }
 
   def broadcast_order(action)
-    OrchestratorChannel.broadcast_to(retrospective, action: action)
+    OrchestratorChannel.broadcast_to(self, action: action)
   end
 end
