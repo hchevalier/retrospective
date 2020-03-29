@@ -21,4 +21,8 @@ class Retrospective < ApplicationRecord
     dixit: 'dixit',
     postcard: 'postcard'
   }
+
+  def broadcast_order(action)
+    OrchestratorChannel.broadcast_to(retrospective, action: action)
+  end
 end

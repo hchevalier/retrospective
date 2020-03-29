@@ -4,15 +4,16 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import { post } from 'lib/httpClient'
 import consumer from "channels/consumer"
+import RetrospectiveBottomBar from './RetrospectiveBottomBar'
 
-const subscribeToAppearances = ({ retrospectiveId }) => {
-  const channel = consumer.subscriptions.create({ channel: 'AppearanceChannel', retrospective_id: retrospectiveId }, {
+const subscribeToRetrospectiveChannels = ({ retrospectiveId }) => {
+  const appearanceChannel = consumer.subscriptions.create({ channel: 'AppearanceChannel', retrospective_id: retrospectiveId }, {
     connected() {
-      console.log('You are connected to the room!')
-      channel.send({ body: 'Hello' })
+      console.log('You are connected to the appearance channel!')
+      appearanceChannel.send({ body: 'Hello' })
     },
     disconnected() {
-      console.log('You were disconnected from the room!')
+      console.log('You were disconnected from the appearance channel!')
     },
     received(data) {
       if (data.new_participant) {
@@ -22,11 +23,25 @@ const subscribeToAppearances = ({ retrospectiveId }) => {
       }
     },
   })
+
+  const orchestratorChannel = consumer.subscriptions.create({ channel: 'OrchestratorChannel', retrospective_id: retrospectiveId }, {
+    connected() {
+      console.log('You are connected to the orchestrator channel!')
+    },
+    disconnected() {
+      console.log('You were disconnected from the orchestrator channel!')
+    },
+    received(data) {
+      if (data.action === 'next') {
+        console.log('Received order to go to next step')
+      }
+    },
+  })
 }
 
 const checkLoggedIn = ({ retrospectiveId }) => {
   if (Cookies.get('user_id')) {
-    subscribeToAppearances({ retrospectiveId })
+    subscribeToRetrospectiveChannels({ retrospectiveId })
     return true
   }
 
@@ -43,7 +58,7 @@ const AvatarPicker = () => {
 
 const finalizeLogin = ({ retrospectiveId, onLogIn }) => {
   onLogIn(true)
-  subscribeToAppearances({ retrospectiveId })
+  subscribeToRetrospectiveChannels({ retrospectiveId })
 }
 
 const LoginForm = ({ retrospectiveId, onLogIn }) => {
@@ -59,7 +74,7 @@ const LoginForm = ({ retrospectiveId, onLogIn }) => {
         email: email
       }
     })
-    .then(_ => finalizeLogin({ onLogIn, retrospectiveId }))
+    .then(profile => onLogIn(profile))
     .catch(error => console.warn(error))
   }
 
@@ -77,14 +92,24 @@ const LoginForm = ({ retrospectiveId, onLogIn }) => {
   )
 }
 
-const RetrospectiveLobby = ({ id, name, kind }) => {
+const RetrospectiveLobby = ({ id, name, kind, initialProfile }) => {
   const [loggedIn, setloggedIn] = React.useState(checkLoggedIn({ retrospectiveId: id }))
+  const [profile, setProfile] = React.useState(initialProfile)
+  const finalizeLogin = (profile) => {
+    setloggedIn(true)
+    setProfile(profile)
+    subscribeToRetrospectiveChannels({ retrospectiveId: id })
+  }
 
   return (
     <div>
-      <h3>Lobby {name} ({id})</h3>
-      {loggedIn && <AvatarPicker />}
-      {!loggedIn && <LoginForm onLogIn={setloggedIn} retrospectiveId={id} />}
+      <h3>Lobby {name} ({id}) - {kind}</h3>
+      {loggedIn && <>
+        <div>Logged in as {profile.surname}</div>
+        <AvatarPicker />
+      </>}
+      {!loggedIn && <LoginForm onLogIn={finalizeLogin} retrospectiveId={id} />}
+      <RetrospectiveBottomBar organizer={loggedIn && profile.organizer} />
     </div>
   )
 }

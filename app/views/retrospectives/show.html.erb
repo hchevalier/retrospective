@@ -1,1 +1,1 @@
-<%= react_component('RetrospectiveLobby', @retrospective.to_json) %>
+<%= react_component('RetrospectiveLobby', @retrospective.as_json.merge(initialProfile: @participant&.profile)) %>
