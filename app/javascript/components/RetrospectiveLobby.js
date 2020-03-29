@@ -3,8 +3,35 @@ import Cookies from 'js-cookie'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import { post } from 'lib/httpClient'
+import consumer from "channels/consumer"
 
-const checkLoggedIn = () => Cookies.get('user_id')
+const subscribeToAppearances = ({ retrospectiveId }) => {
+  const channel = consumer.subscriptions.create({ channel: 'AppearanceChannel', retrospective_id: retrospectiveId }, {
+    connected() {
+      console.log('You are connected to the room!')
+      channel.send({ body: 'Hello' })
+    },
+    disconnected() {
+      console.log('You were disconnected from the room!')
+    },
+    received(data) {
+      if (data.new_participant) {
+        console.log('New participant', data.new_participant)
+      } else if (data.body) {
+        console.log(data.body)
+      }
+    },
+  })
+}
+
+const checkLoggedIn = ({ retrospectiveId }) => {
+  if (Cookies.get('user_id')) {
+    subscribeToAppearances({ retrospectiveId })
+    return true
+  }
+
+  return false
+}
 
 const AvatarPicker = () => {
   return (
@@ -12,6 +39,11 @@ const AvatarPicker = () => {
       You can choose an avatar here:
     </div>
   )
+}
+
+const finalizeLogin = ({ retrospectiveId, onLogIn }) => {
+  onLogIn(true)
+  subscribeToAppearances({ retrospectiveId })
 }
 
 const LoginForm = ({ retrospectiveId, onLogIn }) => {
@@ -27,7 +59,7 @@ const LoginForm = ({ retrospectiveId, onLogIn }) => {
         email: email
       }
     })
-    .then(_ => { onLogIn(true) })
+    .then(_ => finalizeLogin({ onLogIn, retrospectiveId }))
     .catch(error => console.warn(error))
   }
 
@@ -46,7 +78,7 @@ const LoginForm = ({ retrospectiveId, onLogIn }) => {
 }
 
 const RetrospectiveLobby = ({ id, name, kind }) => {
-  const [loggedIn, setloggedIn] = React.useState(checkLoggedIn())
+  const [loggedIn, setloggedIn] = React.useState(checkLoggedIn({ retrospectiveId: id }))
 
   return (
     <div>

@@ -14,6 +14,11 @@ class RetrospectivesController < ApplicationController
 
   def show
     @retrospective = Retrospective.find(params[:id])
+    if cookies.signed[:user_id]
+      participant = Participant.find(cookies.signed[:user_id])
+      puts "Broacasting that #{participant.surname} (#{participant.id}) joined"
+      AppearanceChannel.broadcast_to(@retrospective, new_participant: participant.surname)
+    end
   end
 
   private
