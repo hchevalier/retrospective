@@ -5,6 +5,7 @@ class RetrospectivesController < ApplicationController
     organizer = Participant.new(organizer_params)
     retrospective = Retrospective.create(retrospective_params.merge(participants: [organizer]))
     if retrospective
+      cookies.signed[:user_id] = organizer.id
       render json: { id: retrospective.id }
     else
       render json: { status: 422, errors: retrospective.errors }
