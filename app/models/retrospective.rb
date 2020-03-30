@@ -1,6 +1,10 @@
 class Retrospective < ApplicationRecord
   has_many :participants
   has_one :organizer, -> { order(:created_at).limit(1) }, class_name: 'Participant'
+  has_many :zones
+  has_many :reflections, through: :zones
+
+  before_create :initialize_zones
 
   enum kind: {
     kds: 'kds',
@@ -22,16 +26,49 @@ class Retrospective < ApplicationRecord
     postcard: 'postcard'
   }
 
-  def as_json
+  enum step: {
+    gathering: 'gathering',
+    thinking: 'thinking',
+    grouping: 'grouping',
+    voting: 'voting',
+    actions: 'actions',
+    done: 'done'
+  }
+
+  def as_json(current_user = nil)
     {
       id: id,
       name: name,
       kind: kind,
-      initialParticipants: participants.map(&:profile)
+      zones: zones.as_json,
+      initialParticipants: participants.map(&:profile),
+      initialStep: step,
+      initialOwnReflections: current_user ? reflections.where(owner: current_user).map(&:readable) : []
     }
   end
 
-  def broadcast_order(action)
-    OrchestratorChannel.broadcast_to(self, action: action)
+  def next_step!
+    return if step == 'done'
+    update!(step: Retrospective::steps.keys[step_index + 1])
+    broadcast_order(:next, next_step: step)
+  end
+
+  private
+
+  def initialize_zones
+    case kind
+    when 'glad_sad_mad'
+      zones.build(identifier: 'Glad')
+      zones.build(identifier: 'Sad')
+      zones.build(identifier: 'Mad')
+    end
+  end
+
+  def step_index
+    Retrospective::steps.keys.index(step)
+  end
+
+  def broadcast_order(action, **parameters)
+    OrchestratorChannel.broadcast_to(self, action: action, parameters: parameters)
   end
 end

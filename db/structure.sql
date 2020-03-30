@@ -59,6 +59,20 @@ CREATE TYPE public.retrospective_kinds AS ENUM (
 
 
 --
+-- Name: retrospective_steps; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.retrospective_steps AS ENUM (
+    'gathering',
+    'thinking',
+    'grouping',
+    'voting',
+    'actions',
+    'done'
+);
+
+
+--
 -- Name: task_statuses; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -138,11 +152,12 @@ ALTER SEQUENCE public.reactions_id_seq OWNED BY public.reactions.id;
 
 CREATE TABLE public.reflections (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    zone_id_id bigint,
+    zone_id bigint,
     owner_id uuid NOT NULL,
     topic_id bigint,
     position_in_zone integer DEFAULT 1 NOT NULL,
-    position_in_topic integer DEFAULT 1 NOT NULL
+    position_in_topic integer DEFAULT 1 NOT NULL,
+    content text NOT NULL
 );
 
 
@@ -153,9 +168,11 @@ CREATE TABLE public.reflections (
 CREATE TABLE public.retrospectives (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     name character varying NOT NULL,
+    sub_step bigint DEFAULT 0,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    kind public.retrospective_kinds NOT NULL
+    kind public.retrospective_kinds NOT NULL,
+    step public.retrospective_steps DEFAULT 'gathering'::public.retrospective_steps NOT NULL
 );
 
 
@@ -370,10 +387,10 @@ CREATE INDEX index_participants_on_retrospective_id ON public.participants USING
 
 
 --
--- Name: index_reflections_on_zone_id_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_reflections_on_zone_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_reflections_on_zone_id_id ON public.reflections USING btree (zone_id_id);
+CREATE INDEX index_reflections_on_zone_id ON public.reflections USING btree (zone_id);
 
 
 --

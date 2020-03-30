@@ -1,6 +1,6 @@
 import consumer from "./consumer"
 
-export const join = (retrospectiveId) => {
+export const join = ({ retrospectiveId, onReceivedAction }) => {
    const orchestratorChannel = consumer.subscriptions.create({ channel: 'OrchestratorChannel', retrospective_id: retrospectiveId }, {
     connected() {
       console.log('You are connected to the orchestrator channel!')
@@ -11,6 +11,7 @@ export const join = (retrospectiveId) => {
     received(data) {
       if (data.action === 'next') {
         console.log('Received order to go to next step')
+        onReceivedAction(data.action, data.parameters)
       }
     },
   })

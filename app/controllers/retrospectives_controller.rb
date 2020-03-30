@@ -14,8 +14,8 @@ class RetrospectivesController < ApplicationController
 
   def show
     @retrospective = Retrospective.find(params[:id])
-    if cookies.signed[:user_id]
-      @participant = Participant.find(cookies.signed[:user_id])
+    if current_user
+      @participant = current_user
       @participant.join
     end
   end
