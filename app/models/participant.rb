@@ -1,7 +1,7 @@
 class Participant < ApplicationRecord
   belongs_to :retrospective
-  has_many :reflections, inverse_of: :owner
-  has_many :reactions, inverse_of: :author
+  has_many :reflections, foreign_key: :owner_id
+  has_many :reactions, foreign_key: :author_id
 
   def profile
     {

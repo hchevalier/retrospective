@@ -1,6 +1,7 @@
 class ParticipantsController < ApplicationController
   def create
-    participant = Participant.create!(participants_params)
+    retrospective = Retrospective.find(params[:id])
+    participant = Participant.create!(participants_params.merge(retrospective: retrospective))
 
     if participant
       cookies.signed[:user_id] = participant.id
@@ -14,6 +15,6 @@ class ParticipantsController < ApplicationController
   private
 
   def participants_params
-    params.permit(:surname, :email, :retrospective_id)
+    params.permit(:surname, :email)
   end
 end

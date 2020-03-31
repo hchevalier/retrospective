@@ -25,11 +25,6 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind, zones, initialPro
     }
   }, [])
 
-  const handleZoneClicked = (event) => {
-    const zoneName = event.target.id
-    console.log(`Clicked on ${zoneName}`)
-  }
-
   const [profile, setProfile] = React.useState(initialProfile)
 
   const loggedIn = () => !!profile
@@ -60,8 +55,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind, zones, initialPro
               kind={kind}
               zones={zones}
               currentStep={retrospectiveStep}
-              initialOwnReflections={initialOwnReflections}
-              onZoneClicked={handleZoneClicked} />
+              initialOwnReflections={initialOwnReflections} />
           }
         </div>
       </div>

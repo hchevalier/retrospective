@@ -9,9 +9,8 @@ const LoginForm = ({ retrospectiveId, onLogIn }) => {
 
   const login = () => {
     post({
-      url: '/participants',
+      url: `/retrospectives/${retrospectiveId}/participants`,
       payload: {
-        retrospective_id: retrospectiveId,
         surname: surname,
         email: email
       }

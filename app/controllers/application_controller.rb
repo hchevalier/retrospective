@@ -4,4 +4,10 @@ class ApplicationController < ActionController::Base
       (user_id = cookies.signed[:user_id]) ? Participant.find(user_id) : nil
     end
   end
+
+  def ensure_logged_in
+    return if current_user
+
+    render json: { status: 401 }
+  end
 end

@@ -1,12 +1,14 @@
 import React from 'react'
+import './Zone.scss'
 
-const Zone = ({ reference, onClick, reflections }) => {
-  const { name } = reference
-  const size = () => reflections.length
+const Zone = ({ reference, onClick, reflections, mode }) => {
+  const { id, name } = reference
+  const reflectionsCount = reflections.length
+  const displayedReflectionsCount = reflectionsCount > 0 ? `(${reflectionsCount})` : ''
 
   return (
-    <div id={name} onClick={onClick}>
-      {name}
+    <div id={id} onClick={onClick} className={`zone mode-${mode}`}>
+      {name} {displayedReflectionsCount}
     </div>
   )
 }
