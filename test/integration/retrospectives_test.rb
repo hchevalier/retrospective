@@ -52,6 +52,26 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     refute_button 'Next'
   end
 
+  test 'sees new participant joining' do
+    retrospective = create_retrospective!
+
+    login_as(@organizer)
+    visit retrospective_path(retrospective)
+
+    assert_text 'Timer'
+    refute_text 'Other one'
+
+    within_window(open_new_window) do
+      logged_out
+      visit retrospective_path(retrospective)
+      fill_in 'surname', with: 'Other one'
+      fill_in 'email', with: 'other_one@yopmail.com'
+      click_on 'Join'
+    end
+
+    assert_text 'Other one'
+  end
+
   private
 
   def create_retrospective!
@@ -73,5 +93,13 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
       .with(:user_id)
       .at_least_once
       .returns(participant.id)
+  end
+
+  def logged_out
+    ActionDispatch::Cookies::SignedKeyRotatingCookieJar
+      .any_instance.expects(:[])
+      .with(:user_id)
+      .at_least_once
+      .returns(nil)
   end
 end
