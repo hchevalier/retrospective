@@ -41,6 +41,7 @@ const RetrospectiveCreationForm = ({ retrospective_kinds: retrospectiveKinds }) 
           <InputLabel id='label-kind'>Retrospective kind</InputLabel>
           <Select
             labelId='label-kind'
+            name='retrospective_kind'
             value={retrospectiveKind}
             onChange={(event) => setRetrospectiveKind(event.target.value)}
             >
