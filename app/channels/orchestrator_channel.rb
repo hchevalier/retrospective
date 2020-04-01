@@ -1,11 +1,11 @@
 class OrchestratorChannel < ApplicationCable::Channel
   def subscribed
-    puts "#{current_user.surname} (#{current_user.id}) subscribed"
+    Rails.logger.debug "#{current_user.surname} (#{current_user.id}) subscribed"
     stream_for Retrospective.find(params[:retrospective_id])
   end
 
   def unsubscribed
-    puts "#{current_user.surname} (#{current_user.id}) unsubscribed"
+    Rails.logger.debug "#{current_user.surname} (#{current_user.id}) unsubscribed"
   end
 
   def receive(data)

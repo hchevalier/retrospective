@@ -1,6 +1,7 @@
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 require 'rails/test_help'
+require 'mocha/minitest'
 require 'capybara/rails'
 require 'capybara/minitest'
 require 'test_utils/material_ui_helpers'

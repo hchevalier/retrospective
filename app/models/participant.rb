@@ -16,7 +16,7 @@ class Participant < ApplicationRecord
   end
 
   def join
-    puts "Broacasting that #{surname} (#{id}) joined"
+    Rails.logger.debug "Broacasting that #{surname} (#{id}) joined"
     AppearanceChannel.broadcast_to(retrospective, new_participant: profile)
   end
 end
