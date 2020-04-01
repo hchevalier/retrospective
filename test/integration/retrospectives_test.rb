@@ -30,7 +30,7 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
   test 'can join a retrospective without loging in again' do
     retrospective = create_retrospective!
 
-    login_as(@organizer)
+    logged_in_as(@organizer)
     visit retrospective_path(retrospective)
 
     refute_text 'Join'
@@ -41,12 +41,12 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     retrospective = create_retrospective!
     other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
 
-    login_as(@organizer)
+    logged_in_as(@organizer)
     visit retrospective_path(retrospective)
     assert_text 'Timer'
     assert_button 'Next'
 
-    login_as(other_participant)
+    logged_in_as(other_participant)
     visit retrospective_path(retrospective)
     assert_text 'Timer'
     refute_button 'Next'
@@ -55,7 +55,7 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
   test 'sees new participant joining' do
     retrospective = create_retrospective!
 
-    login_as(@organizer)
+    logged_in_as(@organizer)
     visit retrospective_path(retrospective)
 
     assert_text 'Timer'
@@ -70,6 +70,30 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     end
 
     assert_text 'Other one'
+  end
+
+  test 'can trigger the thinking step for other participants' do
+    retrospective = create_retrospective!
+    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
+
+    logged_in_as(@organizer)
+    visit retrospective_path(retrospective)
+    refute_text 'Glad'
+
+    new_window = open_new_window
+    within_window(new_window) do
+      logged_in_as(other_participant)
+      visit retrospective_path(retrospective)
+      assert_text 'Timer'
+      refute_text 'Glad'
+    end
+
+    click_on 'Next'
+    assert_text 'Glad'
+
+    within_window(new_window) do
+      assert_text 'Glad'
+    end
   end
 
   private
@@ -87,7 +111,7 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     retrospective.participants.create!(surname: surname, email: email)
   end
 
-  def login_as(participant)
+  def logged_in_as(participant)
     ActionDispatch::Cookies::SignedKeyRotatingCookieJar
       .any_instance.expects(:[])
       .with(:user_id)
