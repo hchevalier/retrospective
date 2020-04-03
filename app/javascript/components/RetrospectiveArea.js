@@ -76,7 +76,7 @@ const RetrospectiveArea = ({ profile, channels, currentStep, retrospectiveId, ki
     setDisplayReflectionForm(true)
   })
 
-  const handleUpdateReflection = React.useCallback(({ updatedId, updatedContent }) => {
+  const handleUpdateReflection = React.useCallback(({ updatedId, updatedContent, onSuccess }) => {
     put({
       url: `/retrospectives/${retrospectiveId}/reflections/${updatedId}`,
       payload: {
@@ -87,6 +87,7 @@ const RetrospectiveArea = ({ profile, channels, currentStep, retrospectiveId, ki
       setReflections(prevReflections => [...prevReflections].map((reflection) => reflection.id == updatedId ? updatedReflection : reflection))
       setMode('initial')
       setDisplayReflectionsList(false)
+      onSuccess()
     })
     .catch(error => console.warn(error))
   })
@@ -112,8 +113,8 @@ const RetrospectiveArea = ({ profile, channels, currentStep, retrospectiveId, ki
     <>
       {currentStep === 'gathering' && <AvatarPicker />}
       {currentStep === 'thinking' && <GladSadMad mode={mode} reflections={reflections} zones={zones} onZoneClicked={handleZoneClicked} />}
-      {<ReflectionForm open={displayReflectionForm} value={currentReflection} onChange={setCurrentReflection} onChooseZoneClick={handleChooseZoneClick} onReflectionCancel={handleReflectionCancel} />}
-      {<ReflectionsList open={displayReflectionsList} reflections={reflections} filter={workingZone} onUpdateReflection={handleUpdateReflection} onDestroyReflection={handleDestroyReflection} onModalClose={handleReflectionsListClose} />}
+      <ReflectionForm open={displayReflectionForm} value={currentReflection} onChange={setCurrentReflection} onConfirmationClick={handleChooseZoneClick} confirmationLabel={'Choose zone'} onReflectionCancel={handleReflectionCancel} />
+      <ReflectionsList open={displayReflectionsList} reflections={reflections} filter={workingZone} onUpdateReflection={handleUpdateReflection} onDestroyReflection={handleDestroyReflection} onModalClose={handleReflectionsListClose} />
       <RetrospectiveBottomBar profile={profile} channels={channels} onReflectionFormOpen={handleReflectionFormOpen} currentStep={currentStep} />
     </>
   )
