@@ -1,0 +1,13 @@
+#timer {
+  .colon-separator {
+    animation:blinking-text 2.0s infinite;
+  }
+}
+
+@keyframes blinking-text {
+	0% { opacity: 1; }
+	49% {	opacity: 1;	}
+	50% {	opacity: 1;	}
+	99% {	opacity: 0;	}
+	100% { opacity: 0; }
+}

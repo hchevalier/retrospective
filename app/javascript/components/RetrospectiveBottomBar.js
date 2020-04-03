@@ -1,5 +1,6 @@
 import React from 'react'
 import Button from '@material-ui/core/Button'
+import Timer from './Timer'
 
 const RetrospectiveBottomBar = ({ profile, channels, currentStep, onReflectionFormOpen }) => {
   const nextStep = () => {
@@ -12,7 +13,7 @@ const RetrospectiveBottomBar = ({ profile, channels, currentStep, onReflectionFo
 
   return (
     <div id='bottom-bar'>
-      <div>Timer: 10:00</div>
+      <Timer />
       {canCreateReflection() && <Button variant='contained' color='primary' onClick={onReflectionFormOpen}>New reflection</Button>}
       {organizer() && <Button variant='contained' color='primary' onClick={nextStep}>Next</Button>}
     </div>

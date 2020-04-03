@@ -3,6 +3,7 @@ import { post } from 'lib/httpClient'
 import GladSadMad from './retrospectives/GladSadMad'
 import RetrospectiveBottomBar from './RetrospectiveBottomBar'
 import ReflectionForm from './ReflectionForm'
+import ReflectionsList from './ReflectionsList'
 
 const AvatarPicker = () => {
   return (
@@ -17,15 +18,18 @@ const RetrospectiveArea = ({ profile, channels, currentStep, retrospectiveId, ki
     initial
     writing-reflection
     assigning-reflection
+    listing-reflections
   */
   const [reflections, setReflections] = React.useState([...initialOwnReflections])
   const [displayReflectionForm, setDisplayReflectionForm] = React.useState(false)
+  const [displayReflectionsList, setDisplayReflectionsList] = React.useState(false)
   const [currentReflection, setCurrentReflection] = React.useState('')
   const [mode, setMode] = React.useState('initial')
+  const [workingZone, setWorkingZone] = React.useState(null)
 
   const handleZoneClicked = (event) => {
-    const zoneName = event.target.id
-    console.log(`Clicked on ${zoneName}, current mode is ${mode}`)
+    const zoneId = event.target.id
+    console.log(`Clicked on ${zoneId}, current mode is ${mode}`)
     if (mode === 'assigning-reflection') {
       console.log('Posting the reflection')
       post({
@@ -39,6 +43,9 @@ const RetrospectiveArea = ({ profile, channels, currentStep, retrospectiveId, ki
       .catch(error => console.warn(error))
     } else if (mode === 'initial') {
       // TODO: open reflections list for this zone
+      setMode('listing-reflections')
+      setWorkingZone(zoneId)
+      setDisplayReflectionsList(true)
     }
   }
 
@@ -68,6 +75,19 @@ const RetrospectiveArea = ({ profile, channels, currentStep, retrospectiveId, ki
     setDisplayReflectionForm(true)
   })
 
+  const handleUpdateReflection = React.useCallback(({ updatedId, updatedContent }) => {
+
+  })
+
+  const handleDeleteReflection = React.useCallback(({ deleteddId }) => {
+
+  })
+
+  const handleReflectionsListClose = React.useCallback(() => {
+    setMode('initial')
+    setDisplayReflectionsList(false)
+  })
+
   // TODO: return retrospective depending on kind
   // TODO: Handle remaining states: grouping, voting, actions, done
   return (
@@ -75,6 +95,7 @@ const RetrospectiveArea = ({ profile, channels, currentStep, retrospectiveId, ki
       {currentStep === 'gathering' && <AvatarPicker />}
       {currentStep === 'thinking' && <GladSadMad mode={mode} reflections={reflections} zones={zones} onZoneClicked={handleZoneClicked} />}
       {<ReflectionForm open={displayReflectionForm} value={currentReflection} onChange={setCurrentReflection} onChooseZoneClick={handleChooseZoneClick} onReflectionCancel={handleReflectionCancel} />}
+      {<ReflectionsList open={displayReflectionsList} reflections={reflections} filter={workingZone} onUpdateReflection={handleUpdateReflection} onDeleteReflection={handleDeleteReflection} onModalClose={handleReflectionsListClose} />}
       <RetrospectiveBottomBar profile={profile} channels={channels} onReflectionFormOpen={handleReflectionFormOpen} currentStep={currentStep} />
     </>
   )

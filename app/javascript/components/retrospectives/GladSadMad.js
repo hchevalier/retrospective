@@ -1,5 +1,8 @@
 import React from 'react'
 import Zone from './Zone'
+import Glad from '../../images/glad.png'
+import Sad from '../../images/sad.png'
+import Mad from '../../images/mad.png'
 
 const GladSadMad = ({ profile, channels, reflections, mode, zones, onZoneClicked }) => {
   const glad = zones.find((zone) => zone.name === 'Glad')
@@ -8,9 +11,9 @@ const GladSadMad = ({ profile, channels, reflections, mode, zones, onZoneClicked
 
   return (
     <>
-      <Zone reference={glad} mode={mode} reflections={reflections.filter((reflection) => reflection.zone.id === glad.id)} onClick={onZoneClicked} />
-      <Zone reference={sad} mode={mode} reflections={reflections.filter((reflection) => reflection.zone.id === sad.id)} onClick={onZoneClicked} />
-      <Zone reference={mad} mode={mode} reflections={reflections.filter((reflection) => reflection.zone.id === mad.id)} onClick={onZoneClicked} />
+      <Zone reference={glad} mode={mode} icon={Glad} reflections={reflections.filter((reflection) => reflection.zone.id === glad.id)} onClick={onZoneClicked} />
+      <Zone reference={sad} mode={mode} icon={Sad} reflections={reflections.filter((reflection) => reflection.zone.id === sad.id)} onClick={onZoneClicked} />
+      <Zone reference={mad} mode={mode} icon={Mad} reflections={reflections.filter((reflection) => reflection.zone.id === mad.id)} onClick={onZoneClicked} />
     </>
   )
 }
