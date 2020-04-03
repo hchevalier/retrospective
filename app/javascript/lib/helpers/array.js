@@ -6,4 +6,6 @@ export const uniqBy = (items, attribute) => {
 
 const firstOccurence = (items, attribute, value) => items.map(item => item[attribute]).indexOf(value)
 
-export const compact = (items) => items.filter((e) => !!e)
+export const compact = (items) => items.filter((item) => !!item)
+
+export const reject = (items, fn) => items.filter((item) => !fn(item))

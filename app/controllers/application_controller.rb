@@ -8,6 +8,6 @@ class ApplicationController < ActionController::Base
   def ensure_logged_in
     return if current_user
 
-    render json: { status: 401 }
+    render json: { status: :unauthorized }
   end
 end

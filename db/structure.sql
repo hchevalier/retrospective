@@ -123,6 +123,8 @@ CREATE TABLE public.reactions (
     target_type character varying NOT NULL,
     target_id bigint NOT NULL,
     content character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
     kind public.reaction_kinds DEFAULT 'vote'::public.reaction_kinds NOT NULL
 );
 
@@ -157,7 +159,9 @@ CREATE TABLE public.reflections (
     topic_id bigint,
     position_in_zone integer DEFAULT 1 NOT NULL,
     position_in_topic integer DEFAULT 1 NOT NULL,
-    content text NOT NULL
+    content text NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -195,6 +199,8 @@ CREATE TABLE public.tasks (
     assignee_id uuid NOT NULL,
     title text NOT NULL,
     description text,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
     status public.task_statuses DEFAULT 'todo'::public.task_statuses NOT NULL
 );
 
@@ -224,7 +230,9 @@ ALTER SEQUENCE public.tasks_id_seq OWNED BY public.tasks.id;
 
 CREATE TABLE public.topics (
     id bigint NOT NULL,
-    label character varying NOT NULL
+    label character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 

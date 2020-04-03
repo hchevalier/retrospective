@@ -7,6 +7,7 @@ class CreateReflections < ActiveRecord::Migration[6.0]
       t.integer :position_in_zone, null: false, default: 1
       t.integer :position_in_topic, null: false, default: 1
       t.text :content, null: false, blank: false
+      t.timestamps
     end
   end
 end

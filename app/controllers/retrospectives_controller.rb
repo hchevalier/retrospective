@@ -8,7 +8,7 @@ class RetrospectivesController < ApplicationController
       cookies.signed[:user_id] = organizer.id
       render json: { id: retrospective.id }
     else
-      render json: { status: 422, errors: retrospective.errors }
+      render json: { status: :unprocessable_entity, errors: retrospective.errors }
     end
   end
 

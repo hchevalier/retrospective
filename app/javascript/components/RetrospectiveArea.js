@@ -1,5 +1,6 @@
 import React from 'react'
-import { post } from 'lib/httpClient'
+import { post, put, destroy } from 'lib/httpClient'
+import { reject } from 'lib/helpers/array'
 import GladSadMad from './retrospectives/GladSadMad'
 import RetrospectiveBottomBar from './RetrospectiveBottomBar'
 import ReflectionForm from './ReflectionForm'
@@ -76,11 +77,28 @@ const RetrospectiveArea = ({ profile, channels, currentStep, retrospectiveId, ki
   })
 
   const handleUpdateReflection = React.useCallback(({ updatedId, updatedContent }) => {
-
+    put({
+      url: `/retrospectives/${retrospectiveId}/reflections/${updatedId}`,
+      payload: {
+        content: updatedContent
+      }
+    })
+    .then(updatedReflection => {
+      setReflections(prevReflections => [...prevReflections].map((reflection) => reflection.id == updatedId ? updatedReflection : reflection))
+      setMode('initial')
+      setDisplayReflectionsList(false)
+    })
+    .catch(error => console.warn(error))
   })
 
-  const handleDeleteReflection = React.useCallback(({ deleteddId }) => {
-
+  const handleDestroyReflection = React.useCallback(({ deletedId }) => {
+    destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${deletedId}` })
+    .then(data => {
+      setReflections(prevReflections => reject([...prevReflections], (reflection) => reflection.id == deletedId))
+      setMode('initial')
+      setDisplayReflectionsList(false)
+    })
+    .catch(error => console.warn(error))
   })
 
   const handleReflectionsListClose = React.useCallback(() => {
@@ -95,7 +113,7 @@ const RetrospectiveArea = ({ profile, channels, currentStep, retrospectiveId, ki
       {currentStep === 'gathering' && <AvatarPicker />}
       {currentStep === 'thinking' && <GladSadMad mode={mode} reflections={reflections} zones={zones} onZoneClicked={handleZoneClicked} />}
       {<ReflectionForm open={displayReflectionForm} value={currentReflection} onChange={setCurrentReflection} onChooseZoneClick={handleChooseZoneClick} onReflectionCancel={handleReflectionCancel} />}
-      {<ReflectionsList open={displayReflectionsList} reflections={reflections} filter={workingZone} onUpdateReflection={handleUpdateReflection} onDeleteReflection={handleDeleteReflection} onModalClose={handleReflectionsListClose} />}
+      {<ReflectionsList open={displayReflectionsList} reflections={reflections} filter={workingZone} onUpdateReflection={handleUpdateReflection} onDestroyReflection={handleDestroyReflection} onModalClose={handleReflectionsListClose} />}
       <RetrospectiveBottomBar profile={profile} channels={channels} onReflectionFormOpen={handleReflectionFormOpen} currentStep={currentStep} />
     </>
   )

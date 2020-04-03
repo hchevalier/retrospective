@@ -9,6 +9,7 @@ class CreateReactions < ActiveRecord::Migration[6.0]
       t.string :target_type, null: false
       t.bigint :target_id, null: false
       t.string :content, null: false
+      t.timestamps
     end
 
     add_column :reactions, :kind, :reaction_kinds, null: false, default: :vote

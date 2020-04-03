@@ -9,6 +9,7 @@ class CreateTasks < ActiveRecord::Migration[6.0]
       t.uuid :assignee_id, null: false
       t.text :title, null: false
       t.text :description, null: true
+      t.timestamps
     end
 
     add_column :tasks, :status, :task_statuses, null: false, default: :todo

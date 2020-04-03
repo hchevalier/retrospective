@@ -8,7 +8,7 @@ class ParticipantsController < ApplicationController
       participant.join
       render json: participant.profile
     else
-      render json: { status: 422, errors: participant.errors }
+      render json: { status: :unprocessable_entity, errors: participant.errors }
     end
   end
 
