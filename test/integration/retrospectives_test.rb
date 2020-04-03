@@ -96,19 +96,69 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'can write a retrospective and assign it to a zone' do
+    retrospective = create_retrospective!(step: 'thinking')
+
+    logged_in_as(@organizer)
+    visit retrospective_path(retrospective)
+
+    assert_text 'Glad'
+    refute_text 'Glad (1)'
+    write_reflection(zone: 'Glad', content: 'This is my reflection')
+    assert_text 'Glad (1)'
+  end
+
+  test 'a participant cannot see reflections written by other participants' do
+    retrospective = create_retrospective!(step: 'thinking')
+    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
+    glad_zone = retrospective.zones.find_by(identifier: 'Glad')
+    @organizer.reflections.create!(zone: glad_zone, content: 'I am so glad!')
+
+    logged_in_as(other_participant)
+    visit retrospective_path(retrospective)
+
+    assert_text 'Glad'
+    refute_text 'Glad (1)'
+    find('.zone', text: 'Glad').click
+    assert_text 'CLOSE'
+    refute_text 'I am so glad!'
+  end
+
+  test 'can list reflections from a zone' do
+    retrospective = create_retrospective!(step: 'thinking')
+    glad_zone = retrospective.zones.find_by(identifier: 'Glad')
+    @organizer.reflections.create!(zone: glad_zone, content: 'I am so glad!')
+
+    logged_in_as(@organizer)
+    visit retrospective_path(retrospective)
+
+    refute_text 'I am so glad!'
+    find('.zone', text: 'Glad (1)').click
+    assert_text 'I am so glad!'
+  end
+
   private
 
-  def create_retrospective!
+  def create_retrospective!(step: 'gathering')
     @organizer = Participant.create(surname: 'Organizer', email: 'organizer@yopmail.com')
     Retrospective.create!(
       name: 'Retrospective',
       kind: 'glad_sad_mad',
+      step: step,
       participants: [@organizer]
     )
   end
 
   def add_another_participant(retrospective, surname:, email:)
     retrospective.participants.create!(surname: surname, email: email)
+  end
+
+  def write_reflection(zone: 'Mad', content: 'This is my reflection')
+    click_on 'New reflection'
+    fill_in 'content', with: content
+    click_on 'Choose zone'
+    assert_selector '.zone.mode-assigning-reflection'
+    find('.zone', text: zone).click
   end
 
   def logged_in_as(participant)
