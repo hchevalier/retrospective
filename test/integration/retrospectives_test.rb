@@ -109,10 +109,8 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
   end
 
   test 'a participant cannot see reflections written by other participants' do
-    retrospective = create_retrospective!(step: 'thinking')
+    retrospective = create_retrospective!(step: 'thinking', with_reflection: true)
     other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
-    glad_zone = retrospective.zones.find_by(identifier: 'Glad')
-    @organizer.reflections.create!(zone: glad_zone, content: 'I am so glad!')
 
     logged_in_as(other_participant)
     visit retrospective_path(retrospective)
@@ -125,9 +123,7 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
   end
 
   test 'can list reflections from a zone' do
-    retrospective = create_retrospective!(step: 'thinking')
-    glad_zone = retrospective.zones.find_by(identifier: 'Glad')
-    @organizer.reflections.create!(zone: glad_zone, content: 'I am so glad!')
+    retrospective = create_retrospective!(step: 'thinking', with_reflection: true)
 
     logged_in_as(@organizer)
     visit retrospective_path(retrospective)
@@ -137,16 +133,55 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     assert_text 'I am so glad!'
   end
 
+  test 'can edit a reflection' do
+    retrospective = create_retrospective!(step: 'thinking', with_reflection: true)
+
+    logged_in_as(@organizer)
+    visit retrospective_path(retrospective)
+
+    find('.zone', text: 'Glad (1)').click
+    assert_text 'I am so glad!'
+    click_on 'Edit'
+
+    assert_field 'content', with: 'I am so glad!'
+    fill_in 'content', with: 'I am still glad!'
+    click_on 'Update'
+
+    find('.zone', text: 'Glad (1)').click
+    assert_text 'I am still glad!'
+  end
+
+  test 'can delete a reflection' do
+    retrospective = create_retrospective!(step: 'thinking', with_reflection: true)
+
+    logged_in_as(@organizer)
+    visit retrospective_path(retrospective)
+
+    find('.zone', text: 'Glad (1)').click
+    assert_text 'I am so glad!'
+    click_on 'Delete'
+
+    assert_text 'Glad'
+    refute_text 'Glad (1)'
+  end
+
   private
 
-  def create_retrospective!(step: 'gathering')
+  def create_retrospective!(step: 'gathering', with_reflection: false)
     @organizer = Participant.create(surname: 'Organizer', email: 'organizer@yopmail.com')
-    Retrospective.create!(
+    retrospective = Retrospective.create!(
       name: 'Retrospective',
       kind: 'glad_sad_mad',
       step: step,
       participants: [@organizer]
     )
+
+    if with_reflection
+      glad_zone = retrospective.zones.find_by(identifier: 'Glad')
+      @organizer.reflections.create!(zone: glad_zone, content: 'I am so glad!')
+    end
+
+    retrospective
   end
 
   def add_another_participant(retrospective, surname:, email:)

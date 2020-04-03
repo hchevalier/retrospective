@@ -9,9 +9,9 @@ const ReflectionsList = ({ open, reflections, filter, onUpdateReflection, onDest
   const [reworkedReflectionId, setReworkedReflectionId] = React.useState(null)
   const [reworkedReflectionContent, setReworkedReflectionContent] = React.useState('')
 
-  const handleEditClick = () => {
+  const handleEditClick = (event) => {
     setDisplayEditForm(true)
-    const reflectionId = event.target.dataset.id
+    const reflectionId = event.currentTarget.dataset.id
     setReworkedReflectionId(reflectionId)
     setReworkedReflectionContent(reflections.find((reflection) => reflection.id === reflectionId).content)
   }
@@ -28,8 +28,8 @@ const ReflectionsList = ({ open, reflections, filter, onUpdateReflection, onDest
     setReworkedReflectionContent(null)
   }
 
-  const handleDeleteClick = () => {
-    const deletedId = event.target.dataset.id
+  const handleDeleteClick = (event) => {
+    const deletedId = event.currentTarget.dataset.id
     onDestroyReflection({ deletedId })
   }
 
@@ -42,8 +42,8 @@ const ReflectionsList = ({ open, reflections, filter, onUpdateReflection, onDest
               {reflections.filter((reflection) => reflection.zone.id == filter).map((reflection, index) => (
                 <div key={index}>
                   <span>{reflection.content}</span>&nbsp;
-                  <span data-id={reflection.id} onClick={handleEditClick}>Edit</span>&nbsp;
-                  <span data-id={reflection.id} onClick={handleDeleteClick}>Delete</span>
+                  <Button color='primary' size='small' data-id={reflection.id} onClick={handleEditClick}>Edit</Button>&nbsp;
+                  <Button color='secondary' size='small' data-id={reflection.id} onClick={handleDeleteClick}>Delete</Button>
                 </div>
               ))}
             </div>
