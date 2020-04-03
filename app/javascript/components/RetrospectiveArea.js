@@ -85,8 +85,6 @@ const RetrospectiveArea = ({ profile, channels, currentStep, retrospectiveId, ki
     })
     .then(updatedReflection => {
       setReflections(prevReflections => [...prevReflections].map((reflection) => reflection.id == updatedId ? updatedReflection : reflection))
-      setMode('initial')
-      setDisplayReflectionsList(false)
       onSuccess()
     })
     .catch(error => console.warn(error))

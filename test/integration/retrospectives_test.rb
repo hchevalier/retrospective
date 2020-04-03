@@ -147,7 +147,7 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     fill_in 'content', with: 'I am still glad!'
     click_on 'Update'
 
-    find('.zone', text: 'Glad (1)').click
+    refute_text 'Update'
     assert_text 'I am still glad!'
   end
 
