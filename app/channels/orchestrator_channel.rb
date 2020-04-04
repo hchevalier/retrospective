@@ -8,6 +8,10 @@ class OrchestratorChannel < ApplicationCable::Channel
     Rails.logger.debug "#{current_user.surname} (#{current_user.id}) unsubscribed"
   end
 
+  def start_timer(data)
+    broadcast_to(current_user.retrospective, action: 'setTimer', parameters: { duration: data['duration'] })
+  end
+
   def receive(data)
     return unless current_user.organizer?
 

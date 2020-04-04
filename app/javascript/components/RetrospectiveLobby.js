@@ -9,6 +9,7 @@ import './RetrospectiveLobby.scss'
 
 const RetrospectiveLobby = ({ id: retrospectiveId, name, kind, zones, initialProfile, initialParticipants, initialStep, initialOwnReflections }) => {
   const [participants, setParticipants] = React.useState([...initialParticipants])
+  const [timer, setTimer] = React.useState(600)
 
   const handleNewParticipant = React.useCallback((newParticipant) => {
     setParticipants(prevParticipants => uniqBy([...prevParticipants, newParticipant], 'uuid'))
@@ -19,9 +20,25 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind, zones, initialPro
   const [channels, setChannels] = React.useState({ appearanceChannel })
   const [retrospectiveStep, setRetrospectiveStep] = React.useState(initialStep)
 
+  const startTimer = (duration) => {
+    const endTime = (new Date()).getTime() + (duration * 1000)
+    window.timerInterval = setInterval(() => {
+      const remainingTime = (endTime - new Date().getTime()) / 1000
+      setTimer(remainingTime > 0 ? remainingTime : 0)
+      if (remainingTime === 0) {
+        clearInterval(window.timerInterval)
+        window.timerInterval = null
+      }
+    }, 500)
+  }
+
   const handleActionReceived = React.useCallback((action, data) => {
     if (action === 'next') {
       setRetrospectiveStep(data.next_step)
+    } else if (action === 'setTimer') {
+      clearInterval(window.timerInterval)
+      setTimer(data.duration)
+      startTimer(data.duration)
     }
   }, [])
 
@@ -54,6 +71,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind, zones, initialPro
               retrospectiveId={retrospectiveId}
               kind={kind}
               zones={zones}
+              timer={timer}
               currentStep={retrospectiveStep}
               initialOwnReflections={initialOwnReflections} />
           }

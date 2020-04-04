@@ -14,7 +14,7 @@ const AvatarPicker = () => {
   )
 }
 
-const RetrospectiveArea = ({ profile, channels, currentStep, retrospectiveId, kind, zones, initialOwnReflections }) => {
+const RetrospectiveArea = ({ profile, channels, currentStep, retrospectiveId, kind, zones, timer, initialOwnReflections }) => {
   /* available modes
     initial
     writing-reflection
@@ -113,7 +113,7 @@ const RetrospectiveArea = ({ profile, channels, currentStep, retrospectiveId, ki
       {currentStep === 'thinking' && <GladSadMad mode={mode} reflections={reflections} zones={zones} onZoneClicked={handleZoneClicked} />}
       <ReflectionForm open={displayReflectionForm} value={currentReflection} onChange={setCurrentReflection} onConfirmationClick={handleChooseZoneClick} confirmationLabel={'Choose zone'} onReflectionCancel={handleReflectionCancel} />
       <ReflectionsList open={displayReflectionsList} reflections={reflections} filter={workingZone} onUpdateReflection={handleUpdateReflection} onDestroyReflection={handleDestroyReflection} onModalClose={handleReflectionsListClose} />
-      <RetrospectiveBottomBar profile={profile} channels={channels} onReflectionFormOpen={handleReflectionFormOpen} currentStep={currentStep} />
+      <RetrospectiveBottomBar profile={profile} channels={channels} onReflectionFormOpen={handleReflectionFormOpen} currentStep={currentStep} timer={timer} />
     </>
   )
 }
