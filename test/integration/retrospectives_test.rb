@@ -33,8 +33,8 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     logged_in_as(@organizer)
     visit retrospective_path(retrospective)
 
+    assert_text 'Lobby'
     refute_text 'Join'
-    assert_text 'Timer'
   end
 
   test 'only organizer can see the button to start the retrospective' do
@@ -43,12 +43,12 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
 
     logged_in_as(@organizer)
     visit retrospective_path(retrospective)
-    assert_text 'Timer'
+    assert_text 'Lobby'
     assert_button 'Next'
 
     logged_in_as(other_participant)
     visit retrospective_path(retrospective)
-    assert_text 'Timer'
+    assert_text 'Lobby'
     refute_button 'Next'
   end
 
@@ -58,7 +58,7 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     logged_in_as(@organizer)
     visit retrospective_path(retrospective)
 
-    assert_text 'Timer'
+    assert_text 'Lobby'
     refute_text 'Other one'
 
     within_window(open_new_window) do
@@ -84,7 +84,7 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     within_window(new_window) do
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
-      assert_text 'Timer'
+      assert_text 'Lobby'
       refute_text 'Glad'
     end
 

@@ -2,8 +2,10 @@ import React from 'react'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import { post } from 'lib/httpClient'
+import { useDispatch } from 'react-redux'
 
-const LoginForm = ({ retrospectiveId, onLogIn }) => {
+const LoginForm = ({ retrospectiveId }) => {
+  const dispatch = useDispatch()
   const [surname, setSurname] = React.useState('')
   const [email, setEmail] = React.useState('')
 
@@ -15,7 +17,7 @@ const LoginForm = ({ retrospectiveId, onLogIn }) => {
         email: email
       }
     })
-    .then(data => onLogIn(data))
+    .then(data => dispatch({ type: 'login', profile: data }))
     .catch(error => console.warn(error))
   }
 

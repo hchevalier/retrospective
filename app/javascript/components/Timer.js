@@ -1,8 +1,11 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Dialog, DialogTitle, List, ListItem, ListItemText } from '@material-ui/core'
 import './Timer.scss'
 
-const Timer = ({ organizer, remainingTime, orchestratorChannel }) => {
+const Timer = ({ organizer, remainingTime }) => {
+  const orchestratorChannel = useSelector(state => state.channels?.orchestratorChannel)
+
   const [displayDurationDialog, setDisplayDurationDialog] = React.useState(false)
 
   const handleTimerClick = () => {

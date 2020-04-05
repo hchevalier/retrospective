@@ -14,9 +14,13 @@ class RetrospectivesController < ApplicationController
 
   def show
     @retrospective = Retrospective.find(params[:id])
+    @initial_state = @retrospective.initial_state(current_user)
+
     if current_user
       @participant = current_user
       @participant.join
+
+      @initial_state.merge!(profile: current_user.profile)
     end
   end
 

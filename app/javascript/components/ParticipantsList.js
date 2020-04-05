@@ -1,8 +1,12 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import classNames from 'classnames'
 import Button from '@material-ui/core/Button'
 
-const ParticipantsList = ({ participants, profile }) => {
+const ParticipantsList = () => {
+  const profile = useSelector(state => state.profile)
+  const participants = useSelector(state => state.participants)
+
   const copyUrlToClipboard = () => {
     const toCopy = document.createElement('span')
     toCopy.setAttribute('type', 'hidden')

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { post, put, destroy } from 'lib/httpClient'
 import { reject } from 'lib/helpers/array'
 import GladSadMad from './retrospectives/GladSadMad'
@@ -14,13 +15,16 @@ const AvatarPicker = () => {
   )
 }
 
-const RetrospectiveArea = ({ profile, channels, currentStep, retrospectiveId, kind, zones, timer, initialOwnReflections }) => {
+const RetrospectiveArea = ({ retrospectiveId, kind, zones, timer }) => {
+  const dispatch = useDispatch()
   /* available modes
     initial
     writing-reflection
     assigning-reflection
     listing-reflections
   */
+  const currentStep = useSelector(state => state.step)
+  const initialOwnReflections = useSelector(state => state.ownReflections)
   const [reflections, setReflections] = React.useState([...initialOwnReflections])
   const [displayReflectionForm, setDisplayReflectionForm] = React.useState(false)
   const [displayReflectionsList, setDisplayReflectionsList] = React.useState(false)
@@ -43,7 +47,6 @@ const RetrospectiveArea = ({ profile, channels, currentStep, retrospectiveId, ki
       .then(data => handleReflectionCreated(data))
       .catch(error => console.warn(error))
     } else if (mode === 'initial') {
-      // TODO: open reflections list for this zone
       setMode('listing-reflections')
       setWorkingZone(zoneId)
       setDisplayReflectionsList(true)
@@ -113,7 +116,7 @@ const RetrospectiveArea = ({ profile, channels, currentStep, retrospectiveId, ki
       {currentStep === 'thinking' && <GladSadMad mode={mode} reflections={reflections} zones={zones} onZoneClicked={handleZoneClicked} />}
       <ReflectionForm open={displayReflectionForm} value={currentReflection} onChange={setCurrentReflection} onConfirmationClick={handleChooseZoneClick} confirmationLabel={'Choose zone'} onReflectionCancel={handleReflectionCancel} />
       <ReflectionsList open={displayReflectionsList} reflections={reflections} filter={workingZone} onUpdateReflection={handleUpdateReflection} onDestroyReflection={handleDestroyReflection} onModalClose={handleReflectionsListClose} />
-      <RetrospectiveBottomBar profile={profile} channels={channels} onReflectionFormOpen={handleReflectionFormOpen} currentStep={currentStep} timer={timer} />
+      <RetrospectiveBottomBar onReflectionFormOpen={handleReflectionFormOpen} timer={timer} />
     </>
   )
 }

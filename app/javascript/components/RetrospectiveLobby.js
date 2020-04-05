@@ -1,4 +1,6 @@
 import React from 'react'
+import { Provider, useSelector, useDispatch } from 'react-redux'
+import appStore from 'stores/app_store'
 import { join as joinAppearanceChannel } from 'channels/appearanceChannel'
 import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
 import { uniqBy } from 'lib/helpers/array'
@@ -7,18 +9,17 @@ import ParticipantsList from './ParticipantsList'
 import LoginForm from './LoginForm'
 import './RetrospectiveLobby.scss'
 
-const RetrospectiveLobby = ({ id: retrospectiveId, name, kind, zones, initialProfile, initialParticipants, initialStep, initialOwnReflections }) => {
-  const [participants, setParticipants] = React.useState([...initialParticipants])
+const RetrospectiveLobby = ({ id: retrospectiveId, name, kind, zones }) => {
+  const dispatch = useDispatch()
   const [timer, setTimer] = React.useState(600)
 
   const handleNewParticipant = React.useCallback((newParticipant) => {
-    setParticipants(prevParticipants => uniqBy([...prevParticipants, newParticipant], 'uuid'))
+    dispatch({ type: 'new-participant', newParticipant: newParticipant })
   }, [])
-  const appearanceChannel = React.useEffect(() => {
-    joinAppearanceChannel({ onParticipantAppears: handleNewParticipant, retrospectiveId })
+  React.useEffect(() => {
+    const appearanceChannel = joinAppearanceChannel({ onParticipantAppears: handleNewParticipant, retrospectiveId })
+    dispatch({ type: 'set-channel', channelName: 'appearanceChannel', channel: appearanceChannel })
   }, [])
-  const [channels, setChannels] = React.useState({ appearanceChannel })
-  const [retrospectiveStep, setRetrospectiveStep] = React.useState(initialStep)
 
   const startTimer = (duration) => {
     const endTime = (new Date()).getTime() + (duration * 1000)
@@ -34,7 +35,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind, zones, initialPro
 
   const handleActionReceived = React.useCallback((action, data) => {
     if (action === 'next') {
-      setRetrospectiveStep(data.next_step)
+      dispatch({ type: 'change-step', step: data.next_step })
     } else if (action === 'setTimer') {
       clearInterval(window.timerInterval)
       setTimer(data.duration)
@@ -42,38 +43,32 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind, zones, initialPro
     }
   }, [])
 
-  const [profile, setProfile] = React.useState(initialProfile)
-
-  const loggedIn = () => !!profile
+  const profile = useSelector(state => state.profile)
+  const loggedIn = useSelector(state => !!state.profile)
 
   React.useEffect(() => {
     // On login
     if (profile) {
-      setParticipants(uniqBy([profile, ...participants], 'uuid'))
-      console.log(`Added own name (${profile.surname}) before participants list (${participants.map(p => p.surname).join(', ')})`)
+      dispatch({ type: 'login', profile: profile })
 
       const orchestratorChannel = joinOrchestratorChannel({ retrospectiveId: retrospectiveId, onReceivedAction: handleActionReceived })
-      setChannels({ ...channels, orchestratorChannel })
+      dispatch({ type: 'set-channel', channelName: 'orchestratorChannel', channel: orchestratorChannel })
     }
-  }, [profile])
+  }, [loggedIn])
 
   return (
     <div id='main-container'>
       <h3>Lobby {name} ({retrospectiveId}) - {kind}</h3>
       <div id='lobby'>
-        <ParticipantsList participants={participants} profile={profile} />
+        <ParticipantsList />
         <div id='right-pannel'>
-          {!loggedIn() && <LoginForm onLogIn={setProfile} retrospectiveId={retrospectiveId} />}
-          {loggedIn() &&
+          {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} />}
+          {loggedIn &&
             <RetrospectiveArea
-              profile={profile}
-              channels={channels}
               retrospectiveId={retrospectiveId}
               kind={kind}
               zones={zones}
-              timer={timer}
-              currentStep={retrospectiveStep}
-              initialOwnReflections={initialOwnReflections} />
+              timer={timer} />
           }
         </div>
       </div>
@@ -81,4 +76,14 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind, zones, initialPro
   )
 }
 
-export default RetrospectiveLobby
+const RetrospectiveLobbyWithProvider = (props) => {
+  const store = appStore(props.initialState)
+
+  return (
+    <Provider store={store}>
+      <RetrospectiveLobby {...props.retrospective} />
+    </Provider>
+  )
+}
+
+export default RetrospectiveLobbyWithProvider

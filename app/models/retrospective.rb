@@ -40,10 +40,15 @@ class Retrospective < ApplicationRecord
       id: id,
       name: name,
       kind: kind,
-      zones: zones.as_json,
-      initialParticipants: participants.map(&:profile),
-      initialStep: step,
-      initialOwnReflections: current_user ? reflections.where(owner: current_user).map(&:readable) : []
+      zones: zones.as_json
+    }
+  end
+
+  def initial_state(current_user = nil)
+    {
+      participants: participants.map(&:profile),
+      step: step,
+      ownReflections: current_user ? reflections.where(owner: current_user).map(&:readable) : []
     }
   end
 
