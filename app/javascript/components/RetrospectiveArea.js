@@ -15,7 +15,7 @@ const AvatarPicker = () => {
   )
 }
 
-const RetrospectiveArea = ({ retrospectiveId, kind, zones, timer }) => {
+const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   const dispatch = useDispatch()
   /* available modes
     initial
@@ -24,8 +24,6 @@ const RetrospectiveArea = ({ retrospectiveId, kind, zones, timer }) => {
     listing-reflections
   */
   const currentStep = useSelector(state => state.step)
-  const initialOwnReflections = useSelector(state => state.ownReflections)
-  const [reflections, setReflections] = React.useState([...initialOwnReflections])
   const [displayReflectionForm, setDisplayReflectionForm] = React.useState(false)
   const [displayReflectionsList, setDisplayReflectionsList] = React.useState(false)
   const [currentReflection, setCurrentReflection] = React.useState('')
@@ -54,27 +52,23 @@ const RetrospectiveArea = ({ retrospectiveId, kind, zones, timer }) => {
   }
 
   const handleReflectionCreated = React.useCallback((newReflection) => {
-    console.log('Received confirmation for reflection creation, resetting mode to initial')
-    setReflections(prevReflections => [...prevReflections, newReflection])
+    dispatch({ type: 'add-reflection', reflection: newReflection })
     setCurrentReflection('')
     setMode('initial')
   })
 
   const handleChooseZoneClick = React.useCallback(() => {
-    console.log('Clicked on "choose zone" CTA, changing mode to assignReflection')
     setDisplayReflectionForm(false)
     setMode('assigning-reflection')
   })
 
   const handleReflectionCancel = React.useCallback(() => {
-    console.log('Clicked on "cancel" CTA, resetting mode to initial')
     setCurrentReflection('')
     setMode('initial')
     setDisplayReflectionForm(false)
   })
 
   const handleReflectionFormOpen = React.useCallback(() => {
-    console.log('Opened the reflection form, resetting mode to initial')
     setMode('writing-reflection')
     setDisplayReflectionForm(true)
   })
@@ -87,7 +81,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind, zones, timer }) => {
       }
     })
     .then(updatedReflection => {
-      setReflections(prevReflections => [...prevReflections].map((reflection) => reflection.id == updatedId ? updatedReflection : reflection))
+      dispatch({ type: 'change-reflection', reflection: updatedReflection })
       onSuccess()
     })
     .catch(error => console.warn(error))
@@ -95,8 +89,8 @@ const RetrospectiveArea = ({ retrospectiveId, kind, zones, timer }) => {
 
   const handleDestroyReflection = React.useCallback(({ deletedId }) => {
     destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${deletedId}` })
-    .then(data => {
-      setReflections(prevReflections => reject([...prevReflections], (reflection) => reflection.id == deletedId))
+    .then(_data => {
+      dispatch({ type: 'delete-reflection', reflectionId: deletedId })
       setMode('initial')
       setDisplayReflectionsList(false)
     })
@@ -113,10 +107,10 @@ const RetrospectiveArea = ({ retrospectiveId, kind, zones, timer }) => {
   return (
     <>
       {currentStep === 'gathering' && <AvatarPicker />}
-      {currentStep === 'thinking' && <GladSadMad mode={mode} reflections={reflections} zones={zones} onZoneClicked={handleZoneClicked} />}
+      {currentStep === 'thinking' && <GladSadMad mode={mode} onZoneClicked={handleZoneClicked} />}
       <ReflectionForm open={displayReflectionForm} value={currentReflection} onChange={setCurrentReflection} onConfirmationClick={handleChooseZoneClick} confirmationLabel={'Choose zone'} onReflectionCancel={handleReflectionCancel} />
-      <ReflectionsList open={displayReflectionsList} reflections={reflections} filter={workingZone} onUpdateReflection={handleUpdateReflection} onDestroyReflection={handleDestroyReflection} onModalClose={handleReflectionsListClose} />
-      <RetrospectiveBottomBar onReflectionFormOpen={handleReflectionFormOpen} timer={timer} />
+      <ReflectionsList open={displayReflectionsList} filter={workingZone} onUpdateReflection={handleUpdateReflection} onDestroyReflection={handleDestroyReflection} onModalClose={handleReflectionsListClose} />
+      <RetrospectiveBottomBar onReflectionFormOpen={handleReflectionFormOpen} />
     </>
   )
 }

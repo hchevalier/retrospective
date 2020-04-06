@@ -1,10 +1,14 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import Zone from './Zone'
 import Glad from '../../images/glad.png'
 import Sad from '../../images/sad.png'
 import Mad from '../../images/mad.png'
 
-const GladSadMad = ({ profile, channels, reflections, mode, zones, onZoneClicked }) => {
+const GladSadMad = ({ profile, channels, mode, onZoneClicked }) => {
+  const reflections = useSelector(state => state.ownReflections)
+  const zones = useSelector(state => state.retrospective.zones)
+
   const glad = zones.find((zone) => zone.name === 'Glad')
   const sad = zones.find((zone) => zone.name === 'Sad')
   const mad = zones.find((zone) => zone.name === 'Mad')

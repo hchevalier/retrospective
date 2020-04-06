@@ -3,10 +3,27 @@ import { useSelector } from 'react-redux'
 import { Dialog, DialogTitle, List, ListItem, ListItemText } from '@material-ui/core'
 import './Timer.scss'
 
-const Timer = ({ organizer, remainingTime }) => {
-  const orchestratorChannel = useSelector(state => state.channels?.orchestratorChannel)
+const Timer = ({ organizer }) => {
+  const originalDuration = useSelector(state => state.timerDuration)
+  const lastTimerReset = useSelector(state => state.lastTimerReset)
 
   const [displayDurationDialog, setDisplayDurationDialog] = React.useState(false)
+  const [remainingTime, setRemainingTime] = React.useState(originalDuration)
+
+  React.useEffect(() => {
+    // On timer start
+    if (lastTimerReset) {
+      const endTime = (new Date()).getTime() + (originalDuration * 1000)
+      const intervalId = setInterval(() => {
+        const theoricalRemainingTime = (endTime - new Date().getTime()) / 1000
+        setRemainingTime(theoricalRemainingTime > 0 ? theoricalRemainingTime : 0)
+        if (theoricalRemainingTime === 0) {
+          clearInterval(intervalId)
+        }
+      }, 500)
+      return () => clearInterval(intervalId)
+    }
+  }, [lastTimerReset])
 
   const handleTimerClick = () => {
     if (organizer) {
@@ -18,6 +35,7 @@ const Timer = ({ organizer, remainingTime }) => {
     setDisplayDurationDialog(false)
   }
 
+  const orchestratorChannel = useSelector(state => state.channels?.orchestratorChannel)
   const handleListItemClick = (value) => {
     orchestratorChannel.startTimer(value)
     handleClose()

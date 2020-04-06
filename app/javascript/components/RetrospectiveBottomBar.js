@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import Button from '@material-ui/core/Button'
 import Timer from './Timer'
 
-const RetrospectiveBottomBar = ({ timer, onReflectionFormOpen }) => {
+const RetrospectiveBottomBar = ({ onReflectionFormOpen }) => {
   const profile = useSelector(state => state.profile)
   const currentStep = useSelector(state => state.step)
   const orchestratorChannel = useSelector(state => state.channels?.orchestratorChannel)
@@ -17,7 +17,7 @@ const RetrospectiveBottomBar = ({ timer, onReflectionFormOpen }) => {
 
   return (
     <div id='bottom-bar'>
-      {currentStep === 'thinking' && <Timer remainingTime={timer} organizer={organizer} />}
+      {currentStep === 'thinking' && <Timer organizer={organizer()} />}
       {canCreateReflection() && <Button variant='contained' color='primary' onClick={onReflectionFormOpen}>New reflection</Button>}
       {organizer() && <Button variant='contained' color='primary' onClick={nextStep}>Next</Button>}
     </div>

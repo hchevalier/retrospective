@@ -1,10 +1,13 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import Button from '@material-ui/core/Button'
 import Modal from '@material-ui/core/Modal'
 import ReflectionForm from './ReflectionForm'
 import './ReflectionsList.scss'
 
-const ReflectionsList = ({ open, reflections, filter, onUpdateReflection, onDestroyReflection, onModalClose }) => {
+const ReflectionsList = ({ open, filter, onUpdateReflection, onDestroyReflection, onModalClose }) => {
+  const reflections = useSelector(state => state.ownReflections)
+
   const [displayEditForm, setDisplayEditForm] = React.useState(false)
   const [reworkedReflectionId, setReworkedReflectionId] = React.useState(null)
   const [reworkedReflectionContent, setReworkedReflectionContent] = React.useState('')

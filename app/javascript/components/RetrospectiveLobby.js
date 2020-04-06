@@ -3,43 +3,28 @@ import { Provider, useSelector, useDispatch } from 'react-redux'
 import appStore from 'stores/app_store'
 import { join as joinAppearanceChannel } from 'channels/appearanceChannel'
 import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
-import { uniqBy } from 'lib/helpers/array'
 import RetrospectiveArea from './RetrospectiveArea'
 import ParticipantsList from './ParticipantsList'
 import LoginForm from './LoginForm'
 import './RetrospectiveLobby.scss'
 
-const RetrospectiveLobby = ({ id: retrospectiveId, name, kind, zones }) => {
+const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
   const dispatch = useDispatch()
-  const [timer, setTimer] = React.useState(600)
 
   const handleNewParticipant = React.useCallback((newParticipant) => {
     dispatch({ type: 'new-participant', newParticipant: newParticipant })
   }, [])
+
   React.useEffect(() => {
     const appearanceChannel = joinAppearanceChannel({ onParticipantAppears: handleNewParticipant, retrospectiveId })
     dispatch({ type: 'set-channel', channelName: 'appearanceChannel', channel: appearanceChannel })
   }, [])
 
-  const startTimer = (duration) => {
-    const endTime = (new Date()).getTime() + (duration * 1000)
-    window.timerInterval = setInterval(() => {
-      const remainingTime = (endTime - new Date().getTime()) / 1000
-      setTimer(remainingTime > 0 ? remainingTime : 0)
-      if (remainingTime === 0) {
-        clearInterval(window.timerInterval)
-        window.timerInterval = null
-      }
-    }, 500)
-  }
-
   const handleActionReceived = React.useCallback((action, data) => {
     if (action === 'next') {
       dispatch({ type: 'change-step', step: data.next_step })
     } else if (action === 'setTimer') {
-      clearInterval(window.timerInterval)
-      setTimer(data.duration)
-      startTimer(data.duration)
+      dispatch({ type: 'start-timer', duration: data.duration })
     }
   }, [])
 
@@ -63,13 +48,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind, zones }) => {
         <ParticipantsList />
         <div id='right-pannel'>
           {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} />}
-          {loggedIn &&
-            <RetrospectiveArea
-              retrospectiveId={retrospectiveId}
-              kind={kind}
-              zones={zones}
-              timer={timer} />
-          }
+          {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
         </div>
       </div>
     </div>
@@ -77,7 +56,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind, zones }) => {
 }
 
 const RetrospectiveLobbyWithProvider = (props) => {
-  const store = appStore(props.initialState)
+  const store = appStore({ ...props.initialState, retrospective: props.retrospective })
 
   return (
     <Provider store={store}>
