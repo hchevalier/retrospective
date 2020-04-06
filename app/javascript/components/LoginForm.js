@@ -17,7 +17,7 @@ const LoginForm = ({ retrospectiveId }) => {
         email: email
       }
     })
-    .then(data => dispatch({ type: 'login', profile: data }))
+    .then(data => dispatch({ type: 'login', profile: data.profile, additionnalInfo: data.additionnal_info }))
     .catch(error => console.warn(error))
   }
 

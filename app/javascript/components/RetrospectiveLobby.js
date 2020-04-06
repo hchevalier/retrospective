@@ -32,14 +32,12 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
   const loggedIn = useSelector(state => !!state.profile)
 
   React.useEffect(() => {
-    // On login
+    // On already logged in
     if (profile) {
-      dispatch({ type: 'login', profile: profile })
-
       const orchestratorChannel = joinOrchestratorChannel({ retrospectiveId: retrospectiveId, onReceivedAction: handleActionReceived })
       dispatch({ type: 'set-channel', channelName: 'orchestratorChannel', channel: orchestratorChannel })
     }
-  }, [loggedIn])
+  }, [])
 
   return (
     <div id='main-container'>

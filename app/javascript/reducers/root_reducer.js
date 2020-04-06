@@ -5,7 +5,12 @@ const rootReducer = (state, action) => {
     case 'change-step':
       return { ...state, step: action.step }
     case 'login':
-      return { ...state, participants: uniqBy([action.profile, ...state.participants], 'uuid') }
+      return {
+        ...state,
+        participants: uniqBy([action.profile, ...state.participants], 'uuid'),
+        profile: action.profile,
+        ...action.additionnalInfo
+      }
     case 'new-participant':
       return { ...state, participants: uniqBy([...state.participants, action.newParticipant], 'uuid') }
     case 'set-channel':

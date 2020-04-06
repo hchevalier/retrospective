@@ -45,11 +45,18 @@ class Retrospective < ApplicationRecord
   end
 
   def initial_state(current_user = nil)
-    {
+    state = {
       participants: participants.map(&:profile),
       step: step,
-      ownReflections: current_user ? reflections.where(owner: current_user).map(&:readable) : []
+      ownReflections: current_user ? reflections.where(owner: current_user).map(&:readable) : [],
     }
+
+    return state unless timer_end_at && (remaining_time = timer_end_at - Time.now ) > 0
+
+    state.merge(
+      timerDuration: remaining_time,
+      lastTimerReset: Time.now.to_i
+    )
   end
 
   def next_step!

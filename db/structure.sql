@@ -176,7 +176,8 @@ CREATE TABLE public.retrospectives (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     kind public.retrospective_kinds NOT NULL,
-    step public.retrospective_steps DEFAULT 'gathering'::public.retrospective_steps NOT NULL
+    step public.retrospective_steps DEFAULT 'gathering'::public.retrospective_steps NOT NULL,
+    timer_end_at timestamp without time zone
 );
 
 
@@ -422,6 +423,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200324210000'),
 ('20200324210013'),
 ('20200324210924'),
-('20200324211253');
+('20200324211253'),
+('20200406202903');
 
 
