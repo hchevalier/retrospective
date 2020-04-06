@@ -37,7 +37,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
       const orchestratorChannel = joinOrchestratorChannel({ retrospectiveId: retrospectiveId, onReceivedAction: handleActionReceived })
       dispatch({ type: 'set-channel', channelName: 'orchestratorChannel', channel: orchestratorChannel })
     }
-  }, [])
+  }, [loggedIn])
 
   return (
     <div id='main-container'>

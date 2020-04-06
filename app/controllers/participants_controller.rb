@@ -7,7 +7,7 @@ class ParticipantsController < ApplicationController
       cookies.signed[:user_id] = participant.id
       participant.join
 
-      additionnal_info = {}
+      additionnal_info = { step: retrospective.step }
       if retrospective.timer_end_at && (remaining_time = retrospective.timer_end_at - Time.now ) > 0
         additionnal_info = {
           timerDuration: remaining_time,

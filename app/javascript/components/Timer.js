@@ -44,14 +44,16 @@ const Timer = ({ organizer }) => {
   const remainingMinutes = Math.floor(remainingTime / 60)
   const remainingSeconds = Math.floor(remainingTime % 60)
 
+  const displayTimer = organizer || lastTimerReset !== null
+
   return (
     <>
-      <div id='timer' onClick={handleTimerClick}>
+      {displayTimer && <div id='timer' onClick={handleTimerClick}>
         <span>Timer:</span>
-        <span>{remainingMinutes < 10 ? '0' : ''}{remainingMinutes}</span>
+        <span className='minutes'>{remainingMinutes < 10 ? '0' : ''}{remainingMinutes}</span>
         <span className='colon-separator'>:</span>
-        <span>{remainingSeconds < 10 ? '0' : ''}{remainingSeconds}</span>
-      </div>
+        <span className='seconds'>{remainingSeconds < 10 ? '0' : ''}{remainingSeconds}</span>
+      </div>}
       <Dialog onClose={handleClose} aria-labelledby='duration-dialog' open={displayDurationDialog}>
         <DialogTitle id='duration-dialog'>Set duration</DialogTitle>
         <List>
