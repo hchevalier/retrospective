@@ -3,7 +3,7 @@ import { reject, uniqBy } from 'lib/helpers/array'
 const rootReducer = (state, action) => {
   switch (action.type) {
     case 'change-step':
-      return { ...state, step: action.step }
+      return { ...state, step: action.step, allReflections: action.allReflections?.length > 0 ? action.allReflections : state.allReflections }
     case 'login':
       return {
         ...state,

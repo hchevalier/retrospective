@@ -11,33 +11,26 @@ import './RetrospectiveLobby.scss'
 const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
   const dispatch = useDispatch()
 
-  const handleNewParticipant = React.useCallback((newParticipant) => {
-    dispatch({ type: 'new-participant', newParticipant: newParticipant })
-  }, [])
+  const loggedIn = useSelector(state => !!state.profile)
 
   React.useEffect(() => {
     const appearanceChannel = joinAppearanceChannel({ onParticipantAppears: handleNewParticipant, retrospectiveId })
     dispatch({ type: 'set-channel', channelName: 'appearanceChannel', channel: appearanceChannel })
+    const orchestratorChannel = joinOrchestratorChannel({ retrospectiveId: retrospectiveId, onReceivedAction: handleActionReceived })
+    dispatch({ type: 'set-channel', channelName: 'orchestratorChannel', channel: orchestratorChannel })
+  }, [])
+
+  const handleNewParticipant = React.useCallback((newParticipant) => {
+    dispatch({ type: 'new-participant', newParticipant: newParticipant })
   }, [])
 
   const handleActionReceived = React.useCallback((action, data) => {
     if (action === 'next') {
-      dispatch({ type: 'change-step', step: data.next_step })
-    } else if (action === 'setTimer') {
+      dispatch({ type: 'change-step', step: data.next_step, allReflections: data.allReflections })
+    } else if (action === 'setTimer' && loggedIn) {
       dispatch({ type: 'start-timer', duration: data.duration })
     }
   }, [])
-
-  const profile = useSelector(state => state.profile)
-  const loggedIn = useSelector(state => !!state.profile)
-
-  React.useEffect(() => {
-    // On already logged in
-    if (profile) {
-      const orchestratorChannel = joinOrchestratorChannel({ retrospectiveId: retrospectiveId, onReceivedAction: handleActionReceived })
-      dispatch({ type: 'set-channel', channelName: 'orchestratorChannel', channel: orchestratorChannel })
-    }
-  }, [loggedIn])
 
   return (
     <div id='main-container'>

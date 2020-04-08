@@ -1,0 +1,12 @@
+#zones-container {
+  display: flex;
+  flex-direction: row;
+
+  .zone-column {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    border: 1px solid gray;
+    padding: 20px;
+  }
+}

@@ -51,6 +51,8 @@ class Retrospective < ApplicationRecord
       ownReflections: current_user ? reflections.where(owner: current_user).map(&:readable) : [],
     }
 
+    state.merge!(allReflections: reflections.map(&:readable)) unless step.in?(%w(gathering thinking))
+
     return state unless timer_end_at && (remaining_time = timer_end_at - Time.now ) > 0
 
     state.merge(
@@ -62,7 +64,7 @@ class Retrospective < ApplicationRecord
   def next_step!
     return if step == 'done'
     update!(step: Retrospective::steps.keys[step_index + 1])
-    broadcast_order(:next, next_step: step)
+    broadcast_order(:next, next_step: step, allReflections: step == 'grouping' ? reflections.map(&:readable) : [])
   end
 
   private
