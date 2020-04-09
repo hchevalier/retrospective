@@ -21,6 +21,10 @@ const rootReducer = (state, action) => {
       return { ...state, ownReflections: [...state.ownReflections].map((reflection) => reflection.id == action.reflection.id ? action.reflection : reflection) }
     case 'delete-reflection':
       return { ...state, ownReflections: reject(state.ownReflections, (reflection) => reflection.id == action.reflectionId) }
+    case 'add-reaction':
+      return { ...state, ownReactions: [...state.ownReactions, action.reaction] }
+    case 'delete-reaction':
+      return { ...state, ownReactions: reject(state.ownReactions, (reaction) => reaction.id == action.reactionId) }
     case 'start-timer':
       return { ...state, lastTimerReset: new Date().getTime(), timerDuration: action.duration }
     default:

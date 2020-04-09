@@ -4,7 +4,7 @@ class CreateTasks < ActiveRecord::Migration[6.0]
       CREATE TYPE task_statuses AS ENUM ('todo', 'stuck', 'done');
     SQL
 
-    create_table :tasks do |t|
+    create_table :tasks, id: :uuid do |t|
       t.uuid :author_id, null: false
       t.uuid :assignee_id, null: false
       t.text :title, null: false

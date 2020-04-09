@@ -3,6 +3,7 @@ class Retrospective < ApplicationRecord
   has_one :organizer, -> { order(:created_at).limit(1) }, class_name: 'Participant'
   has_many :zones
   has_many :reflections, through: :zones
+  has_many :reactions, through: :reflections
 
   before_create :initialize_zones
 
@@ -49,6 +50,7 @@ class Retrospective < ApplicationRecord
       participants: participants.map(&:profile),
       step: step,
       ownReflections: current_user ? reflections.where(owner: current_user).map(&:readable) : [],
+      ownReactions: current_user ? current_user.reactions.map(&:readable) : [],
     }
 
     state.merge!(allReflections: reflections.map(&:readable)) unless step.in?(%w(gathering thinking))

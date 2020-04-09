@@ -7,6 +7,7 @@ import RetrospectiveBottomBar from './RetrospectiveBottomBar'
 import ReflectionForm from './ReflectionForm'
 import ReflectionsList from './ReflectionsList'
 import ReflectionsGrouping from './ReflectionsGrouping'
+import ReflectionsVoting from './ReflectionsVoting'
 
 const AvatarPicker = () => {
   return (
@@ -110,6 +111,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
       {currentStep === 'gathering' && <AvatarPicker />}
       {currentStep === 'thinking' && <GladSadMad mode={mode} onZoneClicked={handleZoneClicked} />}
       {currentStep === 'grouping' && <ReflectionsGrouping />}
+      {currentStep === 'voting' && <ReflectionsVoting />}
       <ReflectionForm open={displayReflectionForm} value={currentReflection} onChange={setCurrentReflection} onConfirmationClick={handleChooseZoneClick} confirmationLabel={'Choose zone'} onReflectionCancel={handleReflectionCancel} />
       <ReflectionsList open={displayReflectionsList} filter={workingZone} onUpdateReflection={handleUpdateReflection} onDestroyReflection={handleDestroyReflection} onModalClose={handleReflectionsListClose} />
       <RetrospectiveBottomBar onReflectionFormOpen={handleReflectionFormOpen} />

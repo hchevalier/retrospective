@@ -1,6 +1,7 @@
 class Reflection < ApplicationRecord
   belongs_to :zone
   belongs_to :owner, class_name: 'Participant'
+  has_many :reactions, as: :target
 
   def anonymous
     {
