@@ -9,3 +9,10 @@ const firstOccurence = (items, attribute, value) => items.map(item => item[attri
 export const compact = (items) => items.filter((item) => !!item)
 
 export const reject = (items, fn) => items.filter((item) => !fn(item))
+
+export const groupBy = (items, attribute) => {
+  return items.reduce((result, item) => {
+    (result[item[attribute]] = result[item[attribute]] || []).push(item)
+    return result
+  }, {})
+}

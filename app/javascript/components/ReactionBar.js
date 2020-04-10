@@ -1,7 +1,8 @@
 import React from 'react'
-import { post, destroy } from 'lib/httpClient'
-import './ReactionBar.scss'
 import { useDispatch, useSelector } from 'react-redux'
+import { post, destroy } from 'lib/httpClient'
+import { groupBy } from 'lib/helpers/array'
+import './ReactionBar.scss'
 
 const ReactionBar = ({ reflection, displayed, reactions }) => {
   if (!displayed) return null
@@ -26,9 +27,15 @@ const ReactionBar = ({ reflection, displayed, reactions }) => {
     .catch(error => console.warn(error))
   })
 
-  const reactionsBlock = reactions.map((reaction, index) => {
-    // TODO: group by reaction.kind and display a badge with count
-    return <div className='reaction' key={index} data-id={reaction.id} onClick={handleRemoveReaction}>{reaction.content}</div>
+  const groups = groupBy(reactions, 'content')
+  const reactionsBlock = Object.keys(groups).map((reactionContent, index) => {
+    const reactionsInGroup = groups[reactionContent]
+    const reactionsCount = reactionsInGroup.length
+    return (
+      <div className='reaction' key={index} data-id={reactionsInGroup[0].id} onClick={handleRemoveReaction}>
+        {reactionsCount > 1 ? reactionsCount : ''}{reactionContent}
+      </div>
+    )
   })
 
   return (
