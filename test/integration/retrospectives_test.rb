@@ -225,13 +225,13 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
   private
 
   def create_retrospective!(step: 'gathering', with_reflection: false)
-    @organizer = Participant.create(surname: 'Organizer', email: 'organizer@yopmail.com')
     retrospective = Retrospective.create!(
       name: 'Retrospective',
       kind: 'glad_sad_mad',
       step: step,
-      participants: [@organizer]
+      organizer_attributes: { surname: 'Organizer', email: 'organizer@yopmail.com' }
     )
+    @organizer = retrospective.organizer
 
     if with_reflection
       glad_zone = retrospective.zones.find_by(identifier: 'Glad')

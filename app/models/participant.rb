@@ -1,10 +1,12 @@
 class Participant < ApplicationRecord
-  belongs_to :retrospective
+  belongs_to :retrospective, optional: true
+  has_one :organized_retrospective, class_name: 'Retrospective', foreign_key: :organizer_id, inverse_of: :organizer
   has_many :reflections, foreign_key: :owner_id, inverse_of: :owner
   has_many :reactions, foreign_key: :author_id, inverse_of: :author
 
   before_create :set_default_color
 
+  validates :retrospective, presence: true, unless: -> { new_record? && organized_retrospective }
   validate :valid_color?, if: -> { color_changed? }, on: :update
 
   COLORS = {
@@ -32,7 +34,7 @@ class Participant < ApplicationRecord
   end
 
   def organizer?
-    retrospective.organizer == self
+    association(:retrospective).loaded? ? retrospective.organizer_id == self.id : organized_retrospective.present?
   end
 
   def join
@@ -43,7 +45,7 @@ class Participant < ApplicationRecord
   private
 
   def set_default_color
-    self.color = color || retrospective.available_colors.sample
+    self.color = color || (retrospective || organized_retrospective).available_colors.sample
   end
 
   def valid_color?

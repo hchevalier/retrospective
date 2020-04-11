@@ -10,7 +10,7 @@ const defaultState = {
   zones: [],
   step: '',
   ownReflections: [],
-  allReflections: [],
+  visibleReflections: [],
   discussedReflection: null,
   ownReactions: [],
   orchestrator: null,

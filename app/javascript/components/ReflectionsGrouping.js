@@ -4,12 +4,13 @@ import StickyNote from './StickyNote'
 import './ReflectionsGrouping.scss'
 
 const ReflectionsGrouping = () => {
-  const reflections = useSelector(state => state.allReflections)
+  const reflections = useSelector(state => state.visibleReflections)
   const zones = useSelector(state => state.retrospective.zones)
+  const organizer = useSelector(state => state.profile.organizer)
 
   return (
     <>
-      <div>Grouping is not possible for the moment</div>
+      {organizer && <div>Click on a participant so that he can reveal his reflections</div>}
       <div id='zones-container'>
         {zones.map((zone) => (
           <div className='zone-column' key={zone.id}>

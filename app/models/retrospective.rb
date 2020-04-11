@@ -1,13 +1,16 @@
 class Retrospective < ApplicationRecord
-  has_many :participants
-  has_one :organizer, -> { order(:created_at).limit(1) }, class_name: 'Participant'
-  has_many :zones
+  has_many :participants, inverse_of: :retrospective
+  has_many :zones, inverse_of: :retrospective
   has_many :reflections, through: :zones
   has_many :reactions, through: :reflections
 
+  belongs_to :organizer, class_name: 'Participant', inverse_of: :organized_retrospective
   belongs_to :discussed_reflection, class_name: 'Reflection', optional: true
 
+  before_create :add_first_participant
   before_create :initialize_zones
+
+  accepts_nested_attributes_for :organizer
 
   enum kind: {
     kds: 'kds',
@@ -52,18 +55,18 @@ class Retrospective < ApplicationRecord
     state = {
       participants: participants.map(&:profile),
       step: step,
-      ownReflections: current_user ? reflections.where(owner: current_user).map(&:readable) : [],
+      ownReflections: current_user ? current_user.reflections.map(&:readable) : [],
       ownReactions: current_user ? current_user.reactions.map(&:readable) : [],
       discussedReflection: discussed_reflection&.readable,
       allColors: Participant::COLORS,
       availableColors: available_colors
     }
 
-    state.merge!(allReflections: reflections.map(&:readable)) unless step.in?(%w(gathering thinking))
+    state.merge!(visibleReflections: reflections.map(&:readable)) unless step.in?(%w(gathering thinking))
     if step.in?(%w(grouping voting))
-      state.merge!(allReactions: reactions.where(kind: :emoji).map(&:readable))
+      state.merge!(visibleReactions: reactions.emoji.map(&:readable))
     elsif step.in?(%w(actions done))
-      state.merge!(allReactions: reactions.map(&:readable))
+      state.merge!(visibleReactions: reactions.map(&:readable))
     end
 
     return state unless timer_end_at && (remaining_time = timer_end_at - Time.now ) > 0
@@ -82,12 +85,12 @@ class Retrospective < ApplicationRecord
     update!(step: next_step, discussed_reflection: first_reflection)
 
     params = { next_step: next_step }
-    params[:allReflections] =
+    params[:visibleReflections] =
       case next_step
       when 'grouping'
         reflections.map(&:readable)
       when 'actions'
-        reflections.joins(:reactions).map(&:readable)
+        reflections.joins(:votes).distinct.eager_load(:owner, zone: :retrospective).map(&:readable)
       else
         []
       end
@@ -101,6 +104,10 @@ class Retrospective < ApplicationRecord
   end
 
   private
+
+  def add_first_participant
+    self.participants << organizer
+  end
 
   def initialize_zones
     case kind

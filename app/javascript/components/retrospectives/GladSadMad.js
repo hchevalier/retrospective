@@ -5,7 +5,7 @@ import Glad from '../../images/glad.png'
 import Sad from '../../images/sad.png'
 import Mad from '../../images/mad.png'
 
-const GladSadMad = ({ profile, channels, mode, onZoneClicked }) => {
+const GladSadMad = ({ mode, onZoneClicked }) => {
   const reflections = useSelector(state => state.ownReflections)
   const zones = useSelector(state => state.retrospective.zones)
 

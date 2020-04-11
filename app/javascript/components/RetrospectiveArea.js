@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { post, put, destroy } from 'lib/httpClient'
 import ColorPicker from './ColorPicker'
@@ -19,11 +19,11 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
     listing-reflections
   */
   const currentStep = useSelector(state => state.step)
-  const [displayReflectionForm, setDisplayReflectionForm] = React.useState(false)
-  const [displayReflectionsList, setDisplayReflectionsList] = React.useState(false)
-  const [currentReflection, setCurrentReflection] = React.useState('')
-  const [mode, setMode] = React.useState('initial')
-  const [workingZone, setWorkingZone] = React.useState(null)
+  const [displayReflectionForm, setDisplayReflectionForm] = useState(false)
+  const [displayReflectionsList, setDisplayReflectionsList] = useState(false)
+  const [currentReflection, setCurrentReflection] = useState('')
+  const [mode, setMode] = useState('initial')
+  const [workingZone, setWorkingZone] = useState(null)
 
   const handleZoneClicked = (event) => {
     const zoneId = event.target.id
@@ -46,29 +46,29 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
     }
   }
 
-  const handleReflectionCreated = React.useCallback((newReflection) => {
+  const handleReflectionCreated = useCallback((newReflection) => {
     dispatch({ type: 'add-reflection', reflection: newReflection })
     setCurrentReflection('')
     setMode('initial')
   })
 
-  const handleChooseZoneClick = React.useCallback(() => {
+  const handleChooseZoneClick = useCallback(() => {
     setDisplayReflectionForm(false)
     setMode('assigning-reflection')
   })
 
-  const handleReflectionCancel = React.useCallback(() => {
+  const handleReflectionCancel = useCallback(() => {
     setCurrentReflection('')
     setMode('initial')
     setDisplayReflectionForm(false)
   })
 
-  const handleReflectionFormOpen = React.useCallback(() => {
+  const handleReflectionFormOpen = useCallback(() => {
     setMode('writing-reflection')
     setDisplayReflectionForm(true)
   })
 
-  const handleUpdateReflection = React.useCallback(({ updatedId, updatedContent, onSuccess }) => {
+  const handleUpdateReflection = useCallback(({ updatedId, updatedContent, onSuccess }) => {
     put({
       url: `/retrospectives/${retrospectiveId}/reflections/${updatedId}`,
       payload: {
@@ -82,7 +82,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
     .catch(error => console.warn(error))
   })
 
-  const handleDestroyReflection = React.useCallback(({ deletedId }) => {
+  const handleDestroyReflection = useCallback(({ deletedId }) => {
     destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${deletedId}` })
     .then(_data => {
       dispatch({ type: 'delete-reflection', reflectionId: deletedId })
@@ -92,7 +92,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
     .catch(error => console.warn(error))
   })
 
-  const handleReflectionsListClose = React.useCallback(() => {
+  const handleReflectionsListClose = useCallback(() => {
     setMode('initial')
     setDisplayReflectionsList(false)
   })

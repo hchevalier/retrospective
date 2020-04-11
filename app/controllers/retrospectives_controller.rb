@@ -2,10 +2,10 @@ class RetrospectivesController < ApplicationController
   def new; end
 
   def create
-    organizer = Participant.new(organizer_params)
-    retrospective = Retrospective.create(retrospective_params.merge(participants: [organizer]))
-    if retrospective
-      cookies.signed[:user_id] = organizer.id
+    retrospective = Retrospective.create(retrospective_params.merge(organizer_attributes: organizer_params))
+
+    if retrospective.persisted?
+      cookies.signed[:user_id] = retrospective.organizer_id
       render json: { id: retrospective.id }
     else
       render json: { status: :unprocessable_entity, errors: retrospective.errors }
@@ -13,7 +13,11 @@ class RetrospectivesController < ApplicationController
   end
 
   def show
-    @retrospective = Retrospective.find(params[:id])
+    @retrospective =
+      current_user&.retrospective_id == params[:id] ?
+      current_user.retrospective :
+      Retrospective.includes(:participants, :zones, reflections: [:zone, :reactions, owner: :organized_retrospective]).find(params[:id])
+
     @initial_state = @retrospective.initial_state(current_user)
 
     if current_user
@@ -34,4 +38,3 @@ class RetrospectivesController < ApplicationController
     params.require(:organizer).permit(:surname, :email)
   end
 end
-

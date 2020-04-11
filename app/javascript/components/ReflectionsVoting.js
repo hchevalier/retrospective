@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import StickyNote from './StickyNote'
 
 const ReflectionsVoting = () => {
-  const reflections = useSelector(state => state.allReflections)
+  const reflections = useSelector(state => state.visibleReflections)
   const zones = useSelector(state => state.retrospective.zones)
   const ownReactions = useSelector(state => state.ownReactions)
 

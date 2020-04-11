@@ -1,7 +1,9 @@
 class Reflection < ApplicationRecord
-  belongs_to :zone
-  belongs_to :owner, class_name: 'Participant'
-  has_many :reactions, as: :target
+  belongs_to :zone, inverse_of: :reflections
+  belongs_to :owner, class_name: 'Participant', inverse_of: :reflections
+  has_one :retrospective, through: :zone
+  has_many :reactions, as: :target, inverse_of: :target
+  has_many :votes, -> () { vote }, class_name: 'Reaction', foreign_key: :target_id
 
   def anonymous
     {
