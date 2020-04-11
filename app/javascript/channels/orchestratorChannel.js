@@ -1,4 +1,4 @@
-import consumer from "./consumer"
+import consumer from './consumer'
 
 export const join = ({ retrospectiveId, onReceivedAction }) => {
    const orchestratorChannel = consumer.subscriptions.create({ channel: 'OrchestratorChannel', retrospective_id: retrospectiveId }, {
@@ -12,7 +12,7 @@ export const join = ({ retrospectiveId, onReceivedAction }) => {
       this.perform('start_timer', { duration: duration })
     },
     received(data) {
-      if (data.action !== '') {
+      if (data.action) {
         onReceivedAction(data.action, data.parameters)
       }
     },

@@ -10,15 +10,20 @@ const rootReducer = (state, action) => {
         ...state,
         participants: uniqBy([action.profile, ...state.participants], 'uuid'),
         profile: action.profile,
+        organizer: action.profile.organizer,
         ...action.additionnalInfo
       }
     case 'new-participant':
       return { ...state, participants: uniqBy([...state.participants, action.newParticipant], 'uuid') }
+    case 'change-participant-status':
+      return { ...state, participants: updateParticipant(state.participants, action.participant) }
+    case 'change-organizer':
+      return { ...state, participants: updateParticipant(state.participants, action.newOrganizer), organizer: action.newOrganizer.uuid === state.profile.uuid }
     case 'change-color':
-      const participants = [...state.participants].map((participant) => participant.uuid === action.participant.uuid ? action.participant : participant)
+      const participants = updateParticipant(state.participants, action.participant)
       return { ...state, availableColors: action.availableColors, participants: participants }
     case 'set-channel':
-      return { ...state, orchestrator: action.channel }
+      return { ...state, orchestrator: action.subscription }
     case 'add-reflection':
       return { ...state, ownReflections: [...state.ownReflections, action.reflection] }
     case 'change-reflection':
@@ -34,6 +39,10 @@ const rootReducer = (state, action) => {
     default:
       return state
   }
+}
+
+const updateParticipant = (oldParticipants, participant) => {
+  return [...oldParticipants].map((oldParticipant) => oldParticipant.uuid === participant.uuid ? participant : oldParticipant)
 }
 
 export default rootReducer

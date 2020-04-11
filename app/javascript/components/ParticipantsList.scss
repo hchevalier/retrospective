@@ -4,23 +4,42 @@
   padding: 10px;
   width: 120px;
 
-  .participant-name {
-    padding: 5px;
-  }
+  .participant {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
-  .organizer:after {
-    color: rgb(33, 33, 33);
-    font-size: 0.6em;
-    content: ' (organizer)';
-  }
+    .participant-status {
+      width: 10px;
+      height: 10px;
+      border-radius: 15px;
+      background-color: rgb(171, 8, 8);
 
-  .yourself:after {
-    color: rgb(33, 33, 33);
-    font-size: 0.6em;
-    content: ' (you)';
-  }
+      &.logged-in {
+        background-color: rgb(8, 171, 41);
+      }
+    }
 
-  .organizer.yourself:after {
-    content: ' (organizer, you)';
+    .participant-name {
+      margin-left: 5px;
+      padding: 5px;
+      flex-grow: 1;
+    }
+
+    .organizer:after {
+      color: rgb(33, 33, 33);
+      font-size: 0.6em;
+      content: ' (organizer)';
+    }
+
+    .yourself:after {
+      color: rgb(33, 33, 33);
+      font-size: 0.6em;
+      content: ' (you)';
+    }
+
+    .organizer.yourself:after {
+      content: ' (organizer, you)';
+    }
   }
 }

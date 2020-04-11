@@ -53,7 +53,7 @@ class Retrospective < ApplicationRecord
 
   def initial_state(current_user = nil)
     state = {
-      participants: participants.map(&:profile),
+      participants: participants.order(:created_at).map(&:profile),
       step: step,
       ownReflections: current_user ? current_user.reflections.map(&:readable) : [],
       ownReactions: current_user ? current_user.reactions.map(&:readable) : [],
@@ -97,6 +97,24 @@ class Retrospective < ApplicationRecord
     params[:discussedReflection] = first_reflection&.readable if %w(grouping actions).include?(step)
 
     broadcast_order(:next, **params)
+  end
+
+  def change_organizer!
+    other_participant = participants.logged_in.order(:created_at).reject { |participant| participant === organizer }.first
+    return unless other_participant
+
+    update!(organizer: other_participant)
+    broadcast_order(:newOrganizer, profile: other_participant.profile)
+  end
+
+  def reset_original_organizer!
+    original_organizer = participants.order(:created_at).first
+    return unless original_organizer.logged_in
+
+    previous_organizer = organizer
+    update!(organizer: original_organizer)
+    broadcast_order(:newOrganizer, profile: original_organizer.reload.profile)
+    broadcast_order(:participantStatusChanged, participant: previous_organizer.reload.profile)
   end
 
   def available_colors

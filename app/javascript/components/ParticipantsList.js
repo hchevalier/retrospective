@@ -28,12 +28,14 @@ const ParticipantsList = () => {
 
   return (
     <div id='participants-list'>
-      {participants.map(({ surname, organizer, uuid, color }, index) => (
-        <div
-          key={index}
-          className={classNames('participant-name', { 'organizer': organizer, 'yourself': profile?.uuid === uuid })}
-          style={{ backgroundColor: color }}>
-          {surname}
+      {participants.map(({ surname, status, organizer, uuid, color }, index) => (
+        <div className='participant' key={index}>
+          <div className={classNames('participant-status', { 'logged-in': status })} />
+          <div
+            className={classNames('participant-name', { 'organizer': organizer, 'yourself': profile?.uuid === uuid })}
+            style={{ backgroundColor: color }}>
+            {surname}
+          </div>
         </div>
       ))}
       {profile?.organizer && <Button variant='contained' color='primary' onClick={copyUrlToClipboard}>+</Button>}

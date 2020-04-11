@@ -1,13 +1,17 @@
 import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import { post } from 'lib/httpClient'
-import { useDispatch } from 'react-redux'
+import consumer from 'channels/consumer'
+import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
 
-const LoginForm = ({ retrospectiveId }) => {
+const LoginForm = ({ retrospectiveId, handleActionReceived }) => {
   const dispatch = useDispatch()
+
   const [surname, setSurname] = React.useState('')
   const [email, setEmail] = React.useState('')
+  const channel = useSelector(state => state.orchestrator)
 
   const login = () => {
     post({
@@ -17,7 +21,14 @@ const LoginForm = ({ retrospectiveId }) => {
         email: email
       }
     })
-    .then(data => dispatch({ type: 'login', profile: data.profile, additionnalInfo: data.additionnal_info }))
+    .then(data => {
+      dispatch({ type: 'login', profile: data.profile, additionnalInfo: data.additionnal_info })
+
+      consumer.subscriptions.remove(channel)
+      consumer.disconnect()
+      const orchestratorChannel = joinOrchestratorChannel({ retrospectiveId: retrospectiveId, onReceivedAction: handleActionReceived })
+      dispatch({ type: 'set-channel', subscription: orchestratorChannel })
+    })
     .catch(error => console.warn(error))
   }
 

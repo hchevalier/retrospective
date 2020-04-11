@@ -5,6 +5,7 @@ const defaultState = {
   allColors: [],
   availableColors: [],
   profile: null,
+  organizer: false,
   participants: [],
   retrospective: null,
   zones: [],

@@ -5,11 +5,11 @@ import Timer from './Timer'
 
 const RetrospectiveBottomBar = ({ onReflectionFormOpen }) => {
   const profile = useSelector(state => state.profile)
+  const organizer = useSelector(state => state.organizer)
   const currentStep = useSelector(state => state.step)
   const orchestratorChannel = useSelector(state => state.orchestrator)
 
   const canCreateReflection = () => profile && currentStep === 'thinking'
-  const organizer = () => profile?.organizer
 
   const nextStep = () => {
     orchestratorChannel?.send({ intent: 'next' })
@@ -17,9 +17,9 @@ const RetrospectiveBottomBar = ({ onReflectionFormOpen }) => {
 
   return (
     <div id='bottom-bar'>
-      {currentStep === 'thinking' && <Timer organizer={organizer()} />}
+      {currentStep === 'thinking' && <Timer organizer={organizer} />}
       {canCreateReflection() && <Button variant='contained' color='primary' onClick={onReflectionFormOpen}>New reflection</Button>}
-      {organizer() && <Button variant='contained' color='primary' onClick={nextStep}>Next</Button>}
+      {organizer && <Button variant='contained' color='primary' onClick={nextStep}>Next</Button>}
     </div>
   )
 }

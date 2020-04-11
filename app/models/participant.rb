@@ -9,6 +9,8 @@ class Participant < ApplicationRecord
   validates :retrospective, presence: true, unless: -> { new_record? && organized_retrospective }
   validate :valid_color?, if: -> { color_changed? }, on: :update
 
+  scope :logged_in, -> { where(logged_in: true) }
+
   COLORS = {
     jaipur: { apple: '#aed143', yellow: '#fbd249', orange: '#f49f3f', pink: '#d35595', turquoise: '#51bcb3' }.freeze,
     helsinki: { pink: '#f6c2d9', yellow: '#fff69b', green: '#bcdfc9', blue: '#a1c8e9', lila: '#e4dae2' }.freeze,
@@ -29,12 +31,17 @@ class Participant < ApplicationRecord
       uuid: id,
       surname: surname,
       color: color,
+      status: logged_in,
       organizer: organizer?,
     }
   end
 
   def organizer?
     association(:retrospective).loaded? ? retrospective.organizer_id == self.id : organized_retrospective.present?
+  end
+
+  def original_organizer?
+    retrospective.participants.order(:created_at).first == self
   end
 
   def join

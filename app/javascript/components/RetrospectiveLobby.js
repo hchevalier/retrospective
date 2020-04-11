@@ -14,12 +14,16 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
 
   React.useEffect(() => {
     const orchestratorChannel = joinOrchestratorChannel({ retrospectiveId: retrospectiveId, onReceivedAction: handleActionReceived })
-    dispatch({ type: 'set-channel', channel: orchestratorChannel })
+    dispatch({ type: 'set-channel', subscription: orchestratorChannel })
   }, [])
 
   const handleActionReceived = React.useCallback((action, data) => {
     if (action === 'newParticipant') {
       dispatch({ type: 'new-participant', newParticipant: data.profile })
+    } else if (action === 'participantStatusChanged') {
+      dispatch({ type: 'change-participant-status', participant: data.participant })
+    } else if (action === 'newOrganizer') {
+      dispatch({ type: 'change-organizer', newOrganizer: data.profile })
     } else if (action === 'next') {
       dispatch({ type: 'change-step', step: data.next_step, visibleReflections: data.visibleReflections, discussedReflection: data.discussedReflection })
     } else if (action === 'setTimer' && loggedIn) {
@@ -35,7 +39,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
       <div id='lobby'>
         <ParticipantsList />
         <div id='right-pannel'>
-          {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} />}
+          {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} handleActionReceived={handleActionReceived} />}
           {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
         </div>
       </div>

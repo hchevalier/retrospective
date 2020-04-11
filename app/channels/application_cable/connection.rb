@@ -1,9 +1,13 @@
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
-    identified_by :current_user
+    identified_by :current_user, :anonymous_uuid
 
     def connect
-      self.current_user = find_participant
+      if cookies.signed[:user_id]
+        self.current_user = find_participant
+      else
+        self.anonymous_uuid = SecureRandom.urlsafe_base64
+      end
     end
 
     private
