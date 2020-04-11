@@ -6,7 +6,8 @@ class Reflection < ApplicationRecord
   def anonymous
     {
       id: id,
-      zone: zone.as_json
+      zone: zone.as_json,
+      color: owner.color
     }
   end
 

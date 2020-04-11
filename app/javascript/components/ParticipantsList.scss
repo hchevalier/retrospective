@@ -1,0 +1,26 @@
+#participants-list {
+  border: 1px solid gray;
+  flex-direction: column;
+  padding: 10px;
+  width: 120px;
+
+  .participant-name {
+    padding: 5px;
+  }
+
+  .organizer:after {
+    color: rgb(33, 33, 33);
+    font-size: 0.6em;
+    content: ' (organizer)';
+  }
+
+  .yourself:after {
+    color: rgb(33, 33, 33);
+    font-size: 0.6em;
+    content: ' (you)';
+  }
+
+  .organizer.yourself:after {
+    content: ' (organizer, you)';
+  }
+}

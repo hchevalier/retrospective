@@ -9,14 +9,10 @@ export const join = ({ retrospectiveId, onReceivedAction }) => {
       console.log('You were disconnected from the orchestrator channel!')
     },
     startTimer(duration) {
-      // this.timerDuration
       this.perform('start_timer', { duration: duration })
     },
     received(data) {
-      if (data.action === 'next') {
-        console.log('Received order to go to next step')
-        onReceivedAction(data.action, data.parameters)
-      } else if (data.action === 'setTimer') {
+      if (data.action !== '') {
         onReceivedAction(data.action, data.parameters)
       }
     },

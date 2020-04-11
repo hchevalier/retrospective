@@ -209,7 +209,9 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
 
     # Waits for 07:59, then only have 1 second to do the following assertion
     # Risks of flakiness
-    assert_text '59'
+    within '#timer' do
+      assert_text '59'
+    end
     assert_equal 'Timer:07:59', find('#timer').text.split("\n").join
 
     within_window(open_new_window) do

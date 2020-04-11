@@ -2,6 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import classNames from 'classnames'
 import Button from '@material-ui/core/Button'
+import './ParticipantsList.scss'
 
 const ParticipantsList = () => {
   const profile = useSelector(state => state.profile)
@@ -27,8 +28,11 @@ const ParticipantsList = () => {
 
   return (
     <div id='participants-list'>
-      {participants.map(({ surname, organizer, uuid }, index) => (
-        <div key={index} className={classNames({ 'organizer': organizer, 'yourself': profile?.uuid === uuid })}>
+      {participants.map(({ surname, organizer, uuid, color }, index) => (
+        <div
+          key={index}
+          className={classNames('participant-name', { 'organizer': organizer, 'yourself': profile?.uuid === uuid })}
+          style={{ backgroundColor: color }}>
           {surname}
         </div>
       ))}

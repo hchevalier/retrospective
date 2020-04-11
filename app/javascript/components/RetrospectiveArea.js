@@ -1,21 +1,13 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { post, put, destroy } from 'lib/httpClient'
-import { reject } from 'lib/helpers/array'
+import ColorPicker from './ColorPicker'
 import GladSadMad from './retrospectives/GladSadMad'
 import RetrospectiveBottomBar from './RetrospectiveBottomBar'
 import ReflectionForm from './ReflectionForm'
 import ReflectionsList from './ReflectionsList'
 import ReflectionsGrouping from './ReflectionsGrouping'
 import ReflectionsVoting from './ReflectionsVoting'
-
-const AvatarPicker = () => {
-  return (
-    <div>
-      You can choose an avatar here:
-    </div>
-  )
-}
 
 const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   const dispatch = useDispatch()
@@ -108,7 +100,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   // TODO: Handle remaining states: grouping, voting, actions, done
   return (
     <>
-      {currentStep === 'gathering' && <AvatarPicker />}
+      {currentStep === 'gathering' && <ColorPicker retrospectiveId={retrospectiveId} />}
       {currentStep === 'thinking' && <GladSadMad mode={mode} onZoneClicked={handleZoneClicked} />}
       {currentStep === 'grouping' && <ReflectionsGrouping />}
       {currentStep === 'voting' && <ReflectionsVoting />}

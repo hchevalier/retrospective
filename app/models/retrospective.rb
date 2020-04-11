@@ -51,6 +51,8 @@ class Retrospective < ApplicationRecord
       step: step,
       ownReflections: current_user ? reflections.where(owner: current_user).map(&:readable) : [],
       ownReactions: current_user ? current_user.reactions.map(&:readable) : [],
+      allColors: Participant::COLORS,
+      availableColors: available_colors
     }
 
     state.merge!(allReflections: reflections.map(&:readable)) unless step.in?(%w(gathering thinking))
@@ -67,6 +69,10 @@ class Retrospective < ApplicationRecord
     return if step == 'done'
     update!(step: Retrospective::steps.keys[step_index + 1])
     broadcast_order(:next, next_step: step, allReflections: step == 'grouping' ? reflections.map(&:readable) : [])
+  end
+
+  def available_colors
+    Participant::ALL_COLORS - participants.pluck(:color).compact
   end
 
   private

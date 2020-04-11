@@ -7,7 +7,7 @@ Rails.application.routes.draw do
           resources :reactions, only: %i(create destroy)
         end
       end
-      resources :participants, only: %i(create)
+      resources :participants, only: %i(create update)
     end
   end
 

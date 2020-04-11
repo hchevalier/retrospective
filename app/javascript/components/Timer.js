@@ -35,7 +35,7 @@ const Timer = ({ organizer }) => {
     setDisplayDurationDialog(false)
   }
 
-  const orchestratorChannel = useSelector(state => state.channels?.orchestratorChannel)
+  const orchestratorChannel = useSelector(state => state.orchestrator)
   const handleListItemClick = (value) => {
     orchestratorChannel.startTimer(value)
     handleClose()

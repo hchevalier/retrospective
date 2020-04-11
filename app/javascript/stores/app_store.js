@@ -2,6 +2,8 @@ import { createStore } from 'redux'
 import rootReducer from 'reducers/root_reducer'
 
 const defaultState = {
+  allColors: [],
+  availableColors: [],
   profile: null,
   participants: [],
   retrospective: null,
@@ -10,7 +12,7 @@ const defaultState = {
   ownReflections: [],
   allReflections: [],
   ownReactions: [],
-  channels: {},
+  orchestrator: null,
   timerDuration: 600,
   lastTimerReset: null
 }

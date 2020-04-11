@@ -13,8 +13,15 @@ const rootReducer = (state, action) => {
       }
     case 'new-participant':
       return { ...state, participants: uniqBy([...state.participants, action.newParticipant], 'uuid') }
+    case 'change-color':
+      const participants = [...state.participants].map((participant) => participant.uuid == action.participant.uuid ? action.participant : participant)
+      return {
+        ...state,
+        availableColors: action.availableColors,
+        participants: participants
+      }
     case 'set-channel':
-      return { ...state, channels: { ...state.channels, [action.channelName]: action.channel} }
+      return { ...state, orchestrator: action.channel }
     case 'add-reflection':
       return { ...state, ownReflections: [...state.ownReflections, action.reflection] }
     case 'change-reflection':

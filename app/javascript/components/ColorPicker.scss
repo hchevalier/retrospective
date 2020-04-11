@@ -1,0 +1,14 @@
+#colors-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: 300px;
+
+  .color-square {
+    min-width: 30px;
+    max-width: 30px;
+    min-height: 30px;
+    max-height: 30px;
+    cursor: pointer;
+  }
+}

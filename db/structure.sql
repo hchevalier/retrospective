@@ -109,7 +109,8 @@ CREATE TABLE public.participants (
     email character varying NOT NULL,
     retrospective_id uuid,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    color character varying
 );
 
 
@@ -372,6 +373,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200324210013'),
 ('20200324210924'),
 ('20200324211253'),
-('20200406202903');
+('20200406202903'),
+('20200410201509');
 
 

@@ -2,7 +2,7 @@ class ReactionsController < ApplicationController
   before_action :ensure_logged_in
 
   def create
-    reflection = current_user.reflections.find(params[:id])
+    reflection = current_user.retrospective.reflections.find(params[:id])
     # TODO: handle content for reactions that aren't votes
     content =
       case reactions_params[:kind]

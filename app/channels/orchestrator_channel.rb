@@ -11,7 +11,7 @@ class OrchestratorChannel < ApplicationCable::Channel
   def start_timer(data)
     timer_end_at = Time.now + data['duration'].to_i.seconds
     broadcast_to(current_user.retrospective, action: 'setTimer', parameters: { duration: data['duration'] })
-    current_user.retrospective.update(timer_end_at: timer_end_at)
+    current_user.retrospective.update!(timer_end_at: timer_end_at)
   end
 
   def receive(data)
