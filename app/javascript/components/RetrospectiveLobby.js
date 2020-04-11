@@ -21,7 +21,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
     if (action === 'newParticipant') {
       dispatch({ type: 'new-participant', newParticipant: data.profile })
     } else if (action === 'next') {
-      dispatch({ type: 'change-step', step: data.next_step, allReflections: data.allReflections })
+      dispatch({ type: 'change-step', step: data.next_step, allReflections: data.allReflections, discussedReflection: data.discussedReflection })
     } else if (action === 'setTimer' && loggedIn) {
       dispatch({ type: 'start-timer', duration: data.duration })
     } else if (action === 'changeColor') {

@@ -8,6 +8,7 @@ import ReflectionForm from './ReflectionForm'
 import ReflectionsList from './ReflectionsList'
 import ReflectionsGrouping from './ReflectionsGrouping'
 import ReflectionsVoting from './ReflectionsVoting'
+import ResolutionZone from './ResolutionZone'
 
 const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   const dispatch = useDispatch()
@@ -96,14 +97,23 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
     setDisplayReflectionsList(false)
   })
 
-  // TODO: return retrospective depending on kind
+  const renderRetrospective = () => {
+    // TODO: return retrospective depending on kind
+    if (kind === 'glad_sad_mad') {
+      return <GladSadMad mode={mode} onZoneClicked={handleZoneClicked} />
+    }
+
+    return <div>Unknown retrospective {kind}</div>
+  }
+
   // TODO: Handle remaining states: grouping, voting, actions, done
   return (
     <>
       {currentStep === 'gathering' && <ColorPicker retrospectiveId={retrospectiveId} />}
-      {currentStep === 'thinking' && <GladSadMad mode={mode} onZoneClicked={handleZoneClicked} />}
+      {currentStep === 'thinking' && renderRetrospective()}
       {currentStep === 'grouping' && <ReflectionsGrouping />}
       {currentStep === 'voting' && <ReflectionsVoting />}
+      {currentStep === 'actions' && <ResolutionZone />}
       <ReflectionForm open={displayReflectionForm} value={currentReflection} onChange={setCurrentReflection} onConfirmationClick={handleChooseZoneClick} confirmationLabel={'Choose zone'} onReflectionCancel={handleReflectionCancel} />
       <ReflectionsList open={displayReflectionsList} filter={workingZone} onUpdateReflection={handleUpdateReflection} onDestroyReflection={handleDestroyReflection} onModalClose={handleReflectionsListClose} />
       <RetrospectiveBottomBar onReflectionFormOpen={handleReflectionFormOpen} />

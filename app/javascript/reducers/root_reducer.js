@@ -3,7 +3,9 @@ import { reject, uniqBy } from 'lib/helpers/array'
 const rootReducer = (state, action) => {
   switch (action.type) {
     case 'change-step':
-      return { ...state, step: action.step, allReflections: action.allReflections?.length > 0 ? action.allReflections : state.allReflections }
+      const reflections = action.allReflections?.length > 0 ? action.allReflections : state.allReflections
+      debugger
+      return { ...state, step: action.step, allReflections: reflections, discussedReflection: action.discussedReflection }
     case 'login':
       return {
         ...state,
@@ -14,12 +16,8 @@ const rootReducer = (state, action) => {
     case 'new-participant':
       return { ...state, participants: uniqBy([...state.participants, action.newParticipant], 'uuid') }
     case 'change-color':
-      const participants = [...state.participants].map((participant) => participant.uuid == action.participant.uuid ? action.participant : participant)
-      return {
-        ...state,
-        availableColors: action.availableColors,
-        participants: participants
-      }
+      const participants = [...state.participants].map((participant) => participant.uuid === action.participant.uuid ? action.participant : participant)
+      return { ...state, availableColors: action.availableColors, participants: participants }
     case 'set-channel':
       return { ...state, orchestrator: action.channel }
     case 'add-reflection':

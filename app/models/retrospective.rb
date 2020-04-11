@@ -5,6 +5,8 @@ class Retrospective < ApplicationRecord
   has_many :reflections, through: :zones
   has_many :reactions, through: :reflections
 
+  belongs_to :discussed_reflection, class_name: 'Reflection', optional: true
+
   before_create :initialize_zones
 
   enum kind: {
@@ -41,7 +43,8 @@ class Retrospective < ApplicationRecord
       id: id,
       name: name,
       kind: kind,
-      zones: zones.as_json
+      zones: zones.as_json,
+      discussed_reflection: discussed_reflection
     }
   end
 
@@ -51,11 +54,17 @@ class Retrospective < ApplicationRecord
       step: step,
       ownReflections: current_user ? reflections.where(owner: current_user).map(&:readable) : [],
       ownReactions: current_user ? current_user.reactions.map(&:readable) : [],
+      discussedReflection: discussed_reflection&.readable,
       allColors: Participant::COLORS,
       availableColors: available_colors
     }
 
     state.merge!(allReflections: reflections.map(&:readable)) unless step.in?(%w(gathering thinking))
+    if step.in?(%w(grouping voting))
+      state.merge!(allReactions: reactions.where(kind: :emoji).map(&:readable))
+    elsif step.in?(%w(actions done))
+      state.merge!(allReactions: reactions.map(&:readable))
+    end
 
     return state unless timer_end_at && (remaining_time = timer_end_at - Time.now ) > 0
 
@@ -67,8 +76,24 @@ class Retrospective < ApplicationRecord
 
   def next_step!
     return if step == 'done'
-    update!(step: Retrospective::steps.keys[step_index + 1])
-    broadcast_order(:next, next_step: step, allReflections: step == 'grouping' ? reflections.map(&:readable) : [])
+
+    next_step = Retrospective::steps.keys[step_index + 1]
+    first_reflection = reflections.group_by(&:owner_id).values.flatten.first
+    update!(step: next_step, discussed_reflection: first_reflection)
+
+    params = { next_step: next_step }
+    params[:allReflections] =
+      case next_step
+      when 'grouping'
+        reflections.map(&:readable)
+      when 'actions'
+        reflections.joins(:reactions).map(&:readable)
+      else
+        []
+      end
+    params[:discussedReflection] = first_reflection&.readable if %w(grouping actions).include?(step)
+
+    broadcast_order(:next, **params)
   end
 
   def available_colors

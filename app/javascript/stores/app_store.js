@@ -11,6 +11,7 @@ const defaultState = {
   step: '',
   ownReflections: [],
   allReflections: [],
+  discussedReflection: null,
   ownReactions: [],
   orchestrator: null,
   timerDuration: 600,
