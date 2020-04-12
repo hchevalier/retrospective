@@ -13,10 +13,10 @@ const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
 
   const handleAddReaction = React.useCallback((event) => {
     setEmojiDisplayed(false)
+    createReaction({ kind: event.currentTarget.dataset.kind, content: event.currentTarget.innerText })
+  })
 
-    const kind = event.currentTarget.dataset.kind
-    const content = event.currentTarget.innerText
-
+  const createReaction = React.useCallback(({ kind, content }) => {
     post({
       url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions`,
       payload: { kind, content }
@@ -25,10 +25,18 @@ const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
     .catch(error => console.warn(error))
   })
 
-  const handleOpenReactionChoices = () => setEmojiDisplayed(true)
+  const handleOpenReactionChoices = () => {
+    if (votingPhase) {
+      createReaction({ kind: 'vote', content: '🥇' })
+    } else {
+      setEmojiDisplayed(true)
+    }
+  }
   const handleCloseReactionChoices = () => setEmojiDisplayed(false)
 
   const handleRemoveReaction = React.useCallback((event) => {
+    // TODO: prevent removing reactions from other participants
+    // TODO: prevent removing votes out of voting phase
     const reactionId = event.currentTarget.dataset.id
     destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions/${reactionId}` })
     .then(_data => dispatch({ type: 'delete-reaction', reactionId: reactionId }))
@@ -48,29 +56,21 @@ const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
 
   if (!displayed) return null
 
+  const EMOJIS_BLOCK = (
+    <>
+      {['😂', '😅', '🤩', '🤗', '🤯', '😡', '🤔', '🙏', '👏', '💪', '🤞', '🚀', '🔥'].map((emoji, index) => {
+        return <span key={index} onClick={handleAddReaction} data-kind='emoji'>{emoji}</span>
+      })}
+    </>
+  )
+
   return (
     <div className='reactions-bar'>
       {emojiDisplayed && (
         <div className='emoji-modal'>
           <div className='emoji-container'>
             {votingPhase && <span onClick={handleAddReaction} data-kind='vote'>🥇</span>}
-            {!votingPhase && (
-              <>
-                <span onClick={handleAddReaction} data-kind='emoji'>😂</span>
-                <span onClick={handleAddReaction} data-kind='emoji'>😅</span>
-                <span onClick={handleAddReaction} data-kind='emoji'>🤩</span>
-                <span onClick={handleAddReaction} data-kind='emoji'>🤗</span>
-                <span onClick={handleAddReaction} data-kind='emoji'>🤯</span>
-                <span onClick={handleAddReaction} data-kind='emoji'>😡</span>
-                <span onClick={handleAddReaction} data-kind='emoji'>🤔</span>
-                <span onClick={handleAddReaction} data-kind='emoji'>🙏</span>
-                <span onClick={handleAddReaction} data-kind='emoji'>👏</span>
-                <span onClick={handleAddReaction} data-kind='emoji'>💪</span>
-                <span onClick={handleAddReaction} data-kind='emoji'>🤞</span>
-                <span onClick={handleAddReaction} data-kind='emoji'>🚀</span>
-                <span onClick={handleAddReaction} data-kind='emoji'>🔥</span>
-              </>
-            )}
+            {!votingPhase && EMOJIS_BLOCK}
           </div>
           <div className='cross' onClick={handleCloseReactionChoices}>X</div>
         </div>
