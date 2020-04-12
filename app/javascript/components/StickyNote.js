@@ -1,9 +1,8 @@
 import React from 'react'
 import ReactionBar from './ReactionBar'
 import './StickyNote.scss'
-import { useSelector } from 'react-redux'
 
-const StickyNote = ({ reflection, showReactions, reactions }) => {
+const StickyNote = ({ reflection, showReactions, reactions, votingPhase }) => {
   const [hovered, setHovered] = React.useState(false)
 
   const handleMouseEnter = React.useCallback(() => setHovered(true))
@@ -21,7 +20,7 @@ const StickyNote = ({ reflection, showReactions, reactions }) => {
         <div className='author'>{reflection.owner.surname}</div>
         <div className='content'>{reflection.content}</div>
       </div>
-      <ReactionBar displayed={displayReactionBar} reflection={reflection} reactions={reactions} />
+      <ReactionBar displayed={displayReactionBar} reflection={reflection} reactions={reactions} votingPhase={votingPhase} />
     </div>
   )
 }

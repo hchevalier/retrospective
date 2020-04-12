@@ -25,6 +25,7 @@ class ActionDispatch::IntegrationTest
   include MaterialUiHelpers
 
   Capybara.default_driver = :selenium_chrome
+  Capybara.default_max_wait_time = 5.seconds
 
   # Reset sessions and driver between tests
   teardown do

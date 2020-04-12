@@ -12,6 +12,27 @@
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera and Firefox */
 
+  .emoji-modal {
+    position: relative;
+    width: 130px;
+
+    .emoji-container {
+      background-color: white;
+      border: 1px solid #333;
+      position: absolute;
+      display: flex;
+      flex-wrap: wrap;
+      padding: 10px;
+    }
+
+    .cross {
+      position: absolute;
+      top: 0;
+      right: 0;
+      cursor: pointer;
+    }
+  }
+
   .reaction {
     cursor: pointer;
   }

@@ -3,15 +3,7 @@ class ReactionsController < ApplicationController
 
   def create
     reflection = current_user.retrospective.reflections.find(params[:id])
-    # TODO: handle content for reactions that aren't votes
-    content =
-      case reactions_params[:kind]
-      when 'vote'
-        '🥇'
-      else
-        '👏'
-      end
-    reaction = current_user.reactions.create!(kind: reactions_params[:kind], target: reflection, content: content)
+    reaction = current_user.reactions.create!(reactions_params.merge(target: reflection))
     # TODO: broadcast readable reaction
 
     render json: reaction.readable
@@ -26,6 +18,6 @@ class ReactionsController < ApplicationController
   private
 
   def reactions_params
-    params.permit(:kind)
+    params.permit(:kind, :content)
   end
 end

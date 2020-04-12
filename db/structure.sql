@@ -163,7 +163,8 @@ CREATE TABLE public.reflections (
     position_in_topic integer DEFAULT 1 NOT NULL,
     content text NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    revealed boolean DEFAULT false NOT NULL
 );
 
 
@@ -181,7 +182,8 @@ CREATE TABLE public.retrospectives (
     step public.retrospective_steps DEFAULT 'gathering'::public.retrospective_steps NOT NULL,
     timer_end_at timestamp without time zone,
     discussed_reflection_id uuid,
-    organizer_id uuid NOT NULL
+    organizer_id uuid NOT NULL,
+    revealer_id uuid
 );
 
 
@@ -380,6 +382,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200410201509'),
 ('20200411134551'),
 ('20200411201933'),
-('20200411212511');
+('20200411212511'),
+('20200412084958'),
+('20200412085012');
 
 

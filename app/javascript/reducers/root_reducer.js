@@ -1,6 +1,8 @@
 import { reject, uniqBy } from 'lib/helpers/array'
 
 const rootReducer = (state, action) => {
+  let profile = state.profile
+
   switch (action.type) {
     case 'change-step':
       const reflections = action.visibleReflections?.length > 0 ? action.visibleReflections : state.visibleReflections
@@ -10,27 +12,30 @@ const rootReducer = (state, action) => {
         ...state,
         participants: uniqBy([action.profile, ...state.participants], 'uuid'),
         profile: action.profile,
-        organizer: action.profile.organizer,
         ...action.additionnalInfo
       }
     case 'new-participant':
       return { ...state, participants: uniqBy([...state.participants, action.newParticipant], 'uuid') }
-    case 'change-participant-status':
-      return { ...state, participants: updateParticipant(state.participants, action.participant) }
+    case 'refresh-participant':
+      profile = action.participant.uuid === profile?.uuid ? action.participant : profile
+      return { ...state, participants: updateParticipant(state.participants, action.participant), profile: profile }
     case 'change-organizer':
-      return { ...state, participants: updateParticipant(state.participants, action.newOrganizer), organizer: action.newOrganizer.uuid === state.profile.uuid }
+      profile = action.newOrganizer.uuid === profile?.uuid ? action.newOrganizer : profile
+      return { ...state, participants: updateParticipant(state.participants, action.newOrganizer), profile: profile }
     case 'change-color':
       const participants = updateParticipant(state.participants, action.participant)
-      const profile = action.participant.uuid === state.profile?.uuid ? action.participant : state.profile
+      profile = action.participant.uuid === profile?.uuid ? action.participant : profile
       return { ...state, availableColors: action.availableColors, participants: participants, profile: profile }
     case 'set-channel':
       return { ...state, orchestrator: action.subscription }
     case 'add-reflection':
       return { ...state, ownReflections: [...state.ownReflections, action.reflection] }
+    case 'reveal-reflection':
+      return { ...state, visibleReflections: [...state.visibleReflections, action.reflection], ownReflections: updateReflection(state.ownReflections, action.reflection) }
     case 'change-reflection':
-      return { ...state, ownReflections: [...state.ownReflections].map((reflection) => reflection.id == action.reflection.id ? action.reflection : reflection) }
+      return { ...state, ownReflections: updateReflection(state.ownReflections, action.reflection) }
     case 'delete-reflection':
-      return { ...state, ownReflections: reject(state.ownReflections, (reflection) => reflection.id == action.reflectionId) }
+      return { ...state, ownReflections: reject(state.ownReflections, (reflection) => reflection.id === action.reflectionId) }
     case 'add-reaction':
       return { ...state, ownReactions: [...state.ownReactions, action.reaction] }
     case 'delete-reaction':
@@ -44,6 +49,10 @@ const rootReducer = (state, action) => {
 
 const updateParticipant = (oldParticipants, participant) => {
   return [...oldParticipants].map((oldParticipant) => oldParticipant.uuid === participant.uuid ? participant : oldParticipant)
+}
+
+const updateReflection = (oldReflections, reflection) => {
+  return [...oldReflections].map((oldReflection) => oldReflection.id === reflection.id ? reflection : oldReflection)
 }
 
 export default rootReducer

@@ -18,7 +18,10 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
     assigning-reflection
     listing-reflections
   */
+  const revealer = useSelector(state => state.profile.revealer)
   const currentStep = useSelector(state => state.step)
+  const channel = useSelector(state => state.orchestrator)
+
   const [displayReflectionForm, setDisplayReflectionForm] = useState(false)
   const [displayReflectionsList, setDisplayReflectionsList] = useState(false)
   const [currentReflection, setCurrentReflection] = useState('')
@@ -93,6 +96,9 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   })
 
   const handleReflectionsListClose = useCallback(() => {
+    if (revealer) {
+      channel.dropRevealerToken()
+    }
     setMode('initial')
     setDisplayReflectionsList(false)
   })
@@ -115,7 +121,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
       {currentStep === 'voting' && <ReflectionsVoting />}
       {currentStep === 'actions' && <ResolutionZone />}
       <ReflectionForm open={displayReflectionForm} value={currentReflection} onChange={setCurrentReflection} onConfirmationClick={handleChooseZoneClick} confirmationLabel={'Choose zone'} onReflectionCancel={handleReflectionCancel} />
-      <ReflectionsList open={displayReflectionsList} filter={workingZone} onUpdateReflection={handleUpdateReflection} onDestroyReflection={handleDestroyReflection} onModalClose={handleReflectionsListClose} />
+      <ReflectionsList open={displayReflectionsList || revealer} filter={workingZone} onUpdateReflection={handleUpdateReflection} onDestroyReflection={handleDestroyReflection} onModalClose={handleReflectionsListClose} />
       <RetrospectiveBottomBar onReflectionFormOpen={handleReflectionFormOpen} />
     </>
   )

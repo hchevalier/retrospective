@@ -20,8 +20,8 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
   const handleActionReceived = React.useCallback((action, data) => {
     if (action === 'newParticipant') {
       dispatch({ type: 'new-participant', newParticipant: data.profile })
-    } else if (action === 'participantStatusChanged') {
-      dispatch({ type: 'change-participant-status', participant: data.participant })
+    } else if (action === 'refreshParticipant') {
+      dispatch({ type: 'refresh-participant', participant: data.participant })
     } else if (action === 'newOrganizer') {
       dispatch({ type: 'change-organizer', newOrganizer: data.profile })
     } else if (action === 'next') {
@@ -30,6 +30,8 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
       dispatch({ type: 'start-timer', duration: data.duration })
     } else if (action === 'changeColor') {
       dispatch({ type: 'change-color', participant: data.participant, availableColors: data.availableColors })
+    } else if (action === 'revealReflection') {
+      dispatch({ type: 'reveal-reflection', reflection: data.reflection })
     }
   }, [])
 

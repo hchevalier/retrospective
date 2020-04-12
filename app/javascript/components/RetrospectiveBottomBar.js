@@ -5,7 +5,7 @@ import Timer from './Timer'
 
 const RetrospectiveBottomBar = ({ onReflectionFormOpen }) => {
   const profile = useSelector(state => state.profile)
-  const organizer = useSelector(state => state.organizer)
+  const organizer = useSelector(state => state.profile && state.profile.organizer)
   const currentStep = useSelector(state => state.step)
   const orchestratorChannel = useSelector(state => state.orchestrator)
 

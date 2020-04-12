@@ -4,21 +4,29 @@ import { post, destroy } from 'lib/httpClient'
 import { groupBy } from 'lib/helpers/array'
 import './ReactionBar.scss'
 
-const ReactionBar = ({ reflection, displayed, reactions }) => {
-  if (!displayed) return null
+const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
+  const [emojiDisplayed, setEmojiDisplayed] = React.useState(false)
 
   const dispatch = useDispatch()
 
   const retrospectiveId = useSelector(state => state.retrospective.id)
 
-  const handleAddVote = React.useCallback(() => {
+  const handleAddReaction = React.useCallback((event) => {
+    setEmojiDisplayed(false)
+
+    const kind = event.currentTarget.dataset.kind
+    const content = event.currentTarget.innerText
+
     post({
       url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions`,
-      payload: { kind: 'vote' }
+      payload: { kind, content }
     })
     .then(data => dispatch({ type: 'add-reaction', reaction: data }))
     .catch(error => console.warn(error))
   })
+
+  const handleOpenReactionChoices = () => setEmojiDisplayed(true)
+  const handleCloseReactionChoices = () => setEmojiDisplayed(false)
 
   const handleRemoveReaction = React.useCallback((event) => {
     const reactionId = event.currentTarget.dataset.id
@@ -38,9 +46,36 @@ const ReactionBar = ({ reflection, displayed, reactions }) => {
     )
   })
 
+  if (!displayed) return null
+
   return (
     <div className='reactions-bar'>
-      <div onClick={handleAddVote}>+</div>
+      {emojiDisplayed && (
+        <div className='emoji-modal'>
+          <div className='emoji-container'>
+            {votingPhase && <span onClick={handleAddReaction} data-kind='vote'>🥇</span>}
+            {!votingPhase && (
+              <>
+                <span onClick={handleAddReaction} data-kind='emoji'>😂</span>
+                <span onClick={handleAddReaction} data-kind='emoji'>😅</span>
+                <span onClick={handleAddReaction} data-kind='emoji'>🤩</span>
+                <span onClick={handleAddReaction} data-kind='emoji'>🤗</span>
+                <span onClick={handleAddReaction} data-kind='emoji'>🤯</span>
+                <span onClick={handleAddReaction} data-kind='emoji'>😡</span>
+                <span onClick={handleAddReaction} data-kind='emoji'>🤔</span>
+                <span onClick={handleAddReaction} data-kind='emoji'>🙏</span>
+                <span onClick={handleAddReaction} data-kind='emoji'>👏</span>
+                <span onClick={handleAddReaction} data-kind='emoji'>💪</span>
+                <span onClick={handleAddReaction} data-kind='emoji'>🤞</span>
+                <span onClick={handleAddReaction} data-kind='emoji'>🚀</span>
+                <span onClick={handleAddReaction} data-kind='emoji'>🔥</span>
+              </>
+            )}
+          </div>
+          <div className='cross' onClick={handleCloseReactionChoices}>X</div>
+        </div>
+      )}
+      <div onClick={handleOpenReactionChoices}>+</div>
       {reactionsBlock}
     </div>
   )

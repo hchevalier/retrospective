@@ -6,7 +6,10 @@ import ReflectionForm from './ReflectionForm'
 import './ReflectionsList.scss'
 
 const ReflectionsList = ({ open, filter, onUpdateReflection, onDestroyReflection, onModalClose }) => {
+  const revealer = useSelector(state => state.profile.revealer)
+  const currentStep = useSelector(state => state.step)
   const reflections = useSelector(state => state.ownReflections)
+  const channel = useSelector(state => state.orchestrator)
 
   const [displayEditForm, setDisplayEditForm] = React.useState(false)
   const [reworkedReflectionId, setReworkedReflectionId] = React.useState(null)
@@ -36,17 +39,33 @@ const ReflectionsList = ({ open, filter, onUpdateReflection, onDestroyReflection
     onDestroyReflection({ deletedId })
   }
 
+  const handleRevealClick = (event) => {
+    const reflectionUuid = event.currentTarget.dataset.id
+    channel.reveal(reflectionUuid)
+  }
+
+  const shouldDisplayReveal = React.useCallback(() => revealer && currentStep === 'grouping', [revealer, currentStep])
+
+  const shouldDisplayReflection = React.useCallback((reflection) => {
+    return (currentStep !== 'thinking' || reflection.zone.id == filter) && !reflection.revealed
+  }, [currentStep, filter])
+
   return (
     <>
       <Modal open={open} onClose={onModalClose} disableAutoFocus disablePortal>
         <form id='reflections-list-modal' noValidate autoComplete='off'>
           <div>
             <div>
-              {reflections.filter((reflection) => reflection.zone.id == filter).map((reflection, index) => (
+              {reflections.filter(shouldDisplayReflection).map((reflection, index) => (
                 <div key={index}>
                   <span>{reflection.content}</span>&nbsp;
-                  <Button color='primary' size='small' data-id={reflection.id} onClick={handleEditClick}>Edit</Button>&nbsp;
-                  <Button color='secondary' size='small' data-id={reflection.id} onClick={handleDeleteClick}>Delete</Button>
+                  {currentStep == 'thinking' && (
+                    <>
+                      <Button color='primary' size='small' data-id={reflection.id} onClick={handleEditClick}>Edit</Button>&nbsp;
+                      <Button color='secondary' size='small' data-id={reflection.id} onClick={handleDeleteClick}>Delete</Button>
+                    </>
+                  )}
+                  {shouldDisplayReveal() && <Button color='secondary' size='small' data-id={reflection.id} onClick={handleRevealClick}>Reveal</Button>}
                 </div>
               ))}
             </div>

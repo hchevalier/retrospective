@@ -5,11 +5,14 @@ class Reflection < ApplicationRecord
   has_many :reactions, as: :target, inverse_of: :target
   has_many :votes, -> () { vote }, class_name: 'Reaction', foreign_key: :target_id
 
+  scope :revealed, -> { where(revealed: true) }
+
   def anonymous
     {
       id: id,
       zone: zone.as_json,
-      color: owner.color
+      color: owner.color,
+      revealed: revealed
     }
   end
 

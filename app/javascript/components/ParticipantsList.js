@@ -6,7 +6,9 @@ import './ParticipantsList.scss'
 
 const ParticipantsList = () => {
   const profile = useSelector(state => state.profile)
+  const step = useSelector(state => state.step)
   const participants = useSelector(state => state.participants)
+  const channel = useSelector(state => state.orchestrator)
 
   const copyUrlToClipboard = () => {
     const toCopy = document.createElement('span')
@@ -26,13 +28,20 @@ const ParticipantsList = () => {
     alert('Copied invite URL to clipboard')
   }
 
+  const handleParticipantClick = (event) => {
+    if (profile?.organizer && step === 'grouping') {
+      const uuid = event.currentTarget.dataset.id
+      channel.setRevealer(uuid)
+    }
+  }
+
   return (
     <div id='participants-list'>
-      {participants.map(({ surname, status, organizer, uuid, color }, index) => (
-        <div className='participant' key={index}>
+      {participants.map(({ surname, status, organizer, revealer, uuid, color }, index) => (
+        <div className='participant' key={index} data-id={uuid} onClick={handleParticipantClick}>
           <div className={classNames('participant-status', { 'logged-in': status })} />
           <div
-            className={classNames('participant-name', { 'organizer': organizer, 'yourself': profile?.uuid === uuid })}
+            className={classNames('participant-name', { 'organizer': organizer, 'revealer': revealer, 'yourself': profile?.uuid === uuid })}
             style={{ backgroundColor: color }}>
             {surname}
           </div>

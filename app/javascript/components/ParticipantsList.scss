@@ -29,7 +29,13 @@
     .organizer:after {
       color: rgb(33, 33, 33);
       font-size: 0.6em;
-      content: ' (organizer)';
+      content: ' (orga.)';
+    }
+
+    .revealer:after {
+      color: rgb(33, 33, 33);
+      font-size: 0.6em;
+      content: ' (reveal.)';
     }
 
     .yourself:after {
@@ -39,7 +45,15 @@
     }
 
     .organizer.yourself:after {
-      content: ' (organizer, you)';
+      content: ' (you, orga.)';
+    }
+
+    .revealer.yourself:after {
+      content: ' (you, reveal.)';
+    }
+
+    .organizer.revealer.yourself:after {
+      content: ' (you, orga., reveal.)';
     }
   }
 }

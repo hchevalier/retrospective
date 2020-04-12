@@ -5,6 +5,7 @@ class Retrospective < ApplicationRecord
   has_many :reactions, through: :reflections
 
   belongs_to :organizer, class_name: 'Participant', inverse_of: :organized_retrospective
+  belongs_to :revealer, class_name: 'Participant', inverse_of: :revealing_retrospective, optional: true
   belongs_to :discussed_reflection, class_name: 'Reflection', optional: true
 
   before_create :add_first_participant
@@ -62,7 +63,8 @@ class Retrospective < ApplicationRecord
       availableColors: available_colors
     }
 
-    state.merge!(visibleReflections: reflections.map(&:readable)) unless step.in?(%w(gathering thinking))
+    state.merge!(visibleReflections: reflections.revealed.map(&:readable)) unless step.in?(%w(gathering thinking))
+
     if step.in?(%w(grouping voting))
       state.merge!(visibleReactions: reactions.emoji.map(&:readable))
     elsif step.in?(%w(actions done))
@@ -88,7 +90,7 @@ class Retrospective < ApplicationRecord
     params[:visibleReflections] =
       case next_step
       when 'grouping'
-        reflections.map(&:readable)
+        reflections.revealed.map(&:readable)
       when 'actions'
         reflections.joins(:votes).distinct.eager_load(:owner, zone: :retrospective).map(&:readable)
       else
@@ -114,7 +116,7 @@ class Retrospective < ApplicationRecord
     previous_organizer = organizer
     update!(organizer: original_organizer)
     broadcast_order(:newOrganizer, profile: original_organizer.reload.profile)
-    broadcast_order(:participantStatusChanged, participant: previous_organizer.reload.profile)
+    broadcast_order(:refreshParticipant, participant: previous_organizer.reload.profile)
   end
 
   def available_colors

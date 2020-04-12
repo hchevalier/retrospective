@@ -6,6 +6,7 @@ const ReflectionsVoting = () => {
   const reflections = useSelector(state => state.visibleReflections)
   const zones = useSelector(state => state.retrospective.zones)
   const ownReactions = useSelector(state => state.ownReactions)
+  // TODO: handle visible reactions
 
   const MAX_VOTES = 5
 
@@ -22,6 +23,7 @@ const ReflectionsVoting = () => {
                 key={reflection.id}
                 reflection={reflection}
                 showReactions
+                votingPhase
                 reactions={reactions} />
             })}
           </div>

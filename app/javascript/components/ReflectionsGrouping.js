@@ -7,6 +7,8 @@ const ReflectionsGrouping = () => {
   const reflections = useSelector(state => state.visibleReflections)
   const zones = useSelector(state => state.retrospective.zones)
   const organizer = useSelector(state => state.profile.organizer)
+  const reactions = useSelector(state => state.ownReactions)
+  // TODO: display all visible reactions
 
   return (
     <>
@@ -16,7 +18,8 @@ const ReflectionsGrouping = () => {
           <div className='zone-column' key={zone.id}>
             <span>{zone.name}</span>
             {reflections.filter((reflection) => reflection.zone.id === zone.id).map((reflection) => {
-              return <StickyNote key={reflection.id} reflection={reflection} />
+              const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
+              return <StickyNote key={reflection.id} reflection={reflection} showReactions reactions={concernedReactions} />
             })}
           </div>
         ))}
