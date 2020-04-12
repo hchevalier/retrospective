@@ -23,7 +23,7 @@ class ParticipantsController < ApplicationController
 
   def update
     retrospective = current_user.retrospective
-    if current_user.update(update_participants_params)
+    if current_user.update!(update_participants_params)
       OrchestratorChannel.broadcast_to(
         retrospective,
         action: 'changeColor',

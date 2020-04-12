@@ -21,7 +21,8 @@ const rootReducer = (state, action) => {
       return { ...state, participants: updateParticipant(state.participants, action.newOrganizer), organizer: action.newOrganizer.uuid === state.profile.uuid }
     case 'change-color':
       const participants = updateParticipant(state.participants, action.participant)
-      return { ...state, availableColors: action.availableColors, participants: participants }
+      const profile = action.participant.uuid === state.profile?.uuid ? action.participant : state.profile
+      return { ...state, availableColors: action.availableColors, participants: participants, profile: profile }
     case 'set-channel':
       return { ...state, orchestrator: action.subscription }
     case 'add-reflection':

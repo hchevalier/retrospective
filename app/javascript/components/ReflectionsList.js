@@ -22,7 +22,7 @@ const ReflectionsList = ({ open, filter, onUpdateReflection, onDestroyReflection
   const handleReflectionUpdate = () => {
     const updatedId = reworkedReflectionId
     const updatedContent = reworkedReflectionContent
-    onUpdateReflection({ updatedId, updatedContent, onSuccess: () => handleEditCancel() })
+    onUpdateReflection({ updatedId, updatedContent, onSuccess: handleEditCancel })
   }
 
   const handleEditCancel = () => {
