@@ -13,6 +13,7 @@ const defaultState = {
   visibleReflections: [],
   discussedReflection: null,
   ownReactions: [],
+  visibleReactions: [],
   orchestrator: null,
   timerDuration: 600,
   lastTimerReset: null

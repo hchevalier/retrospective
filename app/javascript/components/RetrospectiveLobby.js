@@ -32,6 +32,10 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
       dispatch({ type: 'change-color', participant: data.participant, availableColors: data.availableColors })
     } else if (action === 'revealReflection') {
       dispatch({ type: 'reveal-reflection', reflection: data.reflection })
+    } else if (action == 'newReaction') {
+      dispatch({ type: 'push-reaction', reaction: data.reaction })
+    } else if (action == 'dropReaction') {
+      dispatch({ type: 'drop-reaction', reactionId: data.reactionId })
     }
   }, [])
 

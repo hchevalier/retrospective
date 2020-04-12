@@ -38,6 +38,10 @@ const rootReducer = (state, action) => {
       return { ...state, ownReflections: reject(state.ownReflections, (reflection) => reflection.id === action.reflectionId) }
     case 'add-reaction':
       return { ...state, ownReactions: [...state.ownReactions, action.reaction] }
+    case 'push-reaction':
+      return { ...state, visibleReactions: [...state.visibleReactions, action.reaction] }
+    case 'drop-reaction':
+      return { ...state, visibleReactions: reject(state.visibleReactions, (reaction) => reaction.id == action.reactionId) }
     case 'delete-reaction':
       return { ...state, ownReactions: reject(state.ownReactions, (reaction) => reaction.id == action.reactionId) }
     case 'start-timer':

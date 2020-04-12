@@ -7,8 +7,7 @@ const ReflectionsGrouping = () => {
   const reflections = useSelector(state => state.visibleReflections)
   const zones = useSelector(state => state.retrospective.zones)
   const organizer = useSelector(state => state.profile.organizer)
-  const reactions = useSelector(state => state.ownReactions)
-  // TODO: display all visible reactions
+  const reactions = useSelector(state => state.visibleReactions)
 
   return (
     <>
