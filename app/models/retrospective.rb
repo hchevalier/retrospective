@@ -96,6 +96,17 @@ class Retrospective < ApplicationRecord
       else
         []
       end
+
+    params[:visibleReactions] =
+      case next_step
+      when 'grouping', 'voting'
+        reactions.emoji.map(&:readable)
+      when 'actions', 'done'
+        reactions.map(&:readable)
+      else
+        []
+      end
+
     params[:discussedReflection] = first_reflection&.readable if %w(grouping actions).include?(step)
 
     broadcast_order(:next, **params)

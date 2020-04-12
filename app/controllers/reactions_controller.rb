@@ -13,8 +13,12 @@ class ReactionsController < ApplicationController
   end
 
   def destroy
-    current_user.reactions.find(params[:id]).destroy!
-    OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'dropReaction', parameters: { reactionId: params[:id] })
+    retrospective = current_user.retrospective
+    reaction = current_user.reactions.find(params[:id])
+    return render(json: :forbidden) if reaction.vote? && retrospective.step != 'voting'
+
+    reaction.destroy!
+    OrchestratorChannel.broadcast_to(retrospective, action: 'dropReaction', parameters: { reactionId: params[:id] })
 
     render json: :ok
   end

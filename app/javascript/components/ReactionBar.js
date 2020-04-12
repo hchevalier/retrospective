@@ -9,6 +9,8 @@ const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
 
   const dispatch = useDispatch()
 
+  const profile = useSelector(state => state.profile)
+  const step = useSelector(state => state.step)
   const retrospectiveId = useSelector(state => state.retrospective.id)
 
   const handleAddReaction = React.useCallback((event) => {
@@ -35,9 +37,11 @@ const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
   const handleCloseReactionChoices = () => setEmojiDisplayed(false)
 
   const handleRemoveReaction = React.useCallback((event) => {
-    // TODO: prevent removing reactions from other participants
-    // TODO: prevent removing votes out of voting phase
-    const reactionId = event.currentTarget.dataset.id
+    const { own, kind, id: reactionId } = event.currentTarget.dataset
+    if (!own || (kind === 'vote' && step !== 'voting')) {
+      return
+    }
+
     destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions/${reactionId}` })
     .then(_data => dispatch({ type: 'delete-reaction', reactionId: reactionId }))
     .catch(error => console.warn(error))
@@ -47,8 +51,9 @@ const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
   const reactionsBlock = Object.keys(groups).map((reactionContent, index) => {
     const reactionsInGroup = groups[reactionContent]
     const reactionsCount = reactionsInGroup.length
+    const sample = reactionsInGroup.find((reaction) => reaction.authorId === profile.uuid) || reactionsInGroup[0]
     return (
-      <div className='reaction' key={index} data-id={reactionsInGroup[0].id} onClick={handleRemoveReaction}>
+      <div className='reaction' key={index} data-id={sample.id} data-kind={sample.kind} data-own={sample.authorId === profile.uuid} onClick={handleRemoveReaction}>
         {reactionsCount > 1 ? reactionsCount : ''}{reactionContent}
       </div>
     )

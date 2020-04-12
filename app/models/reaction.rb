@@ -12,6 +12,7 @@ class Reaction < ApplicationRecord
   def readable
     {
       id: id,
+      authorId: author_id,
       targetId: "#{target_type}-#{target_id}",
       kind: kind,
       content: content
