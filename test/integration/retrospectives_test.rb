@@ -222,6 +222,47 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'organizer token changes when original organizer logs out or re-logs in' do
+    retrospective = create_retrospective!(step: 'thinking')
+    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
+
+    organizer_window = open_new_window
+    within_window(organizer_window) do
+      logged_in_as(@organizer)
+      visit retrospective_path(retrospective)
+      assert_logged_in(@organizer, with_flags: '(you, orga.)')
+    end
+
+    other_participant_window = open_new_window
+    within_window(other_participant_window) do
+      logged_in_as(other_participant)
+      visit retrospective_path(retrospective)
+      assert_logged_in(@organizer, with_flags: '(orga.)')
+      assert_logged_in(other_participant, with_flags: '(you)')
+    end
+
+    assert_performed_with(job: InactivityJob, args: [@organizer]) do
+      organizer_window.close
+    end
+
+    within_window(other_participant_window) do
+      assert_inactive(@organizer)
+      assert_logged_in(other_participant, with_flags: '(you, orga.)')
+    end
+
+    within_window(open_new_window) do
+      logged_in_as(@organizer)
+      visit retrospective_path(retrospective)
+      assert_logged_in(@organizer, with_flags: '(you, orga.)')
+      assert_logged_in(other_participant)
+    end
+
+    within_window(other_participant_window) do
+      assert_logged_in(@organizer, with_flags: '(orga.)')
+      assert_logged_in(other_participant, with_flags: '(you)')
+    end
+  end
+
   private
 
   def create_retrospective!(step: 'gathering', with_reflection: false)
@@ -267,5 +308,20 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
       .with(:user_id)
       .at_least_once
       .returns(nil)
+  end
+
+  def assert_logged_in(participant, with_flags: nil)
+    within ".participant[data-id='#{participant.id}']" do
+      assert_css '.participant-status.logged-in'
+      assert_text with_flags if with_flags
+    end
+  end
+
+  def assert_inactive(participant, with_flags: nil)
+    within ".participant[data-id='#{participant.id}']" do
+      assert_css '.participant-status'
+      refute_css '.logged-in'
+      assert_text with_flags if with_flags
+    end
   end
 end

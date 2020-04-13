@@ -19,9 +19,6 @@ const rootReducer = (state, action) => {
     case 'refresh-participant':
       profile = action.participant.uuid === profile?.uuid ? action.participant : profile
       return { ...state, participants: updateParticipant(state.participants, action.participant), profile: profile }
-    case 'change-organizer':
-      profile = action.newOrganizer.uuid === profile?.uuid ? action.newOrganizer : profile
-      return { ...state, participants: updateParticipant(state.participants, action.newOrganizer), profile: profile }
     case 'change-color':
       const participants = updateParticipant(state.participants, action.participant)
       profile = action.participant.uuid === profile?.uuid ? action.participant : profile

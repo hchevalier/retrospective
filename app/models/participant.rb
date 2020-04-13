@@ -27,6 +27,8 @@ class Participant < ApplicationRecord
 
   ALL_COLORS = COLORS.values.flat_map(&:values)
 
+  INACTIVITY_DELAY = 5
+
   def profile
     {
       uuid: id,

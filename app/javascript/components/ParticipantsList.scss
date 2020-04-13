@@ -26,34 +26,9 @@
       flex-grow: 1;
     }
 
-    .organizer:after {
+    .flags {
       color: rgb(33, 33, 33);
       font-size: 0.6em;
-      content: ' (orga.)';
-    }
-
-    .revealer:after {
-      color: rgb(33, 33, 33);
-      font-size: 0.6em;
-      content: ' (reveal.)';
-    }
-
-    .yourself:after {
-      color: rgb(33, 33, 33);
-      font-size: 0.6em;
-      content: ' (you)';
-    }
-
-    .organizer.yourself:after {
-      content: ' (you, orga.)';
-    }
-
-    .revealer.yourself:after {
-      content: ' (you, reveal.)';
-    }
-
-    .organizer.revealer.yourself:after {
-      content: ' (you, orga., reveal.)';
     }
   }
 }

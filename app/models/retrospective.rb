@@ -116,8 +116,10 @@ class Retrospective < ApplicationRecord
     other_participant = participants.logged_in.order(:created_at).reject { |participant| participant === organizer }.first
     return unless other_participant
 
+    current_organizer = organizer
     update!(organizer: other_participant)
-    broadcast_order(:newOrganizer, profile: other_participant.profile)
+    broadcast_order(:refreshParticipant, participant: other_participant.reload.profile)
+    broadcast_order(:refreshParticipant, participant: current_organizer.reload.profile)
   end
 
   def reset_original_organizer!
@@ -126,7 +128,7 @@ class Retrospective < ApplicationRecord
 
     previous_organizer = organizer
     update!(organizer: original_organizer)
-    broadcast_order(:newOrganizer, profile: original_organizer.reload.profile)
+    broadcast_order(:refreshParticipant, participant: original_organizer.reload.profile)
     broadcast_order(:refreshParticipant, participant: previous_organizer.reload.profile)
   end
 

@@ -13,20 +13,11 @@ class OrchestratorChannel < ApplicationCable::Channel
 
   def unsubscribed
     return unless current_user
-    current_user.reload
 
     Rails.logger.debug "#{current_user.surname} (#{current_user.id}) unsubscribed"
     current_user.update!(logged_in: false)
 
-    sleep 5 # TODO: most ugly thing in the world, stack a job to execute in 5s to see if user is still logged out, if yes changer organizer
-    current_user.reload
-
-    if current_user.organizer? && !current_user.logged_in
-      current_user.retrospective.change_organizer!
-      current_user.reload
-    end
-
-    broadcast_to(current_user.retrospective, action: 'refreshParticipant', parameters: { participant: current_user.profile })
+    InactivityJob.set(wait_until: Participant::INACTIVITY_DELAY.seconds.from_now).perform_later(current_user)
   end
 
   def start_timer(data)
