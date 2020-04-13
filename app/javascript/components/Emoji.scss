@@ -1,0 +1,19 @@
+.emoji-chip {
+  border: 1px solid transparent;
+  background-color: #00000030;
+  border-radius: 15px;
+  padding: 0px 5px;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #00000022;
+  }
+
+  &.own {
+    border: 1px solid dodgerblue;
+    color: dodgerblue;
+    background-color: aliceblue;
+  }
+}

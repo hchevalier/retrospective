@@ -2,6 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { post, destroy } from 'lib/httpClient'
 import { groupBy } from 'lib/helpers/array'
+import Emoji from './Emoji'
 import './ReactionBar.scss'
 
 const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
@@ -13,9 +14,9 @@ const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
   const step = useSelector(state => state.step)
   const retrospectiveId = useSelector(state => state.retrospective.id)
 
-  const handleAddReaction = React.useCallback((event) => {
+  const handleAddReaction = React.useCallback(({ kind, content }) => {
     setEmojiDisplayed(false)
-    createReaction({ kind: event.currentTarget.dataset.kind, content: event.currentTarget.innerText })
+    createReaction({ kind, content })
   })
 
   const createReaction = React.useCallback(({ kind, content }) => {
@@ -36,14 +37,14 @@ const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
   }
   const handleCloseReactionChoices = () => setEmojiDisplayed(false)
 
-  const handleRemoveReaction = React.useCallback((event) => {
-    const { own, kind, id: reactionId } = event.currentTarget.dataset
-    if (!own || (kind === 'vote' && step !== 'voting')) {
+  const handleRemoveReaction = React.useCallback((reaction) => {
+    if (reaction.kind === 'vote' && step !== 'voting') {
       return
     }
 
-    destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions/${reactionId}` })
-    .then(_data => dispatch({ type: 'delete-reaction', reactionId: reactionId }))
+    setEmojiDisplayed(false)
+    destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions/${reaction.id}` })
+    .then(_data => dispatch({ type: 'delete-reaction', reactionId: reaction.id }))
     .catch(error => console.warn(error))
   })
 
@@ -53,21 +54,36 @@ const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
     const reactionsCount = reactionsInGroup.length
     const sample = reactionsInGroup.find((reaction) => reaction.authorId === profile.uuid) || reactionsInGroup[0]
     return (
-      <div className='reaction' key={index} data-id={sample.id} data-kind={sample.kind} data-own={sample.authorId === profile.uuid} onClick={handleRemoveReaction}>
-        {reactionsCount > 1 ? reactionsCount : ''}{reactionContent}
-      </div>
+      <Emoji
+        key={index}
+        selected={sample}
+        own={sample?.authorId === profile.uuid}
+        kind={sample.kind}
+        content={sample.content}
+        badge={reactionsCount}
+        onAdd={handleAddReaction}
+        onRemove={handleRemoveReaction} />
     )
   })
 
   if (!displayed) return null
 
-  const EMOJIS_BLOCK = (
-    <>
-      {['😂', '😅', '🤩', '🤗', '🤯', '😡', '🤔', '🙏', '👏', '💪', '🤞', '🚀', '🔥'].map((emoji, index) => {
-        return <span key={index} onClick={handleAddReaction} data-kind='emoji'>{emoji}</span>
-      })}
-    </>
-  )
+  const emojisBlock = <>
+    {['😂', '😅', '🤩', '🤗', '🤯', '😡', '🤔', '🙏', '👏', '💪', '🤞', '🚀', '🔥'].map((emoji, index) => {
+      const reactionsOccurrences = reactions.filter((reaction) => reaction.content === emoji)
+      const sample = reactionsOccurrences.find((reaction) => reaction.authorId === profile.uuid) || reactionsOccurrences[0]
+      return (
+        <Emoji
+          key={index}
+          selected={sample}
+          own={sample?.authorId === profile.uuid}
+          kind='emoji'
+          content={emoji}
+          onAdd={handleAddReaction}
+          onRemove={handleRemoveReaction} />
+      )
+    })}
+  </>
 
   return (
     <div className='reactions-bar'>
@@ -75,12 +91,12 @@ const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
         <div className='emoji-modal'>
           <div className='emoji-container'>
             {votingPhase && <span onClick={handleAddReaction} data-kind='vote'>🥇</span>}
-            {!votingPhase && EMOJIS_BLOCK}
+            {!votingPhase && emojisBlock}
           </div>
           <div className='cross' onClick={handleCloseReactionChoices}>X</div>
         </div>
       )}
-      <div onClick={handleOpenReactionChoices}>+</div>
+      <span className='add-reaction emoji-chip' onClick={handleOpenReactionChoices}>+</span>
       {reactionsBlock}
     </div>
   )
