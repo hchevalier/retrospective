@@ -33,7 +33,7 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     logged_in_as(@organizer)
     visit retrospective_path(retrospective)
 
-    assert_text 'Lobby'
+    assert_logged_as_organizer
     refute_text 'Join'
   end
 
@@ -43,12 +43,12 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
 
     logged_in_as(@organizer)
     visit retrospective_path(retrospective)
-    assert_text 'Lobby'
+    assert_logged_as_organizer
     assert_button 'Next'
 
     logged_in_as(other_participant)
     visit retrospective_path(retrospective)
-    assert_text 'Lobby'
+    refute_logged_as_organizer
     refute_button 'Next'
   end
 
@@ -58,7 +58,7 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     logged_in_as(@organizer)
     visit retrospective_path(retrospective)
 
-    assert_text 'Lobby'
+    assert_logged_as_organizer
     refute_text 'Other one'
 
     within_window(open_new_window) do
@@ -72,27 +72,57 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     assert_text 'Other one'
   end
 
+  test 'can choose a color' do
+    color = Participant::ALL_COLORS.first
+    next_color = Participant::ALL_COLORS.second
+
+    Retrospective.any_instance.stubs(:available_colors).returns([color])
+
+    retrospective = create_retrospective!
+    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
+
+    logged_in_as(@organizer)
+    visit retrospective_path(retrospective)
+    assert_has_color(@organizer, color)
+
+    other_partipant_window = open_new_window
+    within_window(other_partipant_window) do
+      logged_in_as(other_participant)
+      visit retrospective_path(retrospective)
+      assert_has_color(@organizer, color)
+    end
+
+    logged_in_as(@organizer)
+    find(".color-square[data-color='#{next_color}']").click
+    assert_has_color(@organizer, next_color)
+
+    within_window(other_partipant_window) do
+      assert_has_color(@organizer, next_color)
+    end
+  end
+
   test 'can trigger the thinking step for other participants' do
     retrospective = create_retrospective!
     other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
 
     logged_in_as(@organizer)
     visit retrospective_path(retrospective)
-    refute_text 'Glad'
+    assert_logged_as_organizer
+    refute_retro_started
 
     new_window = open_new_window
     within_window(new_window) do
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
-      assert_text 'Lobby'
-      refute_text 'Glad'
+      refute_logged_as_organizer
+      refute_retro_started
     end
 
     click_on 'Next'
-    assert_text 'Glad'
+    assert_retro_started
 
     within_window(new_window) do
-      assert_text 'Glad'
+      assert_retro_started
     end
   end
 
@@ -102,10 +132,10 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     logged_in_as(@organizer)
     visit retrospective_path(retrospective)
 
-    assert_text 'Glad'
-    refute_text 'Glad (1)'
+    assert_retro_started
+    refute_reflection_in_zone('Glad')
     write_reflection(zone: 'Glad', content: 'This is my reflection')
-    assert_text 'Glad (1)'
+    assert_reflection_in_zone('Glad')
   end
 
   test 'a participant cannot see reflections written by other participants' do
@@ -115,8 +145,8 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     logged_in_as(other_participant)
     visit retrospective_path(retrospective)
 
-    assert_text 'Glad'
-    refute_text 'Glad (1)'
+    assert_retro_started
+    refute_reflection_in_zone('Glad')
     find('.zone', text: 'Glad').click
     assert_text 'CLOSE'
     refute_text 'I am so glad!'
@@ -161,8 +191,8 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     assert_text 'I am so glad!'
     click_on 'Delete'
 
-    assert_text 'Glad'
-    refute_text 'Glad (1)'
+    assert_retro_started
+    refute_reflection_in_zone('Glad')
   end
 
   test 'timer does not show in waiting lobby even when organizer' do
@@ -171,7 +201,7 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     logged_in_as(@organizer)
     visit retrospective_path(retrospective)
 
-    assert_text 'Lobby'
+    refute_logged_as_organizer
     assert_no_css('#timer')
   end
 
@@ -191,7 +221,7 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
     logged_in_as(other_participant)
     visit retrospective_path(retrospective)
 
-    assert_text 'Lobby'
+    refute_logged_as_organizer
     assert_no_css('#timer')
   end
 
@@ -323,5 +353,39 @@ class RetrospectivesTest < ActionDispatch::IntegrationTest
       refute_css '.logged-in'
       assert_text with_flags if with_flags
     end
+  end
+
+  def assert_logged_as_organizer
+    assert_text '(you, orga.)'
+  end
+
+  def refute_logged_as_organizer
+    assert_text '(you)'
+  end
+
+  def assert_retro_started
+    assert_text 'Glad'
+  end
+
+  def refute_retro_started
+    refute_text 'Glad'
+  end
+
+  def assert_reflection_in_zone(zone, count: 1)
+    assert_text "Glad (#{count})"
+  end
+
+  def refute_reflection_in_zone(zone, count: 1)
+    refute_text "Glad (#{count})"
+  end
+
+  def assert_has_color(participant, hex_color)
+    within ".participant[data-id='#{participant.id}']" do
+      find('.participant-name', style: %r(#{hex_to_decimal(hex_color).join(', ')}) )
+    end
+  end
+
+  def hex_to_decimal(hex_color)
+    hex_color.scan(/[0-9a-f]{2}/).map { |color| color.to_i(16) }
   end
 end
