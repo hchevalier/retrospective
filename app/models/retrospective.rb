@@ -83,8 +83,13 @@ class Retrospective < ApplicationRecord
     return if step == 'done'
 
     next_step = Retrospective::steps.keys[step_index + 1]
-    first_reflection = reflections.group_by(&:owner_id).values.flatten.first
-    update!(step: next_step, discussed_reflection: first_reflection)
+    most_upvoted_reflection =
+      reflections
+        .joins(:votes)
+        .select('*, count(reactions.id) AS votes_count')
+        .group('reflections.id')
+        .order(votes_count: :desc).first if next_step == 'actions'
+    update!(step: next_step, discussed_reflection: most_upvoted_reflection)
 
     params = { next_step: next_step }
     params[:visibleReflections] =
@@ -107,7 +112,7 @@ class Retrospective < ApplicationRecord
         []
       end
 
-    params[:discussedReflection] = first_reflection&.readable if %w(grouping actions).include?(step)
+    params[:discussedReflection] = most_upvoted_reflection&.readable if step == 'actions'
 
     broadcast_order(:next, **params)
   end
