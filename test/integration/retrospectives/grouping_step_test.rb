@@ -65,6 +65,8 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       assert_logged_in(other_participant, with_flags: '(you, reveal.)')
       assert_text 'A glad reflection'
       click_on 'Reveal'
+      click_on 'Close'
+      assert_logged_in(other_participant, with_flags: '(you)')
     end
 
     assert_text 'A glad reflection'
