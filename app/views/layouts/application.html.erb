@@ -7,7 +7,9 @@
 
     <script>
       window.constants = {
-        allColors: JSON.parse('<%= Participant::ALL_COLORS.to_json.html_safe %>')
+        allColors: JSON.parse('<%= Participant::ALL_COLORS.to_json.html_safe %>'),
+        emojiList: JSON.parse('<%= Reaction::EMOJI_LIST.to_json.html_safe %>'),
+        voteEmoji: '<%= Reaction::VOTE_EMOJI %>'
       }
     </script>
 

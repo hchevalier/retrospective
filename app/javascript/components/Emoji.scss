@@ -3,9 +3,11 @@
   background-color: #00000030;
   border-radius: 15px;
   padding: 0px 5px;
+  font-size: 12px;
   display: inline-flex;
   align-items: center;
   cursor: pointer;
+  margin-right: 2px;
 
   &:hover {
     background-color: #00000022;

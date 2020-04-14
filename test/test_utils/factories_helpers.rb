@@ -29,7 +29,7 @@ module FactoriesHelpers
     find('.zone', text: zone).click
   end
 
-  def create_reflection(zone:, content:, participant:)
-    Zone.find_by(identifier: zone).reflections.create!(content: content, owner: participant)
+  def create_reflection(zone:, content:, participant:, revealed: false)
+    Zone.find_by(identifier: zone).reflections.create!(content: content, owner: participant, revealed: revealed)
   end
 end
