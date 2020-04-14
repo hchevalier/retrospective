@@ -40,13 +40,8 @@ module AssertHelpers
 
   def assert_has_color(participant, hex_color)
     within ".participant[data-id='#{participant.id}']" do
-      find('.participant-name', style: %r(#{hex_to_decimal(hex_color).join(', ')}) )
+      rgba_color = hex_color.scan(/[0-9a-f]{2}/).map { |color| color.to_i(16) }
+      find('.participant-name', style: %r(#{rgba_color.join(', ')}) )
     end
-  end
-
-  private
-
-  def hex_to_decimal(hex_color)
-    hex_color.scan(/[0-9a-f]{2}/).map { |color| color.to_i(16) }
   end
 end

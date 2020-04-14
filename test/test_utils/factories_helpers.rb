@@ -17,8 +17,8 @@ module FactoriesHelpers
     retrospective
   end
 
-  def add_another_participant(retrospective, surname:, email:)
-    retrospective.participants.create!(surname: surname, email: email)
+  def add_another_participant(retrospective, surname:, email:, color: nil)
+    retrospective.participants.create!(surname: surname, email: email, color: color)
   end
 
   def write_reflection(zone: 'Mad', content: 'This is my reflection')
