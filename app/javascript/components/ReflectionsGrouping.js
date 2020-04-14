@@ -12,6 +12,7 @@ const ReflectionsGrouping = () => {
   return (
     <>
       {organizer && <div>Click on a participant so that he can reveal his reflections</div>}
+      {!organizer && <div>The organizer now chooses a participant so that he can reveal his reflections</div>}
       <div id='zones-container'>
         {zones.map((zone) => (
           <div className='zone-column' key={zone.id}>

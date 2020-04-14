@@ -28,4 +28,8 @@ module FactoriesHelpers
     assert_selector '.zone.mode-assigning-reflection'
     find('.zone', text: zone).click
   end
+
+  def create_reflection(zone:, content:, participant:)
+    Zone.find_by(identifier: zone).reflections.create!(content: content, owner: participant)
+  end
 end

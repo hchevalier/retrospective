@@ -2,7 +2,15 @@ module AssertHelpers
   def assert_logged_in(participant, with_flags: nil)
     within ".participant[data-id='#{participant.id}']" do
       assert_css '.participant-status.logged-in'
-      assert_text with_flags if with_flags
+      return unless with_flags
+
+      if with_flags == :none
+        refute_text 'you'
+        refute_text 'orga.'
+        refute_text 'reveal.'
+      else
+        assert_text with_flags
+      end
     end
   end
 

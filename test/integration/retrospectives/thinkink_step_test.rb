@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Retrospective::ThinkinStepTest < ActionDispatch::IntegrationTest
+class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
   test 'can trigger the thinking step for other participants' do
     retrospective = create_retrospective!
     other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
