@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import classNames from 'classnames'
 import Button from '@material-ui/core/Button'
 import { compact } from 'lib/helpers/array'
+import StickyBookmark from './StickyBookmark'
 import './ParticipantsList.scss'
 
 const ParticipantsList = () => {
@@ -43,11 +44,9 @@ const ParticipantsList = () => {
         return (
           <div className='participant' key={index} data-id={uuid} onClick={handleParticipantClick}>
             <div className={classNames('participant-status', { 'logged-in': status })} />
-            <div
-              className={classNames('participant-name', { 'organizer': organizer, 'revealer': revealer, 'yourself': profile?.uuid === uuid })}
-              style={{ backgroundColor: color }}>
+            <StickyBookmark otherClassNames={{ 'organizer': organizer, 'revealer': revealer, 'yourself': profile?.uuid === uuid }} color={color}>
               <span>{surname}</span> {flags && <span className='flags'>({flags})</span>}
-            </div>
+            </StickyBookmark>
           </div>
         )
         })}

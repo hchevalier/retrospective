@@ -3,4 +3,11 @@
   top: 0;
   right: 0;
   margin: 5px;
+
+  &.inline {
+    left: 0;
+    right: auto;
+    position: relative;
+    margin: 0;
+  }
 }

@@ -1,11 +1,12 @@
 import React, { useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import classNames from 'classnames'
 import { post, destroy } from 'lib/httpClient'
 import Vote from './Vote'
 import './VoteCorner.scss'
 import constants from 'lib/utils/constants'
 
-const VoteCorner = ({ canVote, reflection, votes }) => {
+const VoteCorner = ({ canVote, reflection, votes, noStandOut = false, inline = false }) => {
   const dispatch = useDispatch()
 
   const profile = useSelector(state => state.profile)
@@ -32,10 +33,10 @@ const VoteCorner = ({ canVote, reflection, votes }) => {
   const displayedVotes = canVote ? ownVotes : votes
 
   return (
-    <div className='vote-corner'>
+    <div className={classNames('vote-corner', { inline })}>
       <Vote
         selected={ownVotes[0] || displayedVotes[0]}
-        own={ownVotes.length > 0}
+        own={!noStandOut && ownVotes.length > 0}
         disabled={remainingVotes === 0}
         badge={displayedVotes.length}
         onAdd={canVote ? createVote : undefined}
