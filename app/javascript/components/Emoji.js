@@ -14,7 +14,7 @@ const Emoji = ({ name, badge, kind, own, selected, onAdd, onRemove }) => {
 
   return (
     <div className={classNames('emoji-chip', { 'selected': !!selected, 'own': own, [name.replace(/_/g, '-')]: true })} onClick={handleClick}>
-      <span>{constants.emojiList[name]}</span>
+      <span>{name === 'vote' ? constants.voteEmoji : constants.emojiList[name]}</span>
       {(badge || 0) > 1 && <span>{badge}</span>}
     </div>
   )

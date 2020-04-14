@@ -91,8 +91,7 @@ const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
       {emojiDisplayed && (
         <div className='emoji-modal'>
           <div className='emoji-container'>
-            {votingPhase && <span onClick={handleAddReaction} data-kind='vote'>{constants.voteEmoji}</span>}
-            {!votingPhase && emojisBlock}
+            {emojisBlock}
           </div>
           <div className='cross' onClick={handleCloseReactionChoices}>X</div>
         </div>
