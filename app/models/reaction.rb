@@ -12,7 +12,9 @@ class Reaction < ApplicationRecord
     emoji: 'emoji',
   }
 
-  VOTE_EMOJI = '✋'
+  VOTE_EMOJI = '👍'
+  UNVOTE_EMOJI = '👎'
+  MAX_VOTES = 5
 
   EMOJI_LIST = {
     joy: '😂',
@@ -53,6 +55,8 @@ class Reaction < ApplicationRecord
   end
 
   def max_five_votes_per_author_and_retrospective
+    return unless vote?
+
     retrospective_id =
       case target.class.name
       when 'Reflection'
@@ -61,8 +65,9 @@ class Reaction < ApplicationRecord
         raise "Don't know how to access a Retrospective from target"
       end
 
-    return unless Retrospective.joins(:reactions).where(id: retrospective_id, reactions: { kind: 'vote', author_id: author_id }).count >= 5
+    votes_count = author.reactions.vote.count
+    return unless votes_count >= Reaction::MAX_VOTES
 
-    errors.add(:author, "can't vote more than 5 times per retrospective")
+    errors.add(:author, "can't vote more than #{Reaction::MAX_VOTES} times per retrospective")
   end
 end

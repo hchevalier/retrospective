@@ -6,21 +6,17 @@ import Emoji from './Emoji'
 import constants from 'lib/utils/constants'
 import './ReactionBar.scss'
 
-const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
+const ReactionBar = ({ reflection, displayed, reactions }) => {
   const [emojiDisplayed, setEmojiDisplayed] = React.useState(false)
 
   const dispatch = useDispatch()
 
   const profile = useSelector(state => state.profile)
-  const step = useSelector(state => state.step)
   const retrospectiveId = useSelector(state => state.retrospective.id)
 
   const handleAddReaction = React.useCallback(({ kind, name }) => {
     setEmojiDisplayed(false)
-    createReaction({ kind, name })
-  })
 
-  const createReaction = React.useCallback(({ kind, name }) => {
     post({
       url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions`,
       payload: { kind, content: name }
@@ -29,21 +25,12 @@ const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
     .catch(error => console.warn(error))
   })
 
-  const handleOpenReactionChoices = () => {
-    if (votingPhase) {
-      createReaction({ kind: 'vote' })
-    } else {
-      setEmojiDisplayed(true)
-    }
-  }
-  const handleCloseReactionChoices = () => setEmojiDisplayed(false)
+  const showEmojiModal = () => setEmojiDisplayed(true)
+  const hideEmojiModal = () => setEmojiDisplayed(false)
 
   const handleRemoveReaction = React.useCallback((reaction) => {
-    if (reaction.kind === 'vote' && step !== 'voting') {
-      return
-    }
-
     setEmojiDisplayed(false)
+
     destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions/${reaction.id}` })
     .then(_data => dispatch({ type: 'delete-reaction', reactionId: reaction.id }))
     .catch(error => console.warn(error))
@@ -59,7 +46,6 @@ const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
         key={index}
         selected={sample}
         own={sample?.authorId === profile.uuid}
-        kind={sample.kind}
         name={sample.content}
         badge={reactionsCount}
         onAdd={handleAddReaction}
@@ -78,7 +64,6 @@ const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
           key={index}
           selected={sample}
           own={sample?.authorId === profile.uuid}
-          kind='emoji'
           name={emojiName}
           onAdd={handleAddReaction}
           onRemove={handleRemoveReaction} />
@@ -93,10 +78,10 @@ const ReactionBar = ({ reflection, displayed, reactions, votingPhase }) => {
           <div className='emoji-container'>
             {emojisBlock}
           </div>
-          <div className='cross' onClick={handleCloseReactionChoices}>X</div>
+          <div className='cross' onClick={hideEmojiModal}>X</div>
         </div>
       )}
-      <span className='add-reaction emoji-chip' onClick={handleOpenReactionChoices}>+</span>
+      <span className='add-reaction emoji-chip' onClick={showEmojiModal}>+</span>
       {reactionsBlock}
     </div>
   )

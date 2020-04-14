@@ -13,7 +13,7 @@ const ResolutionZone = () => {
   // TODO: Add a sidebar showing all reflections having at least 1 vote, sorted by descending amount of votes
   return (
     <div>
-      <StickyNote reflection={currentReflection} showReactions reactions={relevantReactions} />
+      <StickyNote reflection={currentReflection} showReactions showVotes reactions={relevantReactions} />
     </div>
   )
 }

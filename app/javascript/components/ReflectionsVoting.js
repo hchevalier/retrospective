@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import StickyNote from './StickyNote'
+import constants from 'lib/utils/constants'
 
 const ReflectionsVoting = () => {
   const reflections = useSelector(state => state.visibleReflections)
@@ -8,13 +9,11 @@ const ReflectionsVoting = () => {
   const ownReactions = useSelector(state => state.ownReactions)
   const reactions = useSelector(state => state.visibleReactions)
 
-  const MAX_VOTES = 5
-
   const votes = ownReactions.filter((reaction) => reaction.kind === 'vote')
 
   return (
     <>
-      <div>Remaining votes: {MAX_VOTES - votes.length}</div>
+      <div>Remaining votes: {constants.maxVotes - votes.length}</div>
       <div id='zones-container'>
         {zones.map((zone) => (
           <div className='zone-column' key={zone.id}>
@@ -25,7 +24,7 @@ const ReflectionsVoting = () => {
                 key={reflection.id}
                 reflection={reflection}
                 showReactions
-                votingPhase
+                showVotes
                 reactions={relevantReactions} />
             })}
           </div>
