@@ -1,7 +1,7 @@
 import consumer from './consumer'
 
 export const join = ({ retrospectiveId, onReceivedAction }) => {
-   const orchestratorChannel = consumer.subscriptions.create({ channel: 'OrchestratorChannel', retrospective_id: retrospectiveId }, {
+  const orchestratorChannel = consumer.subscriptions.create({ channel: 'OrchestratorChannel', retrospective_id: retrospectiveId }, {
     connected() {
       console.log('You are connected to the orchestrator channel!')
     },
@@ -19,6 +19,9 @@ export const join = ({ retrospectiveId, onReceivedAction }) => {
     },
     dropRevealerToken() {
       this.perform('drop_revealer_token')
+    },
+    changeDiscussedReflection(reflectionUuid) {
+      this.perform('change_discussed_reflection', { uuid: reflectionUuid })
     },
     received(data) {
       if (data.action) {

@@ -56,6 +56,15 @@ class OrchestratorChannel < ApplicationCable::Channel
     broadcast_to(retrospective, action: 'refreshParticipant', parameters: { participant: current_user.reload.profile })
   end
 
+  def change_discussed_reflection(data)
+    return unless current_user.reload.organizer?
+
+    retrospective = current_user.retrospective
+    reflection = retrospective.reflections.find(data['uuid'])
+    retrospective.update!(discussed_reflection: reflection)
+    broadcast_to(retrospective, action: 'setDiscussedReflection', parameters: { reflection: reflection.readable })
+  end
+
   def receive(data)
     return unless current_user&.organizer?
 

@@ -33,6 +33,8 @@ const rootReducer = (state, action) => {
       return { ...state, ownReflections: updateReflection(state.ownReflections, action.reflection) }
     case 'delete-reflection':
       return { ...state, ownReflections: reject(state.ownReflections, (reflection) => reflection.id === action.reflectionId) }
+    case 'set-discussed-reflection':
+      return { ...state, discussedReflection: action.reflection }
     case 'add-reaction':
       return { ...state, ownReactions: [...state.ownReactions, action.reaction] }
     case 'push-reaction':

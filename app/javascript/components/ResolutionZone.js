@@ -5,9 +5,11 @@ import StickyBookmark from './StickyBookmark'
 import VoteCorner from './VoteCorner'
 
 const ResolutionZone = () => {
+  const { organizer } = useSelector(state => state.profile)
   const visibleReflections = useSelector(state => state.visibleReflections)
   const currentReflection = useSelector(state => state.discussedReflection)
   const visibleReactions = useSelector(state => state.visibleReactions)
+  const channel = useSelector(state => state.orchestrator)
 
   const relevantReactions = visibleReactions.filter((reaction) => reaction.targetId === `Reflection-${currentReflection.id}`)
 
@@ -17,19 +19,25 @@ const ResolutionZone = () => {
     return [reflection, votes]
   }).sort((a, b) => b[1].length - a[1].length)
 
+  const handleStickyBookmarkClicked = React.useCallback((reflection) => {
+    if (organizer) {
+      channel.changeDiscussedReflection(reflection.id)
+    }
+  })
+
   return (
-    <div style={{ 'display': 'flex', 'flexDirection': 'row' }}>
-      <div style={{ 'display': 'flex', 'flexDirection': 'column', 'flexGrow': 1, 'alignSelf': 'flex-start', 'alignItems': 'stretch' }}>
+    <div style={{ 'display': 'flex', 'flexDirection': 'column', 'maxWidth': '50%' }}>
+      <div style={{ 'display': 'flex', 'flexGrow': 1, 'justifyContent': 'center' }}>
+        <StickyNote reflection={currentReflection} showReactions showVotes reactions={relevantReactions} />
+      </div>
+      <div style={{ 'display': 'flex', 'flexDirection': 'column', 'flexGrow': 1, 'alignItems': 'stretch', 'margin': '20px 0' }}>
         {reflectionsWithVotes.map(([reflection, votes], index) => {
           return (
-            <StickyBookmark key={index} color={reflection.color}>
+            <StickyBookmark key={index} color={reflection.color} onClick={() => handleStickyBookmarkClicked(reflection)}>
               <VoteCorner reflection={reflection} votes={votes} inline noStandOut /> <span>{reflection.content}</span>
             </StickyBookmark>
           )
         })}
-      </div>
-      <div style={{ 'display': 'flex', 'flexGrow': 1, 'justifyContent': 'center'}}>
-        <StickyNote reflection={currentReflection} showReactions showVotes reactions={relevantReactions} />
       </div>
     </div>
   )

@@ -34,6 +34,8 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
       dispatch({ type: 'push-reaction', reaction: data.reaction })
     } else if (action == 'dropReaction') {
       dispatch({ type: 'drop-reaction', reactionId: data.reactionId })
+    } else if (action == 'setDiscussedReflection') {
+      dispatch({ type: 'set-discussed-reflection', reflection: data.reflection })
     }
   }, [])
 
