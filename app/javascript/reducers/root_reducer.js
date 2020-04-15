@@ -6,7 +6,8 @@ const rootReducer = (state, action) => {
   switch (action.type) {
     case 'change-step':
       const reflections = action.visibleReflections?.length > 0 ? action.visibleReflections : state.visibleReflections
-      return { ...state, step: action.step, visibleReflections: reflections, discussedReflection: action.discussedReflection }
+      const reactions = action.visibleReactions?.length > 0 ? action.visibleReactions : state.visibleReactions
+      return { ...state, step: action.step, visibleReflections: reflections, discussedReflection: action.discussedReflection, visibleReactions: reactions }
     case 'login':
       return {
         ...state,

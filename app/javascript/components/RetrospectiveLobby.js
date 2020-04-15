@@ -23,7 +23,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
     } else if (action === 'refreshParticipant') {
       dispatch({ type: 'refresh-participant', participant: data.participant })
     } else if (action === 'next') {
-      dispatch({ type: 'change-step', step: data.next_step, visibleReflections: data.visibleReflections, discussedReflection: data.discussedReflection })
+      dispatch({ type: 'change-step', step: data.next_step, visibleReflections: data.visibleReflections, discussedReflection: data.discussedReflection, visibleReactions: data.visibleReactions })
     } else if (action === 'setTimer' && loggedIn) {
       dispatch({ type: 'start-timer', duration: data.duration })
     } else if (action === 'changeColor') {
