@@ -46,9 +46,15 @@ const ReflectionsList = ({ open, filter, onUpdateReflection, onDestroyReflection
 
   const shouldDisplayReveal = React.useCallback(() => revealer && currentStep === 'grouping', [revealer, currentStep])
 
-  const shouldDisplayReflection = React.useCallback((reflection) => {
-    return (currentStep !== 'thinking' || reflection.zone.id == filter) && !reflection.revealed
-  }, [currentStep, filter])
+  const shouldDisplayReflection = React.useCallback((reflection) => currentStep !== 'thinking' || reflection.zone.id == filter, [currentStep, filter])
+  const displayableReflections = reflections.filter(shouldDisplayReflection)
+  const unrevealed = displayableReflections.filter((reflection) => !reflection.revealed).length
+
+  React.useEffect(() => {
+    if (revealer && unrevealed === 0) {
+      onModalClose()
+    }
+  }, [unrevealed])
 
   return (
     <>
@@ -56,7 +62,7 @@ const ReflectionsList = ({ open, filter, onUpdateReflection, onDestroyReflection
         <form id='reflections-list-modal' noValidate autoComplete='off'>
           <div>
             <div>
-              {reflections.filter(shouldDisplayReflection).map((reflection, index) => (
+              {displayableReflections.filter(shouldDisplayReflection).map((reflection, index) => (
                 <div key={index}>
                   <span>{reflection.content}</span>&nbsp;
                   {currentStep == 'thinking' && (
@@ -65,7 +71,16 @@ const ReflectionsList = ({ open, filter, onUpdateReflection, onDestroyReflection
                       <Button color='secondary' size='small' data-id={reflection.id} onClick={handleDeleteClick}>Delete</Button>
                     </>
                   )}
-                  {shouldDisplayReveal() && <Button color='secondary' size='small' data-id={reflection.id} onClick={handleRevealClick}>Reveal</Button>}
+                  {shouldDisplayReveal() &&
+                    <Button
+                      color='secondary'
+                      size='small'
+                      disabled={reflection.revealed}
+                      data-id={reflection.id}
+                      onClick={handleRevealClick}>
+                      {reflection.revealed ? 'Revealed' : 'Reveal'}
+                    </Button>
+                  }
                 </div>
               ))}
             </div>
