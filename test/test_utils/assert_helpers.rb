@@ -49,7 +49,7 @@ module AssertHelpers
   def assert_has_color(participant, hex_color)
     within ".participant[data-id='#{participant.id}']" do
       rgba_color = hex_color.scan(/[0-9a-f]{2}/).map { |color| color.to_i(16) }
-      find('.participant-name', style: %r(#{rgba_color.join(', ')}) )
+      find('.sticky-bookmark', style: %r(#{rgba_color.join(', ')}) )
     end
   end
 end
