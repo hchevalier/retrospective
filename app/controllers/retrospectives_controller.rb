@@ -1,4 +1,6 @@
 class RetrospectivesController < ApplicationController
+  http_basic_authenticate_with name: ENV.fetch('BASIC_AUTH_USERNAME'), password: ENV.fetch('BASIC_AUTH_PASSWORD')
+
   def new; end
 
   def create
