@@ -1,6 +1,7 @@
 import React from 'react'
 import { Provider, useSelector, useDispatch } from 'react-redux'
 import appStore from 'stores/app_store'
+import consumer from 'channels/consumer'
 import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
 import RetrospectiveArea from './RetrospectiveArea'
 import ParticipantsList from './ParticipantsList'
@@ -11,11 +12,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
   const dispatch = useDispatch()
 
   const loggedIn = useSelector(state => !!state.profile)
-
-  React.useEffect(() => {
-    const orchestratorChannel = joinOrchestratorChannel({ retrospectiveId: retrospectiveId, onReceivedAction: handleActionReceived })
-    dispatch({ type: 'set-channel', subscription: orchestratorChannel })
-  }, [])
+  const channel = useSelector(state => state.orchestrator)
 
   const handleActionReceived = React.useCallback((action, data) => {
     if (action === 'newParticipant') {
@@ -37,7 +34,16 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
     } else if (action == 'setDiscussedReflection') {
       dispatch({ type: 'set-discussed-reflection', reflection: data.reflection })
     }
-  }, [])
+  }, [loggedIn])
+
+  React.useEffect(() => {
+    if (channel) {
+      consumer.subscriptions.remove(channel)
+      consumer.disconnect()
+    }
+    const orchestratorChannel = joinOrchestratorChannel({ retrospectiveId: retrospectiveId, onReceivedAction: handleActionReceived })
+    dispatch({ type: 'set-channel', subscription: orchestratorChannel })
+  }, [loggedIn])
 
   return (
     <div id='main-container'>
@@ -45,7 +51,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
       <div id='lobby'>
         <ParticipantsList />
         <div id='right-pannel'>
-          {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} handleActionReceived={handleActionReceived} />}
+          {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} />}
           {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
         </div>
       </div>

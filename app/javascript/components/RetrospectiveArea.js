@@ -30,9 +30,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
 
   const handleZoneClicked = (event) => {
     const zoneId = event.target.id
-    console.log(`Clicked on ${zoneId}, current mode is ${mode}`)
     if (mode === 'assigning-reflection') {
-      console.log('Posting the reflection')
       post({
         url: `/retrospectives/${retrospectiveId}/reflections`,
         payload: {

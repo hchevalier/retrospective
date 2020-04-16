@@ -63,9 +63,10 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     within_window(other_participant_window) do
       assert_logged_in(other_participant, with_flags: '(you, reveal.)')
+      assert_css '#reflections-list-modal'
       assert_text 'A glad reflection'
       click_on 'Reveal'
-      click_on 'Close'
+      refute_css '#reflections-list-modal'
       assert_logged_in(other_participant, with_flags: '(you)')
     end
 
@@ -94,6 +95,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       end
     end
 
+    find('#participants-list').hover
     within ".reflection[data-id='#{reflection.id}']" do
       find('.reflection-content-container').hover
       find('.reactions-bar .add-reaction').click

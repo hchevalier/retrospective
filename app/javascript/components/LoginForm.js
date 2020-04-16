@@ -6,7 +6,7 @@ import { post } from 'lib/httpClient'
 import consumer from 'channels/consumer'
 import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
 
-const LoginForm = ({ retrospectiveId, handleActionReceived }) => {
+const LoginForm = ({ retrospectiveId }) => {
   const dispatch = useDispatch()
 
   const [surname, setSurname] = React.useState('')
@@ -23,11 +23,6 @@ const LoginForm = ({ retrospectiveId, handleActionReceived }) => {
     })
     .then(data => {
       dispatch({ type: 'login', profile: data.profile, additionnalInfo: data.additionnal_info })
-
-      consumer.subscriptions.remove(channel)
-      consumer.disconnect()
-      const orchestratorChannel = joinOrchestratorChannel({ retrospectiveId: retrospectiveId, onReceivedAction: handleActionReceived })
-      dispatch({ type: 'set-channel', subscription: orchestratorChannel })
     })
     .catch(error => console.warn(error))
   }

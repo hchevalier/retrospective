@@ -76,6 +76,7 @@ class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
     find('#participants-list').hover
     within ".reflection[data-id='#{reflection.id}']" do
       find('.reflection-content-container').hover
+      assert_css '.reactions-bar'
       find('.reactions-bar .add-reaction').click
       within '.emoji-modal' do
         find(".emoji-chip.#{reaction_name.to_s.gsub('_', '-')}").click
