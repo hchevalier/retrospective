@@ -1,5 +1,5 @@
 class RetrospectivesController < ApplicationController
-  http_basic_authenticate_with name: ENV.fetch('BASIC_AUTH_USERNAME'), password: ENV.fetch('BASIC_AUTH_PASSWORD')
+  before_action :http_authenticate
 
   def new; end
 
@@ -38,5 +38,13 @@ class RetrospectivesController < ApplicationController
 
   def organizer_params
     params.require(:organizer).permit(:surname, :email)
+  end
+
+  def http_authenticate
+    return true unless Rails.env.production?
+
+    authenticate_or_request_with_http_basic do |username, password|
+      username == ENV.fetch('BASIC_AUTH_USERNAME') && password == ENV.fetch('BASIC_AUTH_PASSWORD')
+    end
   end
 end
