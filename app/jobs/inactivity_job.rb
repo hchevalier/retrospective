@@ -1,5 +1,5 @@
 class InactivityJob < ApplicationJob
-  queue_as :urgent
+  queue_as :default
 
   def perform(participant)
     return if participant.logged_in
