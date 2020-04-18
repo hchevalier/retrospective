@@ -127,15 +127,11 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
-      within ".reflection[data-id='#{reflection_a.id}'] .vote-corner" do
-        assert_text 0
-      end
+      assert_votes_count(reflection_a, count: 0)
       vote_for_reflection(reflection_a, times: 3)
     end
 
-    within ".reflection[data-id='#{reflection_a.id}'] .vote-corner" do
-      assert_text 2
-    end
+    assert_votes_count(reflection_a, count: 2)
   end
 
   private
