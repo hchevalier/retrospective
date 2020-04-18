@@ -74,6 +74,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     visit retrospective_path(retrospective)
     within ".reflection[data-id='#{reflection.id}'] .vote-corner" do
       refute_css '.vote'
+      refute_css '.unvote'
     end
   end
 end
