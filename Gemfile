@@ -12,17 +12,17 @@ gem 'pg'
 gem 'puma', '~> 4.1'
 gem 'react-rails'
 gem 'redis', '~> 4.1'
-gem 'sidekiq'
 gem 'sass-rails', '>= 6'
+gem 'sidekiq'
 gem 'turbolinks', '~> 5'
 gem 'webpacker', '~> 4.0'
 
 group :development do
+  gem 'bullet'
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'web-console', '>= 3.3.0'
-  gem 'bullet'
 end
 
 group :test do

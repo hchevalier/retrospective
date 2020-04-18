@@ -92,6 +92,27 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     refute_can_unvote(reflection_b)
   end
 
+  test 'votes are private during the voting phase' do
+    retrospective = create_retrospective!(step: 'voting')
+    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
+    reflection_a = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
+
+    logged_in_as(@organizer)
+    visit retrospective_path(retrospective)
+
+    vote_for_reflection(reflection_a, times: 2)
+
+    other_participant_window = open_new_window
+    within_window(other_participant_window) do
+      logged_in_as(other_participant)
+      visit retrospective_path(retrospective)
+      assert_votes_count(reflection_a, count: 0)
+      vote_for_reflection(reflection_a, times: 3)
+    end
+
+    assert_votes_count(reflection_a, count: 2)
+  end
+
   private
 
   def vote_for_reflection(reflection, times: 1)

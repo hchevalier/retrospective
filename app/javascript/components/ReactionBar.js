@@ -23,7 +23,7 @@ const ReactionBar = ({ reflection, displayed, reactions }) => {
     })
     .then(data => dispatch({ type: 'add-reaction', reaction: data }))
     .catch(error => console.warn(error))
-  })
+  }, [])
 
   const showEmojiModal = () => setEmojiDisplayed(true)
   const hideEmojiModal = () => setEmojiDisplayed(false)
@@ -34,7 +34,7 @@ const ReactionBar = ({ reflection, displayed, reactions }) => {
     destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions/${reaction.id}` })
     .then(_data => dispatch({ type: 'delete-reaction', reactionId: reaction.id }))
     .catch(error => console.warn(error))
-  })
+  }, [])
 
   const groups = groupBy(reactions, 'content')
   const reactionsBlock = Object.keys(groups).map((reactionContent, index) => {
