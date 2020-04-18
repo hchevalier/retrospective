@@ -4,6 +4,7 @@ import StickyNote from './StickyNote'
 import StickyBookmark from './StickyBookmark'
 import VoteCorner from './VoteCorner'
 import ActionEditor from './ActionEditor'
+import './ResolutionZone.scss'
 
 const ResolutionZone = () => {
   const { organizer } = useSelector(state => state.profile)
@@ -32,7 +33,7 @@ const ResolutionZone = () => {
         <div style={{ 'display': 'flex', 'flexGrow': 1, 'justifyContent': 'center' }}>
           <StickyNote reflection={currentReflection} showReactions showVotes reactions={relevantReactions} />
         </div>
-        <div style={{ 'display': 'flex', 'flexDirection': 'column', 'flexGrow': 1, 'alignItems': 'stretch', 'margin': '20px 0' }}>
+        <div id='reflections-list'>
           {reflectionsWithVotes.map(([reflection, votes], index) => {
             return (
               <StickyBookmark key={index} color={reflection.color} onClick={() => handleStickyBookmarkClicked(reflection)}>
@@ -42,7 +43,7 @@ const ResolutionZone = () => {
           })}
         </div>
       </div>
-      <div style={{ 'display': 'flex', 'flexDirection': 'column', 'flexGrow': 1, 'alignItems': 'center' }}>
+      <div id='action-editor-container'>
         <ActionEditor reflection={currentReflection} />
       </div>
     </div>

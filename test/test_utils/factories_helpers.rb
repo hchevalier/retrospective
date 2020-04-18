@@ -32,4 +32,10 @@ module FactoriesHelpers
   def create_reflection(zone:, content:, participant:, revealed: false)
     Zone.find_by(identifier: zone).reflections.create!(content: content, owner: participant, revealed: revealed)
   end
+
+  def create_vote(reflection, participant:, count: 1)
+    count.times do
+      Reaction.create!(kind: 'vote', author: participant, target: reflection)
+    end
+  end
 end
