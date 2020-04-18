@@ -9,6 +9,6 @@ class InactivityJob < ApplicationJob
       participant.reload
     end
 
-    broadcast_to(participant.retrospective, action: 'refreshParticipant', parameters: { participant: participant.profile })
+    OrchestratorChannel.broadcast_to(participant.retrospective, action: 'refreshParticipant', parameters: { participant: participant.profile })
   end
 end
