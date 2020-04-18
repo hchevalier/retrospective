@@ -92,27 +92,6 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     refute_can_unvote(reflection_b)
   end
 
-  test 'one can add reaction to an existing one' do
-    retrospective = create_retrospective!(step: 'voting')
-    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
-    reflection_a = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
-
-    @organizer.reactions.create!(kind: 'emoji', content: 'exploding_head', target: reflection_a)
-
-    logged_in_as(@organizer)
-    visit retrospective_path(retrospective)
-
-    other_participant_window = open_new_window
-    within_window(other_participant_window) do
-      logged_in_as(other_participant)
-      visit retrospective_path(retrospective)
-      find('.emoji-chip.exploding-head').click
-      within '.emoji-chip.exploding-head' do
-        assert_text '2'
-      end
-    end
-  end
-
   test 'votes are private during the voting phase' do
     retrospective = create_retrospective!(step: 'voting')
     other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
