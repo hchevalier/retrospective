@@ -9,8 +9,8 @@ const StickyNote = ({ reflection, showReactions, reactions, showVotes }) => {
 
   const step = useSelector(state => state.step)
 
-  const handleMouseEnter = React.useCallback(() => setHovered(true))
-  const handleMouseLeave = React.useCallback(() => setHovered(false))
+  const handleMouseEnter = React.useCallback(() => setHovered(true), [])
+  const handleMouseLeave = React.useCallback(() => setHovered(false), [])
 
   const displayReactionBar = showReactions && (hovered || reactions.length > 0)
   const colorStyle = {

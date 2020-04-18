@@ -65,4 +65,15 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
       end
     end
   end
+
+  test 'ensure votes are closed' do
+    retrospective = create_retrospective!(step: 'actions')
+    reflection = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
+    retrospective.update!(discussed_reflection: reflection)
+    logged_in_as(@organizer)
+    visit retrospective_path(retrospective)
+    within ".reflection[data-id='#{reflection.id}'] .vote-corner" do
+      refute_css '.vote'
+    end
+  end
 end
