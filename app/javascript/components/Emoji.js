@@ -10,7 +10,7 @@ const Emoji = ({ name, badge, own, selected, onAdd, onRemove }) => {
     } else {
       onAdd({ kind: 'emoji', name })
     }
-  }, [])
+  }, [selected, own])
 
   return (
     <div className={classNames('emoji-chip', { 'selected': !!selected, 'own': own, [name.replace(/_/g, '-')]: true })} onClick={handleClick}>
