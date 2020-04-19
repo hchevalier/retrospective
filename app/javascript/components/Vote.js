@@ -19,11 +19,11 @@ const Vote = ({ badge, own, selected, disabled, onAdd, onRemove }) => {
   }, [recentlyTouchedReaction])
 
   const handleClickRemove = React.useCallback(() => {
-    if (recentlyTouchedReaction) return
+    if (badge === 0 || recentlyTouchedReaction) return
 
     touchReaction()
     onRemove(selected)
-  }, [selected, recentlyTouchedReaction])
+  }, [badge, selected, recentlyTouchedReaction])
 
   return (
     <div className={classNames('emoji-chip', { 'selected': !!selected, 'own': own })}>
