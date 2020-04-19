@@ -16,7 +16,8 @@ const defaultState = {
   visibleReactions: [],
   orchestrator: null,
   timerDuration: 600,
-  lastTimerReset: null
+  lastTimerReset: null,
+  pendingNetworkCalls: []
 }
 
 const appStore = (initialState) => createStore(rootReducer, { ...defaultState, ...initialState })

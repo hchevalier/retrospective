@@ -1,4 +1,4 @@
-import { reject, uniqBy } from 'lib/helpers/array'
+import { reject, uniq, uniqBy } from 'lib/helpers/array'
 
 const rootReducer = (state, action) => {
   let profile = state.profile
@@ -37,19 +37,25 @@ const rootReducer = (state, action) => {
     case 'set-discussed-reflection':
       return { ...state, discussedReflection: action.reflection }
     case 'add-reaction':
-      return { ...state, ownReactions: [...state.ownReactions, action.reaction] }
+      return { ...state, ownReactions: [...state.ownReactions, action.reaction], ...completeCall(state, action.type)  }
     case 'push-reaction':
       return { ...state, visibleReactions: [...state.visibleReactions, action.reaction] }
     case 'drop-reaction':
       return { ...state, visibleReactions: reject(state.visibleReactions, (reaction) => reaction.id == action.reactionId) }
     case 'delete-reaction':
-      return { ...state, ownReactions: reject(state.ownReactions, (reaction) => reaction.id == action.reactionId) }
+      return { ...state, ownReactions: reject(state.ownReactions, (reaction) => reaction.id == action.reactionId), ...completeCall(state, action.type) }
     case 'start-timer':
       return { ...state, lastTimerReset: new Date().getTime(), timerDuration: action.duration }
+    case 'add-pending-network-call':
+      return { ...state, pendingNetworkCalls: uniq([...state.pendingNetworkCalls, action.callName]) }
+    case 'complete-pending-network-call':
+      return { ...state, ...completeCall(state, action.callName) }
     default:
       return state
   }
 }
+
+const completeCall = (state, callName) => { return { pendingNetworkCalls: reject(state.pendingNetworkCalls, (item) => item === callName) } }
 
 const updateParticipant = (oldParticipants, participant) => {
   return [...oldParticipants].map((oldParticipant) => oldParticipant.uuid === participant.uuid ? participant : oldParticipant)
