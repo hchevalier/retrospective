@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import { post, destroy } from 'lib/httpClient'
@@ -14,22 +14,18 @@ const VoteCorner = ({ canVote, reflection, votes, noStandOut = false, inline = f
   const allOwnVotes = useSelector(state => state.ownReactions).filter((reaction) => reaction.kind === 'vote')
 
   const createVote = useCallback(() => {
-    dispatch({ type: 'add-pending-network-call', callName: 'add-reaction' })
-
     post({
       url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions`,
       payload: { kind: 'vote' }
     })
     .then(data => dispatch({ type: 'add-reaction', reaction: data }))
-    .catch(_error => dispatch({ type: 'complete-pending-network-call', callName: 'add-reaction' }))
+    .catch(error => console.warn(error))
   }, [])
 
   const removeVote = React.useCallback((reaction) => {
-    dispatch({ type: 'add-pending-network-call', callName: 'delete-reaction' })
-
     destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions/${reaction.id}` })
     .then(_data => dispatch({ type: 'delete-reaction', reactionId: reaction.id }))
-    .catch(_error => dispatch({ type: 'complete-pending-network-call', callName: 'delete-reaction' }))
+    .catch(error => console.warn(error))
   }, [])
 
   const ownVotes = votes.filter((vote) => vote.authorId === profile.uuid)
