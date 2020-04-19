@@ -31,4 +31,4 @@ jobs:
         gem install bundler
         bundle install --jobs 4 --retry 3
         yarn install --check-files
-        bundle exec rake
+        HEADLESS=true bundle exec rake
