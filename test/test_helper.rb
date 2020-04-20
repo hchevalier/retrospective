@@ -11,7 +11,7 @@ require 'test_utils/assert_helpers'
 
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
-  parallelize(workers: :number_of_processors)
+  parallelize(workers: :number_of_processors) unless ENV['GITHUB_RUN_ID']
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
