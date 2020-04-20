@@ -10,6 +10,11 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [8.x, 10.x, 12.x]
+
     services:
       postgres:
         image: postgres:11.5
@@ -20,9 +25,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: install
     - uses: actions/cache@v1
       with:
         path: vendor/bundle
@@ -33,6 +35,11 @@ jobs:
       uses: actions/setup-ruby@v1
       with:
         ruby-version: 2.6.x
+    - name: Uses Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm install -g yarn
 
     - name: Build App
       env:
@@ -41,6 +48,7 @@ jobs:
         gem install bundler
         bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
+        yarn install
         bundle exec rails db:create
 
     - name: Run tests
