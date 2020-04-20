@@ -13,8 +13,6 @@ jobs:
     services:
       postgres:
         image: postgres:11.5
-        env:
-          POSTGRES_USER: runner
         ports: ["5432:5432"]
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
@@ -33,9 +31,24 @@ jobs:
       uses: actions/setup-ruby@v1
       with:
         ruby-version: 2.6.x
-    - name: Build and test with Rake
+
+    - name: Install PostgreSQL 11 client
+      run: |
+        sudo apt update
+        sudo bash -c "echo deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main >> /etc/apt/sources.list.d/pgdg.list"
+        wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+        sudo apt-get update
+        sudo apt-get -yqq install libpq-dev postgresql-client-11
+
+    - name: Build App
+      env:
+        PGHOST: localhost
+        PGUSER: postgres
+        RAILS_ENV: test
       run: |
         gem install bundler
         bundle install --jobs 4 --retry 3
-        bundle exec rails db:create RAILS_ENV=test
-        HEADLESS=true bundle exec rake
+        bundle exec rails db:setup
+
+    - name: Run tests
+      run: HEADLESS=true bundle exec rake
