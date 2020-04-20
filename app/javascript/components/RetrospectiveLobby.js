@@ -33,6 +33,8 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
       dispatch({ type: 'drop-reaction', reactionId: data.reactionId })
     } else if (action == 'setDiscussedReflection') {
       dispatch({ type: 'set-discussed-reflection', reflection: data.reflection })
+    } else if (action == 'addTask') {
+      dispatch({ type: 'add-task', task: data.task })
     }
   }, [loggedIn])
 

@@ -7,7 +7,7 @@ class TasksController < ApplicationController
     return render(json: { error: :not_found }) unless retrospective.reflections.find_by(id: params[:reflection_id])
 
     task = current_user.created_tasks.create!(task_params)
-    #TODO: broadcast task
+    OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'addTask', parameters: { task: task.as_json })
 
     render json: task.as_json
   end

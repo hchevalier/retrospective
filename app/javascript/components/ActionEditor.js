@@ -7,6 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import { post } from 'lib/httpClient'
 import { useSelector, useDispatch } from 'react-redux'
+import './ActionEditor.scss'
 
 const ActionEditor = ({ reflectionId, reflectionContent }) => {
   const dispatch = useDispatch()
@@ -36,7 +37,6 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
       }
     })
     .then(data => {
-      dispatch({ type: 'add-task', task: data })
       setDescription('')
       setAssignee('')
       setReflectionOnTypeStart(null)
@@ -50,10 +50,10 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
 
   return (
     <>
-      <div style={{ 'display': 'flex', 'flexDirection': 'column' }}>
-        <div style={{ width: '200px', maxHeight: '200px', overflowY: 'scroll' }}>
+      <div id='action-editor'>
+        <div id='tasks-list'>
           {tasks.filter((task) => task.reflectionId === reflectionId).map((task, index) => {
-            return (<div key={index} style={{ 'backgroundColor': 'lightgray', 'margin': '10px 0', padding: '5px' }}>
+            return (<div key={index} className='task'>
               Assigned to {task.assignee.surname}<br />
               {task.description}
             </div>)
@@ -72,7 +72,7 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
           </>
         )}
         <TextField label='You can take actions here' name='content' variant='outlined' value={description} multiline rows={8} onChange={onDescriptionChange} />
-        <FormControl style={{ marginLeft: '20px', minWidth: '200px' }}>
+        <FormControl id='assignee-select'>
           <InputLabel id='label-assignee'>Assignee</InputLabel>
           <Select
             labelId='label-assignee'
