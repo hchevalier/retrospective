@@ -44,6 +44,8 @@ const rootReducer = (state, action) => {
       return { ...state, visibleReactions: reject(state.visibleReactions, (reaction) => reaction.id == action.reactionId) }
     case 'delete-reaction':
       return { ...state, ownReactions: reject(state.ownReactions, (reaction) => reaction.id == action.reactionId) }
+    case 'add-task':
+      return { ...state, tasks: [...state.tasks, action.task] }
     case 'start-timer':
       return { ...state, lastTimerReset: new Date().getTime(), timerDuration: action.duration }
     default:

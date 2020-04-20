@@ -3,6 +3,7 @@ class Retrospective < ApplicationRecord
   has_many :zones, inverse_of: :retrospective
   has_many :reflections, through: :zones
   has_many :reactions, through: :reflections
+  has_many :tasks, through: :participants, source: :created_tasks
 
   belongs_to :organizer, class_name: 'Participant', inverse_of: :organized_retrospective
   belongs_to :revealer, class_name: 'Participant', inverse_of: :revealing_retrospective, optional: true
@@ -48,7 +49,8 @@ class Retrospective < ApplicationRecord
       name: name,
       kind: kind,
       zones: zones.as_json,
-      discussed_reflection: discussed_reflection
+      discussed_reflection: discussed_reflection,
+      tasks: tasks.as_json
     }
   end
 
@@ -60,7 +62,8 @@ class Retrospective < ApplicationRecord
       ownReactions: current_user ? current_user.reactions.map(&:readable) : [],
       discussedReflection: discussed_reflection&.readable,
       allColors: Participant::COLORS,
-      availableColors: available_colors
+      availableColors: available_colors,
+      tasks: tasks.as_json
     }
 
     state.merge!(visibleReflections: reflections.revealed.map(&:readable)) unless step.in?(%w(gathering thinking))
