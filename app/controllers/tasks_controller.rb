@@ -4,6 +4,7 @@ class TasksController < ApplicationController
   def create
     retrospective = Retrospective.find(params[:id])
     return render(json: { error: :forbidden }) unless current_user.retrospective_id == retrospective.id
+    return render(json: { error: :not_found }) unless retrospective.reflections.find_by(id: params[:reflection_id])
 
     task = current_user.created_tasks.create!(task_params)
     #TODO: broadcast task
@@ -14,6 +15,6 @@ class TasksController < ApplicationController
   private
 
   def task_params
-    params.permit(:assignee_id, :title, :description, :status)
+    params.permit(:assignee_id, :reflection_id, :title, :description, :status)
   end
 end

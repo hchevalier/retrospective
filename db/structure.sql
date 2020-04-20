@@ -204,11 +204,11 @@ CREATE TABLE public.tasks (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     author_id uuid NOT NULL,
     assignee_id uuid NOT NULL,
-    title text NOT NULL,
     description text,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    status public.task_statuses DEFAULT 'todo'::public.task_statuses NOT NULL
+    status public.task_statuses DEFAULT 'todo'::public.task_statuses NOT NULL,
+    reflection_id uuid NOT NULL
 );
 
 
@@ -384,6 +384,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200411201933'),
 ('20200411212511'),
 ('20200412084958'),
-('20200412085012');
+('20200412085012'),
+('20200420213016'),
+('20200420213030');
 
 

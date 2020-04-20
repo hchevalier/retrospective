@@ -44,7 +44,7 @@ const ResolutionZone = () => {
         </div>
       </div>
       <div id='action-editor-container'>
-        <ActionEditor reflection={currentReflection} />
+        <ActionEditor reflectionId={currentReflection.id} reflectionContent={currentReflection.content} />
       </div>
     </div>
   )

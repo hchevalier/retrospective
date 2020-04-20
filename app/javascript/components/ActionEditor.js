@@ -8,47 +8,69 @@ import Select from '@material-ui/core/Select'
 import { post } from 'lib/httpClient'
 import { useSelector, useDispatch } from 'react-redux'
 
-const ActionEditor = ({}) => {
+const ActionEditor = ({ reflectionId, reflectionContent }) => {
   const dispatch = useDispatch()
 
   const [description, setDescription] = React.useState('')
   const [assignee, setAssignee] = React.useState('')
+  const [reflectionOnTypeStart, setReflectionOnTypeStart] = React.useState(null)
 
   const retrospectiveId = useSelector(state => state.retrospective.id)
   const participants = useSelector(state => state.participants)
   const tasks = useSelector(state => state.tasks)
 
-  const onDescriptionChange = React.useCallback((event) => setDescription(event.target.value))
+  const onDescriptionChange = React.useCallback((event) => {
+    if (!reflectionOnTypeStart) {
+      setReflectionOnTypeStart({ id: reflectionId, content: reflectionContent })
+    }
+    setDescription(event.target.value)
+  }, [reflectionId])
 
   const onTakeActionClick = React.useCallback(() => {
     post({
       url: `/retrospectives/${retrospectiveId}/tasks`,
       payload: {
+        reflection_id: reflectionOnTypeStart.id,
         assignee_id: assignee,
-        title: 'Title', // TODO: remove this column from tasks table as it's useless
-        description: description,
-        status: 'todo'
+        description: description
       }
     })
     .then(data => {
       dispatch({ type: 'add-task', task: data })
       setDescription('')
       setAssignee('')
+      setReflectionOnTypeStart(null)
     })
     .catch(error => console.warn(error))
-  }, [assignee, description])
+  }, [assignee, description, reflectionOnTypeStart])
+
+  const resetReflectionOnTypeStart = React.useCallback(() => {
+    setReflectionOnTypeStart({ id: reflectionId, content: reflectionContent })
+  }, [reflectionId, reflectionContent])
 
   return (
     <>
       <div style={{ 'display': 'flex', 'flexDirection': 'column' }}>
         <div style={{ width: '200px', maxHeight: '200px', overflowY: 'scroll' }}>
-          {tasks.map((task, index) => {
+          {tasks.filter((task) => task.reflectionId === reflectionId).map((task, index) => {
             return (<div key={index} style={{ 'backgroundColor': 'lightgray', 'margin': '10px 0', padding: '5px' }}>
               Assigned to {task.assignee.surname}<br />
               {task.description}
             </div>)
           })}
         </div>
+        {reflectionOnTypeStart && reflectionId !== reflectionOnTypeStart.id && (
+          <>
+            <div>You are writing an action for a reflection that is not the one currently displayed</div>
+            <div>({reflectionOnTypeStart.content})</div>
+            <Button
+              color='secondary'
+              size='small'
+              onClick={resetReflectionOnTypeStart}>
+              Change to currently displayed reflection
+            </Button>
+          </>
+        )}
         <TextField label='You can take actions here' name='content' variant='outlined' value={description} multiline rows={8} onChange={onDescriptionChange} />
         <FormControl style={{ marginLeft: '20px', minWidth: '200px' }}>
           <InputLabel id='label-assignee'>Assignee</InputLabel>
