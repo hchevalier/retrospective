@@ -13,6 +13,8 @@ jobs:
     services:
       postgres:
         image: postgres:11.5
+        env:
+          POSTGRES_USER: runner
         ports: ["5432:5432"]
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
@@ -35,4 +37,5 @@ jobs:
       run: |
         gem install bundler
         bundle install --jobs 4 --retry 3
+        bundle exec rails db:create db:migrate RAILS_ENV=test
         HEADLESS=true bundle exec rake
