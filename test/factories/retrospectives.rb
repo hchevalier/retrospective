@@ -4,10 +4,16 @@ FactoryBot.define do
   factory :retrospective do
     name { 'Retrospective' }
     kind { 'glad_sad_mad' }
-    organizer
+    association :organizer, strategy: :build
 
-    trait :with_reflection do
-      
+    transient do
+      participants_attributes { [] }
+    end
+
+    after(:create) do |retrospective, evaluator|
+      evaluator.participants_attributes.each do |participant|
+        create(:participant, participant.merge(retrospective: retrospective))
+      end
     end
   end
 end

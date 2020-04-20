@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
   test 'initial discussed reflection is the one with most votes' do
-    retrospective = create_retrospective!(step: 'voting')
-    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
-    reflection_a = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
+    retrospective = create(:retrospective, step: 'voting')
+    other_participant = create(:participant, surname: 'Other participant', retrospective: retrospective)
+    reflection_a = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: retrospective.organizer, revealed: true)
     reflection_b = create_reflection(zone: 'Sad', content: 'A sad reflection', participant: other_participant, revealed: true)
-    create_vote(reflection_a, participant: @organizer, count: 3)
+    create_vote(reflection_a, participant: retrospective.organizer, count: 3)
     create_vote(reflection_b, participant: other_participant, count: 2)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     click_on 'Next'
