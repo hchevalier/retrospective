@@ -11,7 +11,7 @@ require 'test_utils/assert_helpers'
 
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
-  parallelize(workers: :number_of_processors)
+  parallelize(workers: :number_of_processors) unless ENV['GITHUB_RUN_ID']
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
@@ -31,7 +31,7 @@ class ActionDispatch::IntegrationTest
   include AssertHelpers
 
   Capybara.server = :puma, { Silent: true }
-  Capybara.default_driver = :selenium_chrome
+  Capybara.default_driver = ENV.fetch('HEADLESS', false) == 'true' ? :selenium_chrome_headless : :selenium_chrome
   Capybara.default_max_wait_time = 5.seconds
 
   # Reset sessions and driver between tests
