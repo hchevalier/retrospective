@@ -18,7 +18,7 @@ jobs:
         cmd: install
     - uses: actions/cache@v1
       with:
-        path: api/vendor/bundle
+        path: vendor/bundle
         key: ${{ runner.os }}-bundle-${{ hashFiles('**/Gemfile.lock') }}
         restore-keys: |
           ${{ runner.os }}-bundle-
@@ -30,5 +30,4 @@ jobs:
       run: |
         gem install bundler
         bundle install --jobs 4 --retry 3
-        yarn install --check-files
         HEADLESS=true bundle exec rake
