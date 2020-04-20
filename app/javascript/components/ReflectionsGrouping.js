@@ -1,13 +1,13 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, shallowEqual } from 'react-redux'
 import StickyNote from './StickyNote'
 import './ReflectionsGrouping.scss'
 
 const ReflectionsGrouping = () => {
-  const reflections = useSelector(state => state.visibleReflections)
-  const zones = useSelector(state => state.retrospective.zones)
+  const reflections = useSelector(state => state.visibleReflections, shallowEqual)
+  const zones = useSelector(state => state.retrospective.zones, shallowEqual)
   const organizer = useSelector(state => state.profile.organizer)
-  const reactions = useSelector(state => state.visibleReactions)
+  const reactions = useSelector(state => state.visibleReactions, shallowEqual)
 
   return (
     <>

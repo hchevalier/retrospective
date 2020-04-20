@@ -1,13 +1,13 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, shallowEqual } from 'react-redux'
 import StickyNote from './StickyNote'
 import constants from 'lib/utils/constants'
 
 const ReflectionsVoting = () => {
-  const reflections = useSelector(state => state.visibleReflections)
-  const zones = useSelector(state => state.retrospective.zones)
-  const ownReactions = useSelector(state => state.ownReactions)
-  const reactions = useSelector(state => state.visibleReactions)
+  const reflections = useSelector(state => state.visibleReflections, shallowEqual)
+  const zones = useSelector(state => state.retrospective.zones, shallowEqual)
+  const ownReactions = useSelector(state => state.ownReactions, shallowEqual)
+  const reactions = useSelector(state => state.visibleReactions, shallowEqual)
 
   const votes = ownReactions.filter((reaction) => reaction.kind === 'vote')
 
