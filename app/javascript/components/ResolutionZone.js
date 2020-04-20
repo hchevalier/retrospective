@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, shallowEqual } from 'react-redux'
 import StickyNote from './StickyNote'
 import StickyBookmark from './StickyBookmark'
 import VoteCorner from './VoteCorner'
@@ -8,9 +8,9 @@ import './ResolutionZone.scss'
 
 const ResolutionZone = () => {
   const { organizer } = useSelector(state => state.profile)
-  const visibleReflections = useSelector(state => state.visibleReflections)
+  const visibleReflections = useSelector(state => state.visibleReflections, shallowEqual)
   const currentReflection = useSelector(state => state.discussedReflection)
-  const visibleReactions = useSelector(state => state.visibleReactions)
+  const visibleReactions = useSelector(state => state.visibleReactions, shallowEqual)
   const channel = useSelector(state => state.orchestrator)
 
   const relevantReactions = visibleReactions.filter((reaction) => reaction.targetId === `Reflection-${currentReflection.id}`)

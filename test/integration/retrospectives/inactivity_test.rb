@@ -20,8 +20,12 @@ class Retrospective::InactivityTest < ActionDispatch::IntegrationTest
       assert_logged_in(other_participant, with_flags: '(you)')
     end
 
-    assert_performed_with(job: InactivityJob, args: [@organizer]) do
-      organizer_window.close
+    freeze_time do
+      assert_enqueued_with(job: InactivityJob, args: [@organizer], at: Participant::INACTIVITY_DELAY.seconds.from_now, queue: 'default') do
+        cable_connection_for(@organizer).disconnect if headless?
+        organizer_window.close
+      end
+      perform_enqueued_jobs
     end
 
     within_window(other_participant_window) do
@@ -41,8 +45,12 @@ class Retrospective::InactivityTest < ActionDispatch::IntegrationTest
       assert_logged_in(@organizer, with_flags: '(you, orga.)')
     end
 
-    assert_performed_with(job: InactivityJob, args: [@organizer]) do
-      organizer_window.close
+    freeze_time do
+      assert_enqueued_with(job: InactivityJob, args: [@organizer], at: Participant::INACTIVITY_DELAY.seconds.from_now, queue: 'default') do
+        cable_connection_for(@organizer).disconnect if headless?
+        organizer_window.close
+      end
+      perform_enqueued_jobs
     end
 
     other_participant_window = open_new_window
@@ -64,5 +72,15 @@ class Retrospective::InactivityTest < ActionDispatch::IntegrationTest
       assert_logged_in(@organizer, with_flags: '(orga.)')
       assert_logged_in(other_participant, with_flags: '(you)')
     end
+  end
+
+  private
+
+  def headless?
+    Capybara.current_driver.match? /headless/
+  end
+
+  def cable_connection_for(participant)
+    ActionCable.server.remote_connections.where(current_user: participant, anonymous_uuid: nil)
   end
 end

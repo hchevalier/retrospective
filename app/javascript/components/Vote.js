@@ -4,12 +4,26 @@ import constants from 'lib/utils/constants'
 import './Emoji.scss'
 
 const Vote = ({ badge, own, selected, disabled, onAdd, onRemove }) => {
+  const [recentlyTouchedReaction, setRecentlyTouchedReaction] = React.useState(false)
+
+  const touchReaction = () => {
+    setRecentlyTouchedReaction(true)
+    setTimeout(() => setRecentlyTouchedReaction(false), 50)
+  }
+
   const handleClickAdd = React.useCallback(() => {
+    if (recentlyTouchedReaction) return
+
+    touchReaction()
     onAdd({ kind: 'vote', name: 'vote' })
-  })
+  }, [recentlyTouchedReaction])
+
   const handleClickRemove = React.useCallback(() => {
+    if (badge === 0 || recentlyTouchedReaction) return
+
+    touchReaction()
     onRemove(selected)
-  })
+  }, [badge, selected, recentlyTouchedReaction])
 
   return (
     <div className={classNames('emoji-chip', { 'selected': !!selected, 'own': own })}>

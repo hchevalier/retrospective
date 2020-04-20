@@ -20,13 +20,13 @@ const VoteCorner = ({ canVote, reflection, votes, noStandOut = false, inline = f
     })
     .then(data => dispatch({ type: 'add-reaction', reaction: data }))
     .catch(error => console.warn(error))
-  })
+  }, [])
 
   const removeVote = React.useCallback((reaction) => {
     destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions/${reaction.id}` })
     .then(_data => dispatch({ type: 'delete-reaction', reactionId: reaction.id }))
     .catch(error => console.warn(error))
-  })
+  }, [])
 
   const ownVotes = votes.filter((vote) => vote.authorId === profile.uuid)
   const remainingVotes = constants.maxVotes - allOwnVotes.length
