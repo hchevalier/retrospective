@@ -4,6 +4,8 @@ class Participant < ApplicationRecord
   has_one :revealing_retrospective, class_name: 'Retrospective', foreign_key: :revealer_id, inverse_of: :revealer
   has_many :reflections, foreign_key: :owner_id, inverse_of: :owner
   has_many :reactions, foreign_key: :author_id, inverse_of: :author
+  has_many :created_tasks, class_name: 'Task', foreign_key: :author_id, inverse_of: :author
+  has_many :assigned_tasks, class_name: 'Task', foreign_key: :assignee_id, inverse_of: :assignee
 
   before_create :set_default_color
 

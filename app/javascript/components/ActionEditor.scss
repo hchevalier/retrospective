@@ -1,0 +1,22 @@
+#action-editor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+
+  #assignee-select {
+    width: 220px;
+  }
+}
+
+#tasks-list {
+  width: 200px;
+  max-height: 450px;
+  overflow-y: scroll;
+
+  .task {
+    background-color: lightgray;
+    margin: 10px 0;
+    padding: 5px;
+  }
+}
