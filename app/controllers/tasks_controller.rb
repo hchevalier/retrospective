@@ -12,9 +12,23 @@ class TasksController < ApplicationController
     render json: task.as_json
   end
 
+  def update
+    task = Task.find(params[:id])
+    return render(json: { error: :forbidden }) unless current_user.retrospective_id == task.retrospective.id
+
+    task.update!(update_task_params)
+    OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'updateTask', parameters: { task: task.as_json })
+
+    render json: task.as_json
+  end
+
   private
 
   def task_params
-    params.permit(:assignee_id, :reflection_id, :title, :description, :status)
+    params.permit(:assignee_id, :reflection_id, :description)
+  end
+
+  def update_task_params
+    params.permit(:assignee_id, :description)
   end
 end

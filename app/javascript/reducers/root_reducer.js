@@ -46,6 +46,8 @@ const rootReducer = (state, action) => {
       return { ...state, ownReactions: reject(state.ownReactions, (reaction) => reaction.id == action.reactionId) }
     case 'add-task':
       return { ...state, tasks: [...state.tasks, action.task] }
+    case 'change-task':
+      return { ...state, tasks: updateTask(state.tasks, action.task) }
     case 'start-timer':
       return { ...state, lastTimerReset: new Date().getTime(), timerDuration: action.duration }
     default:
@@ -59,6 +61,10 @@ const updateParticipant = (oldParticipants, participant) => {
 
 const updateReflection = (oldReflections, reflection) => {
   return [...oldReflections].map((oldReflection) => oldReflection.id === reflection.id ? reflection : oldReflection)
+}
+
+const updateTask = (oldTasks, task) => {
+  return [...oldTasks].map((oldTask) => oldTask.id === task.id ? task : oldTask)
 }
 
 export default rootReducer

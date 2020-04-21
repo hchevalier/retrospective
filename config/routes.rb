@@ -8,7 +8,7 @@ Rails.application.routes.draw do
         end
       end
       resources :participants, only: %i(create update)
-      resources :tasks, only: %i(create)
+      resources :tasks, only: %i(create update)
     end
   end
 
