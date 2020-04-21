@@ -50,7 +50,7 @@ class Retrospective < ApplicationRecord
       kind: kind,
       zones: zones.as_json,
       discussed_reflection: discussed_reflection,
-      tasks: tasks.as_json
+      tasks: tasks.order(:created_at).as_json
     }
   end
 
@@ -58,7 +58,7 @@ class Retrospective < ApplicationRecord
     state = {
       participants: participants.order(:created_at).map(&:profile),
       step: step,
-      ownReflections: current_user ? current_user.reflections.map(&:readable) : [],
+      ownReflections: current_user ? current_user.reflections.order(:created_at).map(&:readable) : [],
       ownReactions: current_user ? current_user.reactions.map(&:readable) : [],
       discussedReflection: discussed_reflection&.readable,
       allColors: Participant::COLORS,
@@ -66,7 +66,7 @@ class Retrospective < ApplicationRecord
       tasks: tasks.as_json
     }
 
-    state.merge!(visibleReflections: reflections.revealed.map(&:readable)) unless step.in?(%w(gathering thinking))
+    state.merge!(visibleReflections: reflections.revealed.order(:created_at).map(&:readable)) unless step.in?(%w(gathering thinking))
 
     if step.in?(%w(grouping voting))
       state.merge!(visibleReactions: reactions.emoji.map(&:readable))
