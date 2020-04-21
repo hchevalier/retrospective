@@ -1,6 +1,6 @@
 class ParticipantsController < ApplicationController
   def create
-    retrospective = Retrospective.find(params[:id])
+    retrospective = Retrospective.find(params[:retrospective_id])
     participant = Participant.create!(participants_params.merge(retrospective: retrospective))
 
     if participant

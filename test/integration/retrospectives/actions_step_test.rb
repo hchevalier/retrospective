@@ -173,4 +173,38 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
       assert_text 'my task'
     end
   end
+
+  test 'can update a task' do
+    retrospective = create_retrospective!(step: 'actions')
+    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
+    reflection = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
+    retrospective.update!(discussed_reflection: reflection)
+
+    logged_in_as(@organizer)
+    visit retrospective_path(retrospective)
+
+    fill_in 'content', with: 'my task'
+    material_ui_select @organizer.id, from: 'assignee'
+    click_on 'Take action'
+
+    within '#tasks-list' do
+      assert_text 'Assigned to Organizer'
+      assert_text 'my task'
+      find('.edit-icon').click
+    end
+
+    within '#action-editor' do
+      assert_text 'You are editing an action for the following reflection:'
+      assert_text 'A glad reflection'
+      fill_in 'content', with: 'my updated task'
+      binding.pry
+      material_ui_select other_participant.id, from: 'assignee'
+      click_on 'Update'
+    end
+
+    within '#tasks-list' do
+      assert_text 'Assigned to Other one'
+      assert_text 'my updated task'
+    end
+  end
 end

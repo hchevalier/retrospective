@@ -70,7 +70,7 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
         {reflectionOnTypeStart && (
           <>
             {!editedTask && reflectionId !== reflectionOnTypeStart.id && <>
-              <div>You are writing an action for a reflection that is not the one currently displayed</div>}
+              <div>You are writing an action for a reflection that is not the one currently displayed</div>
               <div>({reflectionOnTypeStart.content})</div>
               <Button
                 color='secondary'
