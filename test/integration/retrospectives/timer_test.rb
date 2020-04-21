@@ -2,9 +2,9 @@ require 'test_helper'
 
 class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
   test 'timer does not show in waiting lobby even when organizer' do
-    retrospective = create_retrospective!
+    retrospective = create(:retrospective)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     assert_logged_as_organizer
@@ -12,17 +12,17 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
   end
 
   test 'timer displays 10:00 for organizer by default' do
-    retrospective = create_retrospective!(step: 'thinking')
+    retrospective = create(:retrospective, step: 'thinking')
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     assert_equal 'Timer:10:00', find('#timer').text.split("\n").join
   end
 
   test 'timer does not show for other participants if not running' do
-    retrospective = create_retrospective!(step: 'thinking')
-    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
+    retrospective = create(:retrospective, step: 'thinking')
+    other_participant = create(:other_participant, retrospective: retrospective)
 
     logged_in_as(other_participant)
     visit retrospective_path(retrospective)
@@ -32,10 +32,10 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
   end
 
   test 'organizer can set timer for all participants' do
-    retrospective = create_retrospective!(step: 'thinking')
-    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
+    retrospective = create(:retrospective, step: 'thinking')
+    other_participant = create(:other_participant, retrospective: retrospective)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     find('#timer .minutes').click
