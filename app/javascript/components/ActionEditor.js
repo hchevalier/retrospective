@@ -51,14 +51,6 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
   return (
     <>
       <div id='action-editor'>
-        <div id='tasks-list'>
-          {tasks.filter((task) => task.reflectionId === reflectionId).map((task, index) => {
-            return (<div key={index} className='task'>
-              Assigned to {task.assignee.surname}<br />
-              {task.description}
-            </div>)
-          })}
-        </div>
         {reflectionOnTypeStart && reflectionId !== reflectionOnTypeStart.id && (
           <>
             <div>You are writing an action for a reflection that is not the one currently displayed</div>
@@ -83,9 +75,18 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
             {participants.map((participant, index) => <MenuItem key={index} value={participant.uuid}>{participant.surname}</MenuItem>)}
           </Select>
         </FormControl>
+        <div>
+          <Button variant='contained' color='primary' onClick={onTakeActionClick}>Take action</Button>
+        </div>
       </div>
-      <div>
-        <Button variant='contained' color='primary' onClick={onTakeActionClick}>Take action</Button>
+
+      <div id='tasks-list'>
+        {tasks.filter((task) => task.reflectionId === reflectionId).map((task, index) => {
+          return (<div key={index} className='task'>
+            Assigned to {task.assignee.surname}<br />
+            {task.description}
+          </div>)
+        })}
       </div>
     </>
   )
