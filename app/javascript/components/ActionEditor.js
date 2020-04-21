@@ -53,7 +53,7 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
   const handleEditClick = React.useCallback((task) => {
     setDescription(task.description)
     setAssignee(task.assignee.uuid)
-    setReflectionOnTypeStart({ id: task.reflectionId, content: task.description })
+    setReflectionOnTypeStart(task.reflection)
     setEditedTask(task.id)
   })
 
@@ -107,7 +107,7 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
       </div>
 
       <div id='tasks-list'>
-        {tasks.filter((task) => task.reflectionId === reflectionId).map((task, index) => <Task key={index} task={task} onEdit={handleEditClick} />)}
+        {tasks.filter((task) => task.reflection.id === reflectionId).map((task, index) => <Task key={index} task={task} onEdit={handleEditClick} />)}
       </div>
     </>
   )

@@ -14,7 +14,7 @@ class Task < ApplicationRecord
   def as_json
     {
       id: id,
-      reflectionId: reflection.id,
+      reflection: { id: reflection.id, content: reflection.content },
       author: author.profile,
       assignee: assignee.profile,
       description: description,
