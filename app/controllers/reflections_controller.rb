@@ -3,10 +3,9 @@ class ReflectionsController < ApplicationController
 
   def create
     zone = Zone.find_by(id: params[:zone_id], retrospective: current_user.retrospective)
-    return render(json: { status: :not_found}) unless zone
+    return render(json: { status: :not_found }) unless zone
 
     reflection = current_user.reflections.create(reflections_params)
-    #TODO: broadcase anonymous reflection
 
     render json: reflection.readable
   end
@@ -19,7 +18,7 @@ class ReflectionsController < ApplicationController
     when reflection.retrospective.organizer
       reflection.update!(reflections_organizer_params)
     else
-      return render(json: { status: :forbidden})
+      return render(json: { status: :forbidden })
     end
 
     render json: reflection.readable

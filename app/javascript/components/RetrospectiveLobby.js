@@ -35,6 +35,8 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
       dispatch({ type: 'set-discussed-reflection', reflection: data.reflection })
     } else if (action == 'addTask') {
       dispatch({ type: 'add-task', task: data.task })
+    } else if (action == 'updateTask') {
+      dispatch({ type: 'change-task', task: data.task })
     }
   }, [loggedIn])
 

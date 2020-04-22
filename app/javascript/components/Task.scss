@@ -1,0 +1,10 @@
+.assignee {
+  justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+}
+
+.edit-icon {
+  cursor: pointer;
+}

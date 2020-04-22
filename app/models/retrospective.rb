@@ -63,7 +63,7 @@ class Retrospective < ApplicationRecord
       discussedReflection: discussed_reflection&.readable,
       allColors: Participant::COLORS,
       availableColors: available_colors,
-      tasks: tasks.as_json
+      tasks: tasks.order(:created_at).as_json
     }
 
     state.merge!(visibleReflections: reflections.revealed.order(:created_at).map(&:readable)) unless step.in?(%w(gathering thinking))

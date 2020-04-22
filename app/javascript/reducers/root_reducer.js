@@ -2,6 +2,8 @@ import { reject, uniqBy } from 'lib/helpers/array'
 
 const rootReducer = (state, action) => {
   let profile = state.profile
+  let participants = state.participants
+  let ownReflections = state.ownReflections
 
   switch (action.type) {
     case 'change-step':
@@ -11,27 +13,30 @@ const rootReducer = (state, action) => {
     case 'login':
       return {
         ...state,
-        participants: uniqBy([action.profile, ...state.participants], 'uuid'),
+        participants: uniqBy([action.profile, ...participants], 'uuid'),
         profile: action.profile,
         ...action.additionnalInfo
       }
     case 'new-participant':
-      return { ...state, participants: uniqBy([...state.participants, action.newParticipant], 'uuid') }
+      return { ...state, participants: uniqBy([...participants, action.newParticipant], 'uuid') }
     case 'refresh-participant':
       profile = action.participant.uuid === profile?.uuid ? action.participant : profile
-      return { ...state, participants: updateParticipant(state.participants, action.participant), profile: profile }
+      participants = updateArray(participants, action.participant, 'uuid')
+      return { ...state, participants: participants, profile: profile }
     case 'change-color':
-      const participants = updateParticipant(state.participants, action.participant)
       profile = action.participant.uuid === profile?.uuid ? action.participant : profile
+      participants = updateArray(participants, action.participant, 'uuid')
       return { ...state, availableColors: action.availableColors, participants: participants, profile: profile }
     case 'set-channel':
       return { ...state, orchestrator: action.subscription }
     case 'add-reflection':
       return { ...state, ownReflections: [...state.ownReflections, action.reflection] }
     case 'reveal-reflection':
-      return { ...state, visibleReflections: [...state.visibleReflections, action.reflection], ownReflections: updateReflection(state.ownReflections, action.reflection) }
+      ownReflections = updateArray(ownReflections, action.reflection, 'id')
+      return { ...state, visibleReflections: [...state.visibleReflections, action.reflection], ownReflections: ownReflections }
     case 'change-reflection':
-      return { ...state, ownReflections: updateReflection(state.ownReflections, action.reflection) }
+      ownReflections = updateArray(ownReflections, action.reflection, 'id')
+      return { ...state, ownReflections: ownReflections }
     case 'delete-reflection':
       return { ...state, ownReflections: reject(state.ownReflections, (reflection) => reflection.id === action.reflectionId) }
     case 'set-discussed-reflection':
@@ -46,6 +51,8 @@ const rootReducer = (state, action) => {
       return { ...state, ownReactions: reject(state.ownReactions, (reaction) => reaction.id == action.reactionId) }
     case 'add-task':
       return { ...state, tasks: [...state.tasks, action.task] }
+    case 'change-task':
+      return { ...state, tasks: updateArray(state.tasks, action.task, 'id') }
     case 'start-timer':
       return { ...state, lastTimerReset: new Date().getTime(), timerDuration: action.duration }
     default:
@@ -53,12 +60,8 @@ const rootReducer = (state, action) => {
   }
 }
 
-const updateParticipant = (oldParticipants, participant) => {
-  return [...oldParticipants].map((oldParticipant) => oldParticipant.uuid === participant.uuid ? participant : oldParticipant)
-}
-
-const updateReflection = (oldReflections, reflection) => {
-  return [...oldReflections].map((oldReflection) => oldReflection.id === reflection.id ? reflection : oldReflection)
+const updateArray = (array, newItem, attribute) => {
+  return array.map(item => item[attribute] === newItem[attribute] ? newItem : item)
 }
 
 export default rootReducer
