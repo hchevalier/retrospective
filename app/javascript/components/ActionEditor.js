@@ -55,14 +55,14 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
     setAssignee(task.assignee.uuid)
     setReflectionOnTypeStart(task.reflection)
     setEditedTask(task.id)
-  })
+  }, [])
 
   const handleCancelEditing = React.useCallback(() => {
     setDescription('')
     setAssignee('')
     setReflectionOnTypeStart(null)
     setEditedTask(null)
-  })
+  }, [])
 
   return (
     <>
