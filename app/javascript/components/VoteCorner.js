@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { useSelector, shallowEqual, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import { post, destroy } from 'lib/httpClient'
@@ -13,20 +13,20 @@ const VoteCorner = ({ canVote, reflection, votes, noStandOut = false, inline = f
   const retrospectiveId = useSelector(state => state.retrospective.id)
   const allOwnVotes = useSelector(state => state.ownReactions, shallowEqual).filter((reaction) => reaction.kind === 'vote')
 
-  const createVote = useCallback(() => {
+  const createVote = () => {
     post({
       url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions`,
       payload: { kind: 'vote' }
     })
     .then(data => dispatch({ type: 'add-reaction', reaction: data }))
     .catch(error => console.warn(error))
-  }, [])
+  }
 
-  const removeVote = React.useCallback((reaction) => {
+  const removeVote = (reaction) => {
     destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions/${reaction.id}` })
     .then(_data => dispatch({ type: 'delete-reaction', reactionId: reaction.id }))
     .catch(error => console.warn(error))
-  }, [])
+  }
 
   const ownVotes = votes.filter((vote) => vote.authorId === profile.uuid)
   const remainingVotes = constants.maxVotes - allOwnVotes.length

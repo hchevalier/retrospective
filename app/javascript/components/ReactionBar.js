@@ -14,7 +14,7 @@ const ReactionBar = ({ reflection, displayed, reactions }) => {
   const profile = useSelector(state => state.profile)
   const retrospectiveId = useSelector(state => state.retrospective.id)
 
-  const handleAddReaction = React.useCallback(({ kind, name }) => {
+  const handleAddReaction = ({ kind, name }) => {
     setEmojiDisplayed(false)
 
     post({
@@ -23,18 +23,18 @@ const ReactionBar = ({ reflection, displayed, reactions }) => {
     })
     .then(data => dispatch({ type: 'add-reaction', reaction: data }))
     .catch(error => console.warn(error))
-  }, [])
+  }
 
   const showEmojiModal = () => setEmojiDisplayed(true)
   const hideEmojiModal = () => setEmojiDisplayed(false)
 
-  const handleRemoveReaction = React.useCallback((reaction) => {
+  const handleRemoveReaction = (reaction) => {
     setEmojiDisplayed(false)
 
     destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions/${reaction.id}` })
     .then(_data => dispatch({ type: 'delete-reaction', reactionId: reaction.id }))
     .catch(error => console.warn(error))
-  }, [])
+  }
 
   const groups = groupBy(reactions, 'content')
   const reactionsBlock = Object.keys(groups).map((reactionContent, index) => {

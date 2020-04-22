@@ -1,15 +1,13 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { put } from 'lib/httpClient'
 import constants from 'lib/utils/constants'
 import './ColorPicker.scss'
 
 const ColorPicker = ({ retrospectiveId }) => {
-  const dispatch = useDispatch()
   const profile = useSelector(state => state.profile)
-  const currentColor = profile.color
 
-  const handleColorPick = React.useCallback((event) => {
+  const handleColorPick = (event) => {
     const pickedColor = event.currentTarget.dataset.color
     put({
       url: `/retrospectives/${retrospectiveId}/participants/${profile.uuid}`,
@@ -17,7 +15,7 @@ const ColorPicker = ({ retrospectiveId }) => {
     })
     .then(_data => console.log('color changed'))
     .catch(error => console.warn(error))
-  }, [])
+  }
 
   return (
     <div id='colors-container'>

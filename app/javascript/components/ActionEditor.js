@@ -50,26 +50,26 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
     setReflectionOnTypeStart({ id: reflectionId, content: reflectionContent })
   }, [reflectionId, reflectionContent])
 
-  const handleEditClick = React.useCallback((task) => {
+  const handleEditClick = (task) => {
     setDescription(task.description)
     setAssignee(task.assignee.uuid)
     setReflectionOnTypeStart(task.reflection)
     setEditedTask(task.id)
-  }, [])
+  }
 
-  const handleDeleteClick = React.useCallback((task) => {
+  const handleDeleteClick = (task) => {
     if (confirm('Are you sure?')) {
       destroy({ url: `/retrospectives/${retrospectiveId}/tasks/${task.id}` })
       .catch(error => console.warn(error))
     }
-  }, [])
+  }
 
-  const handleCancelEditing = React.useCallback(() => {
+  const handleCancelEditing = () => {
     setDescription('')
     setAssignee('')
     setReflectionOnTypeStart(null)
     setEditedTask(null)
-  }, [])
+  }
 
   return (
     <>
