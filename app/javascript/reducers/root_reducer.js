@@ -61,7 +61,7 @@ const rootReducer = (state, action) => {
 }
 
 const updateArray = (array, newItem, attribute) => {
-  return [...array].map(item => item[attribute] === newItem[attribute] ? newItem : item)
+  return array.map(item => item[attribute] === newItem[attribute] ? newItem : item)
 }
 
 export default rootReducer
