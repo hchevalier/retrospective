@@ -9,6 +9,9 @@ class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
     add_reaction(reflection, :star_struck)
+    within ".reflection[data-id='#{reflection.id}']" do
+      assert_text Reaction::EMOJI_LIST[:star_struck]
+    end
 
     other_participant_window = open_new_window
     within_window(other_participant_window) do
@@ -42,6 +45,9 @@ class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
     add_reaction(reflection, :star_struck)
+    within ".reflection[data-id='#{reflection.id}']" do
+      assert_text Reaction::EMOJI_LIST[:star_struck]
+    end
 
     within ".reflection[data-id='#{reflection.id}']" do
       assert_text Reaction::EMOJI_LIST[:star_struck]
@@ -58,6 +64,9 @@ class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
     add_reaction(reflection, :star_struck)
+    within ".reflection[data-id='#{reflection.id}']" do
+      assert_text Reaction::EMOJI_LIST[:star_struck]
+    end
 
     within ".reflection[data-id='#{reflection.id}']" do
       assert_text Reaction::EMOJI_LIST[:star_struck]
@@ -82,7 +91,6 @@ class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
         find(".emoji-chip.#{reaction_name.to_s.gsub('_', '-')}").click
       end
       refute_css '.emoji-modal'
-      assert_text Reaction::EMOJI_LIST.fetch(reaction_name)
     end
   end
 end
