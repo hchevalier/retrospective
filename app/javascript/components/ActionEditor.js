@@ -37,7 +37,7 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
         description: description
       }
     })
-    .then(_data => {
+    .then(()=> {
       setDescription('')
       setAssignee('')
       setReflectionOnTypeStart(null)
