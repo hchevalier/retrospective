@@ -5,7 +5,7 @@ Rails.application.routes.draw do
       resources :reactions, only: %i(create destroy)
     end
     resources :participants, only: %i(create update)
-    resources :tasks, only: %i(create update)
+    resources :tasks, only: %i(create update destroy)
   end
 
   root 'retrospectives#new'

@@ -211,4 +211,32 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
       assert_text 'my updated task'
     end
   end
+
+  test 'can delete a task' do
+    retrospective = create(:retrospective, step: 'actions')
+    organizer = retrospective.organizer
+    reflection = create(:reflection, :glad, owner: retrospective.organizer)
+    retrospective.update!(discussed_reflection: reflection)
+    reflection.tasks.create!(author: organizer, assignee: organizer, description: 'my task')
+
+    logged_in_as(organizer)
+    visit retrospective_path(retrospective)
+
+    within '#tasks-list' do
+      assert_text 'Assigned to Organizer'
+      assert_text 'my task'
+
+      dismiss_confirm do
+        find('.delete-icon').click
+      end
+      assert_text 'Assigned to Organizer'
+      assert_text 'my task'
+
+      accept_confirm do
+        find('.delete-icon').click
+      end
+      refute_text 'Assigned to Organizer'
+      refute_text 'my task'
+    end
+  end
 end
