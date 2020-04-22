@@ -15,7 +15,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
   end
 
   test 'joins an existing retrospective' do
-    retrospective = create_retrospective!
+    retrospective = create(:retrospective)
 
     visit retrospective_path(retrospective)
     assert_text 'Organizer'
@@ -28,9 +28,9 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
   end
 
   test 'can join a retrospective without loging in again' do
-    retrospective = create_retrospective!
+    retrospective = create(:retrospective)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     assert_logged_as_organizer
@@ -38,10 +38,10 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
   end
 
   test 'only organizer can see the button to start the retrospective' do
-    retrospective = create_retrospective!
-    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
+    retrospective = create(:retrospective)
+    other_participant = create(:other_participant, retrospective: retrospective)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
     assert_logged_as_organizer
     assert_button 'Next'
@@ -53,9 +53,9 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
   end
 
   test 'sees new participant joining' do
-    retrospective = create_retrospective!
+    retrospective = create(:retrospective)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     assert_logged_as_organizer

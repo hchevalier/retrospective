@@ -2,11 +2,11 @@ require 'test_helper'
 
 class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
   test 'can add the same reaction than someone else by clicking on it' do
-    retrospective = create_retrospective!(step: 'grouping')
-    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
-    reflection = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
+    retrospective = create(:retrospective, step: 'grouping')
+    other_participant = create(:other_participant, retrospective: retrospective)
+    reflection = create(:reflection, :glad, owner: retrospective.organizer)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
     add_reaction(reflection, :star_struck)
 
@@ -35,11 +35,11 @@ class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
   end
 
   test 'remove own reaction by clicking on it' do
-    retrospective = create_retrospective!(step: 'grouping')
-    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
-    reflection = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
+    retrospective = create(:retrospective, step: 'grouping')
+    # other_participant = create(:other_participant, retrospective: retrospective)
+    reflection = create(:reflection, :glad, owner: retrospective.organizer)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
     add_reaction(reflection, :star_struck)
 
@@ -51,11 +51,11 @@ class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
   end
 
   test 'remove own reaction by choosing it again in the emoji modal' do
-    retrospective = create_retrospective!(step: 'grouping')
-    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
-    reflection = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
+    retrospective = create(:retrospective, step: 'grouping')
+    other_participant = create(:other_participant, retrospective: retrospective)
+    reflection = create(:reflection, :glad, owner: retrospective.organizer)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
     add_reaction(reflection, :star_struck)
 

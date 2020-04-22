@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
   test 'all revealed reflections are displayed' do
-    retrospective = create_retrospective!(step: 'voting')
-    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
-    create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
-    create_reflection(zone: 'Sad', content: 'A sad reflection', participant: other_participant, revealed: true)
-    unrevealed = create_reflection(zone: 'Mad', content: 'An unrevealed reflection', participant: other_participant, revealed: false)
+    retrospective = create(:retrospective, step: 'voting')
+    other_participant = create(:other_participant, retrospective: retrospective)
+    create(:reflection, :glad, owner: retrospective.organizer)
+    create(:reflection, :sad, owner: other_participant)
+    unrevealed = create(:reflection, :mad, owner: other_participant, revealed: false)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
     assert_logged_as_organizer
 
@@ -27,12 +29,12 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
   end
 
   test 'one can vote for reflections while under the maximum votes threshold' do
-    retrospective = create_retrospective!(step: 'voting')
-    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
-    reflection_a = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
-    reflection_b = create_reflection(zone: 'Sad', content: 'A sad reflection', participant: other_participant, revealed: true)
+    retrospective = create(:retrospective, step: 'voting')
+    other_participant = create(:other_participant, retrospective: retrospective)
+    reflection_a = create(:reflection, :glad, owner: retrospective.organizer)
+    reflection_b = create(:reflection, :sad, owner: other_participant)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     assert_text 'Remaining votes: 5'
@@ -55,11 +57,11 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
   end
 
   test 'thumbs up are disabled when remaining votes reach 0' do
-    retrospective = create_retrospective!(step: 'voting')
-    reflection_a = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
-    reflection_b = create_reflection(zone: 'Sad', content: 'A sad reflection', participant: @organizer, revealed: true)
+    retrospective = create(:retrospective, step: 'voting')
+    reflection_a = create(:reflection, :glad, owner: retrospective.organizer)
+    reflection_b = create(:reflection, :sad, owner: retrospective.organizer)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     assert_text 'Remaining votes: 5'
@@ -74,11 +76,11 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
   end
 
   test 'thumbs down is disabled when there are no vote on a specific reflection' do
-    retrospective = create_retrospective!(step: 'voting')
-    reflection_a = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
-    reflection_b = create_reflection(zone: 'Sad', content: 'A sad reflection', participant: @organizer, revealed: true)
+    retrospective = create(:retrospective, step: 'voting')
+    reflection_a = create(:reflection, :glad, owner: retrospective.organizer)
+    reflection_b = create(:reflection, :sad, owner: retrospective.organizer)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     assert_text 'Remaining votes: 5'
@@ -93,11 +95,11 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
   end
 
   test 'votes are private during the voting phase' do
-    retrospective = create_retrospective!(step: 'voting')
-    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
-    reflection_a = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
+    retrospective = create(:retrospective, step: 'voting')
+    other_participant = create(:other_participant, retrospective: retrospective)
+    reflection_a = create(:reflection, :glad, owner: retrospective.organizer)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     vote_for_reflection(reflection_a, times: 2)

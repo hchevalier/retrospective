@@ -1,12 +1,15 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
   test 'ensure votes are closed' do
-    retrospective = create_retrospective!(step: 'actions')
-    reflection = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
+    retrospective = create(:retrospective, step: 'actions')
+    reflection = create(:reflection, :glad, owner: retrospective.organizer)
     retrospective.update!(discussed_reflection: reflection)
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
+
     within ".reflection[data-id='#{reflection.id}'] .vote-corner" do
       refute_css '.vote'
       refute_css '.unvote'
@@ -14,14 +17,14 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
   end
 
   test 'initial discussed reflection is the one with most votes' do
-    retrospective = create_retrospective!(step: 'voting')
-    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
-    reflection_a = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
-    reflection_b = create_reflection(zone: 'Sad', content: 'A sad reflection', participant: other_participant, revealed: true)
-    create_vote(reflection_a, participant: @organizer, count: 3)
-    create_vote(reflection_b, participant: other_participant, count: 2)
+    retrospective = create(:retrospective, step: 'voting')
+    other_participant = create(:other_participant, retrospective: retrospective)
+    reflection_a = create(:reflection, :glad, owner: retrospective.organizer)
+    reflection_b = create(:reflection, :sad, owner: other_participant)
+    create_list(:vote, 3, target: reflection_a, author: retrospective.organizer)
+    create_list(:vote, 2, target: reflection_b, author: other_participant)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     click_on 'Next'
@@ -41,14 +44,14 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
   end
 
   test 'organizer can change the discussed reflection' do
-    retrospective = create_retrospective!(step: 'actions')
-    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
-    reflection_a = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
-    reflection_b = create_reflection(zone: 'Sad', content: 'A sad reflection', participant: other_participant, revealed: true)
-    create_vote(reflection_a, participant: @organizer)
+    retrospective = create(:retrospective, step: 'actions')
+    other_participant = create(:other_participant, retrospective: retrospective)
+    reflection_a = create(:reflection, :glad, owner: retrospective.organizer)
+    create(:reflection, :sad, owner: other_participant)
+    create(:vote, target: reflection_a, author: retrospective.organizer)
     retrospective.update!(discussed_reflection: reflection_a)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     within '.reflection' do
@@ -79,16 +82,16 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
   end
 
   test 'can create a task' do
-    retrospective = create_retrospective!(step: 'actions')
-    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
-    reflection_a = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
-    retrospective.update!(discussed_reflection: reflection_a)
+    retrospective = create(:retrospective, step: 'actions')
+    other_participant = create(:other_participant, retrospective: retrospective)
+    reflection = create(:reflection, :glad, owner: retrospective.organizer)
+    retrospective.update!(discussed_reflection: reflection)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     fill_in 'content', with: 'my task'
-    material_ui_select @organizer.id, from: 'assignee'
+    material_ui_select retrospective.organizer.id, from: 'assignee'
     click_on 'Take action'
 
     within '#tasks-list' do
@@ -109,16 +112,16 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
   end
 
   test 'can create a task even when the discussed reflection changed' do
-    retrospective = create_retrospective!(step: 'actions')
-    reflection_a = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
-    reflection_b = create_reflection(zone: 'Sad', content: 'A sad reflection', participant: @organizer, revealed: true)
+    retrospective = create(:retrospective, step: 'actions')
+    reflection_a = create(:reflection, :glad, owner: retrospective.organizer)
+    create(:reflection, :sad, owner: retrospective.organizer)
     retrospective.update!(discussed_reflection: reflection_a)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     fill_in 'content', with: 'my task'
-    material_ui_select @organizer.id, from: 'assignee'
+    material_ui_select retrospective.organizer.id, from: 'assignee'
 
     all('#reflections-list .sticky-bookmark').last.click
 
@@ -143,16 +146,16 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
   end
 
   test 'can start to write a task and change to the currently discussed reflection' do
-    retrospective = create_retrospective!(step: 'actions')
-    reflection_a = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
-    reflection_b = create_reflection(zone: 'Sad', content: 'A sad reflection', participant: @organizer, revealed: true)
+    retrospective = create(:retrospective, step: 'actions')
+    reflection_a = create(:reflection, :glad, owner: retrospective.organizer)
+    create(:reflection, :sad, owner: retrospective.organizer)
     retrospective.update!(discussed_reflection: reflection_a)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     fill_in 'content', with: 'my task'
-    material_ui_select @organizer.id, from: 'assignee'
+    material_ui_select retrospective.organizer.id, from: 'assignee'
 
     all('#reflections-list .sticky-bookmark').last.click
 
@@ -175,16 +178,16 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
   end
 
   test 'can update a task' do
-    retrospective = create_retrospective!(step: 'actions')
-    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
-    reflection = create_reflection(zone: 'Glad', content: 'A glad reflection', participant: @organizer, revealed: true)
+    retrospective = create(:retrospective, step: 'actions')
+    other_participant = create(:other_participant, retrospective: retrospective)
+    reflection = create(:reflection, :glad, owner: retrospective.organizer)
     retrospective.update!(discussed_reflection: reflection)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     fill_in 'content', with: 'my task'
-    material_ui_select @organizer.id, from: 'assignee'
+    material_ui_select retrospective.organizer.id, from: 'assignee'
     click_on 'Take action'
 
     within '#tasks-list' do
@@ -204,7 +207,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     end
 
     within '#tasks-list' do
-      assert_text 'Assigned to Other one'
+      assert_text 'Assigned to Other participant'
       assert_text 'my updated task'
     end
   end

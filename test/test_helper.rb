@@ -5,11 +5,11 @@ require 'mocha/minitest'
 require 'capybara/rails'
 require 'capybara/minitest'
 require 'test_utils/material_ui_helpers'
-require 'test_utils/factories_helpers'
 require 'test_utils/cookies_helpers'
 require 'test_utils/assert_helpers'
 
 class ActiveSupport::TestCase
+  include FactoryBot::Syntax::Methods
   # Run tests in parallel with specified workers
   parallelize(workers: :number_of_processors) unless ENV['GITHUB_RUN_ID']
 
@@ -20,13 +20,13 @@ class ActiveSupport::TestCase
 end
 
 class ActionDispatch::IntegrationTest
+  include FactoryBot::Syntax::Methods
   # Make the Capybara DSL available in all integration tests
   include Capybara::DSL
   # Make `assert_*` methods behave like Minitest assertions
   include Capybara::Minitest::Assertions
 
   include MaterialUiHelpers
-  include FactoriesHelpers
   include CookiesHelpers
   include AssertHelpers
 

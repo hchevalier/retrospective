@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
   test 'can trigger the thinking step for other participants' do
-    retrospective = create_retrospective!
-    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
+    retrospective = create(:retrospective)
+    other_participant = create(:other_participant, retrospective: retrospective)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
     assert_logged_as_organizer
     refute_retro_started
@@ -27,20 +29,27 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
   end
 
   test 'can write a reflection and assign it to a zone' do
-    retrospective = create_retrospective!(step: 'thinking')
+    retrospective = create(:retrospective, step: 'thinking')
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     assert_retro_started
     refute_reflection_in_zone('Glad')
-    write_reflection(zone: 'Glad', content: 'This is my reflection')
+
+    click_on 'New reflection'
+    fill_in 'content', with: 'This is my reflection'
+    click_on 'Choose zone'
+    assert_selector '.zone.mode-assigning-reflection'
+    find('.zone', text: 'Glad').click
+
     assert_reflection_in_zone('Glad')
   end
 
   test 'a participant cannot see reflections written by other participants' do
-    retrospective = create_retrospective!(step: 'thinking', with_reflection: true)
-    other_participant = add_another_participant(retrospective, surname: 'Other one', email: 'other_one@yopmail.com')
+    retrospective = create(:retrospective, step: 'thinking')
+    other_participant = create(:other_participant, retrospective: retrospective)
+    create(:reflection, :glad, owner: retrospective.organizer)
 
     logged_in_as(other_participant)
     visit retrospective_path(retrospective)
@@ -49,31 +58,33 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     refute_reflection_in_zone('Glad')
     find('.zone', text: 'Glad').click
     assert_text 'CLOSE'
-    refute_text 'I am so glad!'
+    refute_text 'A glad reflection'
   end
 
   test 'can list reflections from a zone' do
-    retrospective = create_retrospective!(step: 'thinking', with_reflection: true)
+    retrospective = create(:retrospective, step: 'thinking')
+    create(:reflection, :glad, owner: retrospective.organizer)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
-    refute_text 'I am so glad!'
+    refute_text 'A glad reflection'
     find('.zone', text: 'Glad (1)').click
-    assert_text 'I am so glad!'
+    assert_text 'A glad reflection'
   end
 
   test 'can edit a reflection' do
-    retrospective = create_retrospective!(step: 'thinking', with_reflection: true)
+    retrospective = create(:retrospective, step: 'thinking')
+    create(:reflection, :glad, owner: retrospective.organizer)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     find('.zone', text: 'Glad (1)').click
-    assert_text 'I am so glad!'
+    assert_text 'A glad reflection'
     click_on 'Edit'
 
-    assert_field 'content', with: 'I am so glad!'
+    assert_field 'content', with: 'A glad reflection'
     fill_in 'content', with: 'I am still glad!'
     click_on 'Update'
 
@@ -82,13 +93,14 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
   end
 
   test 'can delete a reflection' do
-    retrospective = create_retrospective!(step: 'thinking', with_reflection: true)
+    retrospective = create(:retrospective, step: 'thinking')
+    create(:reflection, :glad, owner: retrospective.organizer)
 
-    logged_in_as(@organizer)
+    logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
     find('.zone', text: 'Glad (1)').click
-    assert_text 'I am so glad!'
+    assert_text 'A glad reflection'
     click_on 'Delete'
 
     assert_retro_started
