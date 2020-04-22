@@ -53,7 +53,9 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     within_window(open_new_window) do
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
-      assert_text '58'
+      within '#timer' do
+        assert_text '58'
+      end
       assert_equal 'Timer:07:58', find('#timer').text.split("\n").join
     end
   end

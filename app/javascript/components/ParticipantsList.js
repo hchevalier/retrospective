@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, shallowEqual } from 'react-redux'
 import classNames from 'classnames'
 import Button from '@material-ui/core/Button'
 import { compact } from 'lib/helpers/array'
@@ -9,7 +9,7 @@ import './ParticipantsList.scss'
 const ParticipantsList = () => {
   const profile = useSelector(state => state.profile)
   const step = useSelector(state => state.step)
-  const participants = useSelector(state => state.participants)
+  const participants = useSelector(state => state.participants, shallowEqual)
   const channel = useSelector(state => state.orchestrator)
 
   const copyUrlToClipboard = () => {

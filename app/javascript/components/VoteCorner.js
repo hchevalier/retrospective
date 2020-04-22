@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, shallowEqual, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import { post, destroy } from 'lib/httpClient'
 import Vote from './Vote'
@@ -11,7 +11,7 @@ const VoteCorner = ({ canVote, reflection, votes, noStandOut = false, inline = f
 
   const profile = useSelector(state => state.profile)
   const retrospectiveId = useSelector(state => state.retrospective.id)
-  const allOwnVotes = useSelector(state => state.ownReactions).filter((reaction) => reaction.kind === 'vote')
+  const allOwnVotes = useSelector(state => state.ownReactions, shallowEqual).filter((reaction) => reaction.kind === 'vote')
 
   const createVote = useCallback(() => {
     post({

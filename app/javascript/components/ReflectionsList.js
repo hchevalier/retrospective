@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, shallowEqual } from 'react-redux'
 import Button from '@material-ui/core/Button'
 import Modal from '@material-ui/core/Modal'
 import ReflectionForm from './ReflectionForm'
@@ -8,7 +8,7 @@ import './ReflectionsList.scss'
 const ReflectionsList = ({ open, filter, onUpdateReflection, onDestroyReflection, onModalClose }) => {
   const revealer = useSelector(state => state.profile.revealer)
   const currentStep = useSelector(state => state.step)
-  const reflections = useSelector(state => state.ownReflections)
+  const reflections = useSelector(state => state.ownReflections, shallowEqual)
   const channel = useSelector(state => state.orchestrator)
 
   const [displayEditForm, setDisplayEditForm] = React.useState(false)

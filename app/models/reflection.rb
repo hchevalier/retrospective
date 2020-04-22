@@ -4,6 +4,7 @@ class Reflection < ApplicationRecord
   has_one :retrospective, through: :zone
   has_many :reactions, as: :target, inverse_of: :target
   has_many :votes, -> () { vote }, class_name: 'Reaction', foreign_key: :target_id
+  has_many :tasks
 
   scope :revealed, -> { where(revealed: true) }
 
