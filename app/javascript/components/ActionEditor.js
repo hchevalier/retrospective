@@ -5,7 +5,7 @@ import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
-import { post, put } from 'lib/httpClient'
+import { post, put, destroy } from 'lib/httpClient'
 import { useSelector, shallowEqual } from 'react-redux'
 import Task from './Task'
 import './ActionEditor.scss'
@@ -57,6 +57,13 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
     setEditedTask(task.id)
   }, [])
 
+  const handleDeleteClick = React.useCallback((task) => {
+    if (confirm('Are you sure?')) {
+      destroy({ url: `/retrospectives/${retrospectiveId}/tasks/${task.id}` })
+      .catch(error => console.warn(error))
+    }
+  })
+
   const handleCancelEditing = React.useCallback(() => {
     setDescription('')
     setAssignee('')
@@ -107,7 +114,7 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
       </div>
 
       <div id='tasks-list'>
-        {tasks.filter((task) => task.reflection.id === reflectionId).map((task, index) => <Task key={index} task={task} onEdit={handleEditClick} />)}
+        {tasks.filter((task) => task.reflection.id === reflectionId).map((task, index) => <Task key={index} task={task} onEdit={handleEditClick} onDelete={handleDeleteClick} />)}
       </div>
     </>
   )

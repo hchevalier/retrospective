@@ -23,6 +23,17 @@ class TasksController < ApplicationController
     render json: task.as_json
   end
 
+  def destroy
+    retrospective = Retrospective.find(params[:retrospective_id])
+    task = retrospective.tasks.find_by(id: params[:id])
+    return render(json: { status: :not_found }) unless task
+
+    task.destroy!
+    OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'dropTask', parameters: { taskId: task.id })
+
+    render json: { status: :ok }
+  end
+
   private
 
   def task_params

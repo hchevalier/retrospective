@@ -53,6 +53,8 @@ const rootReducer = (state, action) => {
       return { ...state, tasks: [...state.tasks, action.task] }
     case 'change-task':
       return { ...state, tasks: updateArray(state.tasks, action.task, 'id') }
+    case 'drop-task':
+      return { ...state, tasks: reject(state.tasks, (task) => task.id == action.taskId) }
     case 'start-timer':
       return { ...state, lastTimerReset: new Date().getTime(), timerDuration: action.duration }
     default:
