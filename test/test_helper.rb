@@ -5,7 +5,6 @@ require 'mocha/minitest'
 require 'capybara/rails'
 require 'capybara/minitest'
 require 'test_utils/material_ui_helpers'
-require 'test_utils/factories_helpers'
 require 'test_utils/cookies_helpers'
 require 'test_utils/assert_helpers'
 
@@ -28,7 +27,6 @@ class ActionDispatch::IntegrationTest
   include Capybara::Minitest::Assertions
 
   include MaterialUiHelpers
-  include FactoriesHelpers
   include CookiesHelpers
   include AssertHelpers
 

@@ -36,7 +36,13 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
 
     assert_retro_started
     refute_reflection_in_zone('Glad')
-    write_reflection(zone: 'Glad', content: 'This is my reflection')
+
+    click_on 'New reflection'
+    fill_in 'content', with: 'This is my reflection'
+    click_on 'Choose zone'
+    assert_selector '.zone.mode-assigning-reflection'
+    find('.zone', text: 'Glad').click
+
     assert_reflection_in_zone('Glad')
   end
 
