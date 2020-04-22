@@ -1,13 +1,13 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, shallowEqual } from 'react-redux'
 import Zone from './Zone'
 import Glad from '../../images/glad.png'
 import Sad from '../../images/sad.png'
 import Mad from '../../images/mad.png'
 
 const GladSadMad = ({ mode, onZoneClicked }) => {
-  const reflections = useSelector(state => state.ownReflections)
-  const zones = useSelector(state => state.retrospective.zones)
+  const reflections = useSelector(state => state.ownReflections, shallowEqual)
+  const zones = useSelector(state => state.retrospective.zones, shallowEqual)
 
   const glad = zones.find((zone) => zone.name === 'Glad')
   const sad = zones.find((zone) => zone.name === 'Sad')

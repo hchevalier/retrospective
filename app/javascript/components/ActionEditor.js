@@ -6,7 +6,7 @@ import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import { post, put } from 'lib/httpClient'
-import { useSelector } from 'react-redux'
+import { useSelector, shallowEqual } from 'react-redux'
 import Task from './Task'
 import './ActionEditor.scss'
 
@@ -17,8 +17,8 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
   const [editedTask, setEditedTask] = React.useState(null)
 
   const retrospectiveId = useSelector(state => state.retrospective.id)
-  const participants = useSelector(state => state.participants)
-  const tasks = useSelector(state => state.tasks)
+  const participants = useSelector(state => state.participants, shallowEqual)
+  const tasks = useSelector(state => state.tasks, shallowEqual)
 
   const onDescriptionChange = React.useCallback((event) => {
     if (!reflectionOnTypeStart) {
