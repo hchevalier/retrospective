@@ -62,7 +62,7 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
       destroy({ url: `/retrospectives/${retrospectiveId}/tasks/${task.id}` })
       .catch(error => console.warn(error))
     }
-  })
+  }, [])
 
   const handleCancelEditing = React.useCallback(() => {
     setDescription('')
