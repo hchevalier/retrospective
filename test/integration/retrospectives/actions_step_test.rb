@@ -197,7 +197,9 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
       assert_text 'You are editing an action for the following reflection:'
       assert_text 'A glad reflection'
       fill_in 'content', with: 'my updated task'
-      material_ui_select other_participant.id, from: 'assignee'
+    end
+    material_ui_select other_participant.id, from: 'assignee'
+    within '#action-editor' do
       click_on 'Update'
     end
 
