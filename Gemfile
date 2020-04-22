@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
@@ -35,4 +37,5 @@ end
 group :development, :test do
   gem 'pry'
   gem 'pry-byebug'
+  gem 'rubocop-rails', require: false
 end
