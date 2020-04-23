@@ -4,9 +4,9 @@ import StickyNote from './StickyNote'
 import StickyBookmark from './StickyBookmark'
 import VoteCorner from './VoteCorner'
 import ActionEditor from './ActionEditor'
-import './ResolutionZone.scss'
+import './StepActions.scss'
 
-const ResolutionZone = () => {
+const StepActions = () => {
   const { organizer } = useSelector(state => state.profile)
   const visibleReflections = useSelector(state => state.visibleReflections, shallowEqual)
   const currentReflection = useSelector(state => state.discussedReflection)
@@ -25,12 +25,12 @@ const ResolutionZone = () => {
     if (organizer) {
       channel.changeDiscussedReflection(reflection.id)
     }
-  })
+  }, [organizer, channel])
 
   return (
-    <div style={{ 'display': 'flex', 'flexDirection': 'row' }}>
-      <div style={{ 'display': 'flex', 'flexDirection': 'column', 'flexGrow': 1 }}>
-        <div style={{ 'display': 'flex', 'flexGrow': 1, 'justifyContent': 'center' }}>
+    <div id='actions-zone'>
+      <div id='reflections-panel'>
+        <div id='discussed-reflection'>
           <StickyNote reflection={currentReflection} showReactions showVotes reactions={relevantReactions} />
         </div>
         <div id='reflections-list'>
@@ -50,4 +50,4 @@ const ResolutionZone = () => {
   )
 }
 
-export default ResolutionZone
+export default StepActions
