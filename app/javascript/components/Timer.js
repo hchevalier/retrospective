@@ -6,10 +6,11 @@ import './Timer.scss'
 const Timer = ({ organizer, show }) => {
   const timerEndAt = useSelector(state => state.timerEndAt)
   const timeOffset = useSelector(state => state.timeOffset)
+  const timerDuration = useSelector(state => state.timerDuration)
   const orchestratorChannel = useSelector(state => state.orchestrator)
 
   const [displayDurationDialog, setDisplayDurationDialog] = React.useState(false)
-  const [remainingTime, setRemainingTime] = React.useState(0)
+  const [remainingTime, setRemainingTime] = React.useState(timerDuration)
 
   React.useEffect(() => {
     // On timer start
