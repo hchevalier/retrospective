@@ -4,17 +4,17 @@ import { Dialog, DialogTitle, List, ListItem, ListItemText } from '@material-ui/
 import './Timer.scss'
 
 const Timer = ({ organizer, show }) => {
-  const originalDuration = useSelector(state => state.timerDuration)
-  const lastTimerReset = useSelector(state => state.lastTimerReset, (a, b) => a !== b)
+  const timerEndAt = useSelector(state => state.timerEndAt)
+  const timeOffset = useSelector(state => state.timeOffset)
   const orchestratorChannel = useSelector(state => state.orchestrator)
 
   const [displayDurationDialog, setDisplayDurationDialog] = React.useState(false)
-  const [remainingTime, setRemainingTime] = React.useState(originalDuration)
+  const [remainingTime, setRemainingTime] = React.useState(0)
 
   React.useEffect(() => {
     // On timer start
-    if (lastTimerReset) {
-      const endTime = (new Date()).getTime() + (originalDuration * 1000)
+    if (timerEndAt) {
+      const endTime = new Date(timerEndAt).getTime() - timeOffset
       const intervalId = setInterval(() => {
         const theoricalRemainingTime = (endTime - new Date().getTime()) / 1000
         setRemainingTime(theoricalRemainingTime > 0 ? theoricalRemainingTime : 0)
@@ -24,7 +24,7 @@ const Timer = ({ organizer, show }) => {
       }, 500)
       return () => clearInterval(intervalId)
     }
-  }, [lastTimerReset])
+  }, [timerEndAt, timeOffset])
 
   const handleTimerClick = () => {
     if (organizer) {
@@ -44,7 +44,7 @@ const Timer = ({ organizer, show }) => {
   const remainingMinutes = Math.floor(remainingTime / 60)
   const remainingSeconds = Math.floor(remainingTime % 60)
 
-  const displayTimer = organizer || lastTimerReset !== null
+  const displayTimer = organizer || timerEndAt !== null
 
   if (!show) {
     return null

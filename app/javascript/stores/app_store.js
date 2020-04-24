@@ -1,5 +1,8 @@
-import { createStore } from 'redux'
-import rootReducer from 'reducers/root_reducer'
+import { createStore, applyMiddleware } from "redux"
+import rootReducer from "reducers/root_reducer"
+import logger from "redux-logger"
+
+const LATENCY = 200
 
 const defaultState = {
   allColors: [],
@@ -8,18 +11,25 @@ const defaultState = {
   participants: [],
   retrospective: null,
   zones: [],
-  step: '',
+  step: "",
   ownReflections: [],
   visibleReflections: [],
   discussedReflection: null,
   ownReactions: [],
   visibleReactions: [],
   orchestrator: null,
+  timeOffset: 0,
   timerDuration: 600,
+  timerEndAt: null,
   lastTimerReset: null,
-  tasks: []
+  tasks: [],
 }
 
-const appStore = (initialState) => createStore(rootReducer, { ...defaultState, ...initialState })
+const appStore = ({ serverTime, ...initialState }) =>
+  createStore(
+    rootReducer,
+    { ...defaultState, ...initialState, timeOffset: new Date(serverTime) - new Date() + LATENCY, },
+    applyMiddleware(logger)
+  )
 
 export default appStore
