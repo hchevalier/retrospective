@@ -1,31 +1,25 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import StickyNote from './StickyNote'
-import constants from 'lib/utils/constants'
+import './StepGrouping.scss'
 
-const ReflectionsVoting = () => {
+const StepGrouping = () => {
   const reflections = useSelector(state => state.visibleReflections, shallowEqual)
   const zones = useSelector(state => state.retrospective.zones, shallowEqual)
-  const ownReactions = useSelector(state => state.ownReactions, shallowEqual)
+  const organizer = useSelector(state => state.profile.organizer)
   const reactions = useSelector(state => state.visibleReactions, shallowEqual)
-
-  const votes = ownReactions.filter((reaction) => reaction.kind === 'vote')
 
   return (
     <>
-      <div>Remaining votes: {constants.maxVotes - votes.length}</div>
+      {organizer && <div>Click on a participant so that he can reveal his reflections</div>}
+      {!organizer && <div>The organizer now chooses a participant so that he can reveal his reflections</div>}
       <div id='zones-container'>
         {zones.map((zone) => (
           <div className='zone-column' key={zone.id}>
             <span>{zone.name}</span>
             {reflections.filter((reflection) => reflection.zone.id === zone.id).map((reflection) => {
-              const relevantReactions = [...reactions, ...votes].filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
-              return <StickyNote
-                key={reflection.id}
-                reflection={reflection}
-                showReactions
-                showVotes
-                reactions={relevantReactions} />
+              const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
+              return <StickyNote key={reflection.id} reflection={reflection} showReactions reactions={concernedReactions} />
             })}
           </div>
         ))}
@@ -34,4 +28,4 @@ const ReflectionsVoting = () => {
   )
 }
 
-export default ReflectionsVoting
+export default StepGrouping

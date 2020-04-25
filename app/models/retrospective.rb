@@ -95,14 +95,14 @@ class Retrospective < ApplicationRecord
         .map(&:first)
         .first if next_step == 'actions'
 
-    update!(step: next_step, discussed_reflection: most_upvoted_reflection)
+    update!(step: next_step, discussed_reflection: most_upvoted_reflection || discussed_reflection)
 
     params = { next_step: next_step }
     params[:visibleReflections] =
       case next_step
       when 'grouping'
         reflections.revealed.map(&:readable)
-      when 'actions'
+      when 'actions', 'done'
         reflections.joins(:votes).distinct.eager_load(:owner, zone: :retrospective).map(&:readable)
       else
         []
@@ -118,7 +118,7 @@ class Retrospective < ApplicationRecord
         []
       end
 
-    params[:discussedReflection] = discussed_reflection&.readable if step == 'actions'
+    params[:discussedReflection] = discussed_reflection&.readable if %w(actions done).include?(step)
 
     broadcast_order(:next, **params)
   end

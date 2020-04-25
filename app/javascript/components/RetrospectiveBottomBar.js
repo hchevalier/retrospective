@@ -15,6 +15,10 @@ const RetrospectiveBottomBar = ({ onReflectionFormOpen }) => {
     orchestratorChannel?.send({ intent: 'next' })
   }
 
+  if (currentStep === 'done') {
+    return null
+  }
+
   return (
     <div id='bottom-bar'>
       {<Timer show={currentStep === 'thinking'} organizer={organizer} />}
