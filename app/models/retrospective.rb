@@ -45,7 +45,7 @@ class Retrospective < ApplicationRecord
     done: 'done'
   }
 
-  def as_json(_current_user = nil)
+  def as_json
     {
       id: id,
       name: name,
@@ -80,12 +80,7 @@ class Retrospective < ApplicationRecord
       state.merge!(visibleReactions: reactions.map(&:readable))
     end
 
-    return state unless timer_end_at && (remaining_time = timer_end_at - Time.zone.now) > 0
-
-    state.merge(
-      timerDuration: remaining_time,
-      lastTimerReset: Time.now.to_i
-    )
+    state
   end
 
   def next_step!

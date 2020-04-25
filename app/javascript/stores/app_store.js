@@ -21,7 +21,6 @@ const defaultState = {
   timeOffset: 0,
   timerDuration: 600,
   timerEndAt: null,
-  lastTimerReset: null,
   tasks: [],
 }
 
