@@ -8,8 +8,7 @@ const Zone = ({ reference, icon, onClick, reflections, mode }) => {
 
   return (
     <div id={id} onClick={onClick} className={`zone mode-${mode}`}>
-      <img src={icon} width={'24px'} height={'24px'}></img>
-      {name} {displayedReflectionsCount}
+      {icon} {name} {displayedReflectionsCount}
     </div>
   )
 }

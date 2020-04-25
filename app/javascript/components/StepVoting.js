@@ -2,8 +2,10 @@ import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import StickyNote from './StickyNote'
 import constants from 'lib/utils/constants'
+import Icon from './Icon'
 
 const StepVoting = () => {
+  const { kind } = useSelector(state => state.retrospective)
   const reflections = useSelector(state => state.visibleReflections, shallowEqual)
   const zones = useSelector(state => state.retrospective.zones, shallowEqual)
   const ownReactions = useSelector(state => state.ownReactions, shallowEqual)
@@ -17,7 +19,7 @@ const StepVoting = () => {
       <div id='zones-container'>
         {zones.map((zone) => (
           <div className='zone-column' key={zone.id}>
-            <span>{zone.name}</span>
+            <span>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</span>
             {reflections.filter((reflection) => reflection.zone.id === zone.id).map((reflection) => {
               const relevantReactions = [...reactions, ...votes].filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
               return <StickyNote
