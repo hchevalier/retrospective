@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 class OrchestratorChannel < ApplicationCable::Channel
   def subscribed
     stream_for Retrospective.find(params[:retrospective_id])
     return unless current_user
+
     current_user.reload
 
     Rails.logger.debug "#{current_user.surname} (#{current_user.id}) subscribed"
@@ -23,8 +26,12 @@ class OrchestratorChannel < ApplicationCable::Channel
   def start_timer(data)
     return unless current_user.reload.organizer?
 
-    timer_end_at = Time.now + data['duration'].to_i.seconds
-    broadcast_to(current_user.retrospective, action: 'setTimer', parameters: { duration: data['duration'] })
+    timer_end_at = Time.zone.now + data['duration'].to_i.seconds
+    broadcast_to(
+      current_user.retrospective,
+      action: 'setTimer',
+      parameters: { timer_end_at: timer_end_at }
+    )
     current_user.retrospective.update!(timer_end_at: timer_end_at)
   end
 
@@ -35,7 +42,9 @@ class OrchestratorChannel < ApplicationCable::Channel
     current_revealer = retrospective.revealer
     new_revealer = retrospective.participants.find(data['uuid'])
     retrospective.update!(revealer: new_revealer)
-    broadcast_to(current_user.retrospective, action: 'refreshParticipant', parameters: { participant: current_revealer.reload.profile }) if current_revealer
+    if current_revealer
+      broadcast_to(current_user.retrospective, action: 'refreshParticipant', parameters: { participant: current_revealer.reload.profile })
+    end
     broadcast_to(current_user.retrospective, action: 'refreshParticipant', parameters: { participant: new_revealer.reload.profile })
   end
 

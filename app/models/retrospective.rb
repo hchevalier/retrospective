@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Retrospective < ApplicationRecord
   has_many :participants, inverse_of: :retrospective
   has_many :zones, inverse_of: :retrospective
@@ -43,7 +45,7 @@ class Retrospective < ApplicationRecord
     done: 'done'
   }
 
-  def as_json(current_user = nil)
+  def as_json
     {
       id: id,
       name: name,
@@ -63,37 +65,38 @@ class Retrospective < ApplicationRecord
       discussedReflection: discussed_reflection&.readable,
       allColors: Participant::COLORS,
       availableColors: available_colors,
-      tasks: tasks.order(:created_at).as_json
+      tasks: tasks.order(:created_at).as_json,
+      serverTime: Time.zone.now,
+      timerEndAt: timer_end_at
     }
 
-    state.merge!(visibleReflections: reflections.revealed.order(:created_at).map(&:readable)) unless step.in?(%w(gathering thinking))
+    unless step.in?(%w[gathering thinking])
+      state.merge!(visibleReflections: reflections.revealed.order(:created_at).map(&:readable))
+    end
 
-    if step.in?(%w(grouping voting))
+    if step.in?(%w[grouping voting])
       state.merge!(visibleReactions: reactions.emoji.map(&:readable))
-    elsif step.in?(%w(actions done))
+    elsif step.in?(%w[actions done])
       state.merge!(visibleReactions: reactions.map(&:readable))
     end
 
-    return state unless timer_end_at && (remaining_time = timer_end_at - Time.now ) > 0
-
-    state.merge(
-      timerDuration: remaining_time,
-      lastTimerReset: Time.now.to_i
-    )
+    state
   end
 
   def next_step!
     return if step == 'done'
 
-    next_step = Retrospective::steps.keys[step_index + 1]
-    most_upvoted_reflection =
-      reactions
+    next_step = Retrospective.steps.keys[step_index + 1]
+    if next_step == 'actions'
+      most_upvoted_reflection =
+        reactions
         .select(&:vote?)
         .group_by(&:target)
         .transform_values(&:count)
         .sort_by { |_, v| -v }
         .map(&:first)
-        .first if next_step == 'actions'
+        .first
+    end
 
     update!(step: next_step, discussed_reflection: most_upvoted_reflection || discussed_reflection)
 
@@ -150,7 +153,7 @@ class Retrospective < ApplicationRecord
   private
 
   def add_first_participant
-    self.participants << organizer
+    participants << organizer
   end
 
   def initialize_zones
@@ -163,7 +166,7 @@ class Retrospective < ApplicationRecord
   end
 
   def step_index
-    Retrospective::steps.keys.index(step)
+    Retrospective.steps.keys.index(step)
   end
 
   def broadcast_order(action, **parameters)

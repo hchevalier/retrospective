@@ -6,10 +6,11 @@ const rootReducer = (state, action) => {
   let ownReflections = state.ownReflections
 
   switch (action.type) {
-    case 'change-step':
+    case 'change-step': {
       const reflections = action.visibleReflections?.length > 0 ? action.visibleReflections : state.visibleReflections
       const reactions = action.visibleReactions?.length > 0 ? action.visibleReactions : state.visibleReactions
       return { ...state, step: action.step, visibleReflections: reflections, discussedReflection: action.discussedReflection, visibleReactions: reactions }
+    }
     case 'login':
       return {
         ...state,
@@ -56,7 +57,7 @@ const rootReducer = (state, action) => {
     case 'drop-task':
       return { ...state, tasks: reject(state.tasks, (task) => task.id == action.taskId) }
     case 'start-timer':
-      return { ...state, lastTimerReset: new Date().getTime(), timerDuration: action.duration }
+      return { ...state, timerEndAt: action.timerEndAt }
     default:
       return state
   }

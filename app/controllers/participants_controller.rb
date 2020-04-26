@@ -8,12 +8,6 @@ class ParticipantsController < ApplicationController
       participant.join
 
       additionnal_info = { step: retrospective.step }
-      if retrospective.timer_end_at && (remaining_time = retrospective.timer_end_at - Time.now ) > 0
-        additionnal_info = {
-          timerDuration: remaining_time,
-          lastTimerReset: Time.now.to_i
-        }
-      end
 
       render json: { profile: participant.profile, additionnal_info: additionnal_info }
     else

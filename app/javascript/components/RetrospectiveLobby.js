@@ -21,8 +21,8 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
       dispatch({ type: 'refresh-participant', participant: data.participant })
     } else if (action === 'next') {
       dispatch({ type: 'change-step', step: data.next_step, visibleReflections: data.visibleReflections, discussedReflection: data.discussedReflection, visibleReactions: data.visibleReactions })
-    } else if (action === 'setTimer' && loggedIn) {
-      dispatch({ type: 'start-timer', duration: data.duration })
+    } else if (action === 'setTimer') {
+      dispatch({ type: 'start-timer', timerEndAt: data.timer_end_at })
     } else if (action === 'changeColor') {
       dispatch({ type: 'change-color', participant: data.participant, availableColors: data.availableColors })
     } else if (action === 'revealReflection') {
@@ -40,7 +40,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
     } else if (action == 'dropTask') {
       dispatch({ type: 'drop-task', taskId: data.taskId })
     }
-  }, [loggedIn])
+  }, [dispatch])
 
   React.useEffect(() => {
     if (channel) {

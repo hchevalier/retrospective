@@ -1,17 +1,14 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import { post } from 'lib/httpClient'
-import consumer from 'channels/consumer'
-import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
 
 const LoginForm = ({ retrospectiveId }) => {
   const dispatch = useDispatch()
 
   const [surname, setSurname] = React.useState('')
   const [email, setEmail] = React.useState('')
-  const channel = useSelector(state => state.orchestrator)
 
   const login = () => {
     post({
