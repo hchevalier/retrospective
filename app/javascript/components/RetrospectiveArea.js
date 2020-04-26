@@ -119,8 +119,21 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
       {currentStep === 'voting' && <StepVoting />}
       {currentStep === 'actions' && <StepActions />}
       {currentStep === 'done' && <StepDone />}
-      <ReflectionForm open={displayReflectionForm} value={currentReflection} onChange={setCurrentReflection} onConfirmationClick={handleChooseZoneClick} confirmationLabel={'Choose zone'} onReflectionCancel={handleReflectionCancel} />
-      <ReflectionsList open={displayReflectionsList || revealer} filter={workingZone} onUpdateReflection={handleUpdateReflection} onDestroyReflection={handleDestroyReflection} onModalClose={handleReflectionsListClose} />
+      <ReflectionForm
+        open={displayReflectionForm}
+        value={currentReflection}
+        onChange={setCurrentReflection}
+        onConfirmationClick={handleChooseZoneClick}
+        confirmationLabel={'Choose zone'}
+        onReflectionCancel={handleReflectionCancel} />
+      <ReflectionsList
+        open={displayReflectionsList || revealer}
+        retrospectiveKind={kind}
+        withIcon={revealer}
+        filter={workingZone}
+        onUpdateReflection={handleUpdateReflection}
+        onDestroyReflection={handleDestroyReflection}
+        onModalClose={handleReflectionsListClose} />
       <RetrospectiveBottomBar onReflectionFormOpen={handleReflectionFormOpen} />
     </>
   )

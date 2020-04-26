@@ -1,9 +1,11 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import StickyNote from './StickyNote'
+import Icon from './Icon'
 import './StepGrouping.scss'
 
 const StepGrouping = () => {
+  const { kind } = useSelector(state => state.retrospective)
   const reflections = useSelector(state => state.visibleReflections, shallowEqual)
   const zones = useSelector(state => state.retrospective.zones, shallowEqual)
   const organizer = useSelector(state => state.profile.organizer)
@@ -16,7 +18,7 @@ const StepGrouping = () => {
       <div id='zones-container'>
         {zones.map((zone) => (
           <div className='zone-column' key={zone.id}>
-            <span>{zone.name}</span>
+            <span>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</span>
             {reflections.filter((reflection) => reflection.zone.id === zone.id).map((reflection) => {
               const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
               return <StickyNote key={reflection.id} reflection={reflection} showReactions reactions={concernedReactions} />

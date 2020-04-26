@@ -3,9 +3,10 @@ import { useSelector, shallowEqual } from 'react-redux'
 import Button from '@material-ui/core/Button'
 import Modal from '@material-ui/core/Modal'
 import ReflectionForm from './ReflectionForm'
+import Icon from './Icon'
 import './ReflectionsList.scss'
 
-const ReflectionsList = ({ open, filter, onUpdateReflection, onDestroyReflection, onModalClose }) => {
+const ReflectionsList = ({ open, filter, retrospectiveKind, withIcon, onUpdateReflection, onDestroyReflection, onModalClose }) => {
   const revealer = useSelector(state => state.profile.revealer)
   const currentStep = useSelector(state => state.step)
   const reflections = useSelector(state => state.ownReflections, shallowEqual)
@@ -64,6 +65,7 @@ const ReflectionsList = ({ open, filter, onUpdateReflection, onDestroyReflection
             <div>
               {displayableReflections.filter(shouldDisplayReflection).map((reflection, index) => (
                 <div key={index}>
+                  {withIcon && <Icon retrospectiveKind={retrospectiveKind} zone={reflection.zone.name} />}
                   <span>{reflection.content}</span>&nbsp;
                   {currentStep == 'thinking' && (
                     <>
