@@ -3,29 +3,30 @@ import { useSelector } from 'react-redux'
 import { Dialog, DialogTitle, List, ListItem, ListItemText } from '@material-ui/core'
 import './Timer.scss'
 
+const computeRemainingTime = endTime => {
+  return Math.max((endTime - new Date().getTime()) / 1000, 0)
+}
+
 const Timer = ({ organizer, show }) => {
   const timerEndAt = useSelector(state => state.timerEndAt)
   const timeOffset = useSelector(state => state.timeOffset)
-  const timerDuration = useSelector(state => state.timerDuration)
   const orchestratorChannel = useSelector(state => state.orchestrator)
 
+  const endTime = timerEndAt ? new Date(timerEndAt).getTime() - timeOffset : 0
+
   const [displayDurationDialog, setDisplayDurationDialog] = React.useState(false)
-  const [remainingTime, setRemainingTime] = React.useState(timerDuration)
+  const [remainingTime, setRemainingTime] = React.useState(computeRemainingTime(endTime))
 
   React.useEffect(() => {
-    // On timer start
-    if (timerEndAt) {
-      const endTime = new Date(timerEndAt).getTime() - timeOffset
-      const intervalId = setInterval(() => {
-        const theoricalRemainingTime = (endTime - new Date().getTime()) / 1000
-        setRemainingTime(theoricalRemainingTime > 0 ? theoricalRemainingTime : 0)
-        if (theoricalRemainingTime === 0) {
-          clearInterval(intervalId)
-        }
-      }, 500)
-      return () => clearInterval(intervalId)
-    }
-  }, [timerEndAt, timeOffset])
+    const intervalId = setInterval(() => {
+      const theoricalRemainingTime = computeRemainingTime(endTime)
+      setRemainingTime(theoricalRemainingTime)
+      if (theoricalRemainingTime === 0) {
+        clearInterval(intervalId)
+      }
+    }, 500)
+    return () => clearInterval(intervalId)
+  }, [endTime])
 
   const handleTimerClick = () => {
     if (organizer) {
@@ -55,9 +56,9 @@ const Timer = ({ organizer, show }) => {
     <>
       {displayTimer && <div id='timer' onClick={handleTimerClick}>
         <span>Timer:</span>
-        <span className='minutes'>{remainingMinutes < 10 ? '0' : ''}{remainingMinutes}</span>
+        <span className='minutes'>{timerEndAt ? `${remainingMinutes}`.padStart(2, '0') : '--'}</span>
         <span className='colon-separator'>:</span>
-        <span className='seconds'>{remainingSeconds < 10 ? '0' : ''}{remainingSeconds}</span>
+        <span className='seconds'>{timerEndAt ? `${remainingSeconds}`.padStart(2, '0') : '--'}</span>
       </div>}
       <Dialog onClose={handleClose} aria-labelledby='duration-dialog' open={displayDurationDialog}>
         <DialogTitle id='duration-dialog'>Set duration</DialogTitle>

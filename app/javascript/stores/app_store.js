@@ -19,7 +19,6 @@ const defaultState = {
   visibleReactions: [],
   orchestrator: null,
   timeOffset: 0,
-  timerDuration: 600,
   timerEndAt: null,
   tasks: [],
 }

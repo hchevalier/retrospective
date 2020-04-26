@@ -11,13 +11,13 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     assert_no_css('#timer')
   end
 
-  test 'timer displays 10:00 for organizer by default' do
+  test 'timer displays --:-- for organizer by default' do
     retrospective = create(:retrospective, step: 'thinking')
 
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
-    assert_equal 'Timer:10:00', find('#timer').text.split("\n").join
+    assert_equal 'Timer:--:--', find('#timer').text.split("\n").join
   end
 
   test 'timer does not show for other participants if not running' do
