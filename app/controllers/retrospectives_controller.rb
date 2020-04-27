@@ -1,5 +1,6 @@
 class RetrospectivesController < ApplicationController
   before_action :http_authenticate
+  before_action :preload_current_user_and_relationships, only: :show
 
   def new; end
 
@@ -18,7 +19,7 @@ class RetrospectivesController < ApplicationController
     @retrospective =
       current_user&.retrospective_id == params[:id] ?
       current_user.retrospective :
-      Retrospective.includes(:participants, :zones, reflections: [:zone, :reactions, owner: :organized_retrospective]).find(params[:id])
+      Retrospective.includes(:participants, :zones).find(params[:id])
 
     @initial_state = @retrospective.initial_state(current_user)
 
@@ -38,6 +39,10 @@ class RetrospectivesController < ApplicationController
 
   def organizer_params
     params.require(:organizer).permit(:surname, :email)
+  end
+
+  def preload_current_user_and_relationships
+    current_user_with_relationships_included
   end
 
   def http_authenticate
