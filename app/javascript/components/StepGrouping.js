@@ -4,7 +4,7 @@ import StickyNote from './StickyNote'
 import Icon from './Icon'
 import './StepGrouping.scss'
 
-const isVisible = (reflectionId, mode = 'visible', threshold = 0) => {
+const isVisible = (reflectionId, mode = 'visible', threshold = 20) => {
   const element = document.querySelector(`.reflection[data-id='${reflectionId}']`)
   if (!element) return false
 
@@ -25,6 +25,7 @@ const StepGrouping = () => {
   const reactions = useSelector(state => state.visibleReactions, shallowEqual)
 
   const [columnsWithUnreadReflections, setColumnsWithUnreadReflections] = React.useState({})
+  const [visibleReflections, setVisibleReflections] = React.useState([])
 
   const setUnreadReflection = (reflection) => {
     const alreadyTracked = columnsWithUnreadReflections[reflection.zone.id] || []
@@ -34,13 +35,19 @@ const StepGrouping = () => {
   const handleScroll = () => {
     Object.entries(columnsWithUnreadReflections).map(([column, reflectionsFromColumn]) => {
       reflectionsFromColumn.map((reflectionId) => {
-        if (isVisible(reflectionId)) {
+        const visible = isVisible(reflectionId)
+        if (visible && !visibleReflections.find((visibleReflectionId) => visibleReflectionId === reflectionId)) {
+          setVisibleReflections([...visibleReflections, reflectionId])
+
           setTimeout(() => {
             if (isVisible(reflectionId)) {
               const filteredReflections = (columnsWithUnreadReflections[column] || []).filter((trackedReflectionId) => trackedReflectionId !== reflectionId)
               setColumnsWithUnreadReflections({ ...columnsWithUnreadReflections, [column]: filteredReflections })
             }
+            setVisibleReflections(visibleReflections.filter((visibleReflectionId) => visibleReflectionId !== reflectionId))
           }, 2000)
+        } else if (!visible) {
+          setVisibleReflections(visibleReflections.filter((visibleReflectionId) => visibleReflectionId !== reflectionId))
         }
       })
     })
@@ -71,18 +78,21 @@ const StepGrouping = () => {
       <div id='zones-container'>
         {zones.map((zone) => {
           const unreadFromColumn = columnsWithUnreadReflections[zone.id] || []
-          const anyAbove = !!unreadFromColumn.find((reflectionId) => isVisible(reflectionId, 'above'))
-          const anyBelow = !!unreadFromColumn.find((reflectionId) => isVisible(reflectionId, 'above'))
-          // TODO: add a floating notice at top of column if anyAbove
-          // TODO: add a floating notice at bottom of column if anyBelow
+          const unreadReflectionAbove = !!unreadFromColumn.find((reflectionId) => isVisible(reflectionId, 'above'))
+          const unreadReflectionBelow = !!unreadFromColumn.find((reflectionId) => isVisible(reflectionId, 'below'))
+
           return (
             <div className='zone-column' key={zone.id}>
-              <span>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</span>
-              {reflections.filter((reflection) => reflection.zone.id === zone.id).map((reflection) => {
-                const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
-                const isUnread = !!unreadFromColumn.find((reflectionId) => reflectionId === reflection.id)
-                return <StickyNote key={reflection.id} reflection={reflection} showReactions reactions={concernedReactions} glowing={isUnread} />
-              })}
+              <span className='zone-header'>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</span>
+              <div className='scrolling-zone'>
+                {reflections.filter((reflection) => reflection.zone.id === zone.id).map((reflection) => {
+                  const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
+                  const isUnread = !!unreadFromColumn.find((reflectionId) => reflectionId === reflection.id)
+                  return <StickyNote key={reflection.id} reflection={reflection} showReactions reactions={concernedReactions} glowing={isUnread} />
+                })}
+              </div>
+              {unreadReflectionAbove && <div className='unread-notice above'>⬆︎ Unread reflection ⬆︎</div>}
+              {unreadReflectionBelow && <div className='unread-notice below'>⬇︎ Unread reflection ⬇︎</div>}
             </div>
           )
         })}

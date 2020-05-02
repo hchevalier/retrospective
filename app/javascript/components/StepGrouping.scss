@@ -5,8 +5,33 @@
   .zone-column {
     display: flex;
     flex-direction: column;
+    position: relative;
     flex-grow: 1;
     border: 1px solid gray;
-    padding: 20px;
+
+    .zone-header {
+      padding: 10px 20px;
+    }
+
+    .scrolling-zone {
+      padding: 0 20px 20px;
+    }
+
+    .unread-notice {
+      background: #000000aa;
+      color: white;
+      text-align: center;
+      position: sticky;
+      z-index: 2;
+      width:100%;
+
+      &.above {
+        top: 20px;
+      }
+
+      &.below {
+        bottom: 20px
+      }
+    }
   }
 }
