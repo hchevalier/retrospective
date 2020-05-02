@@ -4,6 +4,10 @@
   min-width: 150px;
   position: relative;
   margin-top: 10px;
+
+  &.glowing {
+    border-color: goldenrod !important;
+  }
 }
 
 .reflection:after {
