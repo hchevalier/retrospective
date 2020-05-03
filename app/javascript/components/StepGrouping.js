@@ -59,8 +59,14 @@ const StepGrouping = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [columnsWithUnreadReflections])
 
-  // TODO: do not trigger this effect on first render
+  const firstRender = React.useRef(true)
+
   React.useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false
+      return
+    }
+
     setTimeout(() => {
       const latestReflection = reflections[reflections.length - 1]
       if (!latestReflection) return

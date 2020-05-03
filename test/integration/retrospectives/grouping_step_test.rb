@@ -75,6 +75,47 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     assert_text 'A glad reflection'
   end
 
+  test 'unread reflections out of viewport are noticed by a banner' do
+    retrospective = create(:retrospective, step: 'grouping')
+    other_participant = create(:other_participant, retrospective: retrospective)
+    create_list(:reflection, 6, :glad, owner: other_participant, revealed: false)
+    create(:reflection, :mad, owner: other_participant, revealed: false)
+
+    logged_in_as(retrospective.organizer)
+    visit retrospective_path(retrospective)
+    find(".participant[data-id='#{other_participant.id}']").click
+
+    other_participant_window = open_new_window
+    within_window(other_participant_window) do
+      logged_in_as(other_participant)
+      visit retrospective_path(retrospective)
+
+      assert_logged_in(other_participant, with_flags: '(you, reveal.)')
+      assert_css '#reflections-list-modal'
+
+      all('#reflections-list-modal button.MuiButton-text').each.with_index do |reveal_button, index|
+        next if index > 5
+        reveal_button.click
+      end
+    end
+
+    within find('.zone-column', match: :first) do
+      assert_text '⬇︎ Unread reflection ⬇︎'
+      page.execute_script 'window.scrollBy(0, 2000)'
+      refute_text '⬇︎ Unread reflection ⬇︎', wait: 3 # text will disappear after 2 seconds
+    end
+
+    within_window(other_participant_window) do
+      all('#reflections-list-modal button.MuiButton-text').last.click
+    end
+
+    within all('.zone-column').last do
+      assert_text '⬆︎ Unread reflection ⬆︎'
+      page.execute_script 'window.scrollBy(0, 0)'
+      refute_text '⬆︎ Unread reflection ⬆︎', wait: 3 # text will disappear after 2 seconds
+    end
+  end
+
   test 'can add reactions to a revealed reflection' do
     retrospective = create(:retrospective, step: 'grouping')
     other_participant = create(:other_participant, retrospective: retrospective)
