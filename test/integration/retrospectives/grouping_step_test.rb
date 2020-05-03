@@ -116,6 +116,32 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'clicking on notice banner scrolls to unread reflection from column' do
+    retrospective = create(:retrospective, step: 'grouping')
+    other_participant = create(:other_participant, retrospective: retrospective)
+    create_list(:reflection, 6, :glad, owner: other_participant, revealed: false)
+
+    logged_in_as(retrospective.organizer)
+    visit retrospective_path(retrospective)
+    find(".participant[data-id='#{other_participant.id}']").click
+
+    other_participant_window = open_new_window
+    within_window(other_participant_window) do
+      logged_in_as(other_participant)
+      visit retrospective_path(retrospective)
+
+      assert_logged_in(other_participant, with_flags: '(you, reveal.)')
+      assert_css '#reflections-list-modal'
+
+      all('#reflections-list-modal button.MuiButton-text').each(&:click)
+    end
+
+    within find('.zone-column', match: :first) do
+      find('.unread-notice.below').click
+      refute_text '⬇︎ Unread reflection ⬇︎', wait: 3 # text will disappear after 2 seconds
+    end
+  end
+
   test 'can add reactions to a revealed reflection' do
     retrospective = create(:retrospective, step: 'grouping')
     other_participant = create(:other_participant, retrospective: retrospective)

@@ -53,6 +53,10 @@ const StepGrouping = () => {
     })
   }
 
+  const scrollToUnread = (reflectionId) => {
+    document.querySelector(`.reflection[data-id='${reflectionId}']`).scrollIntoView()
+  }
+
   React.useEffect(() => {
     window.addEventListener('scroll', handleScroll)
 
@@ -97,8 +101,8 @@ const StepGrouping = () => {
                   return <StickyNote key={reflection.id} reflection={reflection} showReactions reactions={concernedReactions} glowing={isUnread} />
                 })}
               </div>
-              {unreadReflectionAbove && <div className='unread-notice above'>⬆︎ Unread reflection ⬆︎</div>}
-              {unreadReflectionBelow && <div className='unread-notice below'>⬇︎ Unread reflection ⬇︎</div>}
+              {unreadReflectionAbove && <div className='unread-notice above' onClick={() => scrollToUnread(unreadFromColumn[0])}>⬆︎ Unread reflection ⬆︎</div>}
+              {unreadReflectionBelow && <div className='unread-notice below' onClick={() => scrollToUnread(unreadFromColumn[0])}>⬇︎ Unread reflection ⬇︎</div>}
             </div>
           )
         })}
