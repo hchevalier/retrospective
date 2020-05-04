@@ -1,6 +1,6 @@
 import React from 'react'
 import { Provider, useSelector, useDispatch } from 'react-redux'
-import appStore from 'stores/app_store'
+import appStore from 'stores'
 import consumer from 'channels/consumer'
 import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
 import RetrospectiveArea from './RetrospectiveArea'
@@ -11,8 +11,8 @@ import './RetrospectiveLobby.scss'
 const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
   const dispatch = useDispatch()
 
-  const loggedIn = useSelector(state => !!state.profile)
-  const channel = useSelector(state => state.orchestrator)
+  const loggedIn = useSelector(state => !!state.profile.uuid)
+  const channel = useSelector(state => state.retrospective.orchestrator)
 
   const handleActionReceived = React.useCallback((action, data) => {
     if (action === 'newParticipant') {

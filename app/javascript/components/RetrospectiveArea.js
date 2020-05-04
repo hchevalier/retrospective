@@ -20,8 +20,8 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
     listing-reflections
   */
   const revealer = useSelector(state => state.profile.revealer)
-  const currentStep = useSelector(state => state.step)
-  const channel = useSelector(state => state.orchestrator)
+  const currentStep = useSelector(state => state.retrospective.step)
+  const channel = useSelector(state => state.retrospective.orchestrator)
 
   const [displayReflectionForm, setDisplayReflectionForm] = useState(false)
   const [displayReflectionsList, setDisplayReflectionsList] = useState(false)

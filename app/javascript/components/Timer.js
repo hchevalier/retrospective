@@ -8,9 +8,9 @@ const computeRemainingTime = endTime => {
 }
 
 const Timer = ({ organizer, show }) => {
-  const timerEndAt = useSelector(state => state.timerEndAt)
-  const timeOffset = useSelector(state => state.timeOffset)
-  const orchestratorChannel = useSelector(state => state.orchestrator)
+  const timerEndAt = useSelector(state => state.retrospective.timerEndAt)
+  const timeOffset = useSelector(state => state.retrospective.timeOffset)
+  const orchestratorChannel = useSelector(state => state.retrospective.orchestrator)
 
   const endTime = timerEndAt ? new Date(timerEndAt).getTime() - timeOffset : 0
 

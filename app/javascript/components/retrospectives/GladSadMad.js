@@ -4,8 +4,8 @@ import Zone from './Zone'
 import Icon from '../Icon'
 
 const GladSadMad = ({ mode, onZoneClicked }) => {
-  const reflections = useSelector(state => state.ownReflections, shallowEqual)
-  const zones = useSelector(state => state.retrospective.zones, shallowEqual)
+  const reflections = useSelector(state => state.retrospective.ownReflections, shallowEqual)
+  const zones = useSelector(state => state.retrospective.retrospective.zones, shallowEqual)
 
   const glad = zones.find((zone) => zone.name === 'Glad')
   const sad = zones.find((zone) => zone.name === 'Sad')

@@ -7,6 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import { post, put, destroy } from 'lib/httpClient'
 import { useSelector, shallowEqual } from 'react-redux'
+import PropTypes from 'prop-types'
 import Task from './Task'
 import './ActionEditor.scss'
 
@@ -16,18 +17,18 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
   const [reflectionOnTypeStart, setReflectionOnTypeStart] = React.useState(null)
   const [editedTask, setEditedTask] = React.useState(null)
 
-  const retrospectiveId = useSelector(state => state.retrospective.id)
+  const retrospectiveId = useSelector(state => state.retrospective.retrospective.id)
   const participants = useSelector(state => state.participants, shallowEqual)
-  const tasks = useSelector(state => state.tasks, shallowEqual)
+  const tasks = useSelector(state => state.retrospective.tasks, shallowEqual)
 
-  const onDescriptionChange = React.useCallback((event) => {
+  const onDescriptionChange = event => {
     if (!reflectionOnTypeStart) {
       setReflectionOnTypeStart({ id: reflectionId, content: reflectionContent })
     }
     setDescription(event.target.value)
-  }, [reflectionId])
+  }
 
-  const onTakeActionClick = React.useCallback(() => {
+  const onTakeActionClick = () => {
     const method = editedTask ? put : post
     method({
       url: `/retrospectives/${retrospectiveId}/tasks${editedTask ? `/${editedTask}` : ''}`,
@@ -37,18 +38,18 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
         description: description
       }
     })
-    .then(()=> {
-      setDescription('')
-      setAssignee('')
-      setReflectionOnTypeStart(null)
-      setEditedTask(null)
-    })
-    .catch(error => console.warn(error))
-  }, [assignee, description, reflectionOnTypeStart, editedTask])
+      .then(() => {
+        setDescription('')
+        setAssignee('')
+        setReflectionOnTypeStart(null)
+        setEditedTask(null)
+      })
+      .catch(error => console.warn(error))
+  }
 
-  const resetReflectionOnTypeStart = React.useCallback(() => {
+  const resetReflectionOnTypeStart = () => {
     setReflectionOnTypeStart({ id: reflectionId, content: reflectionContent })
-  }, [reflectionId, reflectionContent])
+  }
 
   const handleEditClick = (task) => {
     setDescription(task.description)
@@ -60,7 +61,7 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
   const handleDeleteClick = (task) => {
     if (confirm('Are you sure?')) {
       destroy({ url: `/retrospectives/${retrospectiveId}/tasks/${task.id}` })
-      .catch(error => console.warn(error))
+        .catch(error => console.warn(error))
     }
   }
 
@@ -118,6 +119,11 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
       </div>
     </>
   )
+}
+
+ActionEditor.propTypes = {
+  reflectionId: PropTypes.string,
+  reflectionContent: PropTypes.string
 }
 
 export default ActionEditor

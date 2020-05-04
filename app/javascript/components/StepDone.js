@@ -7,11 +7,11 @@ import Task from './Task'
 import './StepActions.scss'
 
 const StepDone = () => {
-  const visibleReflections = useSelector(state => state.visibleReflections, shallowEqual)
-  const initialDiscussedReflection = useSelector(state => state.discussedReflection)
+  const visibleReflections = useSelector(state => state.retrospective.visibleReflections, shallowEqual)
+  const initialDiscussedReflection = useSelector(state => state.retrospective.discussedReflection)
   const [currentReflection, setCurrentReflection] = React.useState(initialDiscussedReflection)
-  const visibleReactions = useSelector(state => state.visibleReactions, shallowEqual)
-  const tasks = useSelector(state => state.tasks, shallowEqual)
+  const visibleReactions = useSelector(state => state.retrospective.visibleReactions, shallowEqual)
+  const tasks = useSelector(state => state.retrospective.tasks, shallowEqual)
 
   const relevantReactions = visibleReactions.filter((reaction) => reaction.targetId === `Reflection-${currentReflection.id}`)
 

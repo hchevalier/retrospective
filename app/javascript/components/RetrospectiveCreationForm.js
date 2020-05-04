@@ -5,7 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
-import PropTypes from "prop-types"
+import PropTypes from 'prop-types'
 import { post } from 'lib/httpClient'
 
 const RetrospectiveCreationForm = ({ retrospective_kinds: retrospectiveKinds }) => {
@@ -56,5 +56,8 @@ const RetrospectiveCreationForm = ({ retrospective_kinds: retrospectiveKinds }) 
 }
 
 // TODO: PropTypes.retrospectiveKinds
+RetrospectiveCreationForm.propTypes = {
+  retrospective_kinds: PropTypes.array
+}
 
 export default RetrospectiveCreationForm

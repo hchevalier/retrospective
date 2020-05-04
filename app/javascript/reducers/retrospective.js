@@ -1,8 +1,23 @@
-import { reject, uniqBy } from 'lib/helpers/array'
+import { reject } from 'lib/helpers/array'
 
-const rootReducer = (state, action) => {
-  let profile = state.profile
-  let participants = state.participants
+export const initialState = {
+  allColors: [],
+  availableColors: [],
+  retrospective: null,
+  zones: [],
+  step: '',
+  ownReflections: [],
+  visibleReflections: [],
+  discussedReflection: null,
+  ownReactions: [],
+  visibleReactions: [],
+  orchestrator: null,
+  timeOffset: 0,
+  timerEndAt: null,
+  tasks: []
+}
+
+const retrospective = (state = initialState, action) => {
   let ownReflections = state.ownReflections
 
   switch (action.type) {
@@ -11,23 +26,6 @@ const rootReducer = (state, action) => {
       const reactions = action.visibleReactions?.length > 0 ? action.visibleReactions : state.visibleReactions
       return { ...state, step: action.step, visibleReflections: reflections, discussedReflection: action.discussedReflection, visibleReactions: reactions }
     }
-    case 'login':
-      return {
-        ...state,
-        participants: uniqBy([action.profile, ...participants], 'uuid'),
-        profile: action.profile,
-        ...action.additionnalInfo
-      }
-    case 'new-participant':
-      return { ...state, participants: uniqBy([...participants, action.newParticipant], 'uuid') }
-    case 'refresh-participant':
-      profile = action.participant.uuid === profile?.uuid ? action.participant : profile
-      participants = updateArray(participants, action.participant, 'uuid')
-      return { ...state, participants: participants, profile: profile }
-    case 'change-color':
-      profile = action.participant.uuid === profile?.uuid ? action.participant : profile
-      participants = updateArray(participants, action.participant, 'uuid')
-      return { ...state, availableColors: action.availableColors, participants: participants, profile: profile }
     case 'set-channel':
       return { ...state, orchestrator: action.subscription }
     case 'add-reflection':
@@ -67,4 +65,4 @@ const updateArray = (array, newItem, attribute) => {
   return array.map(item => item[attribute] === newItem[attribute] ? newItem : item)
 }
 
-export default rootReducer
+export default retrospective

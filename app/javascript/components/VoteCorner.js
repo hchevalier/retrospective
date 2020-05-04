@@ -5,27 +5,28 @@ import { post, destroy } from 'lib/httpClient'
 import Vote from './Vote'
 import './VoteCorner.scss'
 import constants from 'lib/utils/constants'
+import PropTypes from 'prop-types'
 
 const VoteCorner = ({ canVote, reflection, votes, noStandOut = false, inline = false }) => {
   const dispatch = useDispatch()
 
   const profile = useSelector(state => state.profile)
-  const retrospectiveId = useSelector(state => state.retrospective.id)
-  const allOwnVotes = useSelector(state => state.ownReactions, shallowEqual).filter((reaction) => reaction.kind === 'vote')
+  const retrospectiveId = useSelector(state => state.retrospective.retrospective.id)
+  const allOwnVotes = useSelector(state => state.retrospective.ownReactions, shallowEqual).filter((reaction) => reaction.kind === 'vote')
 
   const createVote = () => {
     post({
       url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions`,
       payload: { kind: 'vote' }
     })
-    .then(data => dispatch({ type: 'add-reaction', reaction: data }))
-    .catch(error => console.warn(error))
+      .then(data => dispatch({ type: 'add-reaction', reaction: data }))
+      .catch(error => console.warn(error))
   }
 
   const removeVote = (reaction) => {
     destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions/${reaction.id}` })
-    .then(_data => dispatch({ type: 'delete-reaction', reactionId: reaction.id }))
-    .catch(error => console.warn(error))
+      .then(() => dispatch({ type: 'delete-reaction', reactionId: reaction.id }))
+      .catch(error => console.warn(error))
   }
 
   const ownVotes = votes.filter((vote) => vote.authorId === profile.uuid)
@@ -43,6 +44,14 @@ const VoteCorner = ({ canVote, reflection, votes, noStandOut = false, inline = f
         onRemove={canVote ? removeVote : undefined} />
     </div>
   )
+}
+
+VoteCorner.propTypes = {
+  canVote: PropTypes.bool,
+  reflection: PropTypes.object,
+  votes: PropTypes.array,
+  noStandOut: PropTypes.bool,
+  inline: PropTypes.bool
 }
 
 export default VoteCorner
