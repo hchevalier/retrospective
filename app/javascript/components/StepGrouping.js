@@ -12,87 +12,60 @@ const StepGrouping = () => {
   const organizer = useSelector(state => state.profile.organizer)
   const reactions = useSelector(state => state.visibleReactions, shallowEqual)
 
-  const [columnsWithUnreadReflections, setColumnsWithUnreadReflections] = React.useState({})
-  const [visibleReflections, setVisibleReflections] = React.useState([])
+  const visibilityObserver = React.useMemo(() => {
+    const options = {
+      root: document.querySelector('#zones-container'),
+      rootMargin: '0px',
+      threshold: 0
+    }
 
-  const setUnreadReflection = (reflection) => {
-    const alreadyTracked = columnsWithUnreadReflections[reflection.zone.id] || []
-    setColumnsWithUnreadReflections({ ...columnsWithUnreadReflections, [reflection.zone.id]: [...alreadyTracked, reflection.id] })
-  }
+    return new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.2) {
+          let timeoutId = entry.dataset.visibilityId
+          if (timeoutId) return
 
-  const handleScroll = () => {
-    Object.entries(columnsWithUnreadReflections).map(([column, reflectionsFromColumn]) => {
-      reflectionsFromColumn.map((reflectionId) => {
-        const visible = isReflectionVisible(reflectionId)
-        if (visible && !visibleReflections.find((visibleReflectionId) => visibleReflectionId === reflectionId)) {
-          setVisibleReflections([...visibleReflections, reflectionId])
-
-          setTimeout(() => {
-            if (isReflectionVisible(reflectionId)) {
-              const filteredReflections = (columnsWithUnreadReflections[column] || []).filter((trackedReflectionId) => trackedReflectionId !== reflectionId)
-              setColumnsWithUnreadReflections({ ...columnsWithUnreadReflections, [column]: filteredReflections })
-            }
-            setVisibleReflections(visibleReflections.filter((visibleReflectionId) => visibleReflectionId !== reflectionId))
+          timeoutId = setTimeout(() => {
+            observer.unobserve(entry)
+            clearTimeout(timeoutId)
+            entry.dataset.read = true
+            entry.dataset.timeoutId = null
           }, 2000)
-        } else if (!visible) {
-          setVisibleReflections(visibleReflections.filter((visibleReflectionId) => visibleReflectionId !== reflectionId))
+          entry.dataset.visibilityId = timeoutId
+        } else {
+          timeoutId = entry.dataset.visibilityId
+          if (!timeoutId) return
+
+          clearTimeout(timeoutId)
+          entry.dataset.timeoutId = null
+          entry.dataset.read = false
+          // TODO set entry.dataset.above if entry is above
+          // TODO set entry.dataset.below if entry is below
         }
       })
-    })
-  }
+    }, options)
+  }, [])
 
-  React.useEffect(() => {
-    window.addEventListener('scroll', handleScroll)
-
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [columnsWithUnreadReflections])
-
-  const firstRender = React.useRef(true)
-  const visibleReflectionRefs = React.useRef(visibleReflections.reduce((map, reflection) => {
+  const reflectionRefs = React.useState(reflections.reduce((map, reflection) => {
     map[reflection.id] = React.createRef()
     return map
   }, {}))
 
-  const scrollToUnread = (reflectionId) => {
-    visibleReflectionRefs.current[reflectionId].current.scrollIntoView()
+  const scrollToStickyNote = (reflectionId) => {
+    reflectionRefs[reflectionId].current.scrollIntoView()
   }
-
-  const isReflectionVisible = (reflectionId, mode = 'visible', threshold = 20) => {
-    const element = visibleReflectionRefs.current[reflectionId]?.current
-    if (!element) return false
-
-    const rect = element.getBoundingClientRect()
-    const viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight)
-    const isAbove = rect.bottom - threshold < 0
-    const isBelow = rect.top - viewHeight + threshold >= 0
-
-    return mode === 'above' ? isAbove : (mode === 'below' ? isBelow : !isAbove && !isBelow)
-  }
-
-  React.useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false
-      return
-    }
-
-    const latestReflection = reflections[reflections.length - 1]
-    if (!latestReflection) return
-
-    visibleReflectionRefs.current[latestReflection.id] = React.createRef()
-
-    setTimeout(() => {
-      if (!isReflectionVisible(latestReflection.id) && latestReflection.owner.uuid !== profile.uuid) {
-        setUnreadReflection(latestReflection)
-      }
-    }, 500)
-  }, [reflections])
 
   const setStickyNoteRef = (stickyNote) => {
     if (!stickyNote) return
 
-    const ref = visibleReflectionRefs.current[stickyNote.dataset.id] || React.createRef()
+    if (stickyNote.props.reflection.owner.uuid === profile.uuid) {
+      stickyNote.dataset.read = true
+      return
+    }
+
+    const ref = reflectionRefs[stickyNote.dataset.id] || React.createRef()
     ref.current = stickyNote
-    visibleReflectionRefs.current[stickyNote.dataset.id] = ref
+    visibilityObserver.observe(stickyNote)
   }
 
   return (
@@ -101,22 +74,25 @@ const StepGrouping = () => {
       {!organizer && <div>The organizer now chooses a participant so that he can reveal his reflections</div>}
       <div id='zones-container'>
         {zones.map((zone) => {
-          const unreadFromColumn = columnsWithUnreadReflections[zone.id] || []
-          const unreadReflectionAbove = !!unreadFromColumn.find((reflectionId) => isReflectionVisible(reflectionId, 'above'))
-          const unreadReflectionBelow = !!unreadFromColumn.find((reflectionId) => isReflectionVisible(reflectionId, 'below'))
+          const reflectionsInZone = reflections.filter((reflection) => reflection.zone.id === zone.id)
+          const stickyNotesInZone = Object.entries(reflectionRefs).map(([_, stickyNoteRef]) => {
+            return stickyNoteRef.props.reflection.zone.id === zone.id ? stickyNoteRef.current : null
+          })
+          const unreadReflectionAbove = !!stickyNotesInZone.find((stickyNote) => stickyNote.dataset.above === true)
+          const unreadReflectionBelow = !!stickyNotesInZone.find((stickyNote) => stickyNote.dataset.below === true)
 
           return (
             <div className='zone-column' key={zone.id}>
               <span className='zone-header'>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</span>
               <div className='scrolling-zone'>
-                {reflections.filter((reflection) => reflection.zone.id === zone.id).map((reflection) => {
+                {reflectionsInZone.map((reflection) => {
                   const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
-                  const isUnread = !!unreadFromColumn.find((reflectionId) => reflectionId === reflection.id)
+                  const isUnread = !!stickyNotesInZone.find((reflectionId) => reflectionId === reflection.id)
                   return <StickyNote key={reflection.id} ref={setStickyNoteRef} reflection={reflection} showReactions reactions={concernedReactions} glowing={isUnread} />
                 })}
               </div>
-              {unreadReflectionAbove && <div className='unread-notice above' onClick={() => scrollToUnread(unreadFromColumn[0])}>⬆︎ Unread reflection ⬆︎</div>}
-              {unreadReflectionBelow && <div className='unread-notice below' onClick={() => scrollToUnread(unreadFromColumn[0])}>⬇︎ Unread reflection ⬇︎</div>}
+              {unreadReflectionAbove && <div className='unread-notice above' onClick={() => scrollToStickyNote(stickyNotesInZone[0])}>⬆︎ Unread reflection ⬆︎</div>}
+              {unreadReflectionBelow && <div className='unread-notice below' onClick={() => scrollToStickyNote(stickyNotesInZone[0])}>⬇︎ Unread reflection ⬇︎</div>}
             </div>
           )
         })}
