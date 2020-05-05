@@ -21,44 +21,50 @@ const StepGrouping = () => {
 
     return new IntersectionObserver((entries, observer) => {
       entries.forEach((entry) => {
+        const target = entry.target
+        let timeoutId = null
+
         if (entry.isIntersecting && entry.intersectionRatio > 0.2) {
-          let timeoutId = entry.dataset.visibilityId
+          timeoutId = target.dataset.visibilityId
           if (timeoutId) return
 
           timeoutId = setTimeout(() => {
+            console.log('An observed reflection was read')
             observer.unobserve(entry)
             clearTimeout(timeoutId)
-            entry.dataset.read = true
-            entry.dataset.timeoutId = null
+            target.dataset.read = true
+            target.dataset.visibilityId = null
           }, 2000)
-          entry.dataset.visibilityId = timeoutId
+          target.dataset.visibilityId = timeoutId
+          console.log('An observed reflection entered the screen')
         } else {
-          timeoutId = entry.dataset.visibilityId
+          target.dataset.above = entry.boundingClientRect.top < entry.rootBounds.top
+          target.dataset.below = entry.boundingClientRect.top > entry.rootBounds.top
+
+          timeoutId = target.dataset.visibilityId
           if (!timeoutId) return
 
+          console.log('An observed reflection left the screen')
           clearTimeout(timeoutId)
-          entry.dataset.timeoutId = null
-          entry.dataset.read = false
-          // TODO set entry.dataset.above if entry is above
-          // TODO set entry.dataset.below if entry is below
+          target.dataset.visibilityId = null
         }
       })
     }, options)
   }, [])
 
-  const reflectionRefs = React.useState(reflections.reduce((map, reflection) => {
+  const [reflectionRefs, _setReflectionRefs] = React.useState(reflections.reduce((map, reflection) => {
     map[reflection.id] = React.createRef()
     return map
   }, {}))
 
-  const scrollToStickyNote = (reflectionId) => {
-    reflectionRefs[reflectionId].current.scrollIntoView()
+  const scrollToStickyNote = (stickyNote) => {
+    stickyNote.scrollIntoView()
   }
 
   const setStickyNoteRef = (stickyNote) => {
     if (!stickyNote) return
 
-    if (stickyNote.props.reflection.owner.uuid === profile.uuid) {
+    if (stickyNote.dataset.ownerUuid === profile.uuid) {
       stickyNote.dataset.read = true
       return
     }
@@ -76,10 +82,10 @@ const StepGrouping = () => {
         {zones.map((zone) => {
           const reflectionsInZone = reflections.filter((reflection) => reflection.zone.id === zone.id)
           const stickyNotesInZone = Object.entries(reflectionRefs).map(([_, stickyNoteRef]) => {
-            return stickyNoteRef.props.reflection.zone.id === zone.id ? stickyNoteRef.current : null
-          })
-          const unreadReflectionAbove = !!stickyNotesInZone.find((stickyNote) => stickyNote.dataset.above === true)
-          const unreadReflectionBelow = !!stickyNotesInZone.find((stickyNote) => stickyNote.dataset.below === true)
+            return stickyNoteRef?.current?.dataset.zoneId == zone.id ? stickyNoteRef.current : null
+          }).filter((stickyNote) => !!stickyNote)
+          const unreadReflectionAbove = stickyNotesInZone.find((stickyNote) => !stickyNote.dataset.read !== 'true' && stickyNote.dataset.above === 'true')
+          const unreadReflectionBelow = stickyNotesInZone.find((stickyNote) => !stickyNote.dataset.read !== 'true' && stickyNote.dataset.below === 'true')
 
           return (
             <div className='zone-column' key={zone.id}>
@@ -87,12 +93,13 @@ const StepGrouping = () => {
               <div className='scrolling-zone'>
                 {reflectionsInZone.map((reflection) => {
                   const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
-                  const isUnread = !!stickyNotesInZone.find((reflectionId) => reflectionId === reflection.id)
+                  const stickyNote = stickyNotesInZone.find((stickyNote) => stickyNote.dataset.id === reflection.id)
+                  const isUnread = stickyNote && stickyNote.dataset.read !== 'true'
                   return <StickyNote key={reflection.id} ref={setStickyNoteRef} reflection={reflection} showReactions reactions={concernedReactions} glowing={isUnread} />
                 })}
               </div>
-              {unreadReflectionAbove && <div className='unread-notice above' onClick={() => scrollToStickyNote(stickyNotesInZone[0])}>⬆︎ Unread reflection ⬆︎</div>}
-              {unreadReflectionBelow && <div className='unread-notice below' onClick={() => scrollToStickyNote(stickyNotesInZone[0])}>⬇︎ Unread reflection ⬇︎</div>}
+              {!!unreadReflectionAbove && <div className='unread-notice above' onClick={() => scrollToStickyNote(unreadReflectionAbove)}>⬆︎ Unread reflection ⬆︎</div>}
+              {!!unreadReflectionBelow && <div className='unread-notice below' onClick={() => scrollToStickyNote(unreadReflectionBelow)}>⬇︎ Unread reflection ⬇︎</div>}
             </div>
           )
         })}

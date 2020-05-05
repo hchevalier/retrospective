@@ -23,7 +23,7 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, sho
   const emojis = reactions.filter((reaction) => reaction.kind === 'emoji')
 
   return (
-    <div ref={ref} className={classNames('reflection', { glowing })} data-id={reflection.id} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={colorStyle}>
+    <div ref={ref} className={classNames('reflection', { glowing })} data-id={reflection.id} data-owner-uuid={reflection.owner.uuid} data-zone-id={reflection.zone.id} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={colorStyle}>
       <div className='reflection-content-container'>
         <div className='author'>{reflection.owner.surname}</div>
         <div className='content'>{reflection.content}</div>
