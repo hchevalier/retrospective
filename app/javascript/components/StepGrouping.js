@@ -4,18 +4,6 @@ import StickyNote from './StickyNote'
 import Icon from './Icon'
 import './StepGrouping.scss'
 
-const isVisible = (reflectionId, mode = 'visible', threshold = 20) => {
-  const element = document.querySelector(`.reflection[data-id='${reflectionId}']`)
-  if (!element) return false
-
-  const rect = element.getBoundingClientRect()
-  const viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight)
-  const isAbove = rect.bottom - threshold < 0
-  const isBelow = rect.top - viewHeight + threshold >= 0
-
-  return mode === 'above' ? isAbove : (mode === 'below' ? isBelow : !isAbove && !isBelow)
-}
-
 const StepGrouping = () => {
   const { kind } = useSelector(state => state.retrospective)
   const profile = useSelector(state => state.profile)
@@ -35,12 +23,12 @@ const StepGrouping = () => {
   const handleScroll = () => {
     Object.entries(columnsWithUnreadReflections).map(([column, reflectionsFromColumn]) => {
       reflectionsFromColumn.map((reflectionId) => {
-        const visible = isVisible(reflectionId)
+        const visible = isReflectionVisible(reflectionId)
         if (visible && !visibleReflections.find((visibleReflectionId) => visibleReflectionId === reflectionId)) {
           setVisibleReflections([...visibleReflections, reflectionId])
 
           setTimeout(() => {
-            if (isVisible(reflectionId)) {
+            if (isReflectionVisible(reflectionId)) {
               const filteredReflections = (columnsWithUnreadReflections[column] || []).filter((trackedReflectionId) => trackedReflectionId !== reflectionId)
               setColumnsWithUnreadReflections({ ...columnsWithUnreadReflections, [column]: filteredReflections })
             }
@@ -53,10 +41,6 @@ const StepGrouping = () => {
     })
   }
 
-  const scrollToUnread = (reflectionId) => {
-    document.querySelector(`.reflection[data-id='${reflectionId}']`).scrollIntoView()
-  }
-
   React.useEffect(() => {
     window.addEventListener('scroll', handleScroll)
 
@@ -64,6 +48,26 @@ const StepGrouping = () => {
   }, [columnsWithUnreadReflections])
 
   const firstRender = React.useRef(true)
+  const visibleReflectionRefs = React.useRef(visibleReflections.reduce((map, reflection) => {
+    map[reflection.id] = React.createRef()
+    return map
+  }, {}))
+
+  const scrollToUnread = (reflectionId) => {
+    visibleReflectionRefs.current[reflectionId].current.scrollIntoView()
+  }
+
+  const isReflectionVisible = (reflectionId, mode = 'visible', threshold = 20) => {
+    const element = visibleReflectionRefs.current[reflectionId]?.current
+    if (!element) return false
+
+    const rect = element.getBoundingClientRect()
+    const viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight)
+    const isAbove = rect.bottom - threshold < 0
+    const isBelow = rect.top - viewHeight + threshold >= 0
+
+    return mode === 'above' ? isAbove : (mode === 'below' ? isBelow : !isAbove && !isBelow)
+  }
 
   React.useEffect(() => {
     if (firstRender.current) {
@@ -71,15 +75,25 @@ const StepGrouping = () => {
       return
     }
 
-    setTimeout(() => {
-      const latestReflection = reflections[reflections.length - 1]
-      if (!latestReflection) return
+    const latestReflection = reflections[reflections.length - 1]
+    if (!latestReflection) return
 
-      if (!isVisible(latestReflection.id) && latestReflection.owner.uuid !== profile.uuid) {
+    visibleReflectionRefs.current[latestReflection.id] = React.createRef()
+
+    setTimeout(() => {
+      if (!isReflectionVisible(latestReflection.id) && latestReflection.owner.uuid !== profile.uuid) {
         setUnreadReflection(latestReflection)
       }
     }, 500)
   }, [reflections])
+
+  const setStickyNoteRef = (stickyNote) => {
+    if (!stickyNote) return
+
+    const ref = visibleReflectionRefs.current[stickyNote.dataset.id] || React.createRef()
+    ref.current = stickyNote
+    visibleReflectionRefs.current[stickyNote.dataset.id] = ref
+  }
 
   return (
     <>
@@ -88,8 +102,8 @@ const StepGrouping = () => {
       <div id='zones-container'>
         {zones.map((zone) => {
           const unreadFromColumn = columnsWithUnreadReflections[zone.id] || []
-          const unreadReflectionAbove = !!unreadFromColumn.find((reflectionId) => isVisible(reflectionId, 'above'))
-          const unreadReflectionBelow = !!unreadFromColumn.find((reflectionId) => isVisible(reflectionId, 'below'))
+          const unreadReflectionAbove = !!unreadFromColumn.find((reflectionId) => isReflectionVisible(reflectionId, 'above'))
+          const unreadReflectionBelow = !!unreadFromColumn.find((reflectionId) => isReflectionVisible(reflectionId, 'below'))
 
           return (
             <div className='zone-column' key={zone.id}>
@@ -98,7 +112,7 @@ const StepGrouping = () => {
                 {reflections.filter((reflection) => reflection.zone.id === zone.id).map((reflection) => {
                   const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
                   const isUnread = !!unreadFromColumn.find((reflectionId) => reflectionId === reflection.id)
-                  return <StickyNote key={reflection.id} reflection={reflection} showReactions reactions={concernedReactions} glowing={isUnread} />
+                  return <StickyNote key={reflection.id} ref={setStickyNoteRef} reflection={reflection} showReactions reactions={concernedReactions} glowing={isUnread} />
                 })}
               </div>
               {unreadReflectionAbove && <div className='unread-notice above' onClick={() => scrollToUnread(unreadFromColumn[0])}>⬆︎ Unread reflection ⬆︎</div>}
