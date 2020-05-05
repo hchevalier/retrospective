@@ -12,6 +12,9 @@ const StepGrouping = () => {
   const organizer = useSelector(state => state.profile.organizer)
   const reactions = useSelector(state => state.visibleReactions, shallowEqual)
 
+  const [_updateCount, setUpdateCount] = React.useState(0)
+  const forceUpdate = () => setUpdateCount(currentCount => ++currentCount)
+
   const visibilityObserver = React.useMemo(() => {
     const options = {
       root: document.querySelector('#zones-container'),
@@ -29,11 +32,11 @@ const StepGrouping = () => {
           if (timeoutId) return
 
           timeoutId = setTimeout(() => {
-            console.log('An observed reflection was read')
             observer.unobserve(entry)
             clearTimeout(timeoutId)
             target.dataset.read = true
             target.dataset.visibilityId = null
+            forceUpdate()
           }, 2000)
           target.dataset.visibilityId = timeoutId
           console.log('An observed reflection entered the screen')
@@ -42,11 +45,12 @@ const StepGrouping = () => {
           target.dataset.below = entry.boundingClientRect.top > entry.rootBounds.top
 
           timeoutId = target.dataset.visibilityId
-          if (!timeoutId) return
-
-          console.log('An observed reflection left the screen')
-          clearTimeout(timeoutId)
-          target.dataset.visibilityId = null
+          if (timeoutId) {
+            console.log('An observed reflection left the screen')
+            clearTimeout(timeoutId)
+            target.dataset.visibilityId = null
+          }
+          forceUpdate()
         }
       })
     }, options)
