@@ -16,8 +16,8 @@ const StepGrouping = () => {
   const organizer = useSelector(state => state.profile.organizer)
   const reactions = useSelector(state => state.visibleReactions, shallowEqual)
 
-  const [initialReflectionIds, _setInitialReflectionIds] = React.useState(reflections.map((reflection) => reflection.id))
-  const [_updateCount, setUpdateCount] = React.useState(0)
+  const initialReflectionIds = React.useRef(reflections.map((reflection) => reflection.id)).current
+  const [, setUpdateCount] = React.useState(0)
   const forceUpdate = () => setUpdateCount(currentCount => ++currentCount)
 
   const visibilityObserver = React.useMemo(() => {
@@ -54,10 +54,10 @@ const StepGrouping = () => {
     }, options)
   }, [])
 
-  const [reflectionRefs, _setReflectionRefs] = React.useState(reflections.reduce((map, reflection) => {
+  const reflectionRefs = React.useRef(reflections.reduce((map, reflection) => {
     map[reflection.id] = React.createRef()
     return map
-  }, {}))
+  }, {})).current
 
   const scrollToStickyNote = (stickyNote) => {
     stickyNote.scrollIntoView({ behavior: 'smooth' })
@@ -84,7 +84,7 @@ const StepGrouping = () => {
       <div id='zones-container'>
         {zones.map((zone) => {
           const reflectionsInZone = reflections.filter((reflection) => reflection.zone.id === zone.id)
-          const stickyNotesInZone = Object.entries(reflectionRefs).map(([_, stickyNoteRef]) => {
+          const stickyNotesInZone = Object.entries(reflectionRefs).map(([, stickyNoteRef]) => {
             return stickyNoteRef?.current?.dataset.zoneId == zone.id ? stickyNoteRef.current : null
           }).filter((stickyNote) => !!stickyNote)
           const unreadReflectionAbove = stickyNotesInZone.find(noteAboveViewport)
