@@ -2,6 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { put } from 'lib/httpClient'
 import constants from 'lib/utils/constants'
+import PropTypes from 'prop-types'
 import './ColorPicker.scss'
 
 const ColorPicker = ({ retrospectiveId }) => {
@@ -13,8 +14,8 @@ const ColorPicker = ({ retrospectiveId }) => {
       url: `/retrospectives/${retrospectiveId}/participants/${profile.uuid}`,
       payload: { color: pickedColor }
     })
-    .then(_data => console.log('color changed'))
-    .catch(error => console.warn(error))
+      .then(() => console.log('color changed'))
+      .catch(error => console.warn(error))
   }
 
   return (
@@ -29,6 +30,10 @@ const ColorPicker = ({ retrospectiveId }) => {
       ))}
     </div>
   )
+}
+
+ColorPicker.propTypes = {
+  retrospectiveId: PropTypes.string.isRequired
 }
 
 export default ColorPicker

@@ -10,11 +10,11 @@ const noteBelowViewport = (stickyNote) => stickyNote.dataset.read !== 'true' && 
 
 const StepGrouping = () => {
   const { kind } = useSelector(state => state.retrospective)
-  const profile = useSelector(state => state.profile)
-  const reflections = useSelector(state => state.visibleReflections, shallowEqual)
+  const { uuid: profileUuid } = useSelector(state => state.profile)
+  const reflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
   const zones = useSelector(state => state.retrospective.zones, shallowEqual)
   const organizer = useSelector(state => state.profile.organizer)
-  const reactions = useSelector(state => state.visibleReactions, shallowEqual)
+  const reactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
 
   const initialReflectionIds = React.useRef(reflections.map((reflection) => reflection.id)).current
   const [, setUpdateCount] = React.useState(0)
@@ -66,7 +66,7 @@ const StepGrouping = () => {
   const setStickyNoteRef = (stickyNote) => {
     if (!stickyNote) return
 
-    if (stickyNote.dataset.ownerUuid === profile.uuid || initialReflectionIds.indexOf(stickyNote.dataset.id) >= 0) {
+    if (stickyNote.dataset.ownerUuid === profileUuid || initialReflectionIds.indexOf(stickyNote.dataset.id) >= 0) {
       stickyNote.dataset.read = true
       return
     }

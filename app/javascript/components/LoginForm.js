@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import { post } from 'lib/httpClient'
+import PropTypes from 'prop-types'
 
 const LoginForm = ({ retrospectiveId }) => {
   const dispatch = useDispatch()
@@ -13,15 +14,12 @@ const LoginForm = ({ retrospectiveId }) => {
   const login = () => {
     post({
       url: `/retrospectives/${retrospectiveId}/participants`,
-      payload: {
-        surname: surname,
-        email: email
-      }
+      payload: { surname: surname, email: email }
     })
-    .then(data => {
-      dispatch({ type: 'login', profile: data.profile, additionnalInfo: data.additionnal_info })
-    })
-    .catch(error => console.warn(error))
+      .then(data => {
+        dispatch({ type: 'login', profile: data.profile, additionnalInfo: data.additionnal_info })
+      })
+      .catch(error => console.warn(error))
   }
 
   return (
@@ -36,6 +34,10 @@ const LoginForm = ({ retrospectiveId }) => {
       </div>
     </form>
   )
+}
+
+LoginForm.propTypes = {
+  retrospectiveId: PropTypes.string.isRequired
 }
 
 export default LoginForm

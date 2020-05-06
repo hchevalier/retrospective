@@ -8,10 +8,10 @@ import './StepActions.scss'
 
 const StepActions = () => {
   const { organizer } = useSelector(state => state.profile)
-  const visibleReflections = useSelector(state => state.visibleReflections, shallowEqual)
-  const currentReflection = useSelector(state => state.discussedReflection)
-  const visibleReactions = useSelector(state => state.visibleReactions, shallowEqual)
-  const channel = useSelector(state => state.orchestrator)
+  const visibleReflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
+  const currentReflection = useSelector(state => state.reflections.discussedReflection)
+  const visibleReactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
+  const channel = useSelector(state => state.orchestrator.subscription)
 
   const relevantReactions = visibleReactions.filter((reaction) => reaction.targetId === `Reflection-${currentReflection.id}`)
 
