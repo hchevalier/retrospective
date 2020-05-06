@@ -12,7 +12,7 @@ const ReactionBar = ({ reflection, displayed, reactions }) => {
   const dispatch = useDispatch()
 
   const profile = useSelector(state => state.profile)
-  const retrospectiveId = useSelector(state => state.retrospective.retrospective.id)
+  const retrospectiveId = useSelector(state => state.retrospective.id)
 
   const handleAddReaction = ({ kind, name }) => {
     setEmojiDisplayed(false)

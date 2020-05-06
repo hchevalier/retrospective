@@ -57,7 +57,7 @@ class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
 
   test 'remove own reaction by choosing it again in the emoji modal' do
     retrospective = create(:retrospective, step: 'grouping')
-    other_participant = create(:other_participant, retrospective: retrospective)
+    create(:other_participant, retrospective: retrospective)
     reflection = create(:reflection, :glad, owner: retrospective.organizer)
 
     logged_in_as(retrospective.organizer)

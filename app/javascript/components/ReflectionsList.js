@@ -8,9 +8,9 @@ import './ReflectionsList.scss'
 
 const ReflectionsList = ({ open, filter, retrospectiveKind, withIcon, onUpdateReflection, onDestroyReflection, onModalClose }) => {
   const revealer = useSelector(state => state.profile.revealer)
-  const currentStep = useSelector(state => state.retrospective.step)
-  const reflections = useSelector(state => state.retrospective.ownReflections, shallowEqual)
-  const channel = useSelector(state => state.retrospective.orchestrator)
+  const currentStep = useSelector(state => state.orchestrator.step)
+  const reflections = useSelector(state => state.reflections.ownReflections, shallowEqual)
+  const channel = useSelector(state => state.orchestrator.subscription)
 
   const [displayEditForm, setDisplayEditForm] = React.useState(false)
   const [reworkedReflectionId, setReworkedReflectionId] = React.useState(null)

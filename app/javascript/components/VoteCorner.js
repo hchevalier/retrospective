@@ -11,8 +11,8 @@ const VoteCorner = ({ canVote, reflection, votes, noStandOut = false, inline = f
   const dispatch = useDispatch()
 
   const profile = useSelector(state => state.profile)
-  const retrospectiveId = useSelector(state => state.retrospective.retrospective.id)
-  const allOwnVotes = useSelector(state => state.retrospective.ownReactions, shallowEqual).filter((reaction) => reaction.kind === 'vote')
+  const retrospectiveId = useSelector(state => state.retrospective.id)
+  const allOwnVotes = useSelector(state => state.reactions.ownReactions, shallowEqual).filter((reaction) => reaction.kind === 'vote')
 
   const createVote = () => {
     post({

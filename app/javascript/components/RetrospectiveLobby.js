@@ -12,7 +12,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
   const dispatch = useDispatch()
 
   const loggedIn = useSelector(state => !!state.profile.uuid)
-  const channel = useSelector(state => state.retrospective.orchestrator)
+  const channel = useSelector(state => state.orchestrator.subscription)
 
   const handleActionReceived = React.useCallback((action, data) => {
     if (action === 'newParticipant') {

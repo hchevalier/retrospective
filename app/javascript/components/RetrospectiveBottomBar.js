@@ -7,8 +7,8 @@ import PropTypes from 'prop-types'
 const RetrospectiveBottomBar = ({ onReflectionFormOpen }) => {
   const profile = useSelector(state => state.profile)
   const organizer = useSelector(state => state.profile.organizer)
-  const currentStep = useSelector(state => state.retrospective.step)
-  const orchestratorChannel = useSelector(state => state.retrospective.orchestrator)
+  const currentStep = useSelector(state => state.orchestrator.step)
+  const orchestratorChannel = useSelector(state => state.orchestrator.subscription)
 
   const canCreateReflection = () => profile && currentStep === 'thinking'
 

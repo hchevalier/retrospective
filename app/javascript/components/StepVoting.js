@@ -5,11 +5,11 @@ import constants from 'lib/utils/constants'
 import Icon from './Icon'
 
 const StepVoting = () => {
-  const { kind } = useSelector(state => state.retrospective.retrospective)
-  const reflections = useSelector(state => state.retrospective.visibleReflections, shallowEqual)
-  const zones = useSelector(state => state.retrospective.retrospective.zones, shallowEqual)
-  const ownReactions = useSelector(state => state.retrospective.ownReactions, shallowEqual)
-  const reactions = useSelector(state => state.retrospective.visibleReactions, shallowEqual)
+  const { kind } = useSelector(state => state.retrospective)
+  const reflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
+  const zones = useSelector(state => state.retrospective.zones, shallowEqual)
+  const ownReactions = useSelector(state => state.reactions.ownReactions, shallowEqual)
+  const reactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
 
   const votes = ownReactions.filter((reaction) => reaction.kind === 'vote')
 

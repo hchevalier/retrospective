@@ -5,11 +5,11 @@ import Icon from './Icon'
 import './StepGrouping.scss'
 
 const StepGrouping = () => {
-  const { kind } = useSelector(state => state.retrospective.retrospective)
-  const reflections = useSelector(state => state.retrospective.visibleReflections, shallowEqual)
-  const zones = useSelector(state => state.retrospective.retrospective.zones, shallowEqual)
+  const { kind } = useSelector(state => state.retrospective)
+  const reflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
+  const zones = useSelector(state => state.retrospective.zones, shallowEqual)
   const organizer = useSelector(state => state.profile.organizer)
-  const reactions = useSelector(state => state.retrospective.visibleReactions, shallowEqual)
+  const reactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
 
   return (
     <>

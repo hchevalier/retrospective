@@ -8,9 +8,9 @@ import './ParticipantsList.scss'
 
 const ParticipantsList = () => {
   const profile = useSelector(state => state.profile)
-  const step = useSelector(state => state.retrospective.step)
+  const step = useSelector(state => state.orchestrator.step)
   const participants = useSelector(state => state.participants, shallowEqual)
-  const channel = useSelector(state => state.retrospective.orchestrator)
+  const channel = useSelector(state => state.orchestrator.subscription)
 
   const copyUrlToClipboard = () => {
     const toCopy = document.createElement('span')

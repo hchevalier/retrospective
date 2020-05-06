@@ -17,9 +17,9 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
   const [reflectionOnTypeStart, setReflectionOnTypeStart] = React.useState(null)
   const [editedTask, setEditedTask] = React.useState(null)
 
-  const retrospectiveId = useSelector(state => state.retrospective.retrospective.id)
+  const retrospectiveId = useSelector(state => state.retrospective.id)
   const participants = useSelector(state => state.participants, shallowEqual)
-  const tasks = useSelector(state => state.retrospective.tasks, shallowEqual)
+  const tasks = useSelector(state => state.tasks, shallowEqual)
 
   const onDescriptionChange = event => {
     if (!reflectionOnTypeStart) {
