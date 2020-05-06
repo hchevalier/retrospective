@@ -4,6 +4,10 @@ import StickyNote from './StickyNote'
 import Icon from './Icon'
 import './StepGrouping.scss'
 
+const inScreen = (target) => target.dataset.timeoutId && target.dataset.timeoutId !== 'null'
+const noteAboveViewport = (stickyNote) => stickyNote.dataset.read !== 'true' && stickyNote.dataset.above === 'true' && !inScreen(stickyNote)
+const noteBelowViewport = (stickyNote) => stickyNote.dataset.read !== 'true' && stickyNote.dataset.below === 'true' && !inScreen(stickyNote)
+
 const StepGrouping = () => {
   const { kind } = useSelector(state => state.retrospective)
   const profile = useSelector(state => state.profile)
@@ -27,15 +31,16 @@ const StepGrouping = () => {
         const target = entry.target
 
         if (entry.isIntersecting && entry.intersectionRatio > 0) {
-          if (target.dataset.timeoutId && target.dataset.timeoutId !== 'null') return
+          if (inScreen(target)) return
 
           const timeoutId = setTimeout(() => {
-            observer.unobserve(entry)
+            observer.unobserve(target)
             clearTimeout(timeoutId)
             target.dataset.read = true
             forceUpdate()
           }, 1500)
           target.dataset.timeoutId = timeoutId
+          forceUpdate()
         } else {
           target.dataset.above = entry.boundingClientRect.top < entry.rootBounds.top
           target.dataset.below = entry.boundingClientRect.top > entry.rootBounds.top
@@ -55,7 +60,7 @@ const StepGrouping = () => {
   }, {}))
 
   const scrollToStickyNote = (stickyNote) => {
-    stickyNote.scrollIntoView()
+    stickyNote.scrollIntoView({ behavior: 'smooth' })
   }
 
   const setStickyNoteRef = (stickyNote) => {
@@ -68,6 +73,7 @@ const StepGrouping = () => {
 
     const ref = reflectionRefs[stickyNote.dataset.id] || React.createRef()
     ref.current = stickyNote
+    reflectionRefs[stickyNote.dataset.id] = ref
     visibilityObserver.observe(stickyNote)
   }
 
@@ -81,8 +87,8 @@ const StepGrouping = () => {
           const stickyNotesInZone = Object.entries(reflectionRefs).map(([_, stickyNoteRef]) => {
             return stickyNoteRef?.current?.dataset.zoneId == zone.id ? stickyNoteRef.current : null
           }).filter((stickyNote) => !!stickyNote)
-          const unreadReflectionAbove = stickyNotesInZone.find((stickyNote) => stickyNote.dataset.read !== 'true' && stickyNote.dataset.above === 'true')
-          const unreadReflectionBelow = stickyNotesInZone.reverse().find((stickyNote) => stickyNote.dataset.read !== 'true' && stickyNote.dataset.below === 'true')
+          const unreadReflectionAbove = stickyNotesInZone.find(noteAboveViewport)
+          const unreadReflectionBelow = stickyNotesInZone.reverse().find(noteBelowViewport)
 
           return (
             <div className='zone-column' key={zone.id}>

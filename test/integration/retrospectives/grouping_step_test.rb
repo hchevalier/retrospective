@@ -101,8 +101,10 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     within find('.zone-column', match: :first) do
       assert_text '⬇︎ Unread reflection ⬇︎'
-      page.execute_script 'window.scrollBy(0, 2000)'
-      refute_text '⬇︎ Unread reflection ⬇︎', wait: 3 # text will disappear after 2 seconds
+      assert_css '.reflection[data-read=true]', count: 3
+      scroll_to(all('.reflection')[3])
+      refute_text '⬇︎ Unread reflection ⬇︎'
+      assert_css '.reflection[data-read=true]', count: 6
     end
 
     within_window(other_participant_window) do
@@ -111,12 +113,13 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     within all('.zone-column').last do
       assert_text '⬆︎ Unread reflection ⬆︎'
-      page.execute_script 'window.scrollBy(0, 0)'
-      refute_text '⬆︎ Unread reflection ⬆︎', wait: 3 # text will disappear after 2 seconds
+      scroll_to(all('.reflection').last)
+      refute_text '⬆︎ Unread reflection ⬆︎'
+      assert_css '.reflection[data-read=true]', count: 1
     end
   end
 
-  test 'clicking on notice banner scrolls to unread reflection from column' do
+  test 'clicking on notice banner scrolls to last unread reflection from column' do
     retrospective = create(:retrospective, step: 'grouping')
     other_participant = create(:other_participant, retrospective: retrospective)
     create_list(:reflection, 6, :glad, owner: other_participant, revealed: false)
@@ -138,7 +141,11 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     within find('.zone-column', match: :first) do
       find('.unread-notice.below').click
-      refute_text '⬇︎ Unread reflection ⬇︎', wait: 3 # text will disappear after 2 seconds
+      refute_text '⬇︎ Unread reflection ⬇︎'
+      assert_text '⬆︎ Unread reflection ⬆︎'
+      find('.unread-notice.above').click
+      refute_text '⬆︎ Unread reflection ⬆︎'
+      assert_text '⬇︎ Unread reflection ⬇︎'
     end
   end
 
