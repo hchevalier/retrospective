@@ -12,6 +12,7 @@ const StepGrouping = () => {
   const organizer = useSelector(state => state.profile.organizer)
   const reactions = useSelector(state => state.visibleReactions, shallowEqual)
 
+  const [initialReflectionIds, _setInitialReflectionIds] = React.useState(reflections.map((reflection) => reflection.id))
   const [_updateCount, setUpdateCount] = React.useState(0)
   const forceUpdate = () => setUpdateCount(currentCount => ++currentCount)
 
@@ -21,7 +22,7 @@ const StepGrouping = () => {
       threshold: 0.25
     }
 
-    const observer = new IntersectionObserver((entries, observer) => {
+    return new IntersectionObserver((entries, observer) => {
       entries.forEach((entry) => {
         const target = entry.target
 
@@ -46,7 +47,6 @@ const StepGrouping = () => {
         }
       })
     }, options)
-    return observer
   }, [])
 
   const [reflectionRefs, _setReflectionRefs] = React.useState(reflections.reduce((map, reflection) => {
@@ -61,7 +61,7 @@ const StepGrouping = () => {
   const setStickyNoteRef = (stickyNote) => {
     if (!stickyNote) return
 
-    if (stickyNote.dataset.ownerUuid === profile.uuid) {
+    if (stickyNote.dataset.ownerUuid === profile.uuid || initialReflectionIds.indexOf(stickyNote.dataset.id) >= 0) {
       stickyNote.dataset.read = true
       return
     }
