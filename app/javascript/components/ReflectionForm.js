@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Modal from '@material-ui/core/Modal'
+import PropTypes from 'prop-types'
 import './ReflectionForm.scss'
 
 const ReflectionForm = ({ open, value, confirmationLabel, onChange, onConfirmationClick, onReflectionCancel }) => {
@@ -21,6 +22,15 @@ const ReflectionForm = ({ open, value, confirmationLabel, onChange, onConfirmati
       </form>
     </Modal>
   )
+}
+
+ReflectionForm.propTypes = {
+  open: PropTypes.bool,
+  value: PropTypes.string,
+  confirmationLabel: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onConfirmationClick: PropTypes.func.isRequired,
+  onReflectionCancel: PropTypes.func.isRequired,
 }
 
 export default ReflectionForm

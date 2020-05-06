@@ -18,6 +18,7 @@ module.exports = {
   },
   plugins: ["react", "react-hooks"],
   rules: {
+    "quotes": ["error", 'single', { avoidEscape: true, allowTemplateLiterals: true }],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn"
   },

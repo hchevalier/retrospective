@@ -16,3 +16,7 @@ export const groupBy = (items, attribute) => {
     return result
   }, {})
 }
+
+export const updateArray = (array, newItem, attribute) => {
+  return array.map(item => item[attribute] === newItem[attribute] ? newItem : item)
+}

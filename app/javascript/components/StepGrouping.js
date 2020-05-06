@@ -6,10 +6,10 @@ import './StepGrouping.scss'
 
 const StepGrouping = () => {
   const { kind } = useSelector(state => state.retrospective)
-  const reflections = useSelector(state => state.visibleReflections, shallowEqual)
+  const reflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
   const zones = useSelector(state => state.retrospective.zones, shallowEqual)
   const organizer = useSelector(state => state.profile.organizer)
-  const reactions = useSelector(state => state.visibleReactions, shallowEqual)
+  const reactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
 
   return (
     <>

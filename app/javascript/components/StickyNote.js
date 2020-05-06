@@ -7,7 +7,7 @@ import './StickyNote.scss'
 const StickyNote = ({ reflection, showReactions, reactions, showVotes }) => {
   const [hovered, setHovered] = React.useState(false)
 
-  const step = useSelector(state => state.step)
+  const step = useSelector(state => state.orchestrator.step)
 
   const handleMouseEnter = () => setHovered(true)
   const handleMouseLeave = () => setHovered(false)

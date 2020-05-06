@@ -6,10 +6,10 @@ import Icon from './Icon'
 
 const StepVoting = () => {
   const { kind } = useSelector(state => state.retrospective)
-  const reflections = useSelector(state => state.visibleReflections, shallowEqual)
+  const reflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
   const zones = useSelector(state => state.retrospective.zones, shallowEqual)
-  const ownReactions = useSelector(state => state.ownReactions, shallowEqual)
-  const reactions = useSelector(state => state.visibleReactions, shallowEqual)
+  const ownReactions = useSelector(state => state.reactions.ownReactions, shallowEqual)
+  const reactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
 
   const votes = ownReactions.filter((reaction) => reaction.kind === 'vote')
 
