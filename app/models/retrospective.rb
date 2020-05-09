@@ -51,7 +51,7 @@ class Retrospective < ApplicationRecord
       name: name,
       kind: kind,
       zones: zones.as_json,
-      discussed_reflection: discussed_reflection,
+      discussedReflection: discussed_reflection&.readable,
       tasks: tasks.order(:created_at).as_json
     }
   end
@@ -67,7 +67,8 @@ class Retrospective < ApplicationRecord
       availableColors: available_colors,
       tasks: tasks.order(:created_at).as_json,
       serverTime: Time.zone.now,
-      timerEndAt: timer_end_at
+      timerEndAt: timer_end_at,
+      organizerInfo: organizer_info
     }
 
     unless step.in?(%w[gathering thinking])
@@ -81,6 +82,25 @@ class Retrospective < ApplicationRecord
     end
 
     state
+  end
+
+  def organizer_info
+    clear_info =
+      participants.includes(:reactions).reduce({}) do |memo, participant|
+        memo[participant.id] = {
+          remainingVotes: Reaction::MAX_VOTES - participant.reactions.select(&:vote?).count
+        }
+
+        memo
+      end
+
+    cipher = OpenSSL::Cipher::Cipher.new('AES-256-CBC')
+    cipher.encrypt
+    cipher.key = Digest::SHA256.new.update(organizer.encryption_key).digest
+    cipher.iv = Base64.encode64(name).chomp.ljust(16, '0')[0...16]
+    encrypted_data = cipher.update(clear_info.to_json) + cipher.final
+
+    Base64.strict_encode64(encrypted_data).chomp
   end
 
   def next_step!

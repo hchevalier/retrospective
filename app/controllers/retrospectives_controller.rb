@@ -27,7 +27,7 @@ class RetrospectivesController < ApplicationController
       @participant = current_user
       @participant.join
 
-      @initial_state.merge!(profile: current_user.profile)
+      @initial_state.merge!(profile: current_user.full_profile)
     end
   end
 

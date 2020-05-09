@@ -9,7 +9,7 @@ class ParticipantsController < ApplicationController
 
       additionnal_info = { step: retrospective.step }
 
-      render json: { profile: participant.profile, additionnal_info: additionnal_info }
+      render json: { profile: participant.full_profile, additionnal_info: additionnal_info }
     else
       render json: { status: :unprocessable_entity, errors: participant.errors }
     end

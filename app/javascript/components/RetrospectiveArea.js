@@ -52,23 +52,23 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
     dispatch({ type: 'add-reflection', reflection: newReflection })
     setCurrentReflection('')
     setMode('initial')
-  })
+  }, [dispatch])
 
   const handleChooseZoneClick = useCallback(() => {
     setDisplayReflectionForm(false)
     setMode('assigning-reflection')
-  })
+  }, [])
 
   const handleReflectionCancel = useCallback(() => {
     setCurrentReflection('')
     setMode('initial')
     setDisplayReflectionForm(false)
-  })
+  }, [])
 
   const handleReflectionFormOpen = useCallback(() => {
     setMode('writing-reflection')
     setDisplayReflectionForm(true)
-  })
+  }, [])
 
   const handleUpdateReflection = useCallback(({ updatedId, updatedContent, onSuccess }) => {
     put({
@@ -82,25 +82,25 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
       onSuccess()
     })
     .catch(error => console.warn(error))
-  })
+  }, [dispatch, retrospectiveId])
 
   const handleDestroyReflection = useCallback(({ deletedId }) => {
     destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${deletedId}` })
-    .then(_data => {
+    .then(() => {
       dispatch({ type: 'delete-reflection', reflectionId: deletedId })
       setMode('initial')
       setDisplayReflectionsList(false)
     })
     .catch(error => console.warn(error))
-  })
+  }, [dispatch, retrospectiveId])
 
   const handleReflectionsListClose = useCallback(() => {
-    if (revealer) {
+    if (revealer && channel) {
       channel.dropRevealerToken()
     }
     setMode('initial')
     setDisplayReflectionsList(false)
-  })
+  }, [revealer, channel])
 
   const renderRetrospective = () => {
     // TODO: return retrospective depending on kind

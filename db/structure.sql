@@ -111,7 +111,8 @@ CREATE TABLE public.participants (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     color character varying,
-    logged_in boolean DEFAULT true NOT NULL
+    logged_in boolean DEFAULT true NOT NULL,
+    encryption_key character varying NOT NULL
 );
 
 
@@ -386,6 +387,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200412084958'),
 ('20200412085012'),
 ('20200420213016'),
-('20200420213030');
+('20200420213030'),
+('20200508085629');
 
 
