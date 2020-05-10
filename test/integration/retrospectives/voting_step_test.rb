@@ -115,6 +115,37 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     assert_votes_count(reflection_a, count: 2)
   end
 
+  test 'organizer can see remaining votes for each participant' do
+    retrospective = create(:retrospective, step: 'voting')
+    other_participant = create(:other_participant, retrospective: retrospective)
+    reflection_a = create(:reflection, :glad, owner: retrospective.organizer)
+
+    logged_in_as(retrospective.organizer)
+    visit retrospective_path(retrospective)
+
+    assert_remaining_votes_for(retrospective.organizer, 5)
+    vote_for_reflection(reflection_a, times: 2)
+    assert_remaining_votes_for(retrospective.organizer, 3)
+
+    assert_remaining_votes_for(other_participant, 5)
+
+    other_participant_window = open_new_window
+    within_window(other_participant_window) do
+      logged_in_as(other_participant)
+      visit retrospective_path(retrospective)
+      assert_votes_count(reflection_a, count: 0)
+      vote_for_reflection(reflection_a, times: 3)
+
+      refute_css "#participants-list .participant[data-id='#{retrospective.organizer.id}'] .remaining-votes"
+      refute_css "#participants-list .participant[data-id='#{other_participant.id}'] .remaining-votes"
+    end
+
+    logged_in_as(retrospective.organizer)
+    assert_remaining_votes_for(other_participant, 2)
+    unvote_for_reflection(reflection_a, times: 2)
+    assert_remaining_votes_for(retrospective.organizer, 5)
+  end
+
   private
 
   def vote_for_reflection(reflection, times: 1)
@@ -127,9 +158,25 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     end
   end
 
+  def unvote_for_reflection(reflection, times: 1)
+    within ".reflection[data-id='#{reflection.id}'] .vote-corner" do
+      times.times do
+        vote_count = find('.vote-count').text.to_i
+        find('.unvote').click
+        assert_text vote_count - 1
+      end
+    end
+  end
+
   def assert_votes_count(reflection, count:)
     within ".reflection[data-id='#{reflection.id}'] .vote-corner" do
       assert_equal count, find('.vote-count').text.to_i
+    end
+  end
+
+  def assert_remaining_votes_for(participant, count)
+    within "#participants-list .participant[data-id='#{participant.id}'] .remaining-votes" do
+      assert_text count
     end
   end
 
