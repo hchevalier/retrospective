@@ -162,6 +162,11 @@ class Retrospective < ApplicationRecord
       zones.build(identifier: 'Glad')
       zones.build(identifier: 'Sad')
       zones.build(identifier: 'Mad')
+    when 'sailboat'
+      zones.build(identifier: 'Wind')
+      zones.build(identifier: 'Anchor')
+      zones.build(identifier: 'Rocks')
+      zones.build(identifier: 'Island')
     end
   end
 
