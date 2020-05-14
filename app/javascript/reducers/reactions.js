@@ -9,7 +9,7 @@ const reactions = (state = initialReactionsState, action) => {
   switch (action.type) {
     case 'change-step': {
       const reactions = action.visibleReactions?.length > 0 ? action.visibleReactions : state.visibleReactions
-      return { ...state, visibleReactions: reactions }
+      return { ...state, visibleReactions: reactions || [] }
     }
     case 'add-reaction':
       return { ...state, ownReactions: [...state.ownReactions, action.reaction] }

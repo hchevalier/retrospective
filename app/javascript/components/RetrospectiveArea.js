@@ -98,7 +98,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   }, [dispatch, retrospectiveId])
 
   const handleReflectionsListClose = useCallback(() => {
-    if (revealer) {
+    if (revealer && channel) {
       channel.dropRevealerToken()
     }
     setMode('initial')
