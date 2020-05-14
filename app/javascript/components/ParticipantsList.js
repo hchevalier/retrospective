@@ -47,7 +47,6 @@ const ParticipantsList = () => {
     const encodedName = btoa(retrospectiveName)
     const initializationVector = encodedName.length < 16 ? encodedName + '0'.repeat(16 - encodedName.length) : encodedName
     const message = decrypt(encryptedOrganizerInfo, decryptionKey, initializationVector)
-    console.log(message)
     if (message !== '') {
       return JSON.parse(message)
     }
