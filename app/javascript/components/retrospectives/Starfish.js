@@ -19,31 +19,31 @@ const Starfish = ({ mode, onZoneClicked }) => {
       <Zone
         reference={keep}
         mode={mode}
-        icon={<Icon retrospectiveKind='starfish' zone='Keep' />}
+        icon={<Icon retrospectiveKind='starfish' zone='Keep' dataAttributes={{ 'data-id': keep.id }} onClick={onZoneClicked} />}
         reflections={reflections.filter((reflection) => reflection.zone.id === keep.id)}
         onClick={onZoneClicked} />
       <Zone
         reference={start}
         mode={mode}
-        icon={<Icon retrospectiveKind='starfish' zone='Start' />}
+        icon={<Icon retrospectiveKind='starfish' zone='Start' dataAttributes={{ 'data-id': start.id }} onClick={onZoneClicked} />}
         reflections={reflections.filter((reflection) => reflection.zone.id === start.id)}
         onClick={onZoneClicked} />
       <Zone
         reference={stop}
         mode={mode}
-        icon={<Icon retrospectiveKind='starfish' zone='Stop' />}
+        icon={<Icon retrospectiveKind='starfish' zone='Stop' dataAttributes={{ 'data-id': stop.id }} onClick={onZoneClicked} />}
         reflections={reflections.filter((reflection) => reflection.zone.id === stop.id)}
         onClick={onZoneClicked} />
       <Zone
         reference={more}
         mode={mode}
-        icon={<Icon retrospectiveKind='starfish' zone='More' />}
+        icon={<Icon retrospectiveKind='starfish' zone='More' dataAttributes={{ 'data-id': more.id }} onClick={onZoneClicked} />}
         reflections={reflections.filter((reflection) => reflection.zone.id === more.id)}
         onClick={onZoneClicked} />
       <Zone
         reference={less}
         mode={mode}
-        icon={<Icon retrospectiveKind='starfish' zone='Less' />}
+        icon={<Icon retrospectiveKind='starfish' zone='Less' dataAttributes={{ 'data-id': less.id }} onClick={onZoneClicked} />}
         reflections={reflections.filter((reflection) => reflection.zone.id === less.id)}
         onClick={onZoneClicked} />
     </>
