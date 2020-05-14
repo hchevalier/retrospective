@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { post, put, destroy } from 'lib/httpClient'
 import ColorPicker from './ColorPicker'
 import GladSadMad from './retrospectives/GladSadMad'
+import Starfish from './retrospectives/Starfish'
 import RetrospectiveBottomBar from './RetrospectiveBottomBar'
 import ReflectionForm from './ReflectionForm'
 import ReflectionsList from './ReflectionsList'
@@ -30,13 +31,15 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   const [workingZone, setWorkingZone] = useState(null)
 
   const handleZoneClicked = (event) => {
-    const zoneId = event.target.id
+    event.stopPropagation()
+
+    const zoneId = event.target.dataset.id
     if (mode === 'assigning-reflection') {
       post({
         url: `/retrospectives/${retrospectiveId}/reflections`,
         payload: {
           content: currentReflection,
-          zone_id: event.target.id
+          zone_id: zoneId
         }
       })
       .then(data => handleReflectionCreated(data))
@@ -100,12 +103,14 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
     }
     setMode('initial')
     setDisplayReflectionsList(false)
-  }, [revealer, channel])
+  }, [channel, revealer])
 
   const renderRetrospective = () => {
     // TODO: return retrospective depending on kind
     if (kind === 'glad_sad_mad') {
       return <GladSadMad mode={mode} onZoneClicked={handleZoneClicked} />
+    } else if (kind === 'starfish') {
+      return <Starfish mode={mode} onZoneClicked={handleZoneClicked} />
     }
 
     return <div>Unknown retrospective {kind}</div>
