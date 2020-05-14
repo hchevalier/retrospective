@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { post, put, destroy } from 'lib/httpClient'
 import ColorPicker from './ColorPicker'
 import GladSadMad from './retrospectives/GladSadMad'
+import Starfish from './retrospectives/Starfish'
 import RetrospectiveBottomBar from './RetrospectiveBottomBar'
 import ReflectionForm from './ReflectionForm'
 import ReflectionsList from './ReflectionsList'
@@ -108,6 +109,8 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
     // TODO: return retrospective depending on kind
     if (kind === 'glad_sad_mad') {
       return <GladSadMad mode={mode} onZoneClicked={handleZoneClicked} />
+    } else if (kind === 'starfish') {
+      return <Starfish mode={mode} onZoneClicked={handleZoneClicked} />
     }
 
     return <div>Unknown retrospective {kind}</div>
