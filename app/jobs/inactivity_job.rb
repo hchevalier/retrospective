@@ -7,11 +7,6 @@ class InactivityJob < ApplicationJob
     if participant.organizer?
       participant.retrospective.change_organizer!
       participant.reload
-      OrchestratorChannel.broadcast_to(
-        participant.retrospective,
-        action: 'updateOrganizerInfo',
-        parameters: { organizerInfo: participant.retrospective.organizer_info }
-      )
     end
 
     OrchestratorChannel.broadcast_to(

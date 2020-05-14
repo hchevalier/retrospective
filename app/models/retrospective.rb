@@ -154,6 +154,7 @@ class Retrospective < ApplicationRecord
     update!(organizer: other_participant)
     broadcast_order(:refreshParticipant, participant: other_participant.reload.profile)
     broadcast_order(:refreshParticipant, participant: current_organizer.reload.profile)
+    broadcast_order(:updateOrganizerInfo, organizerInfo: organizer_info)
   end
 
   def reset_original_organizer!
@@ -164,6 +165,7 @@ class Retrospective < ApplicationRecord
     update!(organizer: original_organizer)
     broadcast_order(:refreshParticipant, participant: original_organizer.reload.profile)
     broadcast_order(:refreshParticipant, participant: previous_organizer.reload.profile)
+    broadcast_order(:updateOrganizerInfo, organizerInfo: organizer_info)
   end
 
   def available_colors
