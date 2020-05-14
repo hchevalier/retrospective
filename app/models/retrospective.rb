@@ -162,6 +162,12 @@ class Retrospective < ApplicationRecord
       zones.build(identifier: 'Glad')
       zones.build(identifier: 'Sad')
       zones.build(identifier: 'Mad')
+    when 'starfish'
+      zones.build(identifier: 'Keep')
+      zones.build(identifier: 'Start')
+      zones.build(identifier: 'Stop')
+      zones.build(identifier: 'More')
+      zones.build(identifier: 'Less')
     end
   end
 
