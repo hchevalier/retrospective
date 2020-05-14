@@ -4,6 +4,7 @@
 // that code so it'll be compiled.
 
 require('intersection-observer')
+require('crypto-js')
 require("@rails/ujs").start()
 require("turbolinks").start()
 require("@rails/activestorage").start()

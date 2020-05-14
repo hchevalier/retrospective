@@ -3,10 +3,9 @@ import { uniqBy } from 'lib/helpers/array'
 const initialState = []
 
 const participants = (state = initialState, action) => {
-
   switch (action.type) {
     case 'login':
-      return uniqBy([action.profile, ...participants], 'uuid')
+      return uniqBy([action.profile, ...state], 'uuid')
     case 'new-participant':
       return uniqBy([...state, action.newParticipant], 'uuid')
     case 'refresh-participant':

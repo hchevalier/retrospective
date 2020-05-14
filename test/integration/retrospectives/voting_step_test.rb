@@ -146,6 +146,32 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     assert_remaining_votes_for(retrospective.organizer, 5)
   end
 
+  test 'new organizer can see remaining votes if original one is inactive' do
+    retrospective = create(:retrospective, step: 'voting')
+    other_participant = create(:other_participant, retrospective: retrospective)
+    reflection_a = create(:reflection, :glad, owner: retrospective.organizer)
+
+    organizer_window = open_new_window
+    within_window(organizer_window) do
+      logged_in_as(retrospective.organizer)
+      visit retrospective_path(retrospective)
+
+      assert_logged_in(retrospective.organizer, with_flags: '(you, orga.)')
+      assert_remaining_votes_for(retrospective.organizer, 5)
+      vote_for_reflection(reflection_a, times: 2)
+    end
+
+    cable_connection_for(retrospective.organizer).disconnect if headless?
+    organizer_window.close
+    perform_enqueued_jobs
+
+    logged_in_as(other_participant)
+    visit retrospective_path(retrospective)
+    assert_logged_in(other_participant, with_flags: '(you, orga.)')
+    assert_votes_count(reflection_a, count: 0)
+    assert_remaining_votes_for(retrospective.organizer, 3)
+  end
+
   private
 
   def vote_for_reflection(reflection, times: 1)

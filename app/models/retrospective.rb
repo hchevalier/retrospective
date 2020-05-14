@@ -94,7 +94,7 @@ class Retrospective < ApplicationRecord
         memo
       end
 
-    cipher = OpenSSL::Cipher::Cipher.new('AES-256-CBC')
+    cipher = OpenSSL::Cipher.new('AES-256-CBC')
     cipher.encrypt
     cipher.key = Digest::SHA256.new.update(organizer.encryption_key).digest
     cipher.iv = Base64.encode64(name).chomp.ljust(16, '0')[0...16]

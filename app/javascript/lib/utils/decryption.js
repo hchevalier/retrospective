@@ -6,5 +6,9 @@ export const decrypt = (base64EncryptedData, decryptionKey, initializationVector
   const options = { iv: CryptoJS.enc.Utf8.parse(initializationVector), keySize: 32, mode: CryptoJS.mode.CBC }
   const decrypted = CryptoJS.AES.decrypt({ ciphertext: encryptedData }, CryptoJS.enc.Hex.parse(key), options)
 
-  return decrypted.toString(CryptoJS.enc.Utf8)
+  try {
+    return decrypted.toString(CryptoJS.enc.Utf8)
+  } catch (exception) {
+    return ''
+  }
 }
