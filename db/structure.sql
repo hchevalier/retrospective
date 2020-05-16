@@ -116,7 +116,6 @@ CREATE TABLE public.ar_internal_metadata (
 CREATE TABLE public.participants (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     surname character varying NOT NULL,
-    email character varying NOT NULL,
     retrospective_id uuid,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
@@ -363,6 +362,13 @@ ALTER TABLE ONLY public.zones
 
 
 --
+-- Name: index_accounts_on_email; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_accounts_on_email ON public.accounts USING btree (email);
+
+
+--
 -- Name: index_participants_on_retrospective_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -409,6 +415,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200420213030'),
 ('20200508085629'),
 ('20200516112029'),
-('20200516113221');
+('20200516113221'),
+('20200516152144');
 
 

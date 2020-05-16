@@ -5,5 +5,6 @@ class CreateAccounts < ActiveRecord::Migration[6.0]
       t.string :email, null: false
       t.string :password_digest, null: false
     end
+    add_index :accounts, :email, unique: true
   end
 end
