@@ -1,5 +1,5 @@
 class ReactionsController < ApplicationController
-  before_action :ensure_logged_in
+  before_action :ensure_participant
 
   def create
     retrospective = current_user.retrospective

@@ -85,7 +85,17 @@ CREATE TYPE public.task_statuses AS ENUM (
 
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+--
+-- Name: accounts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.accounts (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    username character varying NOT NULL,
+    email character varying NOT NULL,
+    password_digest character varying NOT NULL
+);
+
 
 --
 -- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
@@ -112,7 +122,8 @@ CREATE TABLE public.participants (
     updated_at timestamp(6) without time zone NOT NULL,
     color character varying,
     logged_in boolean DEFAULT true NOT NULL,
-    encryption_key character varying NOT NULL
+    encryption_key character varying NOT NULL,
+    account_id uuid NOT NULL
 );
 
 
@@ -272,6 +283,14 @@ ALTER TABLE ONLY public.zones ALTER COLUMN id SET DEFAULT nextval('public.zones_
 
 
 --
+-- Name: accounts accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.accounts
+    ADD CONSTRAINT accounts_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: ar_internal_metadata ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -388,6 +407,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200412085012'),
 ('20200420213016'),
 ('20200420213030'),
-('20200508085629');
+('20200508085629'),
+('20200516112029'),
+('20200516113221');
 
 

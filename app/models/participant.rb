@@ -1,4 +1,5 @@
 class Participant < ApplicationRecord
+  belongs_to :account
   belongs_to :retrospective, optional: true
   has_one :organized_retrospective, class_name: 'Retrospective', foreign_key: :organizer_id, inverse_of: :organizer
   has_one :revealing_retrospective, class_name: 'Retrospective', foreign_key: :revealer_id, inverse_of: :revealer

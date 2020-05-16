@@ -1,5 +1,5 @@
 class ReflectionsController < ApplicationController
-  before_action :ensure_logged_in
+  before_action :ensure_participant
 
   def create
     zone = Zone.find_by(id: params[:zone_id], retrospective: current_user.retrospective)

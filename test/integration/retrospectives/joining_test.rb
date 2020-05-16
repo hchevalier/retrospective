@@ -2,11 +2,13 @@ require 'test_helper'
 
 class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
   test 'creates a new retrospective' do
-    visit '/'
-    assert_text 'You'
+    account = create(:account)
+    as_user(account)
 
-    fill_in 'surname', with: 'Surname'
-    fill_in 'email', with: 'email@yopmail.com'
+    visit '/'
+    assert_text 'Dashboard'
+    click_on 'Create a retrospective'
+
     fill_in 'retrospective_name', with: 'Retrospective'
     material_ui_select 'glad_sad_mad', from: 'retrospective_kind'
     click_on 'Start retrospective'
@@ -20,9 +22,12 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     visit retrospective_path(retrospective)
     assert_text 'Organizer'
 
-    fill_in 'surname', with: 'Other one'
+    click_on 'sign up'
+    fill_in 'username', with: 'Other one'
     fill_in 'email', with: 'other_one@yopmail.com'
-    click_on 'Join'
+    fill_in 'password', with: 'mypassword'
+    fill_in 'password_confirmation', with: 'mypassword'
+    click_on 'Create account'
 
     assert_text 'Other one'
   end
@@ -64,9 +69,12 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     within_window(open_new_window) do
       logged_out
       visit retrospective_path(retrospective)
-      fill_in 'surname', with: 'Other one'
+      click_on 'sign up'
+      fill_in 'username', with: 'Other one'
       fill_in 'email', with: 'other_one@yopmail.com'
-      click_on 'Join'
+      fill_in 'password', with: 'mypassword'
+      fill_in 'password_confirmation', with: 'mypassword'
+      click_on 'Create account'
     end
 
     assert_text 'Other one'

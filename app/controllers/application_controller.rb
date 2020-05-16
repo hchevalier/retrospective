@@ -1,8 +1,18 @@
 class ApplicationController < ActionController::Base
+  before_action :ensure_logged_in
+
   def current_user
     @current_user ||= begin
       (user_id = cookies.signed[:user_id]) ?
       Participant.find(user_id) :
+      nil
+    end
+  end
+
+  def current_account
+    @current_account ||= begin
+      (account_id = session[:account_id]) ?
+      Account.find(account_id) :
       nil
     end
   end
@@ -16,6 +26,10 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_logged_in
+    redirect_to :new_sessions unless current_account
+  end
+
+  def ensure_participant
     return if current_user
 
     render json: { status: :unauthorized }
