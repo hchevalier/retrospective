@@ -3,7 +3,6 @@ class ParticipantsController < ApplicationController
     retrospective = Retrospective.find(params[:retrospective_id])
     participant = Participant.create!(
       surname: current_account.username,
-      email: current_account.email,
       account_id: current_account.id,
       retrospective: retrospective
     )

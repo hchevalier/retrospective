@@ -3,7 +3,6 @@
 FactoryBot.define do
   factory :participant, aliases: %i[organizer revealer owner] do
     surname { 'Organizer' }
-    email { "#{surname.downcase.tr(' ', '_')}@yopmail.com" }
     association :account, strategy: :build
 
     factory :other_participant do

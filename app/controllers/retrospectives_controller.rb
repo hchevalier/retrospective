@@ -39,7 +39,7 @@ class RetrospectivesController < ApplicationController
   end
 
   def organizer_attributes
-    { email: current_account.email, surname: current_account.username, account_id: current_account.id }
+    { surname: current_account.username, account_id: current_account.id }
   end
 
   def preload_current_user_and_relationships
