@@ -16,7 +16,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     assert_text 'Lobby Retrospective'
   end
 
-  test 'joins an existing retrospective' do
+  test 'joins an existing retrospective by creating an account' do
     retrospective = create(:retrospective)
 
     visit retrospective_path(retrospective)
@@ -28,6 +28,20 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     fill_in 'password', with: 'mypassword'
     fill_in 'password_confirmation', with: 'mypassword'
     click_on 'Create account'
+
+    assert_text 'Other one'
+  end
+
+  test 'joins an existing retrospective by logging in to an existing account' do
+    retrospective = create(:retrospective)
+    create(:account, username: 'Other one', email: 'other_one@yopmail.com', password: 'mypasword', password_confirmation: 'mypasword')
+
+    visit retrospective_path(retrospective)
+    assert_text 'Organizer'
+
+    fill_in 'email', with: 'other_one@yopmail.com'
+    fill_in 'password', with: 'mypassword'
+    click_on 'Login'
 
     assert_text 'Other one'
   end

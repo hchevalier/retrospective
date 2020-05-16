@@ -5,9 +5,9 @@ class SessionsController < ApplicationController
 
   def create
     account = Account.find_by(email: params[:email])
-    return render(:not_found) unless account
+    return render(json: { status: :not_found }) unless account
 
-    redirect_to :back unless account.authenticate(params[:password])
+    return render(json: { status: :unauthorized }) unless account unless account.authenticate(params[:password])
 
     session[:account_id] = account.id
 
