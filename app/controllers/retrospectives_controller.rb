@@ -1,11 +1,12 @@
 class RetrospectivesController < ApplicationController
   before_action :http_authenticate
   before_action :preload_current_user_and_relationships, only: :show
+  skip_before_action :ensure_logged_in, only: :show
 
   def new; end
 
   def create
-    retrospective = Retrospective.create(retrospective_params.merge(organizer_attributes: organizer_params))
+    retrospective = Retrospective.create(retrospective_params.merge(organizer_attributes: organizer_attributes))
 
     if retrospective.persisted?
       cookies.signed[:user_id] = retrospective.organizer_id
@@ -23,7 +24,7 @@ class RetrospectivesController < ApplicationController
 
     @initial_state = @retrospective.initial_state(current_user)
 
-    if current_user
+    if current_user && current_user.account == current_account
       @participant = current_user
       @participant.join
 
@@ -34,11 +35,11 @@ class RetrospectivesController < ApplicationController
   private
 
   def retrospective_params
-    params.require(:retrospective).permit(:name, :kind)
+    params.permit(:name, :kind)
   end
 
-  def organizer_params
-    params.require(:organizer).permit(:surname, :email)
+  def organizer_attributes
+    { surname: current_account.username, account_id: current_account.id }
   end
 
   def preload_current_user_and_relationships

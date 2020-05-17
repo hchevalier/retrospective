@@ -2,11 +2,13 @@ require 'test_helper'
 
 class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
   test 'creates a new retrospective' do
-    visit '/'
-    assert_text 'You'
+    account = create(:account)
+    as_user(account)
 
-    fill_in 'surname', with: 'Surname'
-    fill_in 'email', with: 'email@yopmail.com'
+    visit '/'
+    assert_text 'Dashboard'
+    click_on 'Create a retrospective'
+
     fill_in 'retrospective_name', with: 'Retrospective'
     material_ui_select 'glad_sad_mad', from: 'retrospective_kind'
     click_on 'Start retrospective'
@@ -14,15 +16,32 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     assert_text 'Lobby Retrospective'
   end
 
-  test 'joins an existing retrospective' do
+  test 'joins an existing retrospective by creating an account' do
     retrospective = create(:retrospective)
 
     visit retrospective_path(retrospective)
     assert_text 'Organizer'
 
-    fill_in 'surname', with: 'Other one'
+    click_on 'sign up'
+    fill_in 'username', with: 'Other one'
     fill_in 'email', with: 'other_one@yopmail.com'
-    click_on 'Join'
+    fill_in 'password', with: 'mypassword'
+    fill_in 'password_confirmation', with: 'mypassword'
+    click_on 'Create account'
+
+    assert_text 'Other one'
+  end
+
+  test 'joins an existing retrospective by logging in to an existing account' do
+    retrospective = create(:retrospective)
+    create(:account, username: 'Other one', email: 'other_one@yopmail.com', password: 'mypasword', password_confirmation: 'mypasword')
+
+    visit retrospective_path(retrospective)
+    assert_text 'Organizer'
+
+    fill_in 'email', with: 'other_one@yopmail.com'
+    fill_in 'password', with: 'mypassword'
+    click_on 'Login'
 
     assert_text 'Other one'
   end
@@ -64,9 +83,12 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     within_window(open_new_window) do
       logged_out
       visit retrospective_path(retrospective)
-      fill_in 'surname', with: 'Other one'
+      click_on 'sign up'
+      fill_in 'username', with: 'Other one'
       fill_in 'email', with: 'other_one@yopmail.com'
-      click_on 'Join'
+      fill_in 'password', with: 'mypassword'
+      fill_in 'password_confirmation', with: 'mypassword'
+      click_on 'Create account'
     end
 
     assert_text 'Other one'

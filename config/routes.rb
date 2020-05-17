@@ -8,5 +8,10 @@ Rails.application.routes.draw do
     resources :tasks, only: %i(create update destroy)
   end
 
-  root 'retrospectives#new'
+  resource :sessions, only: %i(new create)
+  resource :accounts, only: %i(create)
+
+  get '/auth/:provider/callback' => 'sessions#omniauth'
+
+  get '/', to: 'static#dashboard', as: :dashboard
 end
