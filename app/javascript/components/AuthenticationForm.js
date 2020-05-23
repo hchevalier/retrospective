@@ -9,64 +9,57 @@ const AuthenticationForm = ({ onSignUpOrSignIn }) => {
   const [username, setUsername] = React.useState('')
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
-  const [passwordConfirmation, setPasswordConfirmation] = React.useState('')
+  const [passwordResetToastDisplayed, setPasswordResetToastDisplayed] = React.useState(false)
 
-  const createAccount = () => {
+
+  const handleSubmit = () => {
     post({
-      url: '/accounts',
-      payload: {
-        username: username,
-        email: email,
-        password: password,
-        password_confirmation: passwordConfirmation
-      }
+      url: mode === 'signIn' ? '/sessions' : '/accounts',
+      payload: { username, email, password }
     })
       .then(onSignUpOrSignIn)
       .catch(error => console.warn(error))
   }
 
-  const login = () => {
-    post({
-      url: '/sessions',
-      payload: {
-        email: email,
-        password: password
-      }
-    })
-      .then(onSignUpOrSignIn)
-      .catch(error => console.warn(error))
+  const onPasswordReset = () => {
+    setPasswordResetToastDisplayed(true)
+    setTimeout(() => setPasswordResetToastDisplayed(false), 30000)
   }
 
-  const signUpFragment = <>
-    Create an account:<br />
-    <form noValidate autoComplete='off'>
-      <div>
-        <TextField label='Username' name='username' value={username} onChange={(event) => setUsername(event.target.value)} />
-        <TextField label='E-mail' name='email' value={email} onChange={(event) => setEmail(event.target.value)} style={{ marginLeft: '20px' }} />
-      </div>
-      <div>
-        <TextField label='Password' name='password' value={password} type='password' onChange={(event) => setPassword(event.target.value)} />
-        <TextField label='Confirmation' name='password_confirmation' value={passwordConfirmation} type='password' onChange={(event) => setPasswordConfirmation(event.target.value)} style={{ marginLeft: '20px' }} />
-      </div>
+  const toggleMode = (e) => {
+    e.preventDefault()
+    setMode(mode === 'signIn' ? 'signUp' : 'signIn')
+  }
 
-      <Button variant='contained' color='primary' onClick={createAccount}>Create account</Button>
-    </form>
-    OR <a href='#' onClick={(e) => { e.preventDefault(); setMode('signIn') }}>sign in</a>
-  </>
+  const resetPassword = (e) => {
+    e.preventDefault()
+    if (email.length > 0 && !passwordResetToastDisplayed) {
+      post({
+        url: '/password_reset',
+        payload: { email }
+      })
+        .then(onPasswordReset)
+        .catch(error => console.warn(error))
+    }
+  }
 
-  const signInFragment = <>
-    Login:<br />
-    <form noValidate autoComplete='off'>
-      <div>
-        <TextField label='E-mail' name='email' value={email} onChange={(event) => setEmail(event.target.value)} style={{ marginLeft: '20px' }} />
-        <TextField label='Password' name='password' value={password} type='password' onChange={(event) => setPassword(event.target.value)} />
-      </div>
-      <Button variant='contained' color='primary' onClick={login}>Login</Button>
-    </form>
-    OR <a href='#' onClick={(e) => { e.preventDefault(); setMode('signUp') }}>sign up</a>
-  </>
+  return (
+    <>
+      <div>{mode === 'signUp' ? 'Create an account' : 'Log in'}:</div>
+      <form noValidate autoComplete='off'>
+        <div>
+          <TextField label='E-mail' name='email' value={email} onChange={(event) => setEmail(event.target.value)} />
+          <TextField label='Password' name='password' value={password} type='password' onChange={(event) => setPassword(event.target.value)} style={{ marginLeft: '20px' }} />
+          {mode === 'signUp' && <TextField label='Username' name='username' value={username} onChange={(event) => setUsername(event.target.value)} style={{ marginLeft: '20px' }} />}
+          {mode === 'signIn' && !passwordResetToastDisplayed && <div><a href='#' onClick={resetPassword}>I forgot my password</a></div>}
+          {mode === 'signIn' && passwordResetToastDisplayed && <div>An email has been sent</div>}
+        </div>
 
-  return mode === 'signUp' ? signUpFragment : signInFragment
+        <Button variant='contained' color='primary' onClick={handleSubmit}>{mode === 'signUp' ? 'Create account' : 'Login'}</Button>
+      </form>
+      OR <a href='#' onClick={toggleMode}>sign {mode === 'signUp' ? 'in' : 'up'}</a>
+    </>
+  )
 }
 
 AuthenticationForm.propTypes = {

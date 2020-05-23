@@ -6,7 +6,7 @@ class AddAccountIdToParticipants < ActiveRecord::Migration[6.0]
       account = Account.find_or_initialize_by(email: participant.email)
       if account.new_record?
         account.username = participant.surname
-        account.password = account.password_confirmation = SecureRandom.hex
+        account.password = SecureRandom.hex
         account.save!
       end
       participant.update_column(:account_id, account.id)

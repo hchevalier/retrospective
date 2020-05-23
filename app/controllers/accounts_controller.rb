@@ -2,7 +2,7 @@ class AccountsController < ApplicationController
   skip_before_action :ensure_logged_in, only: :create
 
   def create
-    account = Account.create(account_params)
+    account = Account.create(account_params.merge(password_confirmation: params[:password]))
 
     redirect_to :back unless account
 
@@ -14,6 +14,6 @@ class AccountsController < ApplicationController
   private
 
   def account_params
-    params.permit(:email, :username, :password, :password_confirmation)
+    params.permit(:email, :username, :password)
   end
 end

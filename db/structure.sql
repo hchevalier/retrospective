@@ -93,7 +93,8 @@ CREATE TABLE public.accounts (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     username character varying NOT NULL,
     email character varying NOT NULL,
-    password_digest character varying NOT NULL
+    password_digest character varying NOT NULL,
+    password_reset_token character varying
 );
 
 
@@ -416,6 +417,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200508085629'),
 ('20200516112029'),
 ('20200516113221'),
-('20200516152144');
+('20200516152144'),
+('20200523191205');
 
 
