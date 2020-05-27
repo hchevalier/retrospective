@@ -102,7 +102,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     within find('.zone-column', match: :first) do
       assert_text '⬇︎ Unread reflection ⬇︎'
       assert_css '.reflection[data-read=true]', count: 6
-      scroll_to(all('.reflection')[6])
+      scroll_to(all('.reflection')[3])
       refute_text '⬇︎ Unread reflection ⬇︎'
       assert_css '.reflection[data-read=true]', count: 8
     end
