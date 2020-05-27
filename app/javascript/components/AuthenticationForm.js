@@ -72,7 +72,7 @@ const AuthenticationForm = ({ onSignUpOrSignIn }) => {
       </div>
       <div className='flex items-center justify-between'>
         <button className='bg-blue-500 hover:bg-blue-700 text-white font-medium py-1 px-2 rounded focus:outline-none focus:shadow-outline' type='submit'>
-          Sign in
+          Login
         </button>
         <button className="inline-block align-baseline bg-transparent font-bold text-sm text-blue-500 hover:text-blue-800" onClick={() => setMode('signUp')} type='button'>
           Don&apos;t have an account yet?

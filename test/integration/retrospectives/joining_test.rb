@@ -22,7 +22,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     visit retrospective_path(retrospective)
     assert_text 'Organizer'
 
-    click_on 'sign up'
+    click_on "Don't have an account yet?"
     fill_in 'username', with: 'Other one'
     fill_in 'email', with: 'other_one@yopmail.com'
     fill_in 'password', with: 'mypassword'
@@ -83,7 +83,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     within_window(open_new_window) do
       logged_out
       visit retrospective_path(retrospective)
-      click_on 'sign up'
+      click_on "Don't have an account yet?"
       fill_in 'username', with: 'Other one'
       fill_in 'email', with: 'other_one@yopmail.com'
       fill_in 'password', with: 'mypassword'
