@@ -60,7 +60,7 @@ const ReflectionsList = ({ open, filter, retrospectiveKind, withIcon, onUpdateRe
   return (
     <>
       <Modal open={open} onClose={onModalClose} disableAutoFocus disablePortal>
-        <form id='reflections-list-modal' noValidate autoComplete='off'>
+        <form id='reflections-list-modal' noValidate autoComplete='off' className="overflow-y-auto">
           <div>
             <div>
               {displayableReflections.filter(shouldDisplayReflection).map((reflection, index) => (

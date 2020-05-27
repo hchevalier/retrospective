@@ -54,7 +54,7 @@ const Timer = ({ organizer, show }) => {
 
   return (
     <>
-      {displayTimer && <div id='timer' onClick={handleTimerClick}>
+      {displayTimer && <div id='timer' className='cursor-pointer' onClick={handleTimerClick}>
         <span>Timer:</span>
         <span className='minutes'>{timerEndAt ? `${remainingMinutes}`.padStart(2, '0') : '--'}</span>
         <span className='colon-separator'>:</span>

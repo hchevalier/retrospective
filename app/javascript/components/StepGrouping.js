@@ -81,7 +81,7 @@ const StepGrouping = () => {
     <>
       {organizer && <div>Click on a participant so that he can reveal his reflections</div>}
       {!organizer && <div>The organizer now chooses a participant so that he can reveal his reflections</div>}
-      <div id='zones-container'>
+      <div id="zones-container" className="flex">
         {zones.map((zone) => {
           const reflectionsInZone = reflections.filter((reflection) => reflection.zone.id === zone.id)
           const stickyNotesInZone = Object.entries(reflectionRefs).map(([, stickyNoteRef]) => {
@@ -91,7 +91,7 @@ const StepGrouping = () => {
           const unreadReflectionBelow = stickyNotesInZone.reverse().find(noteBelowViewport)
 
           return (
-            <div className='zone-column' key={zone.id}>
+            <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0' key={zone.id}>
               <span className='zone-header'>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</span>
               {!!unreadReflectionAbove && <div className='unread-notice above' onClick={() => scrollToStickyNote(unreadReflectionAbove)}>⬆︎ Unread reflection ⬆︎</div>}
               <div className='scrolling-zone'>

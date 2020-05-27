@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React from 'react'
 import { useSelector } from 'react-redux'
 import classNames from 'classnames'
@@ -23,9 +24,9 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, sho
   const emojis = reactions.filter((reaction) => reaction.kind === 'emoji')
 
   return (
-    <div ref={ref} className={classNames('reflection', { glowing })} data-id={reflection.id} data-owner-uuid={reflection.owner.uuid} data-zone-id={reflection.zone.id} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={colorStyle}>
-      <div className='reflection-content-container'>
-        <div className='author'>{reflection.owner.surname}</div>
+    <div ref={ref} className={classNames('reflection flex flex-col mb-3 mx-auto p-2 rounded-md relative', { glowing })} data-id={reflection.id} data-owner-uuid={reflection.owner.uuid} data-zone-id={reflection.zone.id} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={colorStyle}>
+      <div className='pb-6 reflection-content-container'>
+        <div className='font-bold'>{reflection.owner.surname}</div>
         <div className='content'>{reflection.content}</div>
       </div>
       {showVotes && <VoteCorner reflection={reflection} votes={votes} canVote={step === 'voting'} />}

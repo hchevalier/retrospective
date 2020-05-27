@@ -1,14 +1,5 @@
 #zones-container {
-  display: flex;
-  flex-direction: row;
-
   .zone-column {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    flex-grow: 1;
-    border: 1px solid gray;
-
     .zone-header {
       padding: 10px 20px;
     }
