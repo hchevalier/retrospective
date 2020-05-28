@@ -78,7 +78,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
   test 'unread reflections out of viewport are noticed by a banner' do
     retrospective = create(:retrospective, step: 'grouping')
     other_participant = create(:other_participant, retrospective: retrospective)
-    create_list(:reflection, 8, :glad, owner: other_participant, revealed: false)
+    create_list(:reflection, 4, :glad, owner: other_participant, revealed: false)
     create(:reflection, :mad, owner: other_participant, revealed: false)
 
     logged_in_as(retrospective.organizer)
@@ -94,17 +94,17 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       assert_css '#reflections-list-modal'
 
       all('#reflections-list-modal button.MuiButton-text').each.with_index do |reveal_button, index|
-        next if index > 7
+        next if index > 3
         reveal_button.click
       end
     end
 
     within find('.zone-column', match: :first) do
       assert_text '⬇︎ Unread reflection ⬇︎'
-      assert_css '.reflection[data-read=true]', count: 6
+      assert_css '.reflection[data-read=true]', count: 3
       scroll_to(all('.reflection')[3])
       refute_text '⬇︎ Unread reflection ⬇︎'
-      assert_css '.reflection[data-read=true]', count: 8
+      assert_css '.reflection[data-read=true]', count: 4
     end
 
     within_window(other_participant_window) do
