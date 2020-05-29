@@ -54,3 +54,37 @@ Things you may want to cover:
 * Dixit
 
 * Postcard
+
+# Install and run the app
+
+Clone the repository
+
+    git clone https://github.com/hchevalier/retrospective.git
+
+Then
+
+    cd retrospective
+
+## Install gems
+
+    bundle install
+
+## Install webpacker and dependencies
+
+    yarn install
+
+## Database initialization
+
+
+    rails db:create
+    rails db:setup
+
+## Run in 2 distinct terminals
+
+In one term:
+
+    rails s
+
+In another term:
+
+    ./bin/webpack-dev-server
