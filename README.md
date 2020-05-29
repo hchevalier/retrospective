@@ -75,7 +75,6 @@ Then
 
 ## Database initialization
 
-
     rails db:create
     rails db:setup
 
