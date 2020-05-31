@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 import './Zone.scss'
 
 const Zone = ({ background, height, icon, mode, onClick, reference, reflections, width }) => {
@@ -13,7 +14,9 @@ const Zone = ({ background, height, icon, mode, onClick, reference, reflections,
 
   return (
     <div id={`zone-${name}`} data-id={id} onClick={onClick} className={`zone mode-${mode}`} style={inlineStyle}>
-      <div className='zone-label' data-id={id}>{icon ? icon : null} {name} {displayedReflectionsCount}</div>
+      <div className={classNames('zone-label', { 'absolute-zone-label': !icon})} data-id={id}>
+        {icon ? icon : null} {name} {displayedReflectionsCount}
+      </div>
     </div>
   )
 }
