@@ -6,13 +6,6 @@ class PasswordResetTest < ActionDispatch::IntegrationTest
     ActiveJob::Base.queue_adapter = :inline
   end
 
-  def teardown
-    (ActiveJob::Base.descendants << ActiveJob::Base).each do |klass|
-      klass.enable_test_adapter(ActiveJob::QueueAdapters::TestAdapter.new)
-    end
-    ActiveJob::Base.queue_adapter = :test
-  end
-
   test 'fill a password reset form' do
     account = create(:account, email: 'my_account@yopmail.com', password: '1234567890')
 

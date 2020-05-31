@@ -40,6 +40,14 @@ class ActionDispatch::IntegrationTest
   Capybara.default_driver = ENV.fetch('HEADLESS', false) == 'true' ? :selenium_chrome_headless : :selenium_chrome
   Capybara.default_max_wait_time = 5.seconds
 
+  # Ensure test adapter has correctly been reset
+  setup do
+    (ActiveJob::Base.descendants << ActiveJob::Base).each do |klass|
+      klass.enable_test_adapter(ActiveJob::QueueAdapters::TestAdapter.new)
+    end
+    ActiveJob::Base.queue_adapter = :test
+  end
+
   # Reset sessions and driver between tests
   teardown do
     Capybara.reset_sessions!
