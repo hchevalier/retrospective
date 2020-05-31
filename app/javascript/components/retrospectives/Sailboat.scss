@@ -1,0 +1,38 @@
+#img-cloud {
+  position: absolute;
+  left: 0;
+  z-index: 1;
+}
+
+#zone-Wind {
+  position: absolute;
+  width: 160px;
+  height: 90px;
+  top: 60px;
+  left: 200px;
+}
+
+#zone-Anchor {
+  position: absolute;
+  width: 260px;
+  height: 200px;
+  top: 270px;
+  left: 190px;
+}
+
+
+#zone-Rocks {
+  position: absolute;
+  width: 250px;
+  height: 160px;
+  top: 220px;
+  right: 340px;
+}
+
+#zone-Island {
+  position: absolute;
+  width: 320px;
+  height: 270px;
+  top: 50px;
+  right: 0;
+}

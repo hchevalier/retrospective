@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import './Zone.scss'
 
-const Zone = ({ background, height, htmlStyle, icon, mode, onClick, reference, reflections, width }) => {
+const Zone = ({ background, height, icon, mode, onClick, reference, reflections, width }) => {
   const { id, name } = reference
   const reflectionsCount = reflections.length
   const displayedReflectionsCount = reflectionsCount > 0 ? `(${reflectionsCount})` : ''
@@ -10,13 +10,13 @@ const Zone = ({ background, height, htmlStyle, icon, mode, onClick, reference, r
 
   if (icon) {
   return (
-    <div id={id} data-id={id} onClick={onClick} className={`zone mode-${mode}`} style={htmlStyle}>
+    <div id={`zone-${name}`} data-id={id} onClick={onClick} className={`zone mode-${mode}`}>
       {icon} {name} {displayedReflectionsCount}
     </div>)
   }
 
   return (
-    <div id={id} onClick={onClick} className={`zone mode-${mode}`} style={{ backgroundImage: `url(${background})`, backgroundSize: 'cover', backgroundPosition: 'center', width, height, ...htmlStyle }}>
+    <div id={`zone-${name}`} data-id={id} onClick={onClick} className={`zone mode-${mode}`} style={{ backgroundImage: `url(${background})`, backgroundSize: 'cover', backgroundPosition: 'center', width, height }}>
       {name} {displayedReflectionsCount}
     </div>
   )
@@ -25,7 +25,6 @@ const Zone = ({ background, height, htmlStyle, icon, mode, onClick, reference, r
 Zone.propTypes = {
   background: PropTypes.node,
   height: PropTypes.number,
-  htmlStyle: PropTypes.object,
   icon: PropTypes.node,
   mode: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
@@ -35,10 +34,6 @@ Zone.propTypes = {
   }),
   reflections: PropTypes.array.isRequired,
   width: PropTypes.number
-}
-
-Zone.defaultProps = {
-  htmlStyle: {}
 }
 
 export default Zone
