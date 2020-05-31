@@ -1,11 +1,6 @@
 require 'test_helper'
 
 class PasswordResetTest < ActionDispatch::IntegrationTest
-  setup do
-    (ActiveJob::Base.descendants << ActiveJob::Base).each(&:disable_test_adapter)
-    ActiveJob::Base.queue_adapter = :inline
-  end
-
   test 'fill a password reset form' do
     account = create(:account, email: 'my_account@yopmail.com', password: '1234567890')
 
@@ -17,6 +12,7 @@ class PasswordResetTest < ActionDispatch::IntegrationTest
 
     assert_text 'An email has been sent'
 
+    perform_enqueued_jobs
     email = ActionMailer::Base.deliveries.last
     assert_equal ['noreply@docto-retrospective.herokuapp.com'], email.from
     assert_equal [account.email], email.to
