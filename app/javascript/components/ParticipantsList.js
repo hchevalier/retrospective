@@ -3,12 +3,14 @@ import { useSelector, shallowEqual } from 'react-redux'
 import classNames from 'classnames'
 import Button from '@material-ui/core/Button'
 import { compact } from 'lib/helpers/array'
+import { decrypt } from 'lib/utils/decryption'
 import StickyBookmark from './StickyBookmark'
 import './ParticipantsList.scss'
 
 const ParticipantsList = () => {
   const profile = useSelector(state => state.profile)
-  const step = useSelector(state => state.orchestrator.step)
+  const { name: retrospectiveName } = useSelector(state => state.retrospective)
+  const { organizerInfo: encryptedOrganizerInfo, step } = useSelector(state => state.orchestrator)
   const participants = useSelector(state => state.participants, shallowEqual)
   const channel = useSelector(state => state.orchestrator.subscription)
 
@@ -37,6 +39,21 @@ const ParticipantsList = () => {
     }
   }
 
+  const organizerInfo = React.useMemo(() => {
+    const { organizer, decryptionKey } = profile
+
+    if (!organizer) return {}
+
+    const encodedName = btoa(retrospectiveName)
+    const initializationVector = encodedName.length < 16 ? encodedName + '0'.repeat(16 - encodedName.length) : encodedName
+    const message = decrypt(encryptedOrganizerInfo, decryptionKey, initializationVector)
+    if (message !== '') {
+      return JSON.parse(message)
+    }
+
+    return {}
+  }, [encryptedOrganizerInfo, profile, retrospectiveName])
+
   return (
     <div id='participants-list'>
       {participants.map(({ surname, status, organizer, revealer, uuid, color }, index) => {
@@ -44,8 +61,9 @@ const ParticipantsList = () => {
         return (
           <div className='participant' key={index} data-id={uuid} onClick={handleParticipantClick}>
             <div className={classNames('participant-status', { 'logged-in': status })} />
-            <StickyBookmark otherClassNames={{ 'organizer': organizer, 'revealer': revealer, 'yourself': profile?.uuid === uuid }} color={color}>
+            <StickyBookmark otherClassNames={{ 'space-between': 'space-between', 'organizer': organizer, 'revealer': revealer, 'yourself': profile?.uuid === uuid }} color={color}>
               <span>{surname}</span> {flags && <span className='flags'>({flags})</span>}
+              {step === 'voting' && organizerInfo[uuid] && <span className='remaining-votes'>{organizerInfo[uuid].remainingVotes}</span>}
             </StickyBookmark>
           </div>
         )

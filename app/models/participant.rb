@@ -1,4 +1,5 @@
 class Participant < ApplicationRecord
+  belongs_to :account
   belongs_to :retrospective, optional: true
   has_one :organized_retrospective, class_name: 'Retrospective', foreign_key: :organizer_id, inverse_of: :organizer
   has_one :revealing_retrospective, class_name: 'Retrospective', foreign_key: :revealer_id, inverse_of: :revealer
@@ -8,6 +9,7 @@ class Participant < ApplicationRecord
   has_many :assigned_tasks, class_name: 'Task', foreign_key: :assignee_id, inverse_of: :assignee
 
   before_create :set_default_color
+  before_create :set_encryption_key
 
   validates :retrospective, presence: true, unless: -> { new_record? && organized_retrospective }
   validate :valid_color?, if: -> { color_changed? }, on: :update
@@ -42,6 +44,10 @@ class Participant < ApplicationRecord
     }
   end
 
+  def full_profile
+    profile.merge(decryptionKey: encryption_key)
+  end
+
   def organizer?
     association(:retrospective).loaded? ? retrospective.organizer_id == self.id : organized_retrospective.present?
   end
@@ -63,6 +69,10 @@ class Participant < ApplicationRecord
 
   def set_default_color
     self.color = color || (retrospective || organized_retrospective).available_colors.sample
+  end
+
+  def set_encryption_key
+    self.encryption_key ||= (0...32).map { ('a'..'z').to_a[rand(26)] }.join
   end
 
   def valid_color?

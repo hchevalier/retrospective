@@ -7,8 +7,10 @@ const Zone = ({ background, height, htmlStyle, icon, mode, onClick, reference, r
   const reflectionsCount = reflections.length
   const displayedReflectionsCount = reflectionsCount > 0 ? `(${reflectionsCount})` : ''
 
+
   if (icon) {
-    return (<div id={id} onClick={onClick} className={`zone mode-${mode}`} style={htmlStyle}>
+  return (
+    <div id={id} data-id={id} onClick={onClick} className={`zone mode-${mode}`} style={htmlStyle}>
       {icon} {name} {displayedReflectionsCount}
     </div>)
   }

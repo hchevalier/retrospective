@@ -7,9 +7,12 @@ ruby '2.6.6'
 
 gem 'rails', '6.0.2.2'
 
+gem 'bcrypt'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'figaro'
 gem 'jbuilder', '~> 2.7'
+gem 'omniauth'
+gem 'omniauth-google-oauth2'
 gem 'pg'
 gem 'puma', '~> 4.1'
 gem 'react-rails'

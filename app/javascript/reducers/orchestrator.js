@@ -3,7 +3,8 @@ export const initialState = {
   availableColors: [],
   zones: [],
   step: '',
-  subscription: null
+  subscription: null,
+  organizerInfo: null
 }
 
 const orchestrator = (state = initialState, action) => {
@@ -12,6 +13,8 @@ const orchestrator = (state = initialState, action) => {
       return { ...state, step: action.step }
     case 'set-channel':
       return { ...state, subscription: action.subscription }
+    case 'update-organizer-info':
+      return { ...state, organizerInfo: action.organizerInfo }
     default:
       return state
   }

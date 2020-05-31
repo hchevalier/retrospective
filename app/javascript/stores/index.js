@@ -8,18 +8,19 @@ const appStore = (props) => {
   const {
     serverTime, participants, profile, ownReactions,
     visibleReactions, timerEndAt, tasks, retrospective,
-    ownReflections, visibleReflections, discussedReflection,
+    ownReflections, visibleReflections, discussedReflection, organizerInfo,
     ...initialState
   } = props
+
   return createStore(
     reducer,
     {
-      orchestrator: { ...initialState },
+      orchestrator: { ...initialState, organizerInfo },
       participants,
       profile,
       reactions: { visibleReactions, ownReactions },
       reflections: { ownReflections, visibleReflections: visibleReflections || [], discussedReflection },
-      retrospective: { ...retrospective, },
+      retrospective: { ...retrospective },
       tasks,
       timer: { timerEndAt, timeOffset: new Date(serverTime) - new Date() + LATENCY }
     },

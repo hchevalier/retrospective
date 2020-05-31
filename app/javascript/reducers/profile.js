@@ -5,7 +5,7 @@ const profile = (state = {}, action) => {
     case 'change-color':
     case 'refresh-participant':
       if (state.uuid === action.participant.uuid)
-        return action.participant
+        return { ...state, ...action.participant }
       else
         return state
     default:

@@ -7,6 +7,7 @@ require 'capybara/minitest'
 require 'test_utils/material_ui_helpers'
 require 'test_utils/cookies_helpers'
 require 'test_utils/assert_helpers'
+require 'test_utils/cable_helpers'
 
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
@@ -29,6 +30,11 @@ class ActionDispatch::IntegrationTest
   include MaterialUiHelpers
   include CookiesHelpers
   include AssertHelpers
+  include CableHelpers
+
+  def headless?
+    Capybara.current_driver.match? /headless/
+  end
 
   Capybara.server = :puma, { Silent: true }
   Capybara.default_driver = ENV.fetch('HEADLESS', false) == 'true' ? :selenium_chrome_headless : :selenium_chrome

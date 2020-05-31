@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :ensure_logged_in
+  before_action :ensure_participant
 
   def create
     retrospective = Retrospective.find(params[:retrospective_id])

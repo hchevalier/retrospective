@@ -51,7 +51,7 @@ class Retrospective < ApplicationRecord
       name: name,
       kind: kind,
       zones: zones.as_json,
-      discussed_reflection: discussed_reflection,
+      discussedReflection: discussed_reflection&.readable,
       tasks: tasks.order(:created_at).as_json
     }
   end
@@ -67,7 +67,8 @@ class Retrospective < ApplicationRecord
       availableColors: available_colors,
       tasks: tasks.order(:created_at).as_json,
       serverTime: Time.zone.now,
-      timerEndAt: timer_end_at
+      timerEndAt: timer_end_at,
+      organizerInfo: organizer_info
     }
 
     unless step.in?(%w[gathering thinking])
@@ -81,6 +82,25 @@ class Retrospective < ApplicationRecord
     end
 
     state
+  end
+
+  def organizer_info
+    clear_info =
+      participants.includes(:reactions).reduce({}) do |memo, participant|
+        memo[participant.id] = {
+          remainingVotes: Reaction::MAX_VOTES - participant.reactions.select(&:vote?).count
+        }
+
+        memo
+      end
+
+    cipher = OpenSSL::Cipher.new('AES-256-CBC')
+    cipher.encrypt
+    cipher.key = Digest::SHA256.new.update(organizer.encryption_key).digest
+    cipher.iv = Base64.encode64(name).chomp.ljust(16, '0')[0...16]
+    encrypted_data = cipher.update(clear_info.to_json) + cipher.final
+
+    Base64.strict_encode64(encrypted_data).chomp
   end
 
   def next_step!
@@ -134,6 +154,7 @@ class Retrospective < ApplicationRecord
     update!(organizer: other_participant)
     broadcast_order(:refreshParticipant, participant: other_participant.reload.profile)
     broadcast_order(:refreshParticipant, participant: current_organizer.reload.profile)
+    broadcast_order(:updateOrganizerInfo, organizerInfo: organizer_info)
   end
 
   def reset_original_organizer!
@@ -144,6 +165,7 @@ class Retrospective < ApplicationRecord
     update!(organizer: original_organizer)
     broadcast_order(:refreshParticipant, participant: original_organizer.reload.profile)
     broadcast_order(:refreshParticipant, participant: previous_organizer.reload.profile)
+    broadcast_order(:updateOrganizerInfo, organizerInfo: organizer_info)
   end
 
   def available_colors
@@ -167,6 +189,12 @@ class Retrospective < ApplicationRecord
       zones.build(identifier: 'Anchor')
       zones.build(identifier: 'Rocks')
       zones.build(identifier: 'Island')
+    when 'starfish'
+      zones.build(identifier: 'Keep')
+      zones.build(identifier: 'Start')
+      zones.build(identifier: 'Stop')
+      zones.build(identifier: 'More')
+      zones.build(identifier: 'Less')
     end
   end
 

@@ -39,6 +39,8 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
       dispatch({ type: 'change-task', task: data.task })
     } else if (action == 'dropTask') {
       dispatch({ type: 'drop-task', taskId: data.taskId })
+    } else if (action == 'updateOrganizerInfo') {
+      dispatch({ type: 'update-organizer-info', organizerInfo: data.organizerInfo })
     }
   }, [dispatch])
 

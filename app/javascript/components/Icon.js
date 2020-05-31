@@ -1,7 +1,13 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Glad from 'images/glad.png'
 import Sad from 'images/sad.png'
 import Mad from 'images/mad.png'
+import Keep from 'images/keep.png'
+import Start from 'images/start.png'
+import Stop from 'images/stop.png'
+import More from 'images/more.png'
+import Less from 'images/less.png'
 import './Icon.scss'
 
 const iconFor = (retrospectiveKind, zone) => {
@@ -12,19 +18,40 @@ const iconFor = (retrospectiveKind, zone) => {
       return Sad
     case 'glad_sad_mad-Mad':
       return Mad
+    case 'starfish-Keep':
+      return Keep
+    case 'starfish-Start':
+      return Start
+    case 'starfish-Stop':
+      return Stop
+    case 'starfish-More':
+      return More
+    case 'starfish-Less':
+      return Less
   }
 
   return null
 }
 
-const Icon = ({ retrospectiveKind, zone }) => {
+const Icon = ({ retrospectiveKind, zone, onClick, dataAttributes }) => {
   let icon = iconFor(retrospectiveKind, zone)
 
   if (!icon) {
     return null
   }
 
-  return <img className='zone-icon' src={icon} />
+  return <img className='zone-icon' src={icon} onClick={onClick} {...dataAttributes} />
+}
+
+Icon.propTypes = {
+  retrospectiveKind: PropTypes.string.isRequired,
+  zone: PropTypes.string.isRequired,
+  dataAttributes: PropTypes.object,
+  onClick: PropTypes.func
+}
+
+Icon.defaultProps = {
+  dataAttributes: {}
 }
 
 export default Icon
