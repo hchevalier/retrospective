@@ -4,12 +4,24 @@
   z-index: 1;
 }
 
+.zone-label {
+  position: absolute;
+  background: #00000099;
+  padding: 4px;
+  color: white;
+}
+
 #zone-Wind {
   position: absolute;
   width: 160px;
   height: 90px;
   top: 60px;
   left: 200px;
+
+  .zone-label {
+    top: 90px;
+    left: 50px;
+  }
 }
 
 #zone-Anchor {
@@ -18,6 +30,11 @@
   height: 200px;
   top: 270px;
   left: 190px;
+
+  .zone-label {
+    top: 150px;
+    left: 90px;
+  }
 }
 
 
@@ -27,6 +44,11 @@
   height: 160px;
   top: 220px;
   right: 340px;
+
+  .zone-label {
+    top: 170px;
+    left: 90px;
+  }
 }
 
 #zone-Island {
@@ -35,4 +57,9 @@
   height: 270px;
   top: 50px;
   right: 0;
+
+  .zone-label {
+    top: 200px;
+    left: 120px;
+  }
 }

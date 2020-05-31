@@ -7,17 +7,13 @@ const Zone = ({ background, height, icon, mode, onClick, reference, reflections,
   const reflectionsCount = reflections.length
   const displayedReflectionsCount = reflectionsCount > 0 ? `(${reflectionsCount})` : ''
 
-
-  if (icon) {
-  return (
-    <div id={`zone-${name}`} data-id={id} onClick={onClick} className={`zone mode-${mode}`}>
-      {icon} {name} {displayedReflectionsCount}
-    </div>)
+  const inlineStyle = icon ? {} : {
+    backgroundImage: `url(${background})`, backgroundSize: 'cover', backgroundPosition: 'center', width, height
   }
 
   return (
-    <div id={`zone-${name}`} data-id={id} onClick={onClick} className={`zone mode-${mode}`} style={{ backgroundImage: `url(${background})`, backgroundSize: 'cover', backgroundPosition: 'center', width, height }}>
-      {name} {displayedReflectionsCount}
+    <div id={`zone-${name}`} data-id={id} onClick={onClick} className={`zone mode-${mode}`} style={inlineStyle}>
+      <div className='zone-label' data-id={id}>{icon ? icon : null} {name} {displayedReflectionsCount}</div>
     </div>
   )
 }
