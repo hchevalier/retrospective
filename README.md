@@ -79,12 +79,12 @@ Then
     rails db:create
     rails db:setup
 
-## Run in 2 distinct terminals
+## Running
 
-In one term:
+Execute the following commands:
 
     rails s
 
-In another term:
+And for InactivityJob:
 
-    ./bin/webpack-dev-server
+    bundle exec sidekiq
