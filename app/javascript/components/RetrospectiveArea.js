@@ -107,7 +107,6 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   }, [channel, revealer])
 
   const renderRetrospective = () => {
-    // TODO: return retrospective depending on kind
     if (kind === 'glad_sad_mad') {
       return <GladSadMad mode={mode} onZoneClicked={handleZoneClicked} />
     } else if (kind === 'sailboat') {
