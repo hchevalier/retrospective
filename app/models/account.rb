@@ -7,11 +7,17 @@ class Account < ApplicationRecord
 
   validates :email, uniqueness: true
 
+  before_create :clear_password_reset_token
+
   def self.from_omniauth(auth)
     where(email: auth.info.email).first_or_initialize do |account|
       account.username = auth.info.name
       account.email = auth.info.email
       account.password = SecureRandom.hex
     end
+  end
+
+  def clear_password_reset_token
+    self.password_reset_token = nil
   end
 end

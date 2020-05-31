@@ -7,7 +7,7 @@ class PasswordResetController < ApplicationController
     return render(json: { status: :created }) unless account
 
     account.regenerate_password_reset_token
-    AccountMailer.send_password_reset.deliver_later
+    AccountMailer.send_password_reset(account: account).deliver_now
 
     render(json: { status: :created })
   end
@@ -20,7 +20,8 @@ class PasswordResetController < ApplicationController
     account = Account.find_by(password_reset_token: params[:id])
     return render(json: { status: :ok }) unless account
 
-    account.update!(password: params[:password], password_confirmation: params[:password], password_reset_token: nil)
+    account.clear_password_reset_token
+    account.update!(password: params[:password], password_confirmation: params[:password])
 
     render(json: { status: :created })
   end
