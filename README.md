@@ -54,3 +54,36 @@ Things you may want to cover:
 * Dixit
 
 * Postcard
+
+# Install and run the app
+
+Clone the repository
+
+    git clone https://github.com/hchevalier/retrospective.git
+
+Then
+
+    cd retrospective
+
+## Install gems
+
+    bundle install
+
+## Install webpacker and dependencies
+
+    yarn install
+
+## Database initialization
+
+    rails db:create
+    rails db:setup
+
+## Running
+
+Execute the following commands:
+
+    rails s
+
+And for InactivityJob:
+
+    bundle exec sidekiq
