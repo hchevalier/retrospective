@@ -2,9 +2,8 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import Modal from '@material-ui/core/Modal'
+import Modal from './Modal'
 import PropTypes from 'prop-types'
-import './ReflectionForm.scss'
 
 const ReflectionForm = ({ open, value, confirmationLabel, onChange, onConfirmationClick, onReflectionCancel }) => {
   const profile = useSelector(state => state.profile)

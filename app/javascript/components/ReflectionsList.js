@@ -1,10 +1,9 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import Button from '@material-ui/core/Button'
-import Modal from '@material-ui/core/Modal'
+import Modal from './Modal'
 import ReflectionForm from './ReflectionForm'
 import Icon from './Icon'
-import './ReflectionsList.scss'
 
 const ReflectionsList = ({ open, filter, retrospectiveKind, withIcon, onUpdateReflection, onDestroyReflection, onModalClose }) => {
   const revealer = useSelector(state => state.profile.revealer)
