@@ -1,7 +1,6 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import classNames from 'classnames'
-import Button from '@material-ui/core/Button'
 import { compact } from 'lib/helpers/array'
 import { decrypt } from 'lib/utils/decryption'
 import StickyBookmark from './StickyBookmark'

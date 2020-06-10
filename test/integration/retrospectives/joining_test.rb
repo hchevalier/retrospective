@@ -10,7 +10,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     click_on 'Create a retrospective'
 
     fill_in 'retrospective_name', with: 'Retrospective'
-    material_ui_select 'glad_sad_mad', from: 'retrospective_kind'
+    select 'glad_sad_mad', from: 'retrospective_kind'
     click_on 'Start retrospective'
 
     assert_text 'Lobby Retrospective'

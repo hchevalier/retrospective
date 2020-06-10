@@ -8,7 +8,9 @@ const RetrospectiveCreationForm = ({ retrospective_kinds: retrospectiveKinds }) 
   const [retrospectiveName, setRetrospectiveName] = React.useState('')
   const [retrospectiveKind, setRetrospectiveKind] = React.useState('')
 
-  const createRetrospective = () => {
+  const createRetrospective = (event) => {
+    event.preventDefault()
+
     post({
       url: '/retrospectives',
       payload: {
@@ -34,7 +36,7 @@ const RetrospectiveCreationForm = ({ retrospective_kinds: retrospectiveKinds }) 
             <div>
               <label id='label-kind'>Retrospective kind</label>
               <select
-                labelId='label-kind'
+                id='label-kind'
                 name='retrospective_kind'
                 value={retrospectiveKind}
                 onChange={(event) => setRetrospectiveKind(event.target.value)}
