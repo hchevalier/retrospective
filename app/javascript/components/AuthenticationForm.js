@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { post } from 'lib/httpClient'
+import Input from './Input'
 
 const AuthenticationForm = ({ onSignUpOrSignIn }) => {
   const [mode, setMode] = React.useState('signIn')
@@ -91,9 +92,5 @@ AuthenticationForm.propTypes = {
 AuthenticationForm.defaultProps = {
   onSignUpOrSignIn: () => { window.location.pathname = '/' }
 }
-
-const Input = (props) => (
-  <input className="border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline" {...props} />
-)
 
 export default AuthenticationForm
