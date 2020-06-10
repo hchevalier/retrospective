@@ -21,7 +21,9 @@ const RetrospectiveBottomBar = ({ onReflectionFormOpen }) => {
 
   return (
     <div className='flex items-center justify-between mt-10'>
-      {<Timer show={currentStep === 'thinking'} organizer={organizer} />}
+      <div className='w-2/12'>
+        <Timer show={currentStep === 'thinking'} organizer={organizer} />
+      </div>
       {canCreateReflection() && <Button variant='contained' color='primary' onClick={onReflectionFormOpen}>New reflection</Button>}
       {organizer && <Button variant='contained' color='primary' onClick={nextStep}>Next</Button>}
     </div>
