@@ -7,6 +7,7 @@ import Starfish from './retrospectives/Starfish'
 import RetrospectiveBottomBar from './RetrospectiveBottomBar'
 import ReflectionForm from './ReflectionForm'
 import ReflectionsList from './ReflectionsList'
+import Sailboat from './retrospectives/Sailboat'
 import StepGrouping from './StepGrouping'
 import StepVoting from './StepVoting'
 import StepActions from './StepActions'
@@ -106,9 +107,10 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   }, [channel, revealer])
 
   const renderRetrospective = () => {
-    // TODO: return retrospective depending on kind
     if (kind === 'glad_sad_mad') {
       return <GladSadMad mode={mode} onZoneClicked={handleZoneClicked} />
+    } else if (kind === 'sailboat') {
+      return <Sailboat mode={mode} onZoneClicked={handleZoneClicked} />
     } else if (kind === 'starfish') {
       return <Starfish mode={mode} onZoneClicked={handleZoneClicked} />
     }
