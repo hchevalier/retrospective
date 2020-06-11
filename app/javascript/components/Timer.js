@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Dialog, DialogTitle, List, ListItem, ListItemText } from '@material-ui/core'
+import Modal from './Modal'
 import './Timer.scss'
 
 const computeRemainingTime = endTime => {
@@ -54,22 +54,20 @@ const Timer = ({ organizer, show }) => {
 
   return (
     <>
-      {displayTimer && <div id='timer' onClick={handleTimerClick}>
+      {displayTimer && <div id='timer' className='cursor-pointer' onClick={handleTimerClick}>
         <span>Timer:</span>
         <span className='minutes'>{timerEndAt ? `${remainingMinutes}`.padStart(2, '0') : '--'}</span>
         <span className='colon-separator'>:</span>
         <span className='seconds'>{timerEndAt ? `${remainingSeconds}`.padStart(2, '0') : '--'}</span>
       </div>}
-      <Dialog onClose={handleClose} aria-labelledby='duration-dialog' open={displayDurationDialog}>
-        <DialogTitle id='duration-dialog'>Set duration</DialogTitle>
-        <List>
-          {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map((minutes) => (
-            <ListItem button onClick={() => handleListItemClick(minutes * 60)} key={minutes}>
-              <ListItemText primary={`${minutes === 10 ? '' : '0'}${minutes}mn`} />
-            </ListItem>
-          ))}
-        </List>
-      </Dialog>
+      <Modal onClose={handleClose} open={displayDurationDialog}>
+        <p className='text-xl'>Set duration</p>
+        {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map((minutes) => (
+          <button className='block hover:bg-blue-100 p-1 text-left w-full' onClick={() => handleListItemClick(minutes * 60)} key={minutes}>
+            {`${minutes === 10 ? '' : '0'}${minutes}mn`}
+          </button>
+        ))}
+      </Modal>
     </>
   )
 }

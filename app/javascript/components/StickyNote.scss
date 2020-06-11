@@ -1,32 +1,5 @@
 .reflection {
-  border: 1px solid;
-  width: 50%;
-  min-width: 150px;
-  position: relative;
-  margin-top: 10px;
-
   &.glowing {
     border-color: goldenrod !important;
-  }
-}
-
-.reflection:after {
-  content: '';
-  display: block;
-  padding-bottom: 100%;
-}
-
-.reflection-content-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  padding: 5px;
-
-  .author {
-    font-weight: bold;
-  }
-
-  .content {
-    margin-top: 10px;
   }
 }

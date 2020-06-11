@@ -4,7 +4,6 @@ require 'rails/test_help'
 require 'mocha/minitest'
 require 'capybara/rails'
 require 'capybara/minitest'
-require 'test_utils/material_ui_helpers'
 require 'test_utils/cookies_helpers'
 require 'test_utils/assert_helpers'
 require 'test_utils/cable_helpers'
@@ -27,7 +26,6 @@ class ActionDispatch::IntegrationTest
   # Make `assert_*` methods behave like Minitest assertions
   include Capybara::Minitest::Assertions
 
-  include MaterialUiHelpers
   include CookiesHelpers
   include AssertHelpers
   include CableHelpers

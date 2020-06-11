@@ -1,10 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
-import Modal from '@material-ui/core/Modal'
+import Modal from './Modal'
 import PropTypes from 'prop-types'
-import './ReflectionForm.scss'
 
 const ReflectionForm = ({ open, value, confirmationLabel, onChange, onConfirmationClick, onReflectionCancel }) => {
   const profile = useSelector(state => state.profile)
@@ -14,10 +11,17 @@ const ReflectionForm = ({ open, value, confirmationLabel, onChange, onConfirmati
       <form id='reflection-form-modal' noValidate autoComplete='off'>
         <div>
           <div>
-            <TextField label='Reflection' name='content' variant='outlined' value={value} multiline rows={8} style={{ backgroundColor: profile.color }} onChange={(event) => onChange(event.target.value)} />
+            <textarea className='p-1 rounded' placeholder='Reflection' name='content' value={value} multiline rows={8} style={{ backgroundColor: profile.color }} onChange={(event) => onChange(event.target.value)} />
           </div>
-          <Button variant='contained' color='primary' onClick={onConfirmationClick}>{confirmationLabel}</Button>
-          <Button variant='contained' color='secondary' onClick={onReflectionCancel}>Cancel</Button>
+          <div className="mt-4">
+            <button className='bg-blue-500 hover:bg-blue-700 text-white font-medium py-1 px-2 rounded focus:outline-none focus:shadow-outline' type='button' onClick={onConfirmationClick}>
+              {confirmationLabel}
+            </button>
+
+            <button className='bg-red-500 hover:bg-red-700 text-white font-medium py-1 px-2 ml-2 rounded focus:outline-none focus:shadow-outline' type='button' onClick={onReflectionCancel}>
+              Cancel
+            </button>
+          </div>
         </div>
       </form>
     </Modal>
