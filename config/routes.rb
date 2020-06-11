@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   end
 
   resource :sessions, only: %i(new create)
+  resources :password_reset, only: %i(create show update)
   resource :accounts, only: %i(create)
 
   get '/auth/:provider/callback' => 'sessions#omniauth'

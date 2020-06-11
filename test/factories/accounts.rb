@@ -5,6 +5,5 @@ FactoryBot.define do
     username { 'account' }
     sequence(:email) { |n| "account#{n}@yopmail.com" }
     password { SecureRandom.hex(10) }
-    password_confirmation { password }
   end
 end

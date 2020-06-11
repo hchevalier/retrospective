@@ -7,9 +7,9 @@ const Button = ({ children, primary, secondary, contained, ...rest }) => {
       type='button'
       {...rest}
       className={classNames(
-        'font-medium py-1 px-2 rounded focus:outline-none focus:shadow-outline',
+        'font-medium rounded focus:outline-none focus:shadow-outline',
         {
-          'text-white': (primary || secondary) && contained,
+          'text-white py-1 px-2': (primary || secondary) && contained,
           'bg-blue-500 hover:bg-blue-700 ': primary && contained,
           'bg-red-500 hover:bg-red-700 ': secondary && contained,
           'text-sm text-blue-600': primary && !contained,

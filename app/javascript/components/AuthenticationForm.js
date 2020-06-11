@@ -2,87 +2,78 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { post } from 'lib/httpClient'
 import Input from './Input'
+import Button from './Button'
 
 const AuthenticationForm = ({ onSignUpOrSignIn }) => {
   const [mode, setMode] = React.useState('signIn')
   const [username, setUsername] = React.useState('')
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
-  const [passwordConfirmation, setPasswordConfirmation] = React.useState('')
+  const [passwordResetToastDisplayed, setPasswordResetToastDisplayed] = React.useState(false)
 
-  const createAccount = (e) => {
+
+  const handleSubmit = (e) => {
     e.preventDefault()
+
     post({
-      url: '/accounts',
-      payload: {
-        username: username,
-        email: email,
-        password: password,
-        password_confirmation: passwordConfirmation
-      }
+      url: mode === 'signIn' ? '/sessions' : '/accounts',
+      payload: { username, email, password }
     })
       .then(onSignUpOrSignIn)
       .catch(error => console.warn(error))
   }
 
-  const login = (e) => {
-    e.preventDefault()
-    post({
-      url: '/sessions',
-      payload: {
-        email: email,
-        password: password
-      }
-    })
-      .then(onSignUpOrSignIn)
-      .catch(error => console.warn(error))
+  const onPasswordReset = () => {
+    setPasswordResetToastDisplayed(true)
+    setTimeout(() => setPasswordResetToastDisplayed(false), 30000)
   }
 
-  const signUpFragment = <div className='w-full max-w-xl mx-auto mt-4'>
-    <form noValidate autoComplete='off' className='px-8 pt-6 pb-8 mb-4' onSubmit={createAccount}>
-      <p className='mb-3'>Create an account</p>
-      <div className='flex mb-4'>
-        <Input placeholder='Username' name='username' value={username} onChange={(event) => setUsername(event.target.value)} />
-        <Input placeholder='E-mail' name='email' value={email} onChange={(event) => setEmail(event.target.value)} style={{ marginLeft: '20px' }} />
-      </div>
-      <div className='flex mb-4'>
-        <Input placeholder='Password' name='password' value={password} type='password' onChange={(event) => setPassword(event.target.value)} />
-        <Input placeholder='Confirmation' name='password_confirmation' value={passwordConfirmation} type='password' onChange={(event) => setPasswordConfirmation(event.target.value)} style={{ marginLeft: '20px' }} />
-      </div>
+  const toggleMode = (e) => {
+    e.preventDefault()
+    setMode(mode === 'signIn' ? 'signUp' : 'signIn')
+  }
 
-      <div className='flex items-center justify-between'>
-        <button className='bg-blue-500 hover:bg-blue-700 text-white font-medium py-1 px-2 rounded focus:outline-none focus:shadow-outline' type='submit'>
-          Create account
-        </button>
-        <button className="inline-block align-baseline bg-transparent font-bold text-sm text-blue-500 hover:text-blue-800" onClick={() => setMode('signIn')} type='button'>
-          Already have an account?
-        </button>
-      </div>
-    </form>
-  </div>
+  const resetPassword = (e) => {
+    e.preventDefault()
+    if (email.length > 0 && !passwordResetToastDisplayed) {
+      post({
+        url: '/password_reset',
+        payload: { email }
+      })
+        .then(onPasswordReset)
+        .catch(error => console.warn(error))
+    }
+  }
 
-  const signInFragment = <div className='w-full max-w-xl mx-auto mt-4'>
-    <form noValidate autoComplete='off' className='px-8 pt-6 pb-8 mb-4' onSubmit={login}>
-      <p className='mb-3'>Login</p>
+  return (
+    <div className='max-w-xl mx-auto mt-4'>
+      <form noValidate autoComplete='off' onSubmit={handleSubmit}>
+        <p className='mb-3'>{mode === 'signUp' ? 'Create an account' : 'Log in'}</p>
+        <div>
+          <div className='mb-4'>
+            <Input placeholder='E-mail' name='email' value={email} onChange={(event) => setEmail(event.target.value)} />
+          </div>
+          <div className='mb-4'>
+            <Input placeholder='Password' name='password' value={password} type='password' onChange={(event) => setPassword(event.target.value)} />
+          </div>
+          {mode === 'signUp' && (
+            <div className='mb-4'>
+              <Input placeholder='Username' name='username' value={username} onChange={(event) => setUsername(event.target.value)} />
+            </div>
+          )}
+          {mode === 'signIn' && !passwordResetToastDisplayed && <div className='mb-4'><Button primary onClick={resetPassword}>I forgot my password</Button></div>}
+          {mode === 'signIn' && passwordResetToastDisplayed && <div className='mb-4'>An email has been sent</div>}
+        </div>
 
-      <div className='mb-4'>
-        <Input placeholder='E-mail' name='email' value={email} onChange={(event) => setEmail(event.target.value)} />
-      </div>
-      <div className='mb-4'>
-        <Input placeholder='Password' name='password' value={password} type='password' onChange={(event) => setPassword(event.target.value)} />
-      </div>
-      <div className='flex items-center justify-between'>
-        <button className='bg-blue-500 hover:bg-blue-700 text-white font-medium py-1 px-2 rounded focus:outline-none focus:shadow-outline' type='submit'>
-          Login
-        </button>
-        <button className="inline-block align-baseline bg-transparent font-bold text-sm text-blue-500 hover:text-blue-800" onClick={() => setMode('signUp')} type='button'>
-          Don&apos;t have an account yet?
-        </button>
-      </div>
-    </form>
-  </div>
-
-  return mode === 'signUp' ? signUpFragment : signInFragment
+        <div className='flex items-center justify-between'>
+          <Button contained primary type='submit'>{mode === 'signUp' ? 'Create account' : 'Login'}</Button>
+          <Button primary onClick={toggleMode} type='button'>
+            {mode === 'signIn' ? "Don't have an account yet?" : 'Already have an account?'}
+          </Button>
+        </div>
+      </form>
+    </div>
+  )
 }
 
 AuthenticationForm.propTypes = {
