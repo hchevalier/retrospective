@@ -21,7 +21,7 @@ class PasswordResetController < ApplicationController
     return render(json: { status: :ok }) unless account
 
     account.clear_password_reset_token
-    account.update!(password: params[:password], password_confirmation: params[:password])
+    account.update!(password: params[:password])
 
     render(json: { status: :created })
   end
