@@ -93,7 +93,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       assert_logged_in(other_participant, with_flags: '(you, reveal.)')
       assert_css '#reflections-list-modal'
 
-      all('#reflections-list-modal button.MuiButton-text').each.with_index do |reveal_button, index|
+      all('#reflections-list-modal button', text: 'Reveal').each.with_index do |reveal_button, index|
         next if index > 3
         reveal_button.click
       end
@@ -108,7 +108,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     end
 
     within_window(other_participant_window) do
-      all('#reflections-list-modal button.MuiButton-text').last.click
+      all('#reflections-list-modal button', text: 'Reveal').last.click
     end
 
     within all('.zone-column').last do
@@ -136,7 +136,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       assert_logged_in(other_participant, with_flags: '(you, reveal.)')
       assert_css '#reflections-list-modal'
 
-      all('#reflections-list-modal button.MuiButton-text').each(&:click)
+      all('#reflections-list-modal button', text: 'Reveal').each(&:click)
     end
 
     within find('.zone-column', match: :first) do

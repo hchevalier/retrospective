@@ -40,7 +40,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
 
     find('#timer .minutes').click
     assert_text 'Set duration'
-    find('span.MuiListItemText-primary', text: '08mn').click
+    click_on '08mn'
     refute_text 'Set duration'
 
     # Waits for 07:59, then only have 1 second to do the following assertion

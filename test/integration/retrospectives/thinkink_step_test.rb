@@ -57,7 +57,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     assert_retro_started
     refute_reflection_in_zone('Glad')
     find('.zone', text: 'Glad').click
-    assert_text 'CLOSE'
+    assert_text 'Close'
     refute_text 'A glad reflection'
   end
 

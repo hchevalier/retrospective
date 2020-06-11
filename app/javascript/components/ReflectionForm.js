@@ -14,11 +14,11 @@ const ReflectionForm = ({ open, value, confirmationLabel, onChange, onConfirmati
             <textarea className='p-1 rounded' placeholder='Reflection' name='content' value={value} multiline rows={8} style={{ backgroundColor: profile.color }} onChange={(event) => onChange(event.target.value)} />
           </div>
           <div className="mt-4">
-            <button className='bg-blue-500 hover:bg-blue-700 text-white font-medium py-1 px-2 rounded focus:outline-none focus:shadow-outline' onClick={onConfirmationClick}>
+            <button className='bg-blue-500 hover:bg-blue-700 text-white font-medium py-1 px-2 rounded focus:outline-none focus:shadow-outline' type='button' onClick={onConfirmationClick}>
               {confirmationLabel}
             </button>
 
-            <button className='bg-red-500 hover:bg-red-700 text-white font-medium py-1 px-2 ml-2 rounded focus:outline-none focus:shadow-outline' onClick={onReflectionCancel}>
+            <button className='bg-red-500 hover:bg-red-700 text-white font-medium py-1 px-2 ml-2 rounded focus:outline-none focus:shadow-outline' type='button' onClick={onReflectionCancel}>
               Cancel
             </button>
           </div>

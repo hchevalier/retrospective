@@ -4,6 +4,7 @@ import classNames from 'classnames'
 const Button = ({ children, primary, secondary, contained, ...rest }) => {
   return (
     <button
+      type='button'
       {...rest}
       className={classNames(
         'font-medium py-1 px-2 rounded focus:outline-none focus:shadow-outline',
@@ -11,8 +12,8 @@ const Button = ({ children, primary, secondary, contained, ...rest }) => {
           'text-white': (primary || secondary) && contained,
           'bg-blue-500 hover:bg-blue-700 ': primary && contained,
           'bg-red-500 hover:bg-red-700 ': secondary && contained,
-          'uppercase text-sm text-blue-600': primary && !contained,
-          'uppercase text-sm text-red-600': secondary && !contained,
+          'text-sm text-blue-600': primary && !contained,
+          'text-sm text-red-600': secondary && !contained,
         })}
     >
       {children}
