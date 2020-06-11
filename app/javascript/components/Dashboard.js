@@ -1,15 +1,19 @@
 import React from 'react'
-import Button from '@material-ui/core/Button'
-
+import Header from './Header'
 const Dashboard = () => {
-  const handleCreateRetrospectiveClick = () => {
-    window.location.pathname = '/retrospectives/new'
-  }
-
   return (
     <div id='dashboard'>
-      Dashboard
-      <Button variant='contained' color='primary' onClick={handleCreateRetrospectiveClick}>Create a retrospective</Button>
+      <Header />
+      <div className='container'>
+        <div className='max-w-xl mx-auto mt-8'>
+          <p className='text-2xl'>
+            Dashboard
+          </p>
+          <a className='bg-blue-500 hover:bg-blue-700 text-white font-medium py-1 px-2 rounded focus:outline-none focus:shadow-outline' href='/retrospectives/new'>
+            Create a retrospective
+          </a>
+        </div>
+      </div>
     </div>
   )
 }

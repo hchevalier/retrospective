@@ -1,10 +1,9 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
-import Button from '@material-ui/core/Button'
-import Modal from '@material-ui/core/Modal'
+import Button from './Button'
+import Modal from './Modal'
 import ReflectionForm from './ReflectionForm'
 import Icon from './Icon'
-import './ReflectionsList.scss'
 
 const ReflectionsList = ({ open, filter, retrospectiveKind, withIcon, onUpdateReflection, onDestroyReflection, onModalClose }) => {
   const revealer = useSelector(state => state.profile.revealer)
@@ -60,7 +59,7 @@ const ReflectionsList = ({ open, filter, retrospectiveKind, withIcon, onUpdateRe
   return (
     <>
       <Modal open={open} onClose={onModalClose} disableAutoFocus disablePortal>
-        <form id='reflections-list-modal' noValidate autoComplete='off'>
+        <form id='reflections-list-modal' noValidate autoComplete='off' className="overflow-y-auto">
           <div>
             <div>
               {displayableReflections.filter(shouldDisplayReflection).map((reflection, index) => (
@@ -69,14 +68,13 @@ const ReflectionsList = ({ open, filter, retrospectiveKind, withIcon, onUpdateRe
                   <span>{reflection.content}</span>&nbsp;
                   {currentStep == 'thinking' && (
                     <>
-                      <Button color='primary' size='small' data-id={reflection.id} onClick={handleEditClick}>Edit</Button>&nbsp;
-                      <Button color='secondary' size='small' data-id={reflection.id} onClick={handleDeleteClick}>Delete</Button>
+                      <Button primary data-id={reflection.id} onClick={handleEditClick}>Edit</Button>&nbsp;
+                      <Button secondary data-id={reflection.id} onClick={handleDeleteClick}>Delete</Button>
                     </>
                   )}
                   {shouldDisplayReveal() &&
                     <Button
-                      color='secondary'
-                      size='small'
+                      secondary
                       disabled={reflection.revealed}
                       data-id={reflection.id}
                       onClick={handleRevealClick}>
@@ -86,7 +84,7 @@ const ReflectionsList = ({ open, filter, retrospectiveKind, withIcon, onUpdateRe
                 </div>
               ))}
             </div>
-            <Button variant='contained' color='secondary' onClick={onModalClose}>Close</Button>
+            <Button contained secondary onClick={onModalClose}>Close</Button>
           </div>
         </form>
       </Modal>

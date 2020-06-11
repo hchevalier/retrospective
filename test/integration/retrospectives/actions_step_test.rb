@@ -91,7 +91,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     visit retrospective_path(retrospective)
 
     fill_in 'content', with: 'my task'
-    material_ui_select retrospective.organizer.id, from: 'assignee'
+    select retrospective.organizer.surname, from: 'assignee'
     click_on 'Take action'
 
     within '#tasks-list' do
@@ -121,7 +121,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     visit retrospective_path(retrospective)
 
     fill_in 'content', with: 'my task'
-    material_ui_select retrospective.organizer.id, from: 'assignee'
+    select retrospective.organizer.surname, from: 'assignee'
 
     all('#reflections-list .sticky-bookmark').last.click
 
@@ -155,7 +155,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     visit retrospective_path(retrospective)
 
     fill_in 'content', with: 'my task'
-    material_ui_select retrospective.organizer.id, from: 'assignee'
+    select retrospective.organizer.surname, from: 'assignee'
 
     all('#reflections-list .sticky-bookmark').last.click
 
@@ -187,7 +187,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     visit retrospective_path(retrospective)
 
     fill_in 'content', with: 'my task'
-    material_ui_select retrospective.organizer.id, from: 'assignee'
+    select retrospective.organizer.surname, from: 'assignee'
     click_on 'Take action'
 
     within '#tasks-list' do
@@ -201,7 +201,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
       assert_text 'A glad reflection'
       fill_in 'content', with: 'my updated task'
     end
-    material_ui_select other_participant.id, from: 'assignee'
+    select other_participant.surname, from: 'assignee'
     within '#action-editor' do
       click_on 'Update'
     end

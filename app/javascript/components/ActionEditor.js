@@ -1,10 +1,5 @@
 import React from 'react'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
-import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel'
-import MenuItem from '@material-ui/core/MenuItem'
-import Select from '@material-ui/core/Select'
+import Button from './Button'
 import { post, put, destroy } from 'lib/httpClient'
 import { useSelector, shallowEqual } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -81,8 +76,7 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
               <div>You are writing an action for a reflection that is not the one currently displayed</div>
               <div>({reflectionOnTypeStart.content})</div>
               <Button
-                color='secondary'
-                size='small'
+                secondary
                 onClick={resetReflectionOnTypeStart}>
                 Change to currently displayed reflection
               </Button>
@@ -93,24 +87,24 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
             </>}
           </>
         )}
-        <TextField label='You can take actions here' name='content' variant='outlined' value={description} multiline rows={8} onChange={onDescriptionChange} />
-        <FormControl id='assignee-select'>
-          <InputLabel id='label-assignee'>Assignee</InputLabel>
-          <Select
-            labelId='label-assignee'
+        <textarea placeholder='You can take actions here' name='content' className='w-full mb-1 border py-1 px-2 rounded' value={description} multiline rows={8} onChange={onDescriptionChange} />
+        <div id='assignee-select'>
+          <select
             name='assignee'
             value={assignee}
             onChange={(event) => setAssignee(event.target.value)}
+            className=" appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-3 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
           >
-            {participants.map((participant, index) => <MenuItem key={index} value={participant.uuid}>{participant.surname}</MenuItem>)}
-          </Select>
-        </FormControl>
-        <div>
+            <option>assignee</option>
+            {participants.map((participant, index) => <option key={index} value={participant.uuid}>{participant.surname}</option>)}
+          </select>
+        </div>
+        <div className='mt-1 flex justify-evenly mt-1 w-full'>
           {editedTask && <>
-            <Button variant='contained' color='primary' onClick={onTakeActionClick}>Update</Button>
-            <Button variant='contained' color='primary' onClick={handleCancelEditing}>Cancel</Button>
+            <Button contained primary onClick={onTakeActionClick}>Update</Button>
+            <Button contained primary onClick={handleCancelEditing}>Cancel</Button>
           </>}
-          {!editedTask && <Button variant='contained' color='primary' onClick={onTakeActionClick}>Take action</Button>}
+          {!editedTask && <Button contained primary onClick={onTakeActionClick}>Take action</Button>}
         </div>
       </div>
 

@@ -11,23 +11,23 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     visit retrospective_path(retrospective)
     assert_logged_as_organizer
     assert_retro_started
-    assert_text 'NEW REFLECTION'
+    assert_text 'New reflection'
 
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
       assert_retro_started
-      assert_text 'NEW REFLECTION'
+      assert_text 'New reflection'
     end
 
     click_on 'Next'
     assert_grouping_step_for_organizer
-    refute_text 'NEW REFLECTION'
+    refute_text 'New reflection'
 
     within_window(other_participant_window) do
       assert_grouping_step_for_participant
-      refute_text 'NEW REFLECTION'
+      refute_text 'New reflection'
     end
   end
 
@@ -78,7 +78,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
   test 'unread reflections out of viewport are noticed by a banner' do
     retrospective = create(:retrospective, step: 'grouping')
     other_participant = create(:other_participant, retrospective: retrospective)
-    create_list(:reflection, 6, :glad, owner: other_participant, revealed: false)
+    create_list(:reflection, 4, :glad, owner: other_participant, revealed: false)
     create(:reflection, :mad, owner: other_participant, revealed: false)
 
     logged_in_as(retrospective.organizer)
@@ -93,8 +93,8 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       assert_logged_in(other_participant, with_flags: '(you, reveal.)')
       assert_css '#reflections-list-modal'
 
-      all('#reflections-list-modal button.MuiButton-text').each.with_index do |reveal_button, index|
-        next if index > 5
+      all('#reflections-list-modal button', text: 'Reveal').each.with_index do |reveal_button, index|
+        next if index > 3
         reveal_button.click
       end
     end
@@ -104,11 +104,11 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       assert_css '.reflection[data-read=true]', count: 3
       scroll_to(all('.reflection')[3])
       refute_text '⬇︎ Unread reflection ⬇︎'
-      assert_css '.reflection[data-read=true]', count: 6
+      assert_css '.reflection[data-read=true]', count: 4
     end
 
     within_window(other_participant_window) do
-      all('#reflections-list-modal button.MuiButton-text').last.click
+      all('#reflections-list-modal button', text: 'Reveal').last.click
     end
 
     within all('.zone-column').last do
@@ -122,7 +122,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
   test 'clicking on notice banner scrolls to last unread reflection from column' do
     retrospective = create(:retrospective, step: 'grouping')
     other_participant = create(:other_participant, retrospective: retrospective)
-    create_list(:reflection, 6, :glad, owner: other_participant, revealed: false)
+    create_list(:reflection, 12, :glad, owner: other_participant, revealed: false)
 
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
@@ -136,7 +136,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       assert_logged_in(other_participant, with_flags: '(you, reveal.)')
       assert_css '#reflections-list-modal'
 
-      all('#reflections-list-modal button.MuiButton-text').each(&:click)
+      all('#reflections-list-modal button', text: 'Reveal').each(&:click)
     end
 
     within find('.zone-column', match: :first) do

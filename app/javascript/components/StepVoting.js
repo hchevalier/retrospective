@@ -16,9 +16,9 @@ const StepVoting = () => {
   return (
     <>
       <div>Remaining votes: {constants.maxVotes - votes.length}</div>
-      <div id='zones-container'>
+      <div id='zones-container' className="flex">
         {zones.map((zone) => (
-          <div className='zone-column' key={zone.id}>
+          <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0' key={zone.id}>
             <span>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</span>
             {reflections.filter((reflection) => reflection.zone.id === zone.id).map((reflection) => {
               const relevantReactions = [...reactions, ...votes].filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)

@@ -1,7 +1,6 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import classNames from 'classnames'
-import Button from '@material-ui/core/Button'
 import { compact } from 'lib/helpers/array'
 import { decrypt } from 'lib/utils/decryption'
 import StickyBookmark from './StickyBookmark'
@@ -55,11 +54,11 @@ const ParticipantsList = () => {
   }, [encryptedOrganizerInfo, profile, retrospectiveName])
 
   return (
-    <div id='participants-list'>
+    <div id='participants-list' className='border p-3 rounded shadow mr-6'>
       {participants.map(({ surname, status, organizer, revealer, uuid, color }, index) => {
         const flags = compact([profile?.uuid === uuid && 'you', organizer && 'orga.', revealer && 'reveal.']).join(', ')
         return (
-          <div className='participant' key={index} data-id={uuid} onClick={handleParticipantClick}>
+          <div className='participant flex items-center' key={index} data-id={uuid} onClick={handleParticipantClick}>
             <div className={classNames('participant-status', { 'logged-in': status })} />
             <StickyBookmark otherClassNames={{ 'space-between': 'space-between', 'organizer': organizer, 'revealer': revealer, 'yourself': profile?.uuid === uuid }} color={color}>
               <span>{surname}</span> {flags && <span className='flags'>({flags})</span>}
@@ -67,8 +66,14 @@ const ParticipantsList = () => {
             </StickyBookmark>
           </div>
         )
-        })}
-      {profile?.organizer && <Button variant='contained' color='primary' onClick={copyUrlToClipboard}>+</Button>}
+      })}
+      {profile?.organizer && (
+        <button
+          className='bg-blue-500 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-700 mt-6 px-5 py-1 rounded text-white'
+          color='primary' onClick={copyUrlToClipboard}>
+          +
+        </button>
+      )}
     </div>
   )
 }

@@ -1,6 +1,5 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import Button from '@material-ui/core/Button'
 import Timer from './Timer'
 import PropTypes from 'prop-types'
 
@@ -21,13 +20,21 @@ const RetrospectiveBottomBar = ({ onReflectionFormOpen }) => {
   }
 
   return (
-    <div id='bottom-bar'>
-      {<Timer show={currentStep === 'thinking'} organizer={organizer} />}
+    <div className='flex items-center justify-between mt-10'>
+      <div className='w-2/12'>
+        <Timer show={currentStep === 'thinking'} organizer={organizer} />
+      </div>
       {canCreateReflection() && <Button variant='contained' color='primary' onClick={onReflectionFormOpen}>New reflection</Button>}
       {organizer && <Button variant='contained' color='primary' onClick={nextStep}>Next</Button>}
     </div>
   )
 }
+
+const Button = ({ children, ...rest }) => (
+  <button className='bg-blue-500 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-700 mt-6 px-5 py-1 rounded text-white' {...rest}>
+    {children}
+  </button>
+)
 
 RetrospectiveBottomBar.propTypes = {
   onReflectionFormOpen: PropTypes.func.isRequired

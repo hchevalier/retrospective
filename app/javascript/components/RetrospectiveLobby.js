@@ -55,10 +55,16 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
 
   return (
     <div id='main-container'>
-      <h3>Lobby {name} ({retrospectiveId}) - {kind}</h3>
-      <div id='lobby'>
+      <nav className="bg-gray-900 mb-6 shadow text-white" role="navigation">
+        <div className="container mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
+          <div className="mr-4 md:mr-8">
+            Lobby {name} ({retrospectiveId}) - {kind}
+          </div>
+        </div>
+      </nav>
+      <div className="px-6 flex">
         <ParticipantsList />
-        <div id='right-pannel'>
+        <div className='flex-1'>
           {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} />}
           {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
         </div>

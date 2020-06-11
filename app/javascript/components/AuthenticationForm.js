@@ -1,8 +1,8 @@
 import React from 'react'
-import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
 import PropTypes from 'prop-types'
 import { post } from 'lib/httpClient'
+import Input from './Input'
+import Button from './Button'
 
 const AuthenticationForm = ({ onSignUpOrSignIn }) => {
   const [mode, setMode] = React.useState('signIn')
@@ -44,21 +44,33 @@ const AuthenticationForm = ({ onSignUpOrSignIn }) => {
   }
 
   return (
-    <>
-      <div>{mode === 'signUp' ? 'Create an account' : 'Log in'}:</div>
-      <form noValidate autoComplete='off'>
+    <div className='w-full max-w-xl mx-auto mt-4'>
+      <form noValidate autoComplete='off' onSubmit={handleSubmit}>
+        <p className='mb-3'>{mode === 'signUp' ? 'Create an account' : 'Log in'}</p>
         <div>
-          <TextField label='E-mail' name='email' value={email} onChange={(event) => setEmail(event.target.value)} />
-          <TextField label='Password' name='password' value={password} type='password' onChange={(event) => setPassword(event.target.value)} style={{ marginLeft: '20px' }} />
-          {mode === 'signUp' && <TextField label='Username' name='username' value={username} onChange={(event) => setUsername(event.target.value)} style={{ marginLeft: '20px' }} />}
-          {mode === 'signIn' && !passwordResetToastDisplayed && <div><a href='#' onClick={resetPassword}>I forgot my password</a></div>}
-          {mode === 'signIn' && passwordResetToastDisplayed && <div>An email has been sent</div>}
+          <div className='mb-4'>
+            <Input placeholder='E-mail' name='email' value={email} onChange={(event) => setEmail(event.target.value)} />
+          </div>
+          <div className='mb-4'>
+            <Input placeholder='Password' name='password' value={password} type='password' onChange={(event) => setPassword(event.target.value)} />
+          </div>
+          {mode === 'signUp' && (
+            <div className='mb-4'>
+              <Input placeholder='Username' name='username' value={username} onChange={(event) => setUsername(event.target.value)} />
+            </div>
+          )}
+          {mode === 'signIn' && !passwordResetToastDisplayed && <div className='mb-4'><Button primary onClick={resetPassword}>I forgot my password</Button></div>}
+          {mode === 'signIn' && passwordResetToastDisplayed && <div className='mb-4'>An email has been sent</div>}
         </div>
 
-        <Button variant='contained' color='primary' onClick={handleSubmit}>{mode === 'signUp' ? 'Create account' : 'Login'}</Button>
+        <div className='flex items-center justify-between'>
+          <Button contained primary type='submit'>{mode === 'signUp' ? 'Create account' : 'Login'}</Button>
+          <Button primary onClick={toggleMode} type='button'>
+            {mode === 'signIn' ? 'Already have an account?' : "Don't have an account yet?"}
+          </Button>
+        </div>
       </form>
-      OR <a href='#' onClick={toggleMode}>sign {mode === 'signUp' ? 'in' : 'up'}</a>
-    </>
+    </div>
   )
 }
 

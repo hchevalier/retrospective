@@ -3,8 +3,6 @@
   "private": true,
   "dependencies": {
     "@babel/preset-react": "^7.9.4",
-    "@material-ui/core": "^4.9.8",
-    "@material-ui/icons": "^4.9.1",
     "@rails/actioncable": "^6.0.0",
     "@rails/activestorage": "^6.0.0",
     "@rails/ujs": "^6.0.0",
@@ -22,6 +20,7 @@
     "react_ujs": "^2.6.1",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
+    "tailwindcss": "^1.4.6",
     "turbolinks": "^5.2.0"
   },
   "version": "0.1.0",

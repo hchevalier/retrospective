@@ -48,7 +48,7 @@ class Retrospective::ColorTest < ActionDispatch::IntegrationTest
     click_on 'New reflection'
 
     rgba_color = hex_color.scan(/[0-9a-f]{2}/).map { |color| color.to_i(16) }
-    assert find('.MuiTextField-root', style: /#{rgba_color.join(', ')}/)
+    assert find('textarea', style: /#{rgba_color.join(', ')}/)
 
     other_color = retrospective.available_colors.sample
     refute_equal hex_color, other_color
@@ -61,7 +61,7 @@ class Retrospective::ColorTest < ActionDispatch::IntegrationTest
       click_on 'New reflection'
 
       rgba_color = other_color.scan(/[0-9a-f]{2}/).map { |color| color.to_i(16) }
-      assert find('.MuiTextField-root', style: /#{rgba_color.join(', ')}/)
+      assert find('textarea', style: /#{rgba_color.join(', ')}/)
     end
   end
 end
