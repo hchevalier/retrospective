@@ -12,7 +12,9 @@ const AuthenticationForm = ({ onSignUpOrSignIn }) => {
   const [passwordResetToastDisplayed, setPasswordResetToastDisplayed] = React.useState(false)
 
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
     post({
       url: mode === 'signIn' ? '/sessions' : '/accounts',
       payload: { username, email, password }
@@ -66,7 +68,7 @@ const AuthenticationForm = ({ onSignUpOrSignIn }) => {
         <div className='flex items-center justify-between'>
           <Button contained primary type='submit'>{mode === 'signUp' ? 'Create account' : 'Login'}</Button>
           <Button primary onClick={toggleMode} type='button'>
-            {mode === 'signIn' ? 'Already have an account?' : "Don't have an account yet?"}
+            {mode === 'signIn' ? "Don't have an account yet?" : 'Already have an account?'}
           </Button>
         </div>
       </form>
