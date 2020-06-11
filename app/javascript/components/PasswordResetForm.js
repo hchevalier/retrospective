@@ -1,7 +1,6 @@
 import React from 'react'
-import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
-import FormControl from '@material-ui/core/FormControl'
+import Button from './Button'
+import Input from './Input'
 import PropTypes from 'prop-types'
 import { put } from 'lib/httpClient'
 
@@ -18,12 +17,12 @@ const PasswordResetForm = ({ passwordResetToken }) => {
   }
 
   return (
-    <form noValidate autoComplete='off'>
-      <FormControl style={{ marginLeft: '20px', minWidth: '200px' }}>
-        <TextField label='New password' name='password' variant='outlined' value={newPassword} onChange={(event) => setNewPassword(event.target.value)} />
-      </FormControl>
+    <form noValidate autoComplete='off' className='max-w-xl mx-auto mt-4'>
+      <div className='mb-4'>
+        <Input placeholder='New password' name='password' variant='outlined' value={newPassword} onChange={(event) => setNewPassword(event.target.value)} />
+      </div>
 
-      <Button variant='contained' color='primary' onClick={updatePassword}>Change password</Button>
+      <Button contained primary onClick={updatePassword}>Change password</Button>
     </form>
   )
 }
