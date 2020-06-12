@@ -1,3 +1,6 @@
 class StaticController < ApplicationController
-  def dashboard; end
+  def dashboard
+   @retrospectives = current_account.retrospectives.map(&:as_short_json)
+   @tasks = current_account.participants.flat_map(&:assigned_tasks).map(&:as_json).sort_by { |task| task[:created_at] }
+  end
 end

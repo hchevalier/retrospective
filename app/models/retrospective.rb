@@ -56,6 +56,15 @@ class Retrospective < ApplicationRecord
     }
   end
 
+  def as_short_json
+    {
+      id: id,
+      name: name,
+      kind: kind,
+      createdAt: created_at
+    }
+  end
+
   def initial_state(current_user = nil)
     state = {
       participants: participants.order(:created_at).map(&:profile),
