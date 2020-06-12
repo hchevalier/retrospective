@@ -22,9 +22,10 @@ class RetrospectivesController < ApplicationController
       current_user.retrospective :
       Retrospective.includes(:participants, :zones).find(params[:id])
 
-    if current_account && !current_user
+    if current_account
       participant = @retrospective.participants.find { |participant| participant.account == current_account }
-      cookies.signed[:user_id] = participant.id
+
+      cookies.signed[:user_id] = participant.id if participant && current_user&.id != participant.id
     end
 
     @initial_state = @retrospective.initial_state(current_user)
