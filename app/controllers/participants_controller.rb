@@ -1,22 +1,20 @@
 class ParticipantsController < ApplicationController
   def create
     retrospective = Retrospective.find(params[:retrospective_id])
-    participant = Participant.create!(
+
+    participant = retrospective.participants.find { |participant| participant.account_id == current_account.id }
+    participant ||= Participant.create!(
       surname: current_account.username,
       account_id: current_account.id,
       retrospective: retrospective
     )
 
-    if participant
-      cookies.signed[:user_id] = participant.id
-      participant.join
+    cookies.signed[:user_id] = participant.id
+    participant.join
 
-      additionnal_info = { step: retrospective.step }
+    additionnal_info = { step: retrospective.step }
 
-      render json: { profile: participant.full_profile, additionnal_info: additionnal_info }
-    else
-      render json: { status: :unprocessable_entity, errors: participant.errors }
-    end
+    render json: { profile: participant.full_profile, additionnal_info: additionnal_info }
   end
 
   def update
