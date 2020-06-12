@@ -45,6 +45,10 @@ class Retrospective < ApplicationRecord
     done: 'done'
   }
 
+  def self.available_kinds
+    [kinds[:glad_sad_mad], kinds[:starfish], kinds[:sailboat]]
+  end
+
   def as_json
     {
       id: id,
