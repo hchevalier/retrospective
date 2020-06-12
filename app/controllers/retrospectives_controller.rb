@@ -25,7 +25,16 @@ class RetrospectivesController < ApplicationController
     if current_account
       participant = @retrospective.participants.find { |participant| participant.account == current_account }
 
-      cookies.signed[:user_id] = participant.id if participant && current_user&.id != participant.id
+      if participant && current_user&.id != participant.id
+        cookies.signed[:user_id] = participant.id
+      elsif !participant
+        participant = Participant.create!(
+          surname: current_account.username,
+          account_id: current_account.id,
+          retrospective: @retrospective
+        )
+        cookies.signed[:user_id] = participant.id
+      end
     end
 
     @initial_state = @retrospective.initial_state(current_user)
