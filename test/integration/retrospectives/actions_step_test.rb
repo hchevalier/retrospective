@@ -28,7 +28,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     visit retrospective_path(retrospective)
 
     click_on 'Next'
-    within '.reflection' do
+    within '#discussed-reflection .reflection' do
       assert_text 'A glad reflection'
     end
 
@@ -37,7 +37,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
 
-      within '.reflection' do
+      within '#discussed-reflection .reflection' do
         assert_text 'A glad reflection'
       end
     end
