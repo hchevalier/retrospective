@@ -7,6 +7,7 @@ import RetrospectiveArea from './RetrospectiveArea'
 import ParticipantsList from './ParticipantsList'
 import LoginForm from './LoginForm'
 import './RetrospectiveLobby.scss'
+import HomeIcon from 'images/home-icon.svg'
 
 const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
   const dispatch = useDispatch()
@@ -58,7 +59,12 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
       <nav className="bg-gray-900 mb-6 shadow text-white" role="navigation">
         <div className="container mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
           <div className="mr-4 md:mr-8">
-            Lobby {name} ({retrospectiveId}) - {kind}
+            <a href='/'>
+              <img src={HomeIcon} width="24" />
+            </a>
+          </div>
+          <div className="mr-4 md:mr-8">
+            Lobby {name} - {kind}
           </div>
         </div>
       </nav>

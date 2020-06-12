@@ -18,7 +18,8 @@ class Task < ApplicationRecord
       author: author.profile,
       assignee: assignee.profile,
       description: description,
-      status: status
+      status: status,
+      createdAt: created_at
     }
   end
 end
