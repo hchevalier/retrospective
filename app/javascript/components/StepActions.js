@@ -27,6 +27,8 @@ const StepActions = () => {
     }
   }, [organizer, channel])
 
+  if (!currentReflection) return null
+
   return (
     <div id='actions-zone'>
       <div id='reflections-panel'>

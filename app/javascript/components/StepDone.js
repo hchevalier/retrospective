@@ -10,6 +10,7 @@ const StepDone = () => {
   const visibleReflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
   const initialDiscussedReflection = useSelector(state => state.reflections.discussedReflection)
   const [currentReflection, setCurrentReflection] = React.useState(initialDiscussedReflection)
+  const [displayAllTasks, setDisplayAllTasks] = React.useState(true)
   const visibleReactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
   const tasks = useSelector(state => state.tasks, shallowEqual)
 
@@ -22,6 +23,10 @@ const StepDone = () => {
   }).sort((a, b) => b[1].length - a[1].length)
 
   const handleStickyBookmarkClicked = (reflection) => setCurrentReflection(reflection)
+
+  const handleDisplayTasksChange = (event) => { setDisplayAllTasks(!event.target.checked) }
+
+  if (!currentReflection) return null
 
   return (
     <div id='actions-zone'>
@@ -40,7 +45,8 @@ const StepDone = () => {
         </div>
       </div>
       <div id='tasks-list'>
-        {tasks.filter((task) => task.reflection.id === currentReflection.id).map((task, index) => <Task key={index} task={task} readOnly />)}
+        <input type='checkbox' name='all_tasks' onChange={handleDisplayTasksChange} /> Only display tasks for current reflection
+        {tasks.filter((task) => displayAllTasks || task.reflection.id === currentReflection.id).map((task, index) => <Task key={index} task={task} readOnly />)}
       </div>
     </div>
   )
