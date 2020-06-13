@@ -45,6 +45,21 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     assert_text 'Other one'
   end
 
+  test 'joining an existing retrospective and logging in reuses a participant if any' do
+    retrospective = create(:retrospective)
+    account = create(:account, username: 'Other one', email: 'other_one@yopmail.com', password: 'mypasword')
+    participant = create(:participant, retrospective: retrospective, account: account, surname: 'Other one')
+
+    assert_no_difference 'Participant.count' do
+      visit retrospective_path(retrospective)
+      fill_in 'email', with: 'other_one@yopmail.com'
+      fill_in 'password', with: 'mypassword'
+      click_on 'Login'
+    end
+
+    assert_logged_in(participant, with_flags: '(you)')
+  end
+
   test 'joining an existing retrospective while being logged with an existing account creates a participant' do
     retrospective = create(:retrospective)
     account = create(:account)
