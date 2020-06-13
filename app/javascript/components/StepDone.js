@@ -45,7 +45,8 @@ const StepDone = () => {
         </div>
       </div>
       <div id='tasks-list'>
-        <input type='checkbox' name='all_tasks' onChange={handleDisplayTasksChange} /> Only display tasks for current reflection
+        <input id='all_tasks' type='checkbox' name='all_tasks' onChange={handleDisplayTasksChange} />
+        <label for='all_tasks'>Only display tasks for current reflection</label>
         {tasks.filter((task) => displayAllTasks || task.reflection.id === currentReflection.id).map((task, index) => <Task key={index} task={task} readOnly />)}
       </div>
     </div>
