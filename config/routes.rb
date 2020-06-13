@@ -13,6 +13,6 @@ Rails.application.routes.draw do
   resource :accounts, only: %i(create)
 
   get '/auth/:provider/callback' => 'sessions#omniauth'
-
+  get '/logout', to: 'sessions#destroy', as: :logout
   get '/', to: 'static#dashboard', as: :dashboard
 end

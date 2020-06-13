@@ -14,6 +14,11 @@ class SessionsController < ApplicationController
     redirect_to dashboard_path
   end
 
+  def destroy
+    session[:account_id] = nil
+    redirect_to :new_sessions
+  end
+
   def omniauth
     account = Account.from_omniauth(auth)
     account.save!
