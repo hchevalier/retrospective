@@ -10,13 +10,10 @@
 }
 
 #tasks-list {
-  width: 200px;
-  max-height: 450px;
-  overflow-y: scroll;
+  width: 250px;
 
-  .task {
-    background-color: lightgray;
-    margin: 10px 0;
-    padding: 5px;
+  .description {
+    max-height: 150px;
+    overflow-y: scroll;
   }
 }
