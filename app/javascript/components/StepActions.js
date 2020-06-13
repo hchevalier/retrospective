@@ -37,8 +37,9 @@ const StepActions = () => {
         </div>
         <div id='reflections-list'>
           {reflectionsWithVotes.map(([reflection, votes], index) => {
+            let selected = reflection.id == currentReflection.id ? "shadow-md" : "mx-2"
             return (
-              <StickyBookmark key={index} color={reflection.color} onClick={() => handleStickyBookmarkClicked(reflection)}>
+              <StickyBookmark key={index} color={reflection.color} otherClassNames={selected} onClick={() => handleStickyBookmarkClicked(reflection)}>
                 <VoteCorner reflection={reflection} votes={votes} inline noStandOut /> <span>{reflection.content}</span>
               </StickyBookmark>
             )
