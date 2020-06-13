@@ -60,6 +60,37 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     assert_logged_in(participant, with_flags: '(you)')
   end
 
+  test 'joining an existing retrospective while being logged with an existing account creates a participant' do
+    retrospective = create(:retrospective)
+    account = create(:account)
+    as_user(account)
+
+    assert_difference 'Participant.count' do
+      visit retrospective_path(retrospective)
+    end
+
+    assert_text 'Organizer'
+    refute_field 'email'
+    refute_button 'Login'
+
+    assert account, Participant.last.account
+  end
+
+  test 'joining an existing retrospective while being logged with an existing account reuses a participant if any' do
+    retrospective = create(:retrospective)
+    account = create(:account, username: 'Other one')
+    participant = create(:participant, retrospective: retrospective, account: account, surname: 'Other one')
+    as_user(account)
+
+    assert_no_difference 'Participant.count' do
+      visit retrospective_path(retrospective)
+    end
+
+    assert_logged_in(participant, with_flags: '(you)')
+    refute_field 'email'
+    refute_button 'Login'
+  end
+
   test 'can join a retrospective without loging in again' do
     retrospective = create(:retrospective)
 
@@ -67,7 +98,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     visit retrospective_path(retrospective)
 
     assert_logged_as_organizer
-    refute_text 'Join'
+    refute_button 'Login'
   end
 
   test 'only organizer can see the button to start the retrospective' do
