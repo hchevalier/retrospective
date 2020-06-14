@@ -1,6 +1,7 @@
 class Topic < ApplicationRecord
   belongs_to :retrospective
   has_many :reflections, inverse_of: :topic
+  has_many :reactions, as: :target, inverse_of: :target
 
   before_save :update_label
 

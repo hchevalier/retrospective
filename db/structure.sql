@@ -139,7 +139,8 @@ CREATE TABLE public.reactions (
     content character varying NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    kind public.reaction_kinds DEFAULT 'vote'::public.reaction_kinds NOT NULL
+    kind public.reaction_kinds DEFAULT 'vote'::public.reaction_kinds NOT NULL,
+    retrospective_id uuid NOT NULL
 );
 
 
@@ -428,6 +429,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200516152144'),
 ('20200523191205'),
 ('20200614110955'),
-('20200614130855');
+('20200614130855'),
+('20200614154701');
 
 

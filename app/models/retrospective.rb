@@ -5,7 +5,7 @@ class Retrospective < ApplicationRecord
   has_many :zones, inverse_of: :retrospective
   has_many :reflections, through: :zones
   has_many :topics
-  has_many :reactions, through: :reflections
+  has_many :reactions
   has_many :tasks, through: :participants, source: :created_tasks
 
   belongs_to :organizer, class_name: 'Participant', inverse_of: :organized_retrospective
@@ -122,7 +122,7 @@ class Retrospective < ApplicationRecord
 
     next_step = Retrospective.steps.keys[step_index + 1]
     if next_step == 'actions'
-      most_upvoted_reflection =
+      most_upvoted_target =
         reactions
         .select(&:vote?)
         .group_by(&:target)
@@ -130,9 +130,11 @@ class Retrospective < ApplicationRecord
         .sort_by { |_, v| -v }
         .map(&:first)
         .first
+
+      most_upvoted_target = most_upvoted_target.reflections.first if most_upvoted_target&.is_a?(Topic)
     end
 
-    update!(step: next_step, discussed_reflection: most_upvoted_reflection || discussed_reflection)
+    update!(step: next_step, discussed_reflection: most_upvoted_target || discussed_reflection)
 
     params = { next_step: next_step }
     params[:visibleReflections] =

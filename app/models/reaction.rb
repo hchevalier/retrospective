@@ -1,4 +1,5 @@
 class Reaction < ApplicationRecord
+  belongs_to :retrospective
   belongs_to :target, polymorphic: true
   belongs_to :author, class_name: 'Participant'
 

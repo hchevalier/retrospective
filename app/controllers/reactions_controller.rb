@@ -10,7 +10,7 @@ class ReactionsController < ApplicationController
         retrospective.reflections.find(params[:reflection_id])
       end
 
-    reaction = current_user.reactions.create!(reactions_params.merge(target: target))
+    reaction = current_user.reactions.create!(reactions_params.merge(target: target, retrospective: current_user.retrospective))
     if retrospective.step != 'voting' || reaction.emoji?
       OrchestratorChannel.broadcast_to(retrospective, action: 'newReaction', parameters: { reaction: reaction.readable })
     elsif retrospective.step == 'voting' && reaction.vote?
