@@ -13,7 +13,9 @@ const StepActions = () => {
   const visibleReactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
   const channel = useSelector(state => state.orchestrator.subscription)
 
-  const relevantReactions = visibleReactions.filter((reaction) => reaction.targetId === `Reflection-${currentReflection.id}`)
+  const relevantReactions = visibleReactions.filter((reaction) => {
+    return reaction.targetId === `Reflection-${currentReflection.id}` ||  reaction.targetId === `Topic-${currentReflection.topic?.id}`
+  })
 
   const reflectionsWithVotes = visibleReflections.map((reflection) => {
     const reactions = visibleReactions.filter((reaction) => {

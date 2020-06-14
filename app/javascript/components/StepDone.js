@@ -14,7 +14,9 @@ const StepDone = () => {
   const visibleReactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
   const tasks = useSelector(state => state.tasks, shallowEqual)
 
-  const relevantReactions = visibleReactions.filter((reaction) => reaction.targetId === `Reflection-${currentReflection.id}`)
+  const relevantReactions = visibleReactions.filter((reaction) => {
+    return reaction.targetId === `Reflection-${currentReflection.id}` || reaction.targetId === `Topic-${currentReflection.topic?.id}`
+  })
 
   const reflectionsWithVotes = visibleReflections.map((reflection) => {
     const reactions = visibleReactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
