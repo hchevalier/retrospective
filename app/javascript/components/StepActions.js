@@ -16,7 +16,9 @@ const StepActions = () => {
   const relevantReactions = visibleReactions.filter((reaction) => reaction.targetId === `Reflection-${currentReflection.id}`)
 
   const reflectionsWithVotes = visibleReflections.map((reflection) => {
-    const reactions = visibleReactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
+    const reactions = visibleReactions.filter((reaction) => {
+      return reaction.targetId === `Reflection-${reflection.id}` || reaction.targetId === `Topic-${reflection.topic?.id}`
+    })
     const votes = reactions.filter((reaction) => reaction.kind === 'vote')
     return [reflection, votes]
   }).sort((a, b) => b[1].length - a[1].length)
@@ -54,7 +56,7 @@ const StepActions = () => {
                   </StickyBookmark>
                   {reflectionsInTopic.map(([otherReflection]) => {
                     return (
-                      <StickyBookmark key={otherReflection.id} color={otherReflection.color} otherClassNames={'ml-5'} onClick={() => handleStickyBookmarkClicked(otherReflection)}>
+                      <StickyBookmark key={otherReflection.id} color={otherReflection.color} otherClassNames={'ml-8'} onClick={() => handleStickyBookmarkClicked(otherReflection)}>
                         {otherReflection.content}
                       </StickyBookmark>
                     )

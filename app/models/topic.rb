@@ -2,6 +2,7 @@ class Topic < ApplicationRecord
   belongs_to :retrospective
   has_many :reflections, inverse_of: :topic
   has_many :reactions, as: :target, inverse_of: :target
+  has_many :votes, -> () { vote }, class_name: 'Reaction', foreign_key: :target_id
 
   before_save :update_label
 

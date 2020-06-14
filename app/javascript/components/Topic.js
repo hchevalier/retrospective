@@ -16,7 +16,7 @@ const Topic = ({ topic, reflections, reactions, stickyNotes, stickyNotesRefCallb
       <div id={topic.id} data-id={topic.id} className='topic'>
         {reflections.map((reflection) => {
           const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
-          const stickyNote = stickyNotes?.find((stickyNote) => stickyNote.dataset.id === reflection.id)
+          const stickyNote = (stickyNotes || []).find((stickyNote) => stickyNote.dataset.id === reflection.id)
           const isUnread = stickyNote && stickyNote.dataset.read !== 'true'
 
           return <StickyNote
