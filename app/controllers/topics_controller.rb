@@ -7,8 +7,9 @@ class TopicsController < ApplicationController
     return(render json: { status: :unprocessable_entity }) unless reflections.size == 2
 
     topic = Topic.create(reflections: reflections)
-    OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'changeTopic', parameters: { reflection: reflections.first.readable })
-    OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'changeTopic', parameters: { reflection: reflections.last.readable })
+    reflections.each do |reflection|
+      OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'changeTopic', parameters: { reflection: reflection.readable })
+    end
 
     render json: :created
   end
@@ -17,9 +18,12 @@ class TopicsController < ApplicationController
     reflection = current_user.retrospective.reflections.find(params[:reflection_id])
     previous_topic = reflection.topic
 
-    topic = Topic.find(params[:id]) # TODO: make sure that topic is bound to the correct retrospective
+    topic = Topic.find(params[:id])
+    retrospective = topic.reflections.first.retrospective
+    return(render json: { status: :unauthorized }) unless retrospective == current_user.retrospective
+
     topic.reflections << reflection
-    OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'changeTopic', parameters: { reflection: reflection.reload.readable })
+    OrchestratorChannel.broadcast_to(retrospective, action: 'changeTopic', parameters: { reflection: reflection.reload.readable })
 
     previous_topic.delete if previous_topic.reflections.none?
   end
