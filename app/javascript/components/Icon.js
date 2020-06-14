@@ -8,6 +8,10 @@ import Start from 'images/start.png'
 import Stop from 'images/stop.png'
 import More from 'images/more.png'
 import Less from 'images/less.png'
+import Wind from 'images/wind.png'
+import Anchor from 'images/anchor.png'
+import Rocks from 'images/rocks.png'
+import Island from 'images/island.png'
 import './Icon.scss'
 
 const iconFor = (retrospectiveKind, zone) => {
@@ -28,6 +32,14 @@ const iconFor = (retrospectiveKind, zone) => {
       return More
     case 'starfish-Less':
       return Less
+    case 'sailboat-Wind':
+      return Wind
+    case 'sailboat-Anchor':
+      return Anchor
+    case 'sailboat-Rocks':
+      return Rocks
+    case 'sailboat-Island':
+      return Island
   }
 
   return null
