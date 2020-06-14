@@ -16,6 +16,22 @@ const StepVoting = () => {
   const votes = ownReactions.filter((reaction) => reaction.kind === 'vote')
   const reactionsWithVotes = [...reactions, ...votes]
 
+  const renderTopic = (reflection) => {
+    const reflectionsInTopic = reflections.filter((otherReflection) => otherReflection.topic?.id === reflection.topic.id)
+    const reflectionIds = reflectionsInTopic.map((otherReflection) => otherReflection.id)
+    const reactionsInTopic = reactionsWithVotes.filter((reaction) => {
+      return reflectionIds.includes(reaction.targetId.split(/-(.+)?/, 2)[1]) || reaction.targetId === `Topic-${reflection.topic.id}`
+    })
+
+    return <Topic
+      key={reflection.topic.id}
+      topic={reflection.topic}
+      reflections={reflectionsInTopic}
+      reactions={reactionsInTopic}
+      showReactions
+      showVotes />
+  }
+
   return (
     <>
       <div>Remaining votes: {constants.maxVotes - votes.length}</div>
@@ -26,19 +42,7 @@ const StepVoting = () => {
             {reflections.filter((reflection) => reflection.zone.id === zone.id).map((reflection) => {
               if (reflection.topic?.id && !topics[reflection.topic.id]) {
                 topics[reflection.topic.id] = reflection.topic
-                const reflectionsInTopic = reflections.filter((otherReflection) => otherReflection.topic?.id === reflection.topic.id)
-                const reflectionIds = reflectionsInTopic.map((otherReflection) => otherReflection.id)
-                const reactionsInTopic = reactionsWithVotes.filter((reaction) => {
-                  return reflectionIds.includes(reaction.targetId.split(/-(.+)?/, 2)[1]) || reaction.targetId === `Topic-${reflection.topic.id}`
-                })
-
-                return <Topic
-                  key={reflection.topic.id}
-                  topic={reflection.topic}
-                  reflections={reflectionsInTopic}
-                  reactions={reactionsInTopic}
-                  showReactions
-                  showVotes />
+                return renderTopic(reflection)
               } else if (!reflection.topic?.id) {
                 const relevantReactions = reactionsWithVotes.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
 

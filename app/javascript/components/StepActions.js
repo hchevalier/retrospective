@@ -29,6 +29,29 @@ const StepActions = () => {
     }
   }, [organizer, channel])
 
+  const renderTopic = (reflection) => {
+    const reflectionsInTopic = reflectionsWithVotes.filter(([otherReflection]) => otherReflection.topic?.id === reflection.topic.id)
+    const reflectionIds = reflectionsInTopic.map(([otherReflection]) => otherReflection.id)
+    const votesInTopic = visibleReactions.filter((reaction) => {
+      return reflectionIds.includes(reaction.targetId.split(/-(.+)?/, 2)[1]) || reaction.targetId === `Topic-${reflection.topic.id}`
+    }).filter((reaction) => reaction.kind === 'vote')
+    let selected = reflectionIds.includes(currentReflection.id) ? 'shadow-md' : 'mx-2'
+    return (
+      <div key={reflection.topic.id}>
+        <StickyBookmark color={'whitesmoke'} otherClassNames={selected} onClick={() => handleStickyBookmarkClicked(reflection)}>
+          <VoteCorner target={reflection.reflection} targetType={'topic'} votes={votesInTopic} inline noStandOut /> <span>{reflection.topic.label}</span>
+        </StickyBookmark>
+        {reflectionsInTopic.map(([otherReflection]) => {
+          return (
+            <StickyBookmark key={otherReflection.id} color={otherReflection.color} otherClassNames={'ml-8'} onClick={() => handleStickyBookmarkClicked(otherReflection)}>
+              {otherReflection.content}
+            </StickyBookmark>
+          )
+        })}
+      </div>
+    )
+  }
+
   if (!currentReflection) return null
 
   const topics = {}
@@ -43,26 +66,7 @@ const StepActions = () => {
           {reflectionsWithVotes.map(([reflection, votes]) => {
             if (reflection.topic?.id && !topics[reflection.topic.id]) {
               topics[reflection.topic.id] = reflection.topic
-              const reflectionsInTopic = reflectionsWithVotes.filter(([otherReflection]) => otherReflection.topic?.id === reflection.topic.id)
-              const reflectionIds = reflectionsInTopic.map(([otherReflection]) => otherReflection.id)
-              const votesInTopic = visibleReactions.filter((reaction) => {
-                return reflectionIds.includes(reaction.targetId.split(/-(.+)?/, 2)[1]) || reaction.targetId === `Topic-${reflection.topic.id}`
-              }).filter((reaction) => reaction.kind === 'vote')
-              let selected = reflectionIds.includes(currentReflection.id) ? 'shadow-md' : 'mx-2'
-              return (
-                <div>
-                  <StickyBookmark key={reflection.topic.id} color={'whitesmoke'} otherClassNames={selected} onClick = {() => handleStickyBookmarkClicked(reflection)}>
-                    <VoteCorner target={reflection.reflection} targetType={'topic'} votes={votesInTopic} inline noStandOut /> <span>{reflection.topic.label}</span>
-                  </StickyBookmark>
-                  {reflectionsInTopic.map(([otherReflection]) => {
-                    return (
-                      <StickyBookmark key={otherReflection.id} color={otherReflection.color} otherClassNames={'ml-8'} onClick={() => handleStickyBookmarkClicked(otherReflection)}>
-                        {otherReflection.content}
-                      </StickyBookmark>
-                    )
-                  })}
-                </div>
-              )
+              return renderTopic(reflection)
             } else if (!reflection.topic?.id) {
               let selected = reflection.id == currentReflection.id ? 'shadow-md' : 'mx-2'
               return (

@@ -136,6 +136,25 @@ const StepGrouping = () => {
       .catch(error => console.warn(error))
   }
 
+  const renderTopic = (reflection, reflectionsInZone, stickyNotesInZone) => {
+    const reflectionsInTopic = reflectionsInZone.filter((otherReflection) => otherReflection.topic?.id === reflection.topic.id)
+    const reflectionIds = reflectionsInTopic.map((otherReflection) => otherReflection.id)
+    const stickyNotesInTopic = stickyNotesInZone.find((stickyNote) => reflectionIds.includes(stickyNote.dataset.id))
+    const reactionsInTopic = reactions.filter((reaction) => reflectionIds.includes(reaction.targetId.split(/-(.+)?/, 2)[1]))
+
+    return <Topic
+      key={reflection.topic.id}
+      topic={reflection.topic}
+      reflections={reflectionsInTopic}
+      reactions={reactionsInTopic}
+      stickyNotesRefCallback={setStickyNoteRef}
+      stickyNotes={stickyNotesInTopic || []}
+      draggable
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop} />
+  }
+
   return (
     <>
       {organizer && <div>Click on a participant so that he can reveal his reflections</div>}
@@ -159,22 +178,7 @@ const StepGrouping = () => {
                 {reflectionsInZone.map((reflection) => {
                   if (reflection.topic?.id && !topics[reflection.topic?.id]) {
                     topics[reflection.topic?.id] = reflection.topic
-                    const reflectionsInTopic = reflectionsInZone.filter((otherReflection) => otherReflection.topic?.id === reflection.topic.id)
-                    const reflectionIds = reflectionsInTopic.map((otherReflection) => otherReflection.id)
-                    const stickyNotesInTopic = stickyNotesInZone.find((stickyNote) => reflectionIds.includes(stickyNote.dataset.id))
-                    const reactionsInTopic = reactions.filter((reaction) => reflectionIds.includes(reaction.targetId.split(/-(.+)?/, 2)[1]))
-
-                    return <Topic
-                      key={reflection.topic.id}
-                      topic={reflection.topic}
-                      reflections={reflectionsInTopic}
-                      reactions={reactionsInTopic}
-                      stickyNotesRefCallback={setStickyNoteRef}
-                      stickyNotes={stickyNotesInTopic || []}
-                      draggable
-                      onDragStart={handleDragStart}
-                      onDragOver={handleDragOver}
-                      onDrop={handleDrop} />
+                    return renderTopic(reflection, reflectionsInZone, stickyNotesInZone)
                   } else if (!reflection.topic?.id) {
                     const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
                     const stickyNote = stickyNotesInZone.find((stickyNote) => stickyNote.dataset.id === reflection.id)

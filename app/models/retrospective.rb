@@ -144,7 +144,7 @@ class Retrospective < ApplicationRecord
       when 'actions', 'done'
         reflections
           .eager_load(:owner, :votes, topic: :votes, zone: :retrospective)
-          .reject { |reflection| reflection.votes.none? || reflection.topic.votes.none? }
+          .reject { |reflection| reflection.votes.none? && reflection.topic&.votes&.none? }
           .map(&:readable)
       else
         []

@@ -26,7 +26,32 @@ const StepDone = () => {
 
   const handleDisplayTasksChange = (event) => { setDisplayAllTasks(!event.target.checked) }
 
+  const renderTopic = (reflection) => {
+    const reflectionsInTopic = reflectionsWithVotes.filter(([otherReflection]) => otherReflection.topic?.id === reflection.topic.id)
+    const reflectionIds = reflectionsInTopic.map(([otherReflection]) => otherReflection.id)
+    const votesInTopic = visibleReactions.filter((reaction) => {
+      return reflectionIds.includes(reaction.targetId.split(/-(.+)?/, 2)[1]) || reaction.targetId === `Topic-${reflection.topic.id}`
+    }).filter((reaction) => reaction.kind === 'vote')
+    let selected = reflectionIds.includes(currentReflection.id) ? 'shadow-md' : 'mx-2'
+    return (
+      <div key={reflection.topic.id}>
+        <StickyBookmark color={'whitesmoke'} otherClassNames={selected} onClick={() => handleStickyBookmarkClicked(reflection)}>
+          <VoteCorner target={reflection.reflection} targetType={'topic'} votes={votesInTopic} inline noStandOut /> <span>{reflection.topic.label}</span>
+        </StickyBookmark>
+        {reflectionsInTopic.map(([otherReflection]) => {
+          return (
+            <StickyBookmark key={otherReflection.id} color={otherReflection.color} otherClassNames={'ml-8'} onClick={() => handleStickyBookmarkClicked(otherReflection)}>
+              {otherReflection.content}
+            </StickyBookmark>
+          )
+        })}
+      </div>
+    )
+  }
+
   if (!currentReflection) return null
+
+  const topics = {}
 
   return (
     <div id='actions-zone'>
@@ -36,18 +61,23 @@ const StepDone = () => {
         </div>
         <div id='reflections-list'>
           {reflectionsWithVotes.map(([reflection, votes], index) => {
-            let selected = reflection.id == currentReflection.id ? "shadow-md" : "mx-2"
-            return (
-              <StickyBookmark key={index} color={reflection.color} otherClassNames={selected} onClick={() => handleStickyBookmarkClicked(reflection)}>
-                <VoteCorner target={reflection} targetType={'reflection'} votes={votes} inline noStandOut /> <span>{reflection.content}</span>
-              </StickyBookmark>
-            )
+            if (reflection.topic?.id && !topics[reflection.topic.id]) {
+              topics[reflection.topic.id] = reflection.topic
+              return renderTopic(reflection)
+            } else if (!reflection.topic?.id) {
+              let selected = reflection.id == currentReflection.id ? 'shadow-md' : 'mx-2'
+              return (
+                <StickyBookmark key={index} color={reflection.color} otherClassNames={selected} onClick={() => handleStickyBookmarkClicked(reflection)}>
+                  <VoteCorner target={reflection} targetType={'reflection'} votes={votes} inline noStandOut /> <span>{reflection.content}</span>
+                </StickyBookmark>
+              )
+            }
           })}
         </div>
       </div>
       <div id='tasks-list'>
-        <input id='all_tasks' type='checkbox' name='all_tasks' onChange={handleDisplayTasksChange} />
-        <label for='all_tasks'>Only display tasks for current reflection</label>
+        <input id='all-tasks' type='checkbox' name='all_tasks' onChange={handleDisplayTasksChange} />
+        <label htmlFor='all-tasks'>Only display tasks for current reflection</label>
         {tasks.filter((task) => displayAllTasks || task.reflection.id === currentReflection.id).map((task, index) => <Task key={index} task={task} readOnly />)}
       </div>
     </div>
