@@ -81,6 +81,35 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'changing the discussed reflection to a topic selects the first reflection from this topic' do
+    retrospective = create(:retrospective, step: 'actions')
+    reflection_a = create(:reflection, :glad, owner: retrospective.organizer, content: 'Most upvoted reflection')
+    reflection_b = create(:reflection, :glad, owner: retrospective.organizer, content: 'First reflection')
+    reflection_c = create(:reflection, :glad, owner: retrospective.organizer, content: 'Second reflection')
+    topic = create(:topic, retrospective: retrospective, reflections: [reflection_b, reflection_c])
+    create_list(:vote, 2, target: reflection_a, author: retrospective.organizer)
+    create(:vote, target: topic, author: retrospective.organizer)
+    retrospective.update!(discussed_reflection: reflection_a)
+
+    logged_in_as(retrospective.organizer)
+    visit retrospective_path(retrospective)
+
+    within '.reflection' do
+      assert_text 'Most upvoted reflection'
+    end
+
+    assert_equal 4, all('#reflections-list .sticky-bookmark').count
+    topic_sticky_bookmark = all('#reflections-list .sticky-bookmark')[1]
+    within topic_sticky_bookmark do
+      assert_text 'First'
+    end
+
+    topic_sticky_bookmark.click
+    within '.reflection' do
+      assert_text 'First reflection'
+    end
+  end
+
   test 'can create a task' do
     retrospective = create(:retrospective, step: 'actions')
     other_participant = create(:other_participant, retrospective: retrospective)
