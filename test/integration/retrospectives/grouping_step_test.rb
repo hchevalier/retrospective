@@ -252,7 +252,23 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       end
     end
 
+    assert_topic_contains(new_topic, reflection_b, reflection_c)
+
     refute_css ".topic[data-id='#{initial_topic.id}']"
+  end
+
+  test 'cannot group reflections from different columns' do
+    retrospective = create(:retrospective, step: 'grouping')
+    reflection_a = create(:reflection, :glad, owner: retrospective.organizer, content: 'First reflection')
+    reflection_b = create(:reflection, :sad, owner: retrospective.organizer, content: 'Second reflection')
+
+    logged_in_as(retrospective.organizer)
+    visit retrospective_path(retrospective)
+    assert_grouping_step_for_organizer
+
+    assert_no_difference 'Topic.count' do
+      sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
+    end
   end
 
   def sticky_note(reflection)
