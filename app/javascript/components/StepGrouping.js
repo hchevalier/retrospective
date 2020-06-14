@@ -79,7 +79,7 @@ const StepGrouping = () => {
 
   return (
     <>
-      {organizer && <div>Click on a participant so that he can reveal his reflections</div>}
+      {organizer && <div>Click on a participant so that he can reveal his reflections or randomly pick one</div>}
       {!organizer && <div>The organizer now chooses a participant so that he can reveal his reflections</div>}
       <div id="zones-container" className="flex">
         {zones.map((zone) => {

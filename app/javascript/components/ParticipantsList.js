@@ -31,6 +31,16 @@ const ParticipantsList = () => {
     alert('Copied invite URL to clipboard')
   }
 
+  const pickRandomRevealer = () => {
+    const randomRevealer = participants[Math.floor(Math.random() * participants.length)]
+
+    // var revealed = participants.indexOf(randomRevealer);
+    // if (revealed !== -1) participants.splice(revealed, 1);
+
+    const uuid = randomRevealer.uuid
+    channel.setRevealer(uuid)
+  }
+
   const handleParticipantClick = (event) => {
     if (profile?.organizer && step === 'grouping') {
       const uuid = event.currentTarget.dataset.id
@@ -72,6 +82,13 @@ const ParticipantsList = () => {
           className='bg-blue-500 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-700 mt-6 px-5 py-1 rounded text-white'
           color='primary' onClick={copyUrlToClipboard}>
           +
+        </button>
+      )}
+      {profile?.organizer && step === 'grouping' && (
+        <button
+        className='bg-blue-400 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-600 mt-6 px-5 py-1 rounded text-white'
+        color='primary' onClick={pickRandomRevealer}>
+          Random revealer
         </button>
       )}
     </div>
