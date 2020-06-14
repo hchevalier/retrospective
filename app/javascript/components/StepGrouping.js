@@ -1,5 +1,7 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
+import { post, put } from 'lib/httpClient'
+import Topic from './Topic'
 import StickyNote from './StickyNote'
 import Icon from './Icon'
 import './StepGrouping.scss'
@@ -9,7 +11,7 @@ const noteAboveViewport = (stickyNote) => stickyNote.dataset.read !== 'true' && 
 const noteBelowViewport = (stickyNote) => stickyNote.dataset.read !== 'true' && stickyNote.dataset.below === 'true' && !inScreen(stickyNote)
 
 const StepGrouping = () => {
-  const { kind } = useSelector(state => state.retrospective)
+  const { id: retrospectiveId, kind } = useSelector(state => state.retrospective)
   const { uuid: profileUuid } = useSelector(state => state.profile)
   const reflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
   const zones = useSelector(state => state.retrospective.zones, shallowEqual)
@@ -102,23 +104,36 @@ const StepGrouping = () => {
     if (targetElement.closest('.zone-column') !== droppedReflection.closest('.zone-column')) return
 
     if (targetElement.classList.contains('topic')) {
-      // TODO: added reflection to an existing topic, send this info to the backend
-      targetElement.appendChild(droppedReflection)
+      updateTopic(targetElement.dataset.id, draggedReflectionId)
     } else if (targetElement.classList.contains('reflection')) {
       const parent = targetElement.parentNode
-      // dropped reflection on another reflection, check if this one is already in a topic
       if (parent.classList.contains('scrolling-zone')) {
-        // TODO: no topic yet, create one and send information to the backend
-        const newTopic = document.createElement('div')
-        newTopic.classList.add('topic')
-        parent.insertBefore(newTopic, targetElement)
-        newTopic.appendChild(targetElement)
-        newTopic.appendChild(droppedReflection)
+        createTopic(targetElement.dataset.id, draggedReflectionId)
       } else if (parent.classList.contains('topic')) {
-        // TODO: topic already exists, add droppedReflection to it and notice the backend
-        parent.appendChild(droppedReflection)
+        updateTopic(parent.dataset.id, draggedReflectionId)
       }
     }
+  }
+
+  const createTopic = (targetReflectionId, droppedReflectionId) => {
+    post({
+      url: `/retrospectives/${retrospectiveId}/topics`,
+      payload: {
+        first_reflection_id: targetReflectionId,
+        second_reflection_id: droppedReflectionId
+      }
+    })
+      .catch(error => console.warn(error))
+  }
+
+  const updateTopic = (topicId, droppedReflectionId) => {
+    put({
+      url: `/retrospectives/${retrospectiveId}/topics/${topicId}`,
+      payload: {
+        reflection_id: droppedReflectionId
+      }
+    })
+      .catch(error => console.warn(error))
   }
 
   return (
@@ -134,26 +149,49 @@ const StepGrouping = () => {
           const unreadReflectionAbove = stickyNotesInZone.find(noteAboveViewport)
           const unreadReflectionBelow = stickyNotesInZone.reverse().find(noteBelowViewport)
 
+          const topics = {}
+
           return (
             <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0' key={zone.id}>
               <span className='zone-header'>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</span>
               {!!unreadReflectionAbove && <div className='unread-notice above' onClick={() => scrollToStickyNote(unreadReflectionAbove)}>⬆︎ Unread reflection ⬆︎</div>}
               <div className='scrolling-zone'>
                 {reflectionsInZone.map((reflection) => {
-                  const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
-                  const stickyNote = stickyNotesInZone.find((stickyNote) => stickyNote.dataset.id === reflection.id)
-                  const isUnread = stickyNote && stickyNote.dataset.read !== 'true'
-                  return <StickyNote
-                    key={reflection.id}
-                    ref={setStickyNoteRef}
-                    reflection={reflection}
-                    showReactions
-                    reactions={concernedReactions}
-                    glowing={isUnread}
-                    draggable
-                    onDragStart={handleDragStart}
-                    onDragOver={handleDragOver}
-                    onDrop={handleDrop} />
+                  if (reflection.topic?.id && !topics[reflection.topic?.id]) {
+                    topics[reflection.topic?.id] = reflection.topic
+                    const reflectionsInTopic = reflectionsInZone.filter((otherReflection) => otherReflection.topic?.id === reflection.topic.id)
+                    const reflectionIds = reflectionsInTopic.map((otherReflection) => otherReflection.id)
+                    const stickyNotesInTopic = stickyNotesInZone.find((stickyNote) => reflectionIds.includes(stickyNote.dataset.id))
+                    const reactionsInTopic = reactions.filter((reaction) => reflectionIds.includes(reaction.targetId.split('-')[1]))
+
+                    return <Topic
+                      key={reflection.topic.id}
+                      topicId={reflection.topic.id}
+                      topicLabel={reflection.topic.label}
+                      reflections={reflectionsInTopic}
+                      reactions={reactionsInTopic}
+                      stickyNotesRefCallback={setStickyNoteRef}
+                      stickyNotes={stickyNotesInTopic || []}
+                      onDragStart={handleDragStart}
+                      onDragOver={handleDragOver}
+                      onDrop={handleDrop} />
+                  } else if (!reflection.topic?.id) {
+                    const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
+                    const stickyNote = stickyNotesInZone.find((stickyNote) => stickyNote.dataset.id === reflection.id)
+                    const isUnread = stickyNote && stickyNote.dataset.read !== 'true'
+
+                    return <StickyNote
+                      key={reflection.id}
+                      ref={setStickyNoteRef}
+                      reflection={reflection}
+                      showReactions
+                      reactions={concernedReactions}
+                      glowing={isUnread}
+                      draggable
+                      onDragStart={handleDragStart}
+                      onDragOver={handleDragOver}
+                      onDrop={handleDrop} />
+                  }
                 })}
               </div>
               {!!unreadReflectionBelow && <div className='unread-notice below' onClick={() => scrollToStickyNote(unreadReflectionBelow)}>⬇︎ Unread reflection ⬇︎</div>}

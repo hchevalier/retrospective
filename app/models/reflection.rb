@@ -1,6 +1,6 @@
 class Reflection < ApplicationRecord
   belongs_to :zone, inverse_of: :reflections
-  belongs_to :topic, optional: true
+  belongs_to :topic, optional: true, inverse_of: :reflections
   belongs_to :owner, class_name: 'Participant', inverse_of: :reflections
   has_one :retrospective, through: :zone
   has_many :reactions, as: :target, inverse_of: :target
@@ -12,6 +12,7 @@ class Reflection < ApplicationRecord
   def anonymous
     {
       id: id,
+      topic: topic&.as_json,
       zone: zone.as_json,
       color: owner.color,
       revealed: revealed
