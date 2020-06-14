@@ -3,7 +3,6 @@
 require 'test_helper'
 
 class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
-
   test 'can trigger the grouping step for other participants' do
     retrospective = create(:retrospective, step: 'thinking')
     other_participant = create(:other_participant, retrospective: retrospective)
