@@ -40,7 +40,7 @@ const StepActions = () => {
             let selected = reflection.id == currentReflection.id ? "shadow-md" : "mx-2"
             return (
               <StickyBookmark key={index} color={reflection.color} otherClassNames={selected} onClick={() => handleStickyBookmarkClicked(reflection)}>
-                <VoteCorner reflection={reflection} votes={votes} inline noStandOut /> <span>{reflection.content}</span>
+                <VoteCorner target={reflection} targetType={'reflection'} votes={votes} inline noStandOut /> <span>{reflection.content}</span>
               </StickyBookmark>
             )
           })}

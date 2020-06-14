@@ -38,7 +38,7 @@ const StepDone = () => {
           {reflectionsWithVotes.map(([reflection, votes], index) => {
             return (
               <StickyBookmark key={index} color={reflection.color} onClick={() => handleStickyBookmarkClicked(reflection)}>
-                <VoteCorner reflection={reflection} votes={votes} inline noStandOut /> <span>{reflection.content}</span>
+                <VoteCorner target={reflection} targetType={'reflection'} votes={votes} inline noStandOut /> <span>{reflection.content}</span>
               </StickyBookmark>
             )
           })}

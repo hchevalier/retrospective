@@ -39,7 +39,7 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, sho
         <div className='font-bold'>{reflection.owner.surname}</div>
         <div className='content'>{reflection.content}</div>
       </div>
-      {showVotes && <VoteCorner reflection={reflection} votes={votes} canVote={step === 'voting'} />}
+      {showVotes && <VoteCorner target={reflection} targetType={'reflection'} votes={votes} canVote={step === 'voting'} />}
       <ReactionBar displayed={displayReactionBar} reflection={reflection} reactions={emojis} />
     </div>
   )

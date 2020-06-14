@@ -232,7 +232,8 @@ CREATE TABLE public.topics (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     label character varying NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    retrospective_id uuid
 );
 
 
@@ -384,6 +385,13 @@ CREATE INDEX index_reflections_on_zone_id ON public.reflections USING btree (zon
 
 
 --
+-- Name: index_topics_on_retrospective_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_topics_on_retrospective_id ON public.topics USING btree (retrospective_id);
+
+
+--
 -- Name: index_zones_on_retrospective_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -419,6 +427,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200516113221'),
 ('20200516152144'),
 ('20200523191205'),
-('20200614110955');
+('20200614110955'),
+('20200614130855');
 
 

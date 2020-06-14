@@ -166,8 +166,7 @@ const StepGrouping = () => {
 
                     return <Topic
                       key={reflection.topic.id}
-                      topicId={reflection.topic.id}
-                      topicLabel={reflection.topic.label}
+                      topic={reflection.topic}
                       reflections={reflectionsInTopic}
                       reactions={reactionsInTopic}
                       stickyNotesRefCallback={setStickyNoteRef}

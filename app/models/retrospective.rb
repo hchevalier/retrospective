@@ -4,6 +4,7 @@ class Retrospective < ApplicationRecord
   has_many :participants, inverse_of: :retrospective
   has_many :zones, inverse_of: :retrospective
   has_many :reflections, through: :zones
+  has_many :topics
   has_many :reactions, through: :reflections
   has_many :tasks, through: :participants, source: :created_tasks
 

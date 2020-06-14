@@ -24,16 +24,17 @@ const StepVoting = () => {
           <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0' key={zone.id}>
             <span>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</span>
             {reflections.filter((reflection) => reflection.zone.id === zone.id).map((reflection) => {
-              if (reflection.topic?.id && !topics[reflection.topic?.id]) {
-                topics[reflection.topic?.id] = reflection.topic
+              if (reflection.topic?.id && !topics[reflection.topic.id]) {
+                topics[reflection.topic.id] = reflection.topic
                 const reflectionsInTopic = reflections.filter((otherReflection) => otherReflection.topic?.id === reflection.topic.id)
                 const reflectionIds = reflectionsInTopic.map((otherReflection) => otherReflection.id)
-                const reactionsInTopic = reactionsWithVotes.filter((reaction) => reflectionIds.includes(reaction.targetId.split(/-(.+)?/, 2)[1]))
+                const reactionsInTopic = reactionsWithVotes.filter((reaction) => {
+                  return reflectionIds.includes(reaction.targetId.split(/-(.+)?/, 2)[1]) || reaction.targetId === `Topic-${reflection.topic.id}`
+                })
 
                 return <Topic
                   key={reflection.topic.id}
-                  topicId={reflection.topic.id}
-                  topicLabel={reflection.topic.label}
+                  topic={reflection.topic}
                   reflections={reflectionsInTopic}
                   reactions={reactionsInTopic}
                   showReactions

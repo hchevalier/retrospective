@@ -61,6 +61,8 @@ class Reaction < ApplicationRecord
       case target.class.name
       when 'Reflection'
         target.zone.retrospective_id
+      when 'Topic'
+        target.retrospective_id
       else
         raise "Don't know how to access a Retrospective from target"
       end
