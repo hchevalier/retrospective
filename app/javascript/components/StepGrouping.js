@@ -77,6 +77,50 @@ const StepGrouping = () => {
     visibilityObserver.observe(stickyNote)
   }
 
+  const handleDragStart = (event) => {
+    event.dataTransfer.setData('text/plain', event.target.dataset.id)
+    event.dataTransfer.dropEffect = 'move'
+  }
+
+  const handleDragOver = (event) => {
+    event.preventDefault()
+    event.dataTransfer.dropEffect = 'move'
+  }
+
+  const handleDrop = (event) => {
+    event.preventDefault()
+    const draggedReflectionId = event.dataTransfer.getData('text/plain')
+    let targetElement = event.target
+    const droppedReflection = document.querySelector(`.reflection[data-id="${draggedReflectionId}"]`)
+
+    if (!targetElement.classList.contains('reflection') && !targetElement.classList.contains('topic')) {
+      targetElement = targetElement.closest('.reflection') || targetElement.closest('topic')
+    }
+
+    if (!targetElement) return
+
+    if (targetElement.closest('.zone-column') !== droppedReflection.closest('.zone-column')) return
+
+    if (targetElement.classList.contains('topic')) {
+      // TODO: added reflection to an existing topic, send this info to the backend
+      targetElement.appendChild(droppedReflection)
+    } else if (targetElement.classList.contains('reflection')) {
+      const parent = targetElement.parentNode
+      // dropped reflection on another reflection, check if this one is already in a topic
+      if (parent.classList.contains('scrolling-zone')) {
+        // TODO: no topic yet, create one and send information to the backend
+        const newTopic = document.createElement('div')
+        newTopic.classList.add('topic')
+        parent.insertBefore(newTopic, targetElement)
+        newTopic.appendChild(targetElement)
+        newTopic.appendChild(droppedReflection)
+      } else if (parent.classList.contains('topic')) {
+        // TODO: topic already exists, add droppedReflection to it and notice the backend
+        parent.appendChild(droppedReflection)
+      }
+    }
+  }
+
   return (
     <>
       {organizer && <div>Click on a participant so that he can reveal his reflections</div>}
@@ -99,7 +143,17 @@ const StepGrouping = () => {
                   const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
                   const stickyNote = stickyNotesInZone.find((stickyNote) => stickyNote.dataset.id === reflection.id)
                   const isUnread = stickyNote && stickyNote.dataset.read !== 'true'
-                  return <StickyNote key={reflection.id} ref={setStickyNoteRef} reflection={reflection} showReactions reactions={concernedReactions} glowing={isUnread} draggable />
+                  return <StickyNote
+                    key={reflection.id}
+                    ref={setStickyNoteRef}
+                    reflection={reflection}
+                    showReactions
+                    reactions={concernedReactions}
+                    glowing={isUnread}
+                    draggable
+                    onDragStart={handleDragStart}
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop} />
                 })}
               </div>
               {!!unreadReflectionBelow && <div className='unread-notice below' onClick={() => scrollToStickyNote(unreadReflectionBelow)}>⬇︎ Unread reflection ⬇︎</div>}

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     resources :reflections, only: %i(create update destroy) do
       resources :reactions, only: %i(create destroy)
     end
+    resources :topics, only: %i(create update)
     resources :participants, only: %i(create update)
     resources :tasks, only: %i(create update destroy)
   end
