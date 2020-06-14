@@ -119,8 +119,8 @@ const StepGrouping = () => {
     post({
       url: `/retrospectives/${retrospectiveId}/topics`,
       payload: {
-        first_reflection_id: targetReflectionId,
-        second_reflection_id: droppedReflectionId
+        target_reflection_id: targetReflectionId,
+        dropped_reflection_id: droppedReflectionId
       }
     })
       .catch(error => console.warn(error))
