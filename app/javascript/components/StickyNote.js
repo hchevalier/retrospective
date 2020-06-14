@@ -15,14 +15,14 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, sho
   const handleMouseEnter = () => setHovered(true)
   const handleMouseLeave = () => setHovered(false)
 
-  const displayReactionBar = showReactions && (hovered || reactions.length > 0)
+  const votes = reactions.filter((reaction) => reaction.kind === 'vote')
+  const emojis = reactions.filter((reaction) => reaction.kind === 'emoji')
+  const displayReactionBar = showReactions && (hovered || emojis.length > 0)
+
   const colorStyle = {
     borderColor: reflection.color,
     backgroundColor: reflection.color
   }
-
-  const votes = reactions.filter((reaction) => reaction.kind === 'vote')
-  const emojis = reactions.filter((reaction) => reaction.kind === 'emoji')
 
   return (
     <div
