@@ -35,6 +35,7 @@ class RetrospectivesController < ApplicationController
         )
         cookies.signed[:user_id] = participant.id
       end
+      reload_current_user
     end
 
     @initial_state = @retrospective.initial_state(current_user)

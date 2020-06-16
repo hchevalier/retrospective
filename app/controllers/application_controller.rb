@@ -9,6 +9,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def reload_current_user
+    @current_user = nil
+    current_user
+  end
+
   def current_account
     @current_account ||= begin
       (account_id = session[:account_id]) ?

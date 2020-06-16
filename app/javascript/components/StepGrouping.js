@@ -139,7 +139,7 @@ const StepGrouping = () => {
   const renderTopic = (reflection, reflectionsInZone, stickyNotesInZone) => {
     const reflectionsInTopic = reflectionsInZone.filter((otherReflection) => otherReflection.topic?.id === reflection.topic.id)
     const reflectionIds = reflectionsInTopic.map((otherReflection) => otherReflection.id)
-    const stickyNotesInTopic = stickyNotesInZone.find((stickyNote) => reflectionIds.includes(stickyNote.dataset.id))
+    const stickyNotesInTopic = stickyNotesInZone.filter((stickyNote) => reflectionIds.includes(stickyNote.dataset.id))
     const reactionsInTopic = reactions.filter((reaction) => reflectionIds.includes(reaction.targetId.split(/-(.+)?/, 2)[1]))
 
     return <Topic
