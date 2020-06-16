@@ -147,6 +147,7 @@ const StepGrouping = () => {
       topic={reflection.topic}
       reflections={reflectionsInTopic}
       reactions={reactionsInTopic}
+      showReactions
       stickyNotesRefCallback={setStickyNoteRef}
       stickyNotes={stickyNotesInTopic || []}
       draggable
