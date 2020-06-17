@@ -8,9 +8,5 @@ FactoryBot.define do
     factory :other_participant do
       surname { 'Other participant' }
     end
-
-    factory :other_participant2 do
-      surname { 'Other participant2' }
-    end
   end
 end
