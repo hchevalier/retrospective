@@ -44,26 +44,33 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     assert_logged_in(other_participant, with_flags: '(reveal.)')
   end
 
-  # TO WRITE (copy/paste and adapted from previous test)
   test 'can randomly pick a participant to be the revealer among those who did not reveal any reflection yet' do
     retrospective = create(:retrospective, step: 'grouping')
-    other_participant = create(:other_participant, retrospective: retrospective)
-    other_participant2 = create(:other_participant, retrospective: retrospective, surname: 'Other one')
+    participant = create(:other_participant, retrospective: retrospective)
+    other_participant = create(:other_participant, retrospective: retrospective, surname: 'Other participant')
 
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
     assert_logged_as_organizer
+    assert_logged_in(participant, with_flags: :none)
     assert_logged_in(other_participant, with_flags: :none)
-    assert_logged_in(other_participant2, with_flags: :none)
 
-    #click_on "Random revealer"
+    assert_button('Random revealer', disabled: false)
 
-    #find(".participant[data-id='#{other_participant.id}']").click
-    #assert_logged_in(other_participant, with_flags: '(reveal.)')
+    click_on "Random revealer"
+    revealer = current_revealer(retrospective.organizer, participant, other_participant)
+    close_modal_on_current_revealer_window(retrospective, revealer)
 
-    #find(".participant[data-id='#{other_participant2.id}']").click
-    #assert_logged_in(other_participant, with_flags: :none)
-    #assert_logged_in(other_participant2, with_flags: '(reveal.)')
+    click_on "Random revealer"
+    revealer = current_revealer(retrospective.organizer, participant, other_participant)
+    close_modal_on_current_revealer_window(retrospective, revealer)
+
+    click_on "Random revealer"
+    revealer = current_revealer(retrospective.organizer, participant, other_participant)
+    close_modal_on_current_revealer_window(retrospective, revealer)
+
+    assert_no_button('Random revealer')
+    assert_text('Everyone has revealed!')
   end
 
   test 'revealer sees his reflections and looses the revealer token when closing the modal' do
@@ -217,4 +224,33 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
   def assert_grouping_step_for_participant
     assert_text 'The organizer now chooses a participant so that he can reveal his reflections'
   end
+
+  private
+
+  def current_revealer(organizer, participant, other_participant)
+    revealer_id = find('.revealer').find(:xpath, '..')['data-id']
+    case revealer_id
+    when organizer.id
+      organizer
+    when participant.id
+      participant
+    when other_participant.id
+      other_participant
+    end
+  end
+
+  def close_modal_on_current_revealer_window(retrospective, revealer)
+    revealer_window = open_new_window
+    within_window(revealer_window) do
+      logged_in_as(revealer)
+      visit retrospective_path(retrospective)
+      if revealer == retrospective.organizer
+        assert_logged_in(revealer, with_flags: '(you, orga., reveal.)')
+      else
+        assert_logged_in(revealer, with_flags: '(you, reveal.)')
+      end
+      click_on 'Close'
+    end
+  end
+
 end

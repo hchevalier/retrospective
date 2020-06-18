@@ -33,11 +33,10 @@ const ParticipantsList = () => {
   }
 
   const pickRandomRevealer = () => {
-    let remainingParticipants = participants.filter(x => !alreadyRevealers.includes(x))
+    let remainingParticipants = participants.filter(participant => !alreadyRevealers.includes(participant.uuid))
     const randomRevealer = remainingParticipants[Math.floor(Math.random() * remainingParticipants.length)]
-    setAlreadyRevealers([...alreadyRevealers, randomRevealer])
-    const uuid = randomRevealer.uuid
-    channel.setRevealer(uuid)
+    setAlreadyRevealers([...alreadyRevealers, randomRevealer.uuid])
+    channel.setRevealer(randomRevealer.uuid)
   }
 
   const handleParticipantClick = (event) => {
@@ -83,12 +82,15 @@ const ParticipantsList = () => {
           +
         </button>
       )}
-      {profile?.organizer && step === 'grouping' && (
+      {profile?.organizer && step === 'grouping' && alreadyRevealers.length < participants.length && (
         <button
         className='bg-blue-400 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-600 mt-6 px-5 py-1 rounded text-white'
-        color='primary' onClick={pickRandomRevealer} disabled={alreadyRevealers.length >= participants.length}>
+        color='primary' onClick={pickRandomRevealer}>
           Random revealer
         </button>
+      )}
+      {alreadyRevealers.length >= participants.length && (
+        <p>Everyone has revealed!</p>
       )}
     </div>
   )
