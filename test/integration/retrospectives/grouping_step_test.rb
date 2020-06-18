@@ -49,7 +49,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
   test 'can randomly pick a participant to be the revealer among those who did not reveal any reflection yet' do
     retrospective = create(:retrospective, step: 'grouping')
     other_participant = create(:other_participant, retrospective: retrospective)
-    other_participant2 = create(:other_participant2, retrospective: retrospective)
+    other_participant2 = create(:other_participant, retrospective: retrospective, surname: 'Other one')
 
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
