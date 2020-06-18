@@ -86,7 +86,7 @@ const ParticipantsList = () => {
       {profile?.organizer && step === 'grouping' && (
         <button
         className='bg-blue-400 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-600 mt-6 px-5 py-1 rounded text-white'
-        color='primary' onClick={pickRandomRevealer} disabled={remainingParticipants.length === 0}>
+        color='primary' onClick={pickRandomRevealer} disabled={alreadyRevealers.length >= participants.length}>
           Random revealer
         </button>
       )}
