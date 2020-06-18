@@ -12,6 +12,7 @@ const ParticipantsList = () => {
   const { organizerInfo: encryptedOrganizerInfo, step } = useSelector(state => state.orchestrator)
   const participants = useSelector(state => state.participants, shallowEqual)
   const channel = useSelector(state => state.orchestrator.subscription)
+  const [alreadyRevealers, setAlreadyRevealers] = React.useState([])
 
   const copyUrlToClipboard = () => {
     const toCopy = document.createElement('span')
@@ -32,11 +33,9 @@ const ParticipantsList = () => {
   }
 
   const pickRandomRevealer = () => {
-    const randomRevealer = participants[Math.floor(Math.random() * participants.length)]
-
-    // var revealed = participants.indexOf(randomRevealer);
-    // if (revealed !== -1) participants.splice(revealed, 1);
-
+    let remainingParticipants = participants.filter(x => !alreadyRevealers.includes(x))
+    const randomRevealer = remainingParticipants[Math.floor(Math.random() * remainingParticipants.length)]
+    setAlreadyRevealers([...alreadyRevealers, randomRevealer])
     const uuid = randomRevealer.uuid
     channel.setRevealer(uuid)
   }
@@ -87,7 +86,7 @@ const ParticipantsList = () => {
       {profile?.organizer && step === 'grouping' && (
         <button
         className='bg-blue-400 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-600 mt-6 px-5 py-1 rounded text-white'
-        color='primary' onClick={pickRandomRevealer}>
+        color='primary' onClick={pickRandomRevealer} disabled={remainingParticipants.length === 0}>
           Random revealer
         </button>
       )}
