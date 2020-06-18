@@ -3,7 +3,6 @@
 require 'test_helper'
 
 class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
-
   test 'can trigger the grouping step for other participants' do
     retrospective = create(:retrospective, step: 'thinking')
     other_participant = create(:other_participant, retrospective: retrospective)
@@ -57,7 +56,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     assert_logged_in(other_participant, with_flags: :none)
     assert_logged_in(other_participant2, with_flags: :none)
 
-    click_on "Random revealer"
+    #click_on "Random revealer"
 
     #find(".participant[data-id='#{other_participant.id}']").click
     #assert_logged_in(other_participant, with_flags: '(reveal.)')
