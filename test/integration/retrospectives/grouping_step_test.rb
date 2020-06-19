@@ -49,6 +49,10 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     participant = create(:other_participant, retrospective: retrospective)
     other_participant = create(:other_participant, retrospective: retrospective, surname: 'Other participant')
 
+    create(:reflection, :glad, owner: retrospective.organizer, revealed: false)
+    create(:reflection, :glad, owner: participant, revealed: false)
+    create(:reflection, :glad, owner: other_participant, revealed: false)
+
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
     assert_logged_as_organizer
@@ -240,8 +244,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
   end
 
   def close_modal_on_current_revealer_window(retrospective, revealer)
-    revealer_window = open_new_window
-    within_window(revealer_window) do
+    within_window(open_new_window) do
       logged_in_as(revealer)
       visit retrospective_path(retrospective)
       if revealer == retrospective.organizer
@@ -249,8 +252,8 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       else
         assert_logged_in(revealer, with_flags: '(you, reveal.)')
       end
+      click_on 'Reveal'
       click_on 'Close'
     end
   end
-
 end

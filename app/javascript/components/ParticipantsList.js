@@ -12,7 +12,7 @@ const ParticipantsList = () => {
   const { organizerInfo: encryptedOrganizerInfo, step } = useSelector(state => state.orchestrator)
   const participants = useSelector(state => state.participants, shallowEqual)
   const channel = useSelector(state => state.orchestrator.subscription)
-  const [alreadyRevealers, setAlreadyRevealers] = React.useState([])
+  const visibleReflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
 
   const copyUrlToClipboard = () => {
     const toCopy = document.createElement('span')
@@ -32,10 +32,17 @@ const ParticipantsList = () => {
     alert('Copied invite URL to clipboard')
   }
 
+  const alreadyRevealers = () => {
+    let alreadyRevealers = []
+    visibleReflections.forEach((reflection) => alreadyRevealers.push(reflection.owner.uuid))
+    alreadyRevealers = [...new Set(alreadyRevealers)]
+    return alreadyRevealers
+  }
+
   const pickRandomRevealer = () => {
-    let remainingParticipants = participants.filter(participant => !alreadyRevealers.includes(participant.uuid))
+    let revealers = alreadyRevealers()
+    let remainingParticipants = participants.filter(participant => !revealers.includes(participant.uuid))
     const randomRevealer = remainingParticipants[Math.floor(Math.random() * remainingParticipants.length)]
-    setAlreadyRevealers([...alreadyRevealers, randomRevealer.uuid])
     channel.setRevealer(randomRevealer.uuid)
   }
 
@@ -61,6 +68,8 @@ const ParticipantsList = () => {
     return {}
   }, [encryptedOrganizerInfo, profile, retrospectiveName])
 
+  let revealers = alreadyRevealers()
+
   return (
     <div id='participants-list' className='border p-3 rounded shadow mr-6'>
       {participants.map(({ surname, status, organizer, revealer, uuid, color }, index) => {
@@ -82,14 +91,14 @@ const ParticipantsList = () => {
           +
         </button>
       )}
-      {profile?.organizer && step === 'grouping' && alreadyRevealers.length < participants.length && (
+      {profile?.organizer && step === 'grouping' && revealers.length < participants.length && (
         <button
         className='bg-blue-400 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-600 mt-6 px-5 py-1 rounded text-white'
         color='primary' onClick={pickRandomRevealer}>
           Random revealer
         </button>
       )}
-      {alreadyRevealers.length >= participants.length && (
+      {revealers.length >= participants.length && (
         <p>Everyone has revealed!</p>
       )}
     </div>
