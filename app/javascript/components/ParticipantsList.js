@@ -3,6 +3,7 @@ import { useSelector, shallowEqual } from 'react-redux'
 import classNames from 'classnames'
 import { compact } from 'lib/helpers/array'
 import { decrypt } from 'lib/utils/decryption'
+import { uniqBy } from 'lib/helpers/array'
 import StickyBookmark from './StickyBookmark'
 import './ParticipantsList.scss'
 
@@ -32,15 +33,8 @@ const ParticipantsList = () => {
     alert('Copied invite URL to clipboard')
   }
 
-  const alreadyRevealers = () => {
-    let alreadyRevealers = []
-    visibleReflections.forEach((reflection) => alreadyRevealers.push(reflection.owner.uuid))
-    alreadyRevealers = [...new Set(alreadyRevealers)]
-    return alreadyRevealers
-  }
-
   const pickRandomRevealer = () => {
-    let revealers = alreadyRevealers()
+    let revealers = uniqBy(visibleReflections.map((reflection) => reflection.owner), 'uuid').map(reflection => reflection.uuid);
     let remainingParticipants = participants.filter(participant => !revealers.includes(participant.uuid))
     const randomRevealer = remainingParticipants[Math.floor(Math.random() * remainingParticipants.length)]
     channel.setRevealer(randomRevealer.uuid)
@@ -68,7 +62,7 @@ const ParticipantsList = () => {
     return {}
   }, [encryptedOrganizerInfo, profile, retrospectiveName])
 
-  let revealers = alreadyRevealers()
+  let revealers = uniqBy(visibleReflections.map((reflection) => reflection.owner), 'uuid').map(reflection => reflection.uuid);
 
   return (
     <div id='participants-list' className='border p-3 rounded shadow mr-6'>
