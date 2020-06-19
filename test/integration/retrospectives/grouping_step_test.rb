@@ -253,7 +253,6 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
         assert_logged_in(revealer, with_flags: '(you, reveal.)')
       end
       click_on 'Reveal'
-      click_on 'Close'
     end
   end
 end
