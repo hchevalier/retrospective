@@ -55,20 +55,21 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
-    assert_logged_as_organizer
-    assert_logged_in(participant, with_flags: :none)
-    assert_logged_in(other_participant, with_flags: :none)
+    no_one_has_the_revealer_token(participant, other_participant)
 
     assert_button('Random revealer', disabled: false)
 
+    no_one_has_the_revealer_token(participant, other_participant)
     click_on "Random revealer"
     revealer = current_revealer(retrospective.organizer, participant, other_participant)
     close_modal_on_current_revealer_window(retrospective, revealer)
 
+    no_one_has_the_revealer_token(participant, other_participant)
     click_on "Random revealer"
     revealer = current_revealer(retrospective.organizer, participant, other_participant)
     close_modal_on_current_revealer_window(retrospective, revealer)
 
+    no_one_has_the_revealer_token(participant, other_participant)
     click_on "Random revealer"
     revealer = current_revealer(retrospective.organizer, participant, other_participant)
     close_modal_on_current_revealer_window(retrospective, revealer)
@@ -254,5 +255,11 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       end
       click_on 'Reveal'
     end
+  end
+
+  def no_one_has_the_revealer_token(participant, other_participant)
+    assert_logged_as_organizer
+    assert_logged_in(participant, with_flags: :none)
+    assert_logged_in(other_participant, with_flags: :none)
   end
 end

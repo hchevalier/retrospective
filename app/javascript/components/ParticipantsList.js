@@ -1,9 +1,8 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import classNames from 'classnames'
-import { compact } from 'lib/helpers/array'
+import { compact, uniqBy } from 'lib/helpers/array'
 import { decrypt } from 'lib/utils/decryption'
-import { uniqBy } from 'lib/helpers/array'
 import StickyBookmark from './StickyBookmark'
 import './ParticipantsList.scss'
 
@@ -19,7 +18,7 @@ const ParticipantsList = () => {
     const toCopy = document.createElement('span')
     toCopy.setAttribute('type', 'hidden')
     toCopy.appendChild(document.createTextNode(window.location.href))
-    document.body.appendChild(toCopy);
+    document.body.appendChild(toCopy)
     const range = document.createRange()
     const selection = window.getSelection()
 
@@ -33,8 +32,9 @@ const ParticipantsList = () => {
     alert('Copied invite URL to clipboard')
   }
 
+  const revealers = uniqBy(visibleReflections.map((reflection) => reflection.owner), 'uuid').map(reflection => reflection.uuid)
+
   const pickRandomRevealer = () => {
-    let revealers = uniqBy(visibleReflections.map((reflection) => reflection.owner), 'uuid').map(reflection => reflection.uuid);
     let remainingParticipants = participants.filter(participant => !revealers.includes(participant.uuid))
     const randomRevealer = remainingParticipants[Math.floor(Math.random() * remainingParticipants.length)]
     channel.setRevealer(randomRevealer.uuid)
@@ -61,8 +61,6 @@ const ParticipantsList = () => {
 
     return {}
   }, [encryptedOrganizerInfo, profile, retrospectiveName])
-
-  let revealers = uniqBy(visibleReflections.map((reflection) => reflection.owner), 'uuid').map(reflection => reflection.uuid);
 
   return (
     <div id='participants-list' className='border p-3 rounded shadow mr-6'>
