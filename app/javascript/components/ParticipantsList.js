@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import classNames from 'classnames'
-import { compact } from 'lib/helpers/array'
+import { compact, uniqBy } from 'lib/helpers/array'
 import { decrypt } from 'lib/utils/decryption'
 import StickyBookmark from './StickyBookmark'
 import './ParticipantsList.scss'
@@ -12,12 +12,13 @@ const ParticipantsList = () => {
   const { organizerInfo: encryptedOrganizerInfo, step } = useSelector(state => state.orchestrator)
   const participants = useSelector(state => state.participants, shallowEqual)
   const channel = useSelector(state => state.orchestrator.subscription)
+  const visibleReflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
 
   const copyUrlToClipboard = () => {
     const toCopy = document.createElement('span')
     toCopy.setAttribute('type', 'hidden')
     toCopy.appendChild(document.createTextNode(window.location.href))
-    document.body.appendChild(toCopy);
+    document.body.appendChild(toCopy)
     const range = document.createRange()
     const selection = window.getSelection()
 
@@ -29,6 +30,14 @@ const ParticipantsList = () => {
 
     toCopy.remove()
     alert('Copied invite URL to clipboard')
+  }
+
+  const revealers = uniqBy(visibleReflections.map((reflection) => reflection.owner), 'uuid').map(reflection => reflection.uuid)
+
+  const pickRandomRevealer = () => {
+    let remainingParticipants = participants.filter(participant => !revealers.includes(participant.uuid))
+    const randomRevealer = remainingParticipants[Math.floor(Math.random() * remainingParticipants.length)]
+    channel.setRevealer(randomRevealer.uuid)
   }
 
   const handleParticipantClick = (event) => {
@@ -73,6 +82,16 @@ const ParticipantsList = () => {
           color='primary' onClick={copyUrlToClipboard}>
           +
         </button>
+      )}
+      {profile?.organizer && step === 'grouping' && revealers.length < participants.length && (
+        <button
+        className='bg-blue-400 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-600 mt-6 px-5 py-1 rounded text-white'
+        color='primary' onClick={pickRandomRevealer}>
+          Random revealer
+        </button>
+      )}
+      {revealers.length >= participants.length && (
+        <p>Everyone has revealed!</p>
       )}
     </div>
   )
