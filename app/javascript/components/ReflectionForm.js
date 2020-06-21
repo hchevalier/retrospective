@@ -11,7 +11,7 @@ const ReflectionForm = ({ open, value, confirmationLabel, onChange, onConfirmati
       <form id='reflection-form-modal' noValidate autoComplete='off'>
         <div>
           <div>
-            <textarea className='p-1 rounded' placeholder='Reflection' name='content' value={value} multiline rows={8} style={{ backgroundColor: profile.color }} onChange={(event) => onChange(event.target.value)} />
+            <textarea className='p-1 rounded' placeholder='Reflection' name='content' value={value} multiline='true' rows={8} style={{ backgroundColor: profile.color }} onChange={(event) => onChange(event.target.value)} />
           </div>
           <div className="mt-4">
             <button className='bg-blue-500 hover:bg-blue-700 text-white font-medium py-1 px-2 rounded focus:outline-none focus:shadow-outline' type='button' onClick={onConfirmationClick}>

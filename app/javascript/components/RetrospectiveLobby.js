@@ -28,20 +28,22 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
       dispatch({ type: 'change-color', participant: data.participant, availableColors: data.availableColors })
     } else if (action === 'revealReflection') {
       dispatch({ type: 'reveal-reflection', reflection: data.reflection })
-    } else if (action == 'newReaction') {
+    } else if (action === 'newReaction') {
       dispatch({ type: 'push-reaction', reaction: data.reaction })
-    } else if (action == 'dropReaction') {
+    } else if (action === 'dropReaction') {
       dispatch({ type: 'drop-reaction', reactionId: data.reactionId })
-    } else if (action == 'setDiscussedReflection') {
+    } else if (action === 'setDiscussedReflection') {
       dispatch({ type: 'set-discussed-reflection', reflection: data.reflection })
-    } else if (action == 'addTask') {
+    } else if (action === 'addTask') {
       dispatch({ type: 'add-task', task: data.task })
-    } else if (action == 'updateTask') {
+    } else if (action === 'updateTask') {
       dispatch({ type: 'change-task', task: data.task })
-    } else if (action == 'dropTask') {
+    } else if (action === 'dropTask') {
       dispatch({ type: 'drop-task', taskId: data.taskId })
-    } else if (action == 'updateOrganizerInfo') {
+    } else if (action === 'updateOrganizerInfo') {
       dispatch({ type: 'update-organizer-info', organizerInfo: data.organizerInfo })
+    } else if (action === 'changeTopic') {
+      dispatch({ type: 'change-topic', reflection: data.reflection })
     }
   }, [dispatch])
 

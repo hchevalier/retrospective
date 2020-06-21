@@ -87,7 +87,7 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
             </>}
           </>
         )}
-        <textarea placeholder='You can take actions here' name='content' className='w-full mb-1 border py-1 px-2 rounded' value={description} multiline rows={8} onChange={onDescriptionChange} />
+        <textarea placeholder='You can take actions here' name='content' className='w-full mb-1 border py-1 px-2 rounded' value={description} multiline='true' rows={8} onChange={onDescriptionChange} />
         <div id='assignee-select'>
           <select
             name='assignee'

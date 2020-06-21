@@ -1,0 +1,10 @@
+.topic-container {
+  background-color: whitesmoke;
+  padding: 10px;
+
+  .topic {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+  }
+}

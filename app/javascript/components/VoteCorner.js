@@ -7,7 +7,7 @@ import './VoteCorner.scss'
 import constants from 'lib/utils/constants'
 import PropTypes from 'prop-types'
 
-const VoteCorner = ({ canVote, reflection, votes, noStandOut = false, inline = false }) => {
+const VoteCorner = ({ canVote, target, targetType, votes, noStandOut = false, inline = false }) => {
   const dispatch = useDispatch()
 
   const profile = useSelector(state => state.profile)
@@ -16,7 +16,7 @@ const VoteCorner = ({ canVote, reflection, votes, noStandOut = false, inline = f
 
   const createVote = () => {
     post({
-      url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions`,
+      url: `/retrospectives/${retrospectiveId}/${targetType}s/${target.id}/reactions`,
       payload: { kind: 'vote' }
     })
       .then(data => dispatch({ type: 'add-reaction', reaction: data }))
@@ -24,7 +24,7 @@ const VoteCorner = ({ canVote, reflection, votes, noStandOut = false, inline = f
   }
 
   const removeVote = (reaction) => {
-    destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions/${reaction.id}` })
+    destroy({ url: `/retrospectives/${retrospectiveId}/${targetType}s/${target.id}/reactions/${reaction.id}` })
       .then(() => dispatch({ type: 'delete-reaction', reactionId: reaction.id }))
       .catch(error => console.warn(error))
   }
@@ -48,7 +48,8 @@ const VoteCorner = ({ canVote, reflection, votes, noStandOut = false, inline = f
 
 VoteCorner.propTypes = {
   canVote: PropTypes.bool,
-  reflection: PropTypes.object,
+  target: PropTypes.object,
+  targetType: PropTypes.string.isRequired,
   votes: PropTypes.array,
   noStandOut: PropTypes.bool,
   inline: PropTypes.bool

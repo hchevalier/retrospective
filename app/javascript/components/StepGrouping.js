@@ -1,5 +1,7 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
+import { post, put } from 'lib/httpClient'
+import Topic from './Topic'
 import StickyNote from './StickyNote'
 import Icon from './Icon'
 import './StepGrouping.scss'
@@ -9,7 +11,7 @@ const noteAboveViewport = (stickyNote) => stickyNote.dataset.read !== 'true' && 
 const noteBelowViewport = (stickyNote) => stickyNote.dataset.read !== 'true' && stickyNote.dataset.below === 'true' && !inScreen(stickyNote)
 
 const StepGrouping = () => {
-  const { kind } = useSelector(state => state.retrospective)
+  const { id: retrospectiveId, kind } = useSelector(state => state.retrospective)
   const { uuid: profileUuid } = useSelector(state => state.profile)
   const reflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
   const zones = useSelector(state => state.retrospective.zones, shallowEqual)
@@ -77,6 +79,83 @@ const StepGrouping = () => {
     visibilityObserver.observe(stickyNote)
   }
 
+  const handleDragStart = (event) => {
+    event.dataTransfer.setData('text/plain', event.target.dataset.id)
+    event.dataTransfer.dropEffect = 'move'
+  }
+
+  const handleDragOver = (event) => {
+    event.preventDefault()
+    event.dataTransfer.dropEffect = 'move'
+  }
+
+  const handleDrop = (event) => {
+    event.preventDefault()
+    const draggedReflectionId = event.dataTransfer.getData('text/plain')
+    let targetElement = event.target
+    const droppedReflection = document.querySelector(`.reflection[data-id="${draggedReflectionId}"]`)
+
+    if (!targetElement.classList.contains('reflection') && !targetElement.classList.contains('topic')) {
+      targetElement = targetElement.closest('.reflection') || targetElement.closest('topic')
+    }
+
+    if (!targetElement) return
+
+    if (targetElement.closest('.zone-column') !== droppedReflection.closest('.zone-column')) return
+
+    if (targetElement.classList.contains('topic')) {
+      updateTopic(targetElement.dataset.id, draggedReflectionId)
+    } else if (targetElement.classList.contains('reflection')) {
+      const parent = targetElement.parentNode
+      if (parent.classList.contains('scrolling-zone')) {
+        createTopic(targetElement.dataset.id, draggedReflectionId)
+      } else if (parent.classList.contains('topic')) {
+        updateTopic(parent.dataset.id, draggedReflectionId)
+      }
+    }
+  }
+
+  const createTopic = (targetReflectionId, droppedReflectionId) => {
+    post({
+      url: `/retrospectives/${retrospectiveId}/topics`,
+      payload: {
+        target_reflection_id: targetReflectionId,
+        dropped_reflection_id: droppedReflectionId
+      }
+    })
+      .catch(error => console.warn(error))
+  }
+
+  const updateTopic = (topicId, droppedReflectionId) => {
+    put({
+      url: `/retrospectives/${retrospectiveId}/topics/${topicId}`,
+      payload: {
+        reflection_id: droppedReflectionId
+      }
+    })
+      .catch(error => console.warn(error))
+  }
+
+  const renderTopic = (reflection, reflectionsInZone, stickyNotesInZone) => {
+    const reflectionsInTopic = reflectionsInZone.filter((otherReflection) => otherReflection.topic?.id === reflection.topic.id)
+    const reflectionIds = reflectionsInTopic.map((otherReflection) => otherReflection.id)
+    const stickyNotesInTopic = stickyNotesInZone.filter((stickyNote) => reflectionIds.includes(stickyNote.dataset.id))
+    const reactionsInTopic = reactions.filter((reaction) => reflectionIds.includes(reaction.targetId.split(/-(.+)?/, 2)[1]))
+
+    return <Topic
+      key={reflection.topic.id}
+      topic={reflection.topic}
+      reflections={reflectionsInTopic}
+      reactions={reactionsInTopic}
+      showReactions
+      stickyNotesRefCallback={setStickyNoteRef}
+      stickyNotes={stickyNotesInTopic || []}
+      draggable
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop} />
+  }
+
   return (
     <>
       {organizer && <div>Click on a participant so that he can reveal his reflections or randomly pick one</div>}
@@ -90,16 +169,34 @@ const StepGrouping = () => {
           const unreadReflectionAbove = stickyNotesInZone.find(noteAboveViewport)
           const unreadReflectionBelow = stickyNotesInZone.reverse().find(noteBelowViewport)
 
+          const topics = {}
+
           return (
             <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0' key={zone.id}>
-              <span className='zone-header'>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</span>
+              <div className='zone-header px-8 mb-4'>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</div>
               {!!unreadReflectionAbove && <div className='unread-notice above' onClick={() => scrollToStickyNote(unreadReflectionAbove)}>⬆︎ Unread reflection ⬆︎</div>}
-              <div className='scrolling-zone'>
+              <div className='scrolling-zone flex flex-col'>
                 {reflectionsInZone.map((reflection) => {
-                  const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
-                  const stickyNote = stickyNotesInZone.find((stickyNote) => stickyNote.dataset.id === reflection.id)
-                  const isUnread = stickyNote && stickyNote.dataset.read !== 'true'
-                  return <StickyNote key={reflection.id} ref={setStickyNoteRef} reflection={reflection} showReactions reactions={concernedReactions} glowing={isUnread} />
+                  if (reflection.topic?.id && !topics[reflection.topic?.id]) {
+                    topics[reflection.topic?.id] = reflection.topic
+                    return renderTopic(reflection, reflectionsInZone, stickyNotesInZone)
+                  } else if (!reflection.topic?.id) {
+                    const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
+                    const stickyNote = stickyNotesInZone.find((stickyNote) => stickyNote.dataset.id === reflection.id)
+                    const isUnread = stickyNote && stickyNote.dataset.read !== 'true'
+
+                    return <StickyNote
+                      key={reflection.id}
+                      ref={setStickyNoteRef}
+                      reflection={reflection}
+                      showReactions
+                      reactions={concernedReactions}
+                      glowing={isUnread}
+                      draggable
+                      onDragStart={handleDragStart}
+                      onDragOver={handleDragOver}
+                      onDrop={handleDrop} />
+                  }
                 })}
               </div>
               {!!unreadReflectionBelow && <div className='unread-notice below' onClick={() => scrollToStickyNote(unreadReflectionBelow)}>⬇︎ Unread reflection ⬇︎</div>}

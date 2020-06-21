@@ -4,7 +4,8 @@ class Retrospective < ApplicationRecord
   has_many :participants, inverse_of: :retrospective
   has_many :zones, inverse_of: :retrospective
   has_many :reflections, through: :zones
-  has_many :reactions, through: :reflections
+  has_many :topics
+  has_many :reactions
   has_many :tasks, through: :participants, source: :created_tasks
 
   belongs_to :organizer, class_name: 'Participant', inverse_of: :organized_retrospective
@@ -73,7 +74,7 @@ class Retrospective < ApplicationRecord
     state = {
       participants: participants.order(:created_at).map(&:profile),
       step: step,
-      ownReflections: current_user ? current_user.reflections.order(:created_at).map(&:readable) : [],
+      ownReflections: current_user ? current_user.reflections.includes(:zone, :topic).order(:created_at).map(&:readable) : [],
       ownReactions: current_user ? current_user.reactions.map(&:readable) : [],
       discussedReflection: discussed_reflection&.readable,
       allColors: Participant::COLORS,
@@ -85,7 +86,7 @@ class Retrospective < ApplicationRecord
     }
 
     unless step.in?(%w[gathering thinking])
-      state.merge!(visibleReflections: reflections.revealed.order(:created_at).map(&:readable))
+      state.merge!(visibleReflections: reflections.revealed.includes(:owner).order(:created_at).map(&:readable))
     end
 
     if step.in?(%w[grouping voting])
@@ -121,7 +122,7 @@ class Retrospective < ApplicationRecord
 
     next_step = Retrospective.steps.keys[step_index + 1]
     if next_step == 'actions'
-      most_upvoted_reflection =
+      most_upvoted_target =
         reactions
         .select(&:vote?)
         .group_by(&:target)
@@ -129,9 +130,11 @@ class Retrospective < ApplicationRecord
         .sort_by { |_, v| -v }
         .map(&:first)
         .first
+
+      most_upvoted_target = most_upvoted_target.reflections.first if most_upvoted_target&.is_a?(Topic)
     end
 
-    update!(step: next_step, discussed_reflection: most_upvoted_reflection || discussed_reflection)
+    update!(step: next_step, discussed_reflection: most_upvoted_target || discussed_reflection)
 
     params = { next_step: next_step }
     params[:visibleReflections] =
@@ -139,7 +142,10 @@ class Retrospective < ApplicationRecord
       when 'grouping'
         reflections.revealed.map(&:readable)
       when 'actions', 'done'
-        reflections.joins(:votes).distinct.eager_load(:owner, zone: :retrospective).map(&:readable)
+        reflections
+          .eager_load(:owner, :votes, topic: :votes, zone: :retrospective)
+          .reject { |reflection| reflection.votes.none? && reflection.topic&.votes&.none? }
+          .map(&:readable)
       else
         []
       end

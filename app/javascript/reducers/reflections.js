@@ -8,6 +8,7 @@ const initialState = {
 
 const reflections = (state = initialState, action) => {
   let ownReflections = state.ownReflections
+  let visibleReflections = state.visibleReflections
   switch (action.type) {
     case 'change-step': {
       const reflections = action.visibleReflections?.length > 0 ? action.visibleReflections : state.visibleReflections
@@ -21,6 +22,9 @@ const reflections = (state = initialState, action) => {
     case 'change-reflection':
       ownReflections = updateArray(ownReflections, action.reflection, 'id')
       return { ...state, ownReflections: ownReflections }
+    case 'change-topic':
+      visibleReflections = updateArray(visibleReflections, action.reflection, 'id')
+      return { ...state, visibleReflections: visibleReflections }
     case 'delete-reflection':
       return { ...state, ownReflections: reject(state.ownReflections, (reflection) => reflection.id === action.reflectionId) }
     case 'set-discussed-reflection':

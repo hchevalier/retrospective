@@ -8,7 +8,7 @@ class Retrospective::DoneStepTest < ActionDispatch::IntegrationTest
     organizer = retrospective.organizer
     reflection = create(:reflection, :glad, owner: retrospective.organizer)
     retrospective.update!(discussed_reflection: reflection)
-    reflection.reactions.create!(kind: :emoji, content: :star_struck, author: organizer)
+    reflection.reactions.create!(kind: :emoji, content: :star_struck, author: organizer, retrospective: retrospective)
     reflection.tasks.create!(author: organizer, assignee: organizer, description: 'my task')
 
     logged_in_as(retrospective.organizer)
