@@ -3,17 +3,38 @@ import { Provider, useSelector, useDispatch } from 'react-redux'
 import appStore from 'stores'
 import consumer from 'channels/consumer'
 import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
+import { uniqBy } from 'lib/helpers/array'
 import RetrospectiveArea from './RetrospectiveArea'
 import ParticipantsList from './ParticipantsList'
+import FacilitatorToolkit from './FacilitatorToolkit'
+import ReflectionsList from './ReflectionsList'
 import LoginForm from './LoginForm'
 import './RetrospectiveLobby.scss'
 import HomeIcon from 'images/home-icon.svg'
 
+const copyUrlToClipboard = () => {
+  const toCopy = document.createElement('span')
+  toCopy.setAttribute('type', 'hidden')
+  toCopy.appendChild(document.createTextNode(window.location.href))
+  document.body.appendChild(toCopy);
+  const range = document.createRange()
+  const selection = window.getSelection()
+
+  range.selectNodeContents(toCopy)
+  selection.removeAllRanges()
+  selection.addRange(range)
+  document.execCommand('copy')
+  selection.removeAllRanges()
+
+  toCopy.remove()
+  alert('Copied invite URL to clipboard')
+}
+
 const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
   const dispatch = useDispatch()
-
-  const loggedIn = useSelector(state => !!state.profile.uuid)
+  const profile = useSelector(state => state.profile)
   const channel = useSelector(state => state.orchestrator.subscription)
+  const loggedIn = !!profile.uuid
 
   const handleActionReceived = React.useCallback((action, data) => {
     if (action === 'newParticipant') {
@@ -66,11 +87,17 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
           <div className="mr-4 md:mr-8">
             Lobby {name} - {kind}
           </div>
+          <div className='flex flex-grow justify-end'>
+            <ParticipantsList />
+            <FacilitatorToolkit />
+          </div>
         </div>
       </nav>
-      <div className="px-6 flex">
-        <ParticipantsList />
-        <div className='flex-1'>
+      <div className="px-6">
+        <div className='grid grid-cols-3'>
+          <ReflectionsList />
+        </div>
+        <div className='grid grid-cols-9'>
           {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} />}
           {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
         </div>

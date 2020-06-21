@@ -1,0 +1,51 @@
+.avatar {
+  max-width: 62px;
+  width: 62px;
+  height: 62px;
+  position: relative;
+
+  &.self {
+
+  }
+
+  .picture {
+    position: absolute;
+  }
+
+  .surname {
+    position: absolute;
+    display: inline-block;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 62px;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: hidden;
+    background: #000000A5;
+  }
+
+  .status-indicator {
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    width: 10px;
+    min-width: 10px;
+    height: 10px;
+    border-radius: 15px;
+    background-color: rgb(171, 8, 8);
+    border: 2px solid rgb(26, 32, 44);
+
+    &.logged-in {
+      background-color: rgb(8, 171, 41);
+    }
+  }
+
+  .overlay {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: white;
+  }
+}
