@@ -3,7 +3,7 @@ class TopicsController < ApplicationController
 
   def create
     reflection_ids = [params[:target_reflection_id], params[:dropped_reflection_id]]
-    reflections = current_user.retrospective.reflections.where(id: reflection_ids)
+    reflections = current_user.retrospective.reflections.where(id: reflection_ids).includes(:topic)
     return(render json: { status: :unprocessable_entity }) unless reflections.size == 2
 
     previous_topic = reflections.find { |reflection| reflection.id == params[:dropped_reflection_id] }.topic

@@ -74,7 +74,7 @@ class Retrospective < ApplicationRecord
     state = {
       participants: participants.order(:created_at).map(&:profile),
       step: step,
-      ownReflections: current_user ? current_user.reflections.order(:created_at).map(&:readable) : [],
+      ownReflections: current_user ? current_user.reflections.includes(:zone, :topic).order(:created_at).map(&:readable) : [],
       ownReactions: current_user ? current_user.reactions.map(&:readable) : [],
       discussedReflection: discussed_reflection&.readable,
       allColors: Participant::COLORS,
@@ -86,7 +86,7 @@ class Retrospective < ApplicationRecord
     }
 
     unless step.in?(%w[gathering thinking])
-      state.merge!(visibleReflections: reflections.revealed.order(:created_at).map(&:readable))
+      state.merge!(visibleReflections: reflections.revealed.includes(:owner).order(:created_at).map(&:readable))
     end
 
     if step.in?(%w[grouping voting])

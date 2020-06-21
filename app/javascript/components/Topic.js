@@ -11,10 +11,10 @@ const Topic = ({ topic, reflections, reactions, stickyNotes, stickyNotesRefCallb
   const votes = reactions.filter((reaction) => reaction.kind === 'vote')
 
   return (
-    <div className='topic-container relative'>
+    <div className='topic-container relative p-4'>
       <div className='topic-label font-bold inline-block mb-3'>{topic.label}</div>
       {showVotes && <VoteCorner target={topic} targetType={'topic'} votes={votes} canVote={step === 'voting'} />}
-      <div id={topic.id} data-id={topic.id} className='topic'>
+      <div id={topic.id} data-id={topic.id} className='topic relative flex flex-row'>
         {reflections.map((reflection) => {
           const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
           const stickyNote = (stickyNotes || []).find((stickyNote) => stickyNote.dataset.id === reflection.id)

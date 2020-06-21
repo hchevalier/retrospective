@@ -1,15 +1,5 @@
 #zones-container {
   .zone-column {
-    .zone-header {
-      padding: 10px 20px;
-    }
-
-    .scrolling-zone {
-      padding: 0 0 20px;
-      display: flex;
-      flex-direction: column;
-    }
-
     .unread-notice {
       background: #000000aa;
       color: white;
