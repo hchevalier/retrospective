@@ -7,7 +7,6 @@ import MegaphoneIcon from 'images/megaphone-icon.svg'
 import LightBulbIcon from 'images/lightbulb-icon.svg'
 import SpeechBubbleIcon from 'images/speech-bubble-icon.svg'
 import CheckIcon from 'images/check-icon.svg'
-import './ParticipantsList.scss'
 
 const copyUrlToClipboard = () => {
   const toCopy = document.createElement('span')
@@ -98,7 +97,7 @@ const ParticipantsList = () => {
         )
       })}
       <button
-        className='add-new bg-blue-500 hover:bg-blue-700 focus:outline-none focus:shadow-outline font-medium rounded text-white ml-4'
+        className='add-new bg-blue-500 hover:bg-blue-700 focus:outline-none focus:shadow-outline font-medium rounded text-white ml-4 w-16 h-16'
         color='primary' onClick={copyUrlToClipboard}>
         +
         </button>
