@@ -1,12 +1,8 @@
 .avatar {
-  max-width: 62px;
-  width: 62px;
-  height: 62px;
+  max-width: 64px;
+  width: 64px;
+  height: 64px;
   position: relative;
-
-  .picture {
-    position: absolute;
-  }
 
   .surname {
     position: absolute;
@@ -14,7 +10,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    max-width: 62px;
+    max-width: 64px;
     text-align: center;
     text-overflow: ellipsis;
     white-space: nowrap;
