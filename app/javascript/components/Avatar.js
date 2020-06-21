@@ -1,8 +1,6 @@
 import React from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
-import LightBulbIcon from 'images/lightbulb-icon.svg'
-import SpeechBubbleIcon from 'images/speech-bubble-icon.svg'
 import Man1 from 'images/avatars/men/1.svg'
 import Man2 from 'images/avatars/men/2.svg'
 import Man3 from 'images/avatars/men/3.svg'
@@ -22,7 +20,7 @@ const DEFAULT_AVATARS = {
   women: [Woman1, Woman2, Woman3, Woman4, Woman5, Woman6]
 }
 
-const Avatar = ({ backgroundColor, flags, loggedIn, surname, self, onClick, overlay }) => {
+const Avatar = ({ backgroundColor, dataAttributes, loggedIn, surname, self, onClick, children }) => {
   const getDefaultContour = () => {
     let firstLetterValue = surname[0].toUpperCase().charCodeAt(0) - 65
     if (firstLetterValue < 0 || firstLetterValue > 25) firstLetterValue = 25
@@ -39,11 +37,9 @@ const Avatar = ({ backgroundColor, flags, loggedIn, surname, self, onClick, over
   }
 
   return (
-    <div className={classNames('avatar rounded mx-1', { self })} style={{ backgroundColor }} onClick={onClick}>
+    <div className={classNames('avatar cursor-pointer rounded mx-1', { self })} style={{ backgroundColor }} onClick={onClick} {...dataAttributes}>
       <img className='picture' src={getDefaultContour()} />
-      {flags.organizer && <img className='flex-row absolute left-0' src={LightBulbIcon} width='20' />}
-      {flags.revealer && <img className='flex-row absolute right-0' src={SpeechBubbleIcon} width='16' />}
-      {overlay && <div className='overlay'>{overlay}</div>}
+      {children}
       <div className='surname text-xs'>{surname}</div>
       <div className={classNames('status-indicator', { 'logged-in': loggedIn })} />
     </div>
@@ -52,15 +48,12 @@ const Avatar = ({ backgroundColor, flags, loggedIn, surname, self, onClick, over
 
 Avatar.propTypes = {
   backgroundColor: PropTypes.string.isRequired,
-  flags: PropTypes.shape({
-    organizer: PropTypes.bool,
-    revealer: PropTypes.bool
-  }),
+  dataAttributes: PropTypes.object,
   loggedIn: PropTypes.bool,
   surname: PropTypes.string.isRequired,
   self: PropTypes.bool,
   onClick: PropTypes.func,
-  overlay: PropTypes.node
+  children: PropTypes.node
 }
 
 export default Avatar

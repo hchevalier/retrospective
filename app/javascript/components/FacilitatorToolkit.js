@@ -1,15 +1,15 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import { uniqBy } from 'lib/helpers/array'
+import RandomIcon from 'images/random-icon.svg'
 
 const FacilitatorToolkit = () => {
-  const profile = useSelector(state => state.profile)
   const channel = useSelector(state => state.orchestrator.subscription)
   const step = useSelector(state => state.orchestrator.step)
   const visibleReflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
   const participants = useSelector(state => state.participants, shallowEqual)
 
-  const revealers = uniqBy(visibleReflections.map((reflection) => reflection.owner), 'uuid').map(reflection => reflection.uuid)
+  const revealers = uniqBy(visibleReflections.map((reflection) => reflection.owner), 'uuid').map(participant => participant.uuid)
 
   const pickRandomRevealer = () => {
     let remainingParticipants = participants.filter(participant => !revealers.includes(participant.uuid))
@@ -19,15 +19,13 @@ const FacilitatorToolkit = () => {
 
   return (
     <div className='flex flex-column'>
-      {profile?.organizer && step === 'grouping' && revealers.length < participants.length && (
+      {step === 'grouping' && revealers.length < participants.length && (
         <button
-          className='bg-blue-400 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-600 mt-6 px-5 py-1 rounded text-white'
-          color='primary' onClick={pickRandomRevealer}>
-          Random revealer
-        </button>
-      )}
-      {revealers.length >= participants.length && (
-        <p>Everyone has revealed!</p>
+          className='bg-blue-400 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-600 h-8 w-8 mr-2 rounded text-white cursor-pointer'
+          color='primary'
+          onClick={pickRandomRevealer}>
+            <img className='mx-auto w-6' src={RandomIcon} />
+          </button>
       )}
     </div>
   )

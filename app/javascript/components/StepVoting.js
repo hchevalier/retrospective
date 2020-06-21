@@ -38,7 +38,7 @@ const StepVoting = () => {
       <div id='zones-container' className="flex">
         {zones.map((zone) => (
           <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0' key={zone.id}>
-            <span>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</span>
+            <div className='zone-header mb-4'>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</div>
             {reflections.filter((reflection) => reflection.zone.id === zone.id).map((reflection) => {
               if (reflection.topic?.id && !topics[reflection.topic.id]) {
                 topics[reflection.topic.id] = reflection.topic
