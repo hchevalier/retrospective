@@ -63,16 +63,17 @@ const ParticipantsList = () => {
     if (!profile?.organizer) return null
 
     const children = []
-    if (!revealer && revealers.includes(uuid))
-      children.push(<img key='check' className='flex-row absolute right-0' src={CheckIcon} width='16' />)
 
     if (step === 'thinking') {
       // TODO: display a check when participant clicked on "I'm done" button
       children.push(<img key='lightbulb' className='flex-row absolute right-0' src={LightBulbIcon} width='16' />)
     }
 
+    if (step === 'grouping' && !revealer && revealers.includes(uuid))
+      children.push(<img key='check' className='flex-row absolute right-0' src={CheckIcon} width='16' />)
+
     if (step === 'voting' && organizerInfo[uuid])
-      children.push(<span key='remaining-votes' className='absolute flex right-0 p-1 text-xs rounded-full'>{organizerInfo[uuid].remainingVotes}</span>)
+      children.push(<span key='remaining-votes' className='remaining-votes absolute flex right-0 p-1 text-xs rounded-full'>{organizerInfo[uuid].remainingVotes}</span>)
 
     return <>{children}</>
   }
@@ -90,8 +91,8 @@ const ParticipantsList = () => {
             self={profile?.uuid === uuid}
             onClick={handleParticipantClick}
             flags={{ organizer, revealer }}>
-            {organizer && <img className='flex-row absolute left-0' src={MegaphoneIcon} width='16' />}
-            {revealer && <img className='flex-row absolute right-0' src={SpeechBubbleIcon} width='16' />}
+            {organizer && <img className='organizer flex-row absolute left-0' src={MegaphoneIcon} width='16' />}
+            {revealer && <img className='revealer flex-row absolute right-0' src={SpeechBubbleIcon} width='16' />}
             {displayOrganizerInfo(revealer, uuid)}
           </Avatar>
         )

@@ -21,6 +21,7 @@ const FacilitatorToolkit = () => {
     <div className='flex flex-column'>
       {step === 'grouping' && revealers.length < participants.length && (
         <button
+          id='assign-random-revealer'
           className='bg-blue-400 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-600 h-8 w-8 mr-2 rounded text-white cursor-pointer'
           color='primary'
           onClick={pickRandomRevealer}>

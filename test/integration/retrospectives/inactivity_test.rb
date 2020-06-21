@@ -9,15 +9,15 @@ class Retrospective::InactivityTest < ActionDispatch::IntegrationTest
     within_window(organizer_window) do
       logged_in_as(retrospective.organizer)
       visit retrospective_path(retrospective)
-      assert_logged_in(retrospective.organizer, with_flags: '(you, orga.)')
+      assert_logged_in(retrospective.organizer, with_flags: %i(self organizer))
     end
 
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
-      assert_logged_in(retrospective.organizer, with_flags: '(orga.)')
-      assert_logged_in(other_participant, with_flags: '(you)')
+      assert_logged_in(retrospective.organizer, with_flags: %i(organizer))
+      assert_logged_in(other_participant, with_flags: %i(self))
     end
 
     freeze_time do
@@ -30,7 +30,7 @@ class Retrospective::InactivityTest < ActionDispatch::IntegrationTest
 
     within_window(other_participant_window) do
       assert_inactive(retrospective.organizer)
-      assert_logged_in(other_participant, with_flags: '(you, orga.)')
+      assert_logged_in(other_participant, with_flags: %i(self organizer))
     end
   end
 
@@ -42,7 +42,7 @@ class Retrospective::InactivityTest < ActionDispatch::IntegrationTest
     within_window(organizer_window) do
       logged_in_as(retrospective.organizer)
       visit retrospective_path(retrospective)
-      assert_logged_in(retrospective.organizer, with_flags: '(you, orga.)')
+      assert_logged_in(retrospective.organizer, with_flags: %i(self organizer))
     end
 
     freeze_time do
@@ -58,19 +58,19 @@ class Retrospective::InactivityTest < ActionDispatch::IntegrationTest
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
       assert_inactive(retrospective.organizer)
-      assert_logged_in(other_participant, with_flags: '(you, orga.)')
+      assert_logged_in(other_participant, with_flags: %i(self organizer))
     end
 
     within_window(open_new_window) do
       logged_in_as(retrospective.organizer)
       visit retrospective_path(retrospective)
-      assert_logged_in(retrospective.organizer, with_flags: '(you, orga.)')
+      assert_logged_in(retrospective.organizer, with_flags: %i(self organizer))
       assert_logged_in(other_participant)
     end
 
     within_window(other_participant_window) do
-      assert_logged_in(retrospective.organizer, with_flags: '(orga.)')
-      assert_logged_in(other_participant, with_flags: '(you)')
+      assert_logged_in(retrospective.organizer, with_flags: %i(organizer))
+      assert_logged_in(other_participant, with_flags: %i(self))
     end
   end
 end

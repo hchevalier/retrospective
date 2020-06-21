@@ -57,7 +57,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
       click_on 'Login'
     end
 
-    assert_logged_in(participant, with_flags: '(you)')
+    assert_logged_in(participant, with_flags: %i(self))
   end
 
   test 'joining an existing retrospective while being logged with an existing account creates a participant' do
@@ -86,7 +86,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
       visit retrospective_path(retrospective)
     end
 
-    assert_logged_in(participant, with_flags: '(you)')
+    assert_logged_in(participant, with_flags: %i(self))
     refute_field 'email'
     refute_button 'Login'
   end

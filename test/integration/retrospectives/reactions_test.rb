@@ -17,7 +17,7 @@ class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
-      assert_logged_in(other_participant, with_flags: '(you)')
+      assert_logged_in(other_participant, with_flags: %i(self))
       within ".reflection[data-id='#{reflection.id}']" do
         assert_text Reaction::EMOJI_LIST[:star_struck]
         assert_css '.emoji-chip.star-struck.selected'
