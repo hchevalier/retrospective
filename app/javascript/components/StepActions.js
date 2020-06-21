@@ -4,6 +4,7 @@ import StickyNote from './StickyNote'
 import StickyBookmark from './StickyBookmark'
 import VoteCorner from './VoteCorner'
 import ActionEditor from './ActionEditor'
+import InlineTopic from './InlineTopic'
 import './StepActions.scss'
 
 const StepActions = () => {
@@ -13,10 +14,14 @@ const StepActions = () => {
   const visibleReactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
   const channel = useSelector(state => state.orchestrator.subscription)
 
-  const relevantReactions = visibleReactions.filter((reaction) => reaction.targetId === `Reflection-${currentReflection.id}`)
+  const relevantReactions = visibleReactions.filter((reaction) => {
+    return reaction.targetId === `Reflection-${currentReflection.id}` ||  reaction.targetId === `Topic-${currentReflection.topic?.id}`
+  })
 
   const reflectionsWithVotes = visibleReflections.map((reflection) => {
-    const reactions = visibleReactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
+    const reactions = visibleReactions.filter((reaction) => {
+      return reaction.targetId === `Reflection-${reflection.id}` || reaction.targetId === `Topic-${reflection.topic?.id}`
+    })
     const votes = reactions.filter((reaction) => reaction.kind === 'vote')
     return [reflection, votes]
   }).sort((a, b) => b[1].length - a[1].length)
@@ -29,6 +34,8 @@ const StepActions = () => {
 
   if (!currentReflection) return null
 
+  const topics = {}
+
   return (
     <div id='actions-zone'>
       <div id='reflections-panel'>
@@ -36,13 +43,24 @@ const StepActions = () => {
           <StickyNote reflection={currentReflection} showReactions showVotes reactions={relevantReactions} />
         </div>
         <div id='reflections-list'>
-          {reflectionsWithVotes.map(([reflection, votes], index) => {
-            let selected = reflection.id == currentReflection.id ? "shadow-md" : "mx-2"
-            return (
-              <StickyBookmark key={index} color={reflection.color} otherClassNames={selected} onClick={() => handleStickyBookmarkClicked(reflection)}>
-                <VoteCorner reflection={reflection} votes={votes} inline noStandOut /> <span>{reflection.content}</span>
-              </StickyBookmark>
-            )
+          {reflectionsWithVotes.map(([reflection, votes]) => {
+            if (reflection.topic?.id && !topics[reflection.topic.id]) {
+              topics[reflection.topic.id] = reflection.topic
+              return <InlineTopic
+                key={reflection.topic.id}
+                reflection={reflection}
+                allReflections={visibleReflections}
+                reactions={visibleReactions}
+                selectedReflection={currentReflection}
+                onItemClick={handleStickyBookmarkClicked} />
+            } else if (!reflection.topic?.id) {
+              let selected = reflection.id == currentReflection.id ? 'shadow-md' : 'mx-2'
+              return (
+                <StickyBookmark key={reflection.id} color={reflection.color} otherClassNames={selected} onClick={() => handleStickyBookmarkClicked(reflection)}>
+                  <VoteCorner target={reflection} targetType={'reflection'} votes={votes} inline noStandOut /> <span>{reflection.content}</span>
+                </StickyBookmark>
+              )
+            }
           })}
         </div>
       </div>

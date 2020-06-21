@@ -222,6 +222,103 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'can group two reflections together if they belong to the same column' do
+    retrospective = create(:retrospective, step: 'grouping')
+    reflection_a = create(:reflection, :glad, owner: retrospective.organizer)
+    reflection_b = create(:reflection, :glad, owner: retrospective.organizer)
+
+    logged_in_as(retrospective.organizer)
+    visit retrospective_path(retrospective)
+    assert_grouping_step_for_organizer
+
+    assert_difference 'Topic.count' do
+      sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
+    end
+
+    assert_topic_contains(Topic.last, reflection_a, reflection_b)
+  end
+
+   test 'group label is the first word of the first reflection' do
+    retrospective = create(:retrospective, step: 'grouping')
+    reflection_a = create(:reflection, :glad, owner: retrospective.organizer, content: 'First reflection')
+    reflection_b = create(:reflection, :glad, owner: retrospective.organizer, content: 'Second reflection')
+
+    logged_in_as(retrospective.organizer)
+    visit retrospective_path(retrospective)
+    assert_grouping_step_for_organizer
+
+    assert_difference 'Topic.count' do
+      sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
+    end
+
+    within topic_container(Topic.last) do
+      within '.topic-label' do
+        assert_text 'First'
+        refute_text 'second'
+        refute_text 'reflection'
+      end
+    end
+  end
+
+  test 'group can be changed for a reflection' do
+    retrospective = create(:retrospective, step: 'grouping')
+    reflection_a = create(:reflection, :glad, owner: retrospective.organizer, content: 'First reflection')
+    reflection_b = create(:reflection, :glad, owner: retrospective.organizer, content: 'Second reflection')
+    reflection_c = create(:reflection, :glad, owner: retrospective.organizer, content: 'Third reflection')
+
+    logged_in_as(retrospective.organizer)
+    visit retrospective_path(retrospective)
+    assert_grouping_step_for_organizer
+
+    assert_difference 'Topic.count' do
+      sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
+    end
+
+    initial_topic = Topic.last
+    assert_no_difference 'Topic.count' do
+      sticky_note(reflection_b).drag_to(sticky_note(reflection_c))
+    end
+
+    new_topic = Topic.last
+    within topic_container(new_topic) do
+      within '.topic-label' do
+        assert_text 'Second'
+      end
+    end
+
+    assert_topic_contains(new_topic, reflection_b, reflection_c)
+
+    refute_css ".topic[data-id='#{initial_topic.id}']"
+  end
+
+  test 'cannot group reflections from different columns' do
+    retrospective = create(:retrospective, step: 'grouping')
+    reflection_a = create(:reflection, :glad, owner: retrospective.organizer, content: 'First reflection')
+    reflection_b = create(:reflection, :sad, owner: retrospective.organizer, content: 'Second reflection')
+
+    logged_in_as(retrospective.organizer)
+    visit retrospective_path(retrospective)
+    assert_grouping_step_for_organizer
+
+    assert_no_difference 'Topic.count' do
+      sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
+    end
+  end
+
+  def sticky_note(reflection)
+    find(".reflection[data-id='#{reflection.id}']")
+  end
+
+  def topic_container(topic)
+    find(".topic[data-id='#{topic.id}']").ancestor('.topic-container')
+  end
+
+  def assert_topic_contains(topic, *reflections)
+    within ".topic[data-id='#{topic.id}']" do
+      reflections.each { |reflection| assert_css ".reflection[data-id='#{reflection.id}']" }
+    end
+  end
+
   def assert_grouping_step_for_organizer
     assert_text 'Click on a participant so that he can reveal his reflections'
   end

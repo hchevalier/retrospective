@@ -139,7 +139,8 @@ CREATE TABLE public.reactions (
     content character varying NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    kind public.reaction_kinds DEFAULT 'vote'::public.reaction_kinds NOT NULL
+    kind public.reaction_kinds DEFAULT 'vote'::public.reaction_kinds NOT NULL,
+    retrospective_id uuid NOT NULL
 );
 
 
@@ -170,13 +171,13 @@ CREATE TABLE public.reflections (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     zone_id bigint,
     owner_id uuid NOT NULL,
-    topic_id bigint,
     position_in_zone integer DEFAULT 1 NOT NULL,
     position_in_topic integer DEFAULT 1 NOT NULL,
     content text NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    revealed boolean DEFAULT false NOT NULL
+    revealed boolean DEFAULT false NOT NULL,
+    topic_id uuid
 );
 
 
@@ -232,7 +233,8 @@ CREATE TABLE public.topics (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     label character varying NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    retrospective_id uuid
 );
 
 
@@ -384,6 +386,13 @@ CREATE INDEX index_reflections_on_zone_id ON public.reflections USING btree (zon
 
 
 --
+-- Name: index_topics_on_retrospective_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_topics_on_retrospective_id ON public.topics USING btree (retrospective_id);
+
+
+--
 -- Name: index_zones_on_retrospective_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -418,6 +427,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200516112029'),
 ('20200516113221'),
 ('20200516152144'),
-('20200523191205');
+('20200523191205'),
+('20200614110955'),
+('20200614130855'),
+('20200614154701');
 
 

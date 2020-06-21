@@ -172,6 +172,27 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     assert_remaining_votes_for(retrospective.organizer, 3)
   end
 
+  test 'vote occurs at topic level for grouped reflections' do
+    retrospective = create(:retrospective, step: 'voting')
+    reflection_a = create(:reflection, :glad, owner: retrospective.organizer, content: 'First reflection')
+    reflection_b = create(:reflection, :glad, owner: retrospective.organizer, content: 'Second reflection')
+    topic = create(:topic, retrospective: retrospective, reflections: [reflection_a, reflection_b])
+
+    logged_in_as(retrospective.organizer)
+    visit retrospective_path(retrospective)
+    assert_remaining_votes_for(retrospective.organizer, 5)
+
+    topic_container = find(".topic[data-id='#{topic.id}']").ancestor('.topic-container')
+    within topic_container do
+      assert_selector '.vote-corner', count: 1
+    end
+
+    vote_for_topic(topic, times: 4)
+    assert_topic_votes_count(topic, count: 4)
+    unvote_for_topic(topic, times: 3)
+    assert_topic_votes_count(topic, count: 1)
+  end
+
   private
 
   def vote_for_reflection(reflection, times: 1)
@@ -194,9 +215,41 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     end
   end
 
+  def vote_for_topic(topic, times: 1)
+    within find(".topic[data-id='#{topic.id}']").ancestor('.topic-container') do
+      within ".vote-corner" do
+        times.times do
+          vote_count = find('.vote-count').text.to_i
+          find('.vote').click
+          assert_text vote_count + 1
+        end
+      end
+    end
+  end
+
+  def unvote_for_topic(topic, times: 1)
+    within find(".topic[data-id='#{topic.id}']").ancestor('.topic-container') do
+      within ".vote-corner" do
+        times.times do
+          vote_count = find('.vote-count').text.to_i
+          find('.unvote').click
+          assert_text vote_count - 1
+        end
+      end
+    end
+  end
+
   def assert_votes_count(reflection, count:)
     within ".reflection[data-id='#{reflection.id}'] .vote-corner" do
       assert_equal count, find('.vote-count').text.to_i
+    end
+  end
+
+  def assert_topic_votes_count(topic, count:)
+    within find(".topic[data-id='#{topic.id}']").ancestor('.topic-container') do
+      within ".vote-corner" do
+        assert_equal count, find('.vote-count').text.to_i
+      end
     end
   end
 

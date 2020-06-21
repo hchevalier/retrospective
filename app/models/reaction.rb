@@ -1,4 +1,5 @@
 class Reaction < ApplicationRecord
+  belongs_to :retrospective
   belongs_to :target, polymorphic: true
   belongs_to :author, class_name: 'Participant'
 
@@ -61,6 +62,8 @@ class Reaction < ApplicationRecord
       case target.class.name
       when 'Reflection'
         target.zone.retrospective_id
+      when 'Topic'
+        target.retrospective_id
       else
         raise "Don't know how to access a Retrospective from target"
       end
