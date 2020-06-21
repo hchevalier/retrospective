@@ -4,7 +4,7 @@ import StickyNote from './StickyNote'
 import StickyBookmark from './StickyBookmark'
 import VoteCorner from './VoteCorner'
 import Task from './Task'
-import { renderTopic } from 'lib/helpers/topic'
+import InlineTopic from './InlineTopic'
 import './StepActions.scss'
 
 const StepDone = () => {
@@ -43,7 +43,12 @@ const StepDone = () => {
           {reflectionsWithVotes.map(([reflection, votes], index) => {
             if (reflection.topic?.id && !topics[reflection.topic.id]) {
               topics[reflection.topic.id] = reflection.topic
-              return renderTopic({ otherAvailableReflections: reflectionsWithVotes, reactions: visibleReactions, currentReflection, reflection, handleStickyBookmarkClicked })
+              return <InlineTopic
+                reflection={reflection}
+                allReflections={reflectionsWithVotes}
+                reactions={visibleReactions}
+                selectedReflection={currentReflection}
+                onItemClick={handleStickyBookmarkClicked} />
             } else if (!reflection.topic?.id) {
               let selected = reflection.id == currentReflection.id ? 'shadow-md' : 'mx-2'
               return (
