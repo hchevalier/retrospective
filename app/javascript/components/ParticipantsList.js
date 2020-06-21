@@ -73,7 +73,7 @@ const ParticipantsList = () => {
       children.push(<img key='check' className='flex-row absolute right-0' src={CheckIcon} width='16' />)
 
     if (step === 'voting' && organizerInfo[uuid])
-      children.push(<span key='remaining-votes' className='remaining-votes absolute flex right-0 p-1 text-xs rounded-full'>{organizerInfo[uuid].remainingVotes}</span>)
+      children.push(<span key='remaining-votes' className='remaining-votes absolute flex right-0 p-1 text-xs rounded-full bg-black bg-opacity-25'>{organizerInfo[uuid].remainingVotes}</span>)
 
     return <>{children}</>
   }
