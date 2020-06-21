@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import ReactionBar from './ReactionBar'
 import VoteCorner from './VoteCorner'
+import { reflectionShape } from 'lib/utils/shapes'
 import './StickyNote.scss'
 import './Topic.scss'
 
@@ -47,18 +48,7 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, sho
 })
 
 StickyNote.propTypes = {
-  reflection: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    topic: PropTypes.object,
-    zone: PropTypes.object.isRequired,
-    color: PropTypes.string.isRequired,
-    revealed: PropTypes.bool,
-    content: PropTypes.string.isRequired,
-    owner: PropTypes.shape({
-      uuid: PropTypes.string.isRequired,
-      surname: PropTypes.string.isRequired
-    }).isRequired
-  }).isRequired,
+  reflection: reflectionShape,
   showReactions: PropTypes.bool,
   reactions: PropTypes.arrayOf(Object),
   showVotes: PropTypes.bool,

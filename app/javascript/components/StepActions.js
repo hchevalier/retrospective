@@ -47,8 +47,9 @@ const StepActions = () => {
             if (reflection.topic?.id && !topics[reflection.topic.id]) {
               topics[reflection.topic.id] = reflection.topic
               return <InlineTopic
+                key={reflection.topic.id}
                 reflection={reflection}
-                allReflections={reflectionsWithVotes}
+                allReflections={visibleReflections}
                 reactions={visibleReactions}
                 selectedReflection={currentReflection}
                 onItemClick={handleStickyBookmarkClicked} />
