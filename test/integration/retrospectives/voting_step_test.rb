@@ -136,8 +136,8 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
       assert_votes_count(reflection_a, count: 0)
       vote_for_reflection(reflection_a, times: 3)
 
-      refute_css "#participants-list .participant[data-id='#{retrospective.organizer.id}'] .remaining-votes"
-      refute_css "#participants-list .participant[data-id='#{other_participant.id}'] .remaining-votes"
+      refute_css "#participants-list .avatar[data-id='#{retrospective.organizer.id}'] .remaining-votes"
+      refute_css "#participants-list .avatar[data-id='#{other_participant.id}'] .remaining-votes"
     end
 
     logged_in_as(retrospective.organizer)
@@ -156,7 +156,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
       logged_in_as(retrospective.organizer)
       visit retrospective_path(retrospective)
 
-      assert_logged_in(retrospective.organizer, with_flags: '(you, orga.)')
+      assert_logged_in(retrospective.organizer, with_flags: %i(self organizer))
       assert_remaining_votes_for(retrospective.organizer, 5)
       vote_for_reflection(reflection_a, times: 2)
     end
@@ -167,7 +167,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
 
     logged_in_as(other_participant)
     visit retrospective_path(retrospective)
-    assert_logged_in(other_participant, with_flags: '(you, orga.)')
+    assert_logged_in(other_participant, with_flags: %i(self organizer))
     assert_votes_count(reflection_a, count: 0)
     assert_remaining_votes_for(retrospective.organizer, 3)
   end
@@ -254,7 +254,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
   end
 
   def assert_remaining_votes_for(participant, count)
-    within "#participants-list .participant[data-id='#{participant.id}'] .remaining-votes" do
+    within "#participants-list .avatar[data-id='#{participant.id}'] .remaining-votes" do
       assert_text count
     end
   end

@@ -173,7 +173,7 @@ const StepGrouping = () => {
 
           return (
             <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0' key={zone.id}>
-              <div className='zone-header px-8 mb-4'>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</div>
+              <div className='zone-header mb-4'>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</div>
               {!!unreadReflectionAbove && <div className='unread-notice above' onClick={() => scrollToStickyNote(unreadReflectionAbove)}>⬆︎ Unread reflection ⬆︎</div>}
               <div className='scrolling-zone flex flex-col'>
                 {reflectionsInZone.map((reflection) => {

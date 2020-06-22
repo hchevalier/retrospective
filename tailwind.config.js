@@ -1,3 +1,5 @@
+const plugin = require('tailwindcss/plugin')
+
 module.exports = {
   purge: [],
   theme: {
@@ -8,10 +10,26 @@ module.exports = {
       '3/4': '75%',
       'full': '100%',
     },
-    extend: {},
+    extend: {
+      transitionProperty: {
+        'height': 'height',
+      },
+    },
   },
   variants: {
-    margin: ['responsive', 'first', 'last']
+    margin: ['responsive', 'first', 'last'],
+    height: ['important']
   },
-  plugins: [],
+  plugins: [
+    plugin(function ({ addVariant }) {
+      addVariant('important', ({ container }) => {
+        container.walkRules(rule => {
+          rule.selector = `.\\!${rule.selector.slice(1)}`
+          rule.walkDecls(decl => {
+            decl.important = true
+          })
+        })
+      })
+    })
+  ],
 }

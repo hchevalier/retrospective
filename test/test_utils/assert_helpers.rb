@@ -1,33 +1,47 @@
 module AssertHelpers
   def assert_logged_in(participant, with_flags: nil)
-    within ".participant[data-id='#{participant.id}']" do
-      assert_css '.participant-status.logged-in'
+    within ".avatar[data-id='#{participant.id}']" do
+      assert_css '.status-indicator.logged-in'
       return unless with_flags
 
-      if with_flags == :none
-        refute_text 'you'
-        refute_text 'orga.'
-        refute_text 'reveal.'
+      if with_flags.empty?
+        refute_selector '.organizer'
+        refute_selector '.revealer'
       else
-        assert_text with_flags
+        with_flags.each do |flag|
+          case flag
+          when :organizer
+            assert_selector '.organizer'
+          when :revealer
+            assert_selector '.revealer'
+          end
+        end
       end
     end
+
+    refute_selector(".avatar[data-id='#{participant.id}'].self") if with_flags.empty?
+    assert_selector(".avatar[data-id='#{participant.id}'].self") if with_flags.include?(:self)
   end
 
   def assert_inactive(participant, with_flags: nil)
-    within ".participant[data-id='#{participant.id}']" do
-      assert_css '.participant-status'
+    within ".avatar[data-id='#{participant.id}']" do
+      assert_css '.status-indicator'
       refute_css '.logged-in'
       assert_text with_flags if with_flags
     end
   end
 
   def assert_logged_as_organizer
-    assert_text '(you, orga.)'
+    within '#participants-list' do
+      assert_selector('.avatar.self .organizer')
+    end
   end
 
   def refute_logged_as_organizer
-    assert_text '(you)'
+    within '#participants-list' do
+      assert_selector('.avatar.self')
+      refute_selector('.avatar.self .organizer')
+    end
   end
 
   def assert_retro_started
@@ -47,9 +61,7 @@ module AssertHelpers
   end
 
   def assert_has_color(participant, hex_color)
-    within ".participant[data-id='#{participant.id}']" do
-      rgba_color = hex_color.scan(/[0-9a-f]{2}/).map { |color| color.to_i(16) }
-      find('.sticky-bookmark', style: %r(#{rgba_color.join(', ')}) )
-    end
+    rgba_color = hex_color.scan(/[0-9a-f]{2}/).map { |color| color.to_i(16) }
+    find(".avatar[data-id='#{participant.id}']", style: %r(#{rgba_color.join(', ')}) )
   end
 end

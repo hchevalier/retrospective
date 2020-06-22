@@ -119,7 +119,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   }
 
   return (
-    <>
+    <div className='flex flex-col'>
       {currentStep === 'gathering' && <ColorPicker retrospectiveId={retrospectiveId} />}
       {currentStep === 'thinking' && renderRetrospective()}
       {currentStep === 'grouping' && <StepGrouping />}
@@ -142,7 +142,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
         onDestroyReflection={handleDestroyReflection}
         onModalClose={handleReflectionsListClose} />
       <RetrospectiveBottomBar onReflectionFormOpen={handleReflectionFormOpen} />
-    </>
+    </div>
   )
 }
 
