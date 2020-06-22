@@ -1,17 +1,20 @@
 import React from 'react'
 import { Provider, useSelector, useDispatch } from 'react-redux'
 import appStore from 'stores'
+import classNames from 'classnames'
 import consumer from 'channels/consumer'
 import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
 import RetrospectiveArea from './RetrospectiveArea'
 import ParticipantsList from './ParticipantsList'
 import FacilitatorToolkit from './FacilitatorToolkit'
 import LoginForm from './LoginForm'
-import './RetrospectiveLobby.scss'
 import HomeIcon from 'images/home-icon.svg'
+import ArrowIcon from 'images/arrow-icon.svg'
+import './RetrospectiveLobby.scss'
 
 const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
   const dispatch = useDispatch()
+  const [participantsListVisible, setParticipantsListVisible] = React.useState(true)
   const profile = useSelector(state => state.profile)
   const channel = useSelector(state => state.orchestrator.subscription)
   const loggedIn = !!profile.uuid
@@ -57,9 +60,11 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
     dispatch({ type: 'set-channel', subscription: orchestratorChannel })
   }, [loggedIn])
 
+  const toggleParticipantsList = () => setParticipantsListVisible(!participantsListVisible)
+
   return (
     <div id='main-container'>
-      <nav className="bg-gray-900 mb-6 shadow text-white" role="navigation">
+      <nav className="bg-gray-900 shadow text-white" role="navigation">
         <div className="container mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
           <div className="mr-4 md:mr-8">
             <a href='/'>
@@ -70,11 +75,18 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
             Lobby {name} - {kind}
           </div>
           <div className='flex flex-grow justify-end'>
+            <img className={classNames('cursor-pointer duration-200 ease-in-out transition-transform', { 'transform rotate-180': participantsListVisible })} src={ArrowIcon} width="24" onClick={toggleParticipantsList} />
+          </div>
+        </div>
+      </nav>
+      <div className={classNames('bg-gray-200 mb-6 shadow text-white duration-200 ease-linear transform transition-height h-24 origin-top overflow-hidden', { '!h-0': !participantsListVisible })}>
+        <div className="mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
+          <div className='flex flex-grow justify-end'>
             {profile?.organizer && <FacilitatorToolkit />}
             <ParticipantsList />
           </div>
         </div>
-      </nav>
+      </div>
       <div className="px-6">
         {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} />}
         {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
