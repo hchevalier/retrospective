@@ -53,7 +53,7 @@ const ReactionBar = ({ reflection, displayed, reactions }) => {
     )
   })
 
-  if (!displayed) return null
+  if (!displayed) return <div className='reactions-bar-placeholder h-6' />
 
   const emojisBlock = <>
     {Object.keys(constants.emojiList).map((emojiName, index) => {
