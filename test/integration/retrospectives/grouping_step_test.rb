@@ -38,10 +38,10 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
     assert_logged_as_organizer
-    assert_logged_in(other_participant, with_flags: :none)
+    assert_logged_in(other_participant, with_flags: [])
 
-    find(".participant[data-id='#{other_participant.id}']").click
-    assert_logged_in(other_participant, with_flags: '(reveal.)')
+    find(".avatar[data-id='#{other_participant.id}']").click
+    assert_logged_in(other_participant, with_flags: %i(revealer))
   end
 
   test 'can randomly pick a participant to be the revealer among those who did not reveal any reflection yet' do
@@ -55,27 +55,17 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
-    no_one_has_the_revealer_token(participant, other_participant)
 
-    assert_button('Random revealer', disabled: false)
+    assert_css('#assign-random-revealer')
 
-    no_one_has_the_revealer_token(participant, other_participant)
-    click_on "Random revealer"
-    revealer = current_revealer(retrospective.organizer, participant, other_participant)
-    close_modal_on_current_revealer_window(retrospective, revealer)
+    3.times do
+      assert_no_one_has_the_revealer_token
+      find('#assign-random-revealer').click
+      revealer = current_revealer(retrospective.organizer, participant, other_participant)
+      close_modal_on_current_revealer_window(retrospective, revealer)
+    end
 
-    no_one_has_the_revealer_token(participant, other_participant)
-    click_on "Random revealer"
-    revealer = current_revealer(retrospective.organizer, participant, other_participant)
-    close_modal_on_current_revealer_window(retrospective, revealer)
-
-    no_one_has_the_revealer_token(participant, other_participant)
-    click_on "Random revealer"
-    revealer = current_revealer(retrospective.organizer, participant, other_participant)
-    close_modal_on_current_revealer_window(retrospective, revealer)
-
-    assert_no_button('Random revealer')
-    assert_text('Everyone has revealed!')
+    refute_css('#assign-random-revealer')
   end
 
   test 'revealer sees his reflections and looses the revealer token when closing the modal' do
@@ -87,58 +77,68 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
-      assert_logged_in(other_participant, with_flags: '(you)')
+      assert_logged_in(other_participant, with_flags: %i(self))
       refute_text 'A glad reflection'
     end
 
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
     assert_logged_as_organizer
-    find(".participant[data-id='#{other_participant.id}']").click
+    find(".avatar[data-id='#{other_participant.id}']").click
     refute_text 'A glad reflection'
 
     within_window(other_participant_window) do
-      assert_logged_in(other_participant, with_flags: '(you, reveal.)')
+      assert_logged_in(other_participant, with_flags: %i(self revealer))
       assert_css '#reflections-list-modal'
       assert_text 'A glad reflection'
       click_on 'Reveal'
       refute_css '#reflections-list-modal'
-      assert_logged_in(other_participant, with_flags: '(you)')
+      assert_logged_in(other_participant, with_flags: %i(self))
     end
 
     assert_text 'A glad reflection'
   end
 
   test 'unread reflections out of viewport are noticed by a banner' do
+    content = <<~LOREM
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nibh turpis, luctus eget semper faucibus,
+      lobortis dignissim leo. Cras ultricies lacinia lacinia. Etiam nec tortor in mi auctor posuere eu a metus.
+      Cras nec orci congue tortor aliquet elementum eu a erat. Vivamus pellentesque nunc in euismod vehicula.
+      Quisque tristique sed nisi vel interdum. Nulla eu ligula est. Praesent sit amet sodales massa.
+      Sed non sapien viverra, iaculis ante vel, pellentesque neque. Nullam a tellus eu erat fermentum bibendum vitae
+      nec arcu. Cras ultrices bibendum lectus, id porttitor tellus sagittis in. Quisque viverra velit euismod
+      ultricies interdum.'
+    LOREM
+
     retrospective = create(:retrospective, step: 'grouping')
     other_participant = create(:other_participant, retrospective: retrospective)
-    create_list(:reflection, 4, :glad, owner: other_participant, revealed: false)
+    create_list(:reflection, 2, :glad, owner: other_participant, revealed: false, content: content)
     create(:reflection, :mad, owner: other_participant, revealed: false)
 
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
-    find(".participant[data-id='#{other_participant.id}']").click
+    find(".avatar[data-id='#{other_participant.id}']").click
 
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
 
-      assert_logged_in(other_participant, with_flags: '(you, reveal.)')
+      assert_logged_in(other_participant, with_flags: %i(self revealer))
       assert_css '#reflections-list-modal'
 
       all('#reflections-list-modal button', text: 'Reveal').each.with_index do |reveal_button, index|
-        next if index > 3
+        next if index > 1
         reveal_button.click
       end
     end
 
     within find('.zone-column', match: :first) do
       assert_text '⬇︎ Unread reflection ⬇︎'
-      assert_css '.reflection[data-read=true]', count: 3
-      scroll_to(all('.reflection')[3])
+      assert_css '.reflection[data-read=true]', count: 1
+      scroll_to(all('.reflection')[1])
       refute_text '⬇︎ Unread reflection ⬇︎'
-      assert_css '.reflection[data-read=true]', count: 4
+      assert_css '.reflection[data-read=true]', count: 2
     end
 
     within_window(other_participant_window) do
@@ -160,14 +160,14 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
-    find(".participant[data-id='#{other_participant.id}']").click
+    find(".avatar[data-id='#{other_participant.id}']").click
 
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
 
-      assert_logged_in(other_participant, with_flags: '(you, reveal.)')
+      assert_logged_in(other_participant, with_flags: %i(self revealer))
       assert_css '#reflections-list-modal'
 
       all('#reflections-list-modal button', text: 'Reveal').each(&:click)
@@ -198,7 +198,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
-      assert_logged_in(other_participant, with_flags: '(you)')
+      assert_logged_in(other_participant, with_flags: %i(self))
       assert_grouping_step_for_participant
       within ".reflection[data-id='#{reflection.id}']" do
         refute_text Reaction::EMOJI_LIST[:star_struck]
@@ -345,18 +345,11 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     within_window(open_new_window) do
       logged_in_as(revealer)
       visit retrospective_path(retrospective)
-      if revealer == retrospective.organizer
-        assert_logged_in(revealer, with_flags: '(you, orga., reveal.)')
-      else
-        assert_logged_in(revealer, with_flags: '(you, reveal.)')
-      end
       click_on 'Reveal'
     end
   end
 
-  def no_one_has_the_revealer_token(participant, other_participant)
-    assert_logged_as_organizer
-    assert_logged_in(participant, with_flags: :none)
-    assert_logged_in(other_participant, with_flags: :none)
+  def assert_no_one_has_the_revealer_token
+    refute_selector('.avatar .revealer')
   end
 end

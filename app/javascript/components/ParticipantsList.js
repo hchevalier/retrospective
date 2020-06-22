@@ -1,44 +1,38 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
-import classNames from 'classnames'
-import { compact, uniqBy } from 'lib/helpers/array'
 import { decrypt } from 'lib/utils/decryption'
-import StickyBookmark from './StickyBookmark'
-import './ParticipantsList.scss'
+import { uniqBy } from 'lib/helpers/array'
+import Avatar from './Avatar'
+import MegaphoneIcon from 'images/megaphone-icon.svg'
+import LightBulbIcon from 'images/lightbulb-icon.svg'
+import SpeechBubbleIcon from 'images/speech-bubble-icon.svg'
+import CheckIcon from 'images/check-icon.svg'
+
+const copyUrlToClipboard = () => {
+  const toCopy = document.createElement('span')
+  toCopy.setAttribute('type', 'hidden')
+  toCopy.appendChild(document.createTextNode(window.location.href))
+  document.body.appendChild(toCopy);
+  const range = document.createRange()
+  const selection = window.getSelection()
+
+  range.selectNodeContents(toCopy)
+  selection.removeAllRanges()
+  selection.addRange(range)
+  document.execCommand('copy')
+  selection.removeAllRanges()
+
+  toCopy.remove()
+  alert('Copied invite URL to clipboard')
+}
 
 const ParticipantsList = () => {
   const profile = useSelector(state => state.profile)
   const { name: retrospectiveName } = useSelector(state => state.retrospective)
   const { organizerInfo: encryptedOrganizerInfo, step } = useSelector(state => state.orchestrator)
   const participants = useSelector(state => state.participants, shallowEqual)
-  const channel = useSelector(state => state.orchestrator.subscription)
   const visibleReflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
-
-  const copyUrlToClipboard = () => {
-    const toCopy = document.createElement('span')
-    toCopy.setAttribute('type', 'hidden')
-    toCopy.appendChild(document.createTextNode(window.location.href))
-    document.body.appendChild(toCopy)
-    const range = document.createRange()
-    const selection = window.getSelection()
-
-    range.selectNodeContents(toCopy)
-    selection.removeAllRanges()
-    selection.addRange(range)
-    document.execCommand('copy')
-    selection.removeAllRanges()
-
-    toCopy.remove()
-    alert('Copied invite URL to clipboard')
-  }
-
-  const revealers = uniqBy(visibleReflections.map((reflection) => reflection.owner), 'uuid').map(reflection => reflection.uuid)
-
-  const pickRandomRevealer = () => {
-    let remainingParticipants = participants.filter(participant => !revealers.includes(participant.uuid))
-    const randomRevealer = remainingParticipants[Math.floor(Math.random() * remainingParticipants.length)]
-    channel.setRevealer(randomRevealer.uuid)
-  }
+  const channel = useSelector(state => state.orchestrator.subscription)
 
   const handleParticipantClick = (event) => {
     if (profile?.organizer && step === 'grouping') {
@@ -62,37 +56,51 @@ const ParticipantsList = () => {
     return {}
   }, [encryptedOrganizerInfo, profile, retrospectiveName])
 
+  const revealers = uniqBy(visibleReflections.map((reflection) => reflection.owner), 'uuid').map(participant => participant.uuid)
+
+  const displayOrganizerInfo = (revealer, uuid) => {
+    if (!profile?.organizer) return null
+
+    const children = []
+
+    if (step === 'thinking') {
+      // TODO: display a check when participant clicked on "I'm done" button
+      children.push(<img key='lightbulb' className='flex-row absolute right-0' src={LightBulbIcon} width='16' />)
+    }
+
+    if (step === 'grouping' && !revealer && revealers.includes(uuid))
+      children.push(<img key='check' className='flex-row absolute right-0' src={CheckIcon} width='16' />)
+
+    if (step === 'voting' && organizerInfo[uuid])
+      children.push(<span key='remaining-votes' className='remaining-votes absolute flex right-0 p-1 text-xs rounded-full bg-black bg-opacity-25'>{organizerInfo[uuid].remainingVotes}</span>)
+
+    return <>{children}</>
+  }
+
   return (
-    <div id='participants-list' className='border p-3 rounded shadow mr-6'>
+    <div id='participants-list' className='flex flex-row'>
       {participants.map(({ surname, status, organizer, revealer, uuid, color }, index) => {
-        const flags = compact([profile?.uuid === uuid && 'you', organizer && 'orga.', revealer && 'reveal.']).join(', ')
         return (
-          <div className='participant flex items-center' key={index} data-id={uuid} onClick={handleParticipantClick}>
-            <div className={classNames('participant-status', { 'logged-in': status })} />
-            <StickyBookmark otherClassNames={{ 'space-between': 'space-between', 'organizer': organizer, 'revealer': revealer, 'yourself': profile?.uuid === uuid }} color={color}>
-              <span>{surname}</span> {flags && <span className='flags'>({flags})</span>}
-              {step === 'voting' && organizerInfo[uuid] && <span className='remaining-votes'>{organizerInfo[uuid].remainingVotes}</span>}
-            </StickyBookmark>
-          </div>
+          <Avatar
+            key={index}
+            dataAttributes={{ 'data-id': uuid}}
+            backgroundColor={color}
+            loggedIn={status}
+            surname={surname}
+            self={profile?.uuid === uuid}
+            onClick={handleParticipantClick}
+            flags={{ organizer, revealer }}>
+            {organizer && <img className='organizer flex-row absolute left-0' src={MegaphoneIcon} width='16' />}
+            {revealer && <img className='revealer flex-row absolute right-0' src={SpeechBubbleIcon} width='16' />}
+            {displayOrganizerInfo(revealer, uuid)}
+          </Avatar>
         )
       })}
-      {profile?.organizer && (
-        <button
-          className='bg-blue-500 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-700 mt-6 px-5 py-1 rounded text-white'
-          color='primary' onClick={copyUrlToClipboard}>
-          +
+      <button
+        className='add-new bg-blue-500 hover:bg-blue-700 focus:outline-none focus:shadow-outline font-medium rounded text-white ml-4 w-16 h-16'
+        color='primary' onClick={copyUrlToClipboard}>
+        +
         </button>
-      )}
-      {profile?.organizer && step === 'grouping' && revealers.length < participants.length && (
-        <button
-        className='bg-blue-400 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-600 mt-6 px-5 py-1 rounded text-white'
-        color='primary' onClick={pickRandomRevealer}>
-          Random revealer
-        </button>
-      )}
-      {revealers.length >= participants.length && (
-        <p>Everyone has revealed!</p>
-      )}
     </div>
   )
 }
