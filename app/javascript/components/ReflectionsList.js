@@ -8,40 +8,12 @@ import ReflectionForm from './ReflectionForm'
 import Icon from './Icon'
 import ArrowIcon from 'images/arrow-icon.svg'
 
-const ReflectionsList = ({ open, retrospectiveKind, onUpdateReflection, onDestroyReflection, onToggle, onDone }) => {
+const ReflectionsList = ({ open, retrospectiveKind, onToggle, onDone }) => {
   const revealer = useSelector(state => state.profile.revealer)
   const currentStep = useSelector(state => state.orchestrator.step)
   const reflections = useSelector(state => state.reflections.ownReflections, shallowEqual)
   const zones = useSelector(state => state.retrospective.zones, shallowEqual)
   const channel = useSelector(state => state.orchestrator.subscription)
-
-  const [displayEditForm, setDisplayEditForm] = React.useState(false)
-  const [reworkedReflectionId, setReworkedReflectionId] = React.useState(null)
-  const [reworkedReflectionContent, setReworkedReflectionContent] = React.useState('')
-
-  const handleEditClick = (event) => {
-    setDisplayEditForm(true)
-    const reflectionId = event.currentTarget.dataset.id
-    setReworkedReflectionId(reflectionId)
-    setReworkedReflectionContent(reflections.find((reflection) => reflection.id === reflectionId).content)
-  }
-
-  const handleReflectionUpdate = () => {
-    const updatedId = reworkedReflectionId
-    const updatedContent = reworkedReflectionContent
-    onUpdateReflection({ updatedId, updatedContent, onSuccess: handleEditCancel })
-  }
-
-  const handleEditCancel = () => {
-    setDisplayEditForm(false)
-    setReworkedReflectionId(null)
-    setReworkedReflectionContent(null)
-  }
-
-  const handleDeleteClick = (event) => {
-    const deletedId = event.currentTarget.dataset.id
-    onDestroyReflection({ deletedId })
-  }
 
   const handleRevealClick = (event) => {
     const reflectionUuid = event.currentTarget.dataset.id
@@ -78,13 +50,7 @@ const ReflectionsList = ({ open, retrospectiveKind, onUpdateReflection, onDestro
                 </div>
                 {reflectionsInZone.filter((reflection) => !reflection.revealed).map((reflection) => (
                   <div key={reflection.id}>
-                    <StickyNote reflection={reflection} readOnly={false} />
-                    {currentStep == 'thinking' && (
-                      <>
-                        <Button primary data-id={reflection.id} onClick={handleEditClick}>Edit</Button>&nbsp;
-                        <Button secondary data-id={reflection.id} onClick={handleDeleteClick}>Delete</Button>
-                      </>
-                    )}
+                    <StickyNote reflection={reflection} readOnly={currentStep !== 'thinking'} />
                     {shouldDisplayReveal() &&
                       <Button
                         secondary
@@ -101,7 +67,6 @@ const ReflectionsList = ({ open, retrospectiveKind, onUpdateReflection, onDestro
           })}
         </div>
       </div>
-      <ReflectionForm open={displayEditForm} value={reworkedReflectionContent} onChange={setReworkedReflectionContent} onConfirmationClick={handleReflectionUpdate} confirmationLabel={'Update'} onReflectionCancel={handleEditCancel} />
     </>
   )
 }

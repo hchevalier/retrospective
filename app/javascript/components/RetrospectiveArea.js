@@ -74,29 +74,6 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
     setDisplayReflectionForm(true)
   }, [])
 
-  const handleUpdateReflection = useCallback(({ updatedId, updatedContent, onSuccess }) => {
-    put({
-      url: `/retrospectives/${retrospectiveId}/reflections/${updatedId}`,
-      payload: {
-        content: updatedContent
-      }
-    })
-    .then(updatedReflection => {
-      dispatch({ type: 'change-reflection', reflection: updatedReflection })
-      onSuccess()
-    })
-    .catch(error => console.warn(error))
-  }, [dispatch, retrospectiveId])
-
-  const handleDestroyReflection = useCallback(({ deletedId }) => {
-    destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${deletedId}` })
-    .then(() => {
-      dispatch({ type: 'delete-reflection', reflectionId: deletedId })
-      setMode('initial')
-    })
-    .catch(error => console.warn(error))
-  }, [dispatch, retrospectiveId])
-
   const handleReflectionsListToggle = () => {
     console.log('toggling')
     setDisplayReflectionsList(!displayReflectionsList)
@@ -131,8 +108,6 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
           open={displayReflectionsList || revealer}
           retrospectiveKind={kind}
           filter={workingZone}
-          onUpdateReflection={handleUpdateReflection}
-          onDestroyReflection={handleDestroyReflection}
           onToggle={handleReflectionsListToggle}
           onDone={handleReflectionsListClose} />
       )}
