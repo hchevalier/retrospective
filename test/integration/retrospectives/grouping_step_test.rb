@@ -131,10 +131,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       assert_logged_in(other_participant, with_flags: %i(self revealer))
       assert_text 'My reflections'
 
-      all('#reflections-pannel .eye-icon').each.with_index do |reveal_button, index|
-        next if index > 1
-        reveal_button.click
-      end
+      2.times { find('#reflections-pannel .eye-icon', visible: false, match: :first).click }
     end
 
     within find('.zone-column', match: :first) do
