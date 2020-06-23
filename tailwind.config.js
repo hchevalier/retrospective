@@ -9,10 +9,14 @@ module.exports = {
       '1/2': '50%',
       '3/4': '75%',
       'full': '100%',
+      'screen': '100vh',
     },
     extend: {
       boxShadow: {
         right: '1px 0 rgba(0, 0, 0, 0.1)',
+      },
+      height: {
+        '14': '3.5rem',
       },
       minWidth: {
         '16': '16rem',

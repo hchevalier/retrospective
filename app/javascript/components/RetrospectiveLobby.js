@@ -11,7 +11,6 @@ import FacilitatorToolkit from './FacilitatorToolkit'
 import LoginForm from './LoginForm'
 import HomeIcon from 'images/home-icon.svg'
 import ArrowIcon from 'images/arrow-icon.svg'
-import './RetrospectiveLobby.scss'
 
 const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
   const dispatch = useDispatch()
@@ -83,7 +82,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
 
   return (
     <div id='main-container'>
-      <nav className="bg-gray-900 shadow text-white" role="navigation">
+      <nav className="bg-gray-900 shadow text-white h-14" role="navigation">
         <div className="container mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
           <div className="mr-4 md:mr-8">
             <a href='/'>
@@ -98,7 +97,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
           </div>
         </div>
       </nav>
-      <div className='flex flex-cols'>
+      <div className='flex flex-row'>
         {shouldDisplayReflectionsList && (
           <ReflectionsList
             open={reflectionsListVisible || revealer}
@@ -106,7 +105,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
             onToggle={handleReflectionsListToggle}
             onDone={handleReflectionsListClose} />
         )}
-        <div className='flex-row w-full'>
+        <div className='flex flex-col flex-1'>
           <div className={classNames('bg-gray-200 mb-6 shadow text-white duration-200 ease-linear transform transition-height h-24 origin-top overflow-hidden', { '!h-0': !participantsListVisible })}>
             <div className="mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
               <div className='flex flex-grow justify-end'>
@@ -115,13 +114,11 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
               </div>
             </div>
           </div>
-          <div className="px-4">
-            {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} />}
-            {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
-          </div>
+          {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} />}
+          {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
+        </div>
         </div>
       </div>
-    </div>
   )
 }
 

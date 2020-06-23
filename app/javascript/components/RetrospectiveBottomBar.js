@@ -20,7 +20,7 @@ const RetrospectiveBottomBar = ({ onReflectionFormOpen }) => {
   }
 
   return (
-    <div className='flex items-center justify-between mt-10'>
+    <div className='flex flex-1 items-end justify-between pb-2'>
       <div className='w-2/12'>
         <Timer show={currentStep === 'thinking'} organizer={organizer} />
       </div>
