@@ -11,8 +11,15 @@ module.exports = {
       'full': '100%',
     },
     extend: {
+      inset: {
+        '-4': '-1rem',
+      },
+      boxShadow: {
+        right: '1px 0 rgba(0, 0, 0, 0.1)',
+      },
       transitionProperty: {
         'height': 'height',
+        'width': 'width',
       },
     },
   },

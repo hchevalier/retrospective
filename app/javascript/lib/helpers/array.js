@@ -10,9 +10,14 @@ export const compact = (items) => items.filter((item) => !!item)
 
 export const reject = (items, fn) => items.filter((item) => !fn(item))
 
+const dig = (path, item) => path.reduce((currentDepth, nexAttribute) => {
+  (currentDepth && currentDepth[nexAttribute]) ? currentDepth[nexAttribute] : null, item
+})
+
 export const groupBy = (items, attribute) => {
   return items.reduce((result, item) => {
-    (result[item[attribute]] = result[item[attribute]] || []).push(item)
+    const indexBy = dig(attribute.split('.'), item)
+    ;(result[indexBy] = result[indexBy] || []).push(item)
     return result
   }, {})
 }

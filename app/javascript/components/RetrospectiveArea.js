@@ -26,7 +26,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   const channel = useSelector(state => state.orchestrator.subscription)
 
   const [displayReflectionForm, setDisplayReflectionForm] = useState(false)
-  const [displayReflectionsList, setDisplayReflectionsList] = useState(false)
+  const [displayReflectionsList, setDisplayReflectionsList] = useState(true)
   const [currentReflection, setCurrentReflection] = useState('')
   const [mode, setMode] = useState('initial')
   const [workingZone, setWorkingZone] = useState(null)
@@ -98,6 +98,11 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
     .catch(error => console.warn(error))
   }, [dispatch, retrospectiveId])
 
+  const handleReflectionsListToggle = () => {
+    console.log('toggling')
+    setDisplayReflectionsList(!displayReflectionsList)
+  }
+
   const handleReflectionsListClose = useCallback(() => {
     if (revealer && channel) {
       channel.dropRevealerToken()
@@ -118,14 +123,29 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
     return <div>Unknown retrospective {kind}</div>
   }
 
+  const canDisplayReflectionsList = currentStep === 'thinking' || currentStep === 'grouping'
+
   return (
-    <div className='flex flex-col'>
-      {currentStep === 'gathering' && <ColorPicker retrospectiveId={retrospectiveId} />}
-      {currentStep === 'thinking' && renderRetrospective()}
-      {currentStep === 'grouping' && <StepGrouping />}
-      {currentStep === 'voting' && <StepVoting />}
-      {currentStep === 'actions' && <StepActions />}
-      {currentStep === 'done' && <StepDone />}
+    <div className='flex flex-row'>
+      {canDisplayReflectionsList && (
+        <ReflectionsList
+          open={displayReflectionsList || revealer}
+          retrospectiveKind={kind}
+          filter={workingZone}
+          onUpdateReflection={handleUpdateReflection}
+          onDestroyReflection={handleDestroyReflection}
+          onToggle={handleReflectionsListToggle}
+          onDone={handleReflectionsListClose} />
+      )}
+      <div className='flex flex-col'>
+        {currentStep === 'gathering' && <ColorPicker retrospectiveId={retrospectiveId} />}
+        {currentStep === 'thinking' && renderRetrospective()}
+        {currentStep === 'grouping' && <StepGrouping />}
+        {currentStep === 'voting' && <StepVoting />}
+        {currentStep === 'actions' && <StepActions />}
+        {currentStep === 'done' && <StepDone />}
+        <RetrospectiveBottomBar onReflectionFormOpen={handleReflectionFormOpen} />
+      </div>
       <ReflectionForm
         open={displayReflectionForm}
         value={currentReflection}
@@ -133,15 +153,6 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
         onConfirmationClick={handleChooseZoneClick}
         confirmationLabel={'Choose zone'}
         onReflectionCancel={handleReflectionCancel} />
-      <ReflectionsList
-        open={displayReflectionsList || revealer}
-        retrospectiveKind={kind}
-        withIcon={revealer}
-        filter={workingZone}
-        onUpdateReflection={handleUpdateReflection}
-        onDestroyReflection={handleDestroyReflection}
-        onModalClose={handleReflectionsListClose} />
-      <RetrospectiveBottomBar onReflectionFormOpen={handleReflectionFormOpen} />
     </div>
   )
 }
