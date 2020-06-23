@@ -68,8 +68,9 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
   const shouldDisplayReflectionsList = currentStep === 'thinking' || currentStep === 'grouping'
 
   const handleReflectionsListToggle = () => {
-    console.log('toggling')
-    setReflectionsListVisible(!reflectionsListVisible)
+    if (!reflectionsListVisible || !revealer) {
+      setReflectionsListVisible(!reflectionsListVisible)
+    }
   }
 
   const handleReflectionsListClose = React.useCallback(() => {

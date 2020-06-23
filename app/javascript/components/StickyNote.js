@@ -19,6 +19,7 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, rea
   const [editing, setEditing] = React.useState(false)
 
   const retrospectiveId = useSelector(state => state.retrospective.id)
+  const revealer = useSelector(state => state.profile.revealer)
   const step = useSelector(state => state.orchestrator.step)
   const channel = useSelector(state => state.orchestrator.subscription)
 
@@ -98,11 +99,11 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, rea
         {!editing && <div className='content' onClick={handleEdit}>{reflection.content}</div>}
       </div>
       {!readOnly && <div className='absolute right-0 mr-2'>
-        <img src={EditIcon} className='edit-icon inline mr-2' onClick={handleEdit} />
-        <img src={DeleteIcon} className='delete-icon inline' onClick={handleDelete} />
+        <img src={EditIcon} className='edit-icon inline cursor-pointer mr-2' onClick={handleEdit} />
+        <img src={DeleteIcon} className='delete-icon inline cursor-pointer' onClick={handleDelete} />
       </div>}
-      {revealable && <div className='absolute right-0 mr-2'>
-        <img src={EyeIcon} className='eye-icon inline' onClick={handleReveal} width='24px' />
+      {revealer && revealable && <div className='absolute right-0 mr-2'>
+        <img src={EyeIcon} className='eye-icon inline cursor-pointer' onClick={handleReveal} width='24px' />
       </div>}
       {showVotes && <VoteCorner target={reflection} targetType={'reflection'} votes={votes} canVote={step === 'voting'} />}
       {showReactions && <ReactionBar displayed={displayReactionBar} reflection={reflection} reactions={emojis} />}
