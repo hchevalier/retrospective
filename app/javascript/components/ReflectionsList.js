@@ -35,15 +35,18 @@ const ReflectionsList = ({ open, retrospectiveKind, onToggle, onDone }) => {
     <>
       <div id='reflections-pannel' className='bg-gray-200 mr-4 relative -left-4 -mt-6 p-4 shadow-right flex'>
         {!revealer && (
-          <div className='justify-start items-start px-2'>
+          <div className='justify-start items-start px-2 w-10'>
             <img className={classNames('cursor-pointer duration-200 ease-in-out transition-transform transform rotate-90', { '-rotate-90': open })} src={ArrowIcon} width="24" onClick={onToggle} />
           </div>
         )}
         <div className={classNames('transition-width duration-500 ease-in-out w-0 h-full overflow-x-hidden', { 'w-64': open })}>
+          <div className='font-bold min-w-16'>
+            My reflections
+          </div>
           {zones.map((zone) => {
             const reflectionsInZone = reflectionsByZone[zone.id] || []
             return (
-              <div key={zone.id} className='p-2 border-t'>
+              <div key={zone.id} className='p-2 border-t min-w-16'>
                 <div>
                   <Icon retrospectiveKind={retrospectiveKind} zone={zone.name} /> {zone.name}
                 </div>

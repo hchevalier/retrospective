@@ -50,7 +50,7 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, rea
   }
 
   const handleEdit = () => {
-    setEditing(true)
+    if (!readOnly) setEditing(true)
   }
 
   const handleUpdate = (event) => {
@@ -89,7 +89,7 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, rea
       <div className='reflection-content-container'>
         <div className='font-bold mb-2'>{reflection.owner.surname}</div>
         {editing && <textarea className='content bg-transparent border-none outline-none overflow-hidden resize-none' ref={onEditTextAreaRefChange} onChange={resizeTextArea} defaultValue={reflection.content} onBlur={handleUpdate}/>}
-        {!editing && <div className='content'>{reflection.content}</div>}
+        {!editing && <div className='content' onClick={handleEdit}>{reflection.content}</div>}
       </div>
       {!readOnly && <div className='absolute right-0 mr-2'>
         <img src={EditIcon} className='edit-icon inline mr-2' onClick={handleEdit} />
