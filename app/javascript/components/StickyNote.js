@@ -9,16 +9,18 @@ import VoteCorner from './VoteCorner'
 import { reflectionShape } from 'lib/utils/shapes'
 import EditIcon from 'images/edit-icon.svg'
 import DeleteIcon from 'images/delete-icon.svg'
+import EyeIcon from 'images/eye-icon.svg'
 import './StickyNote.scss'
 import './Topic.scss'
 
-const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, readOnly, showVotes, glowing, draggable, onDragStart, onDragOver, onDrop }, ref) => {
+const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, readOnly, showVotes, glowing, revealable, draggable, onDragStart, onDragOver, onDrop }, ref) => {
   const dispatch = useDispatch()
   const [hovered, setHovered] = React.useState(false)
   const [editing, setEditing] = React.useState(false)
 
   const retrospectiveId = useSelector(state => state.retrospective.id)
   const step = useSelector(state => state.orchestrator.step)
+  const channel = useSelector(state => state.orchestrator.subscription)
 
   const [editTextArea, setEditTextArea] = React.useState(null)
 
@@ -47,6 +49,10 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, rea
   const colorStyle = {
     borderColor: reflection.color,
     backgroundColor: reflection.color
+  }
+
+  const handleReveal = () => {
+    channel.reveal(reflection.id)
   }
 
   const handleEdit = () => {
@@ -95,6 +101,9 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, rea
         <img src={EditIcon} className='edit-icon inline mr-2' onClick={handleEdit} />
         <img src={DeleteIcon} className='delete-icon inline' onClick={handleDelete} />
       </div>}
+      {revealable && <div className='absolute right-0 mr-2'>
+        <img src={EyeIcon} className='eye-icon inline' onClick={handleReveal} width='24px' />
+      </div>}
       {showVotes && <VoteCorner target={reflection} targetType={'reflection'} votes={votes} canVote={step === 'voting'} />}
       {showReactions && <ReactionBar displayed={displayReactionBar} reflection={reflection} reactions={emojis} />}
     </div>
@@ -106,6 +115,7 @@ StickyNote.propTypes = {
   showReactions: PropTypes.bool,
   reactions: PropTypes.arrayOf(Object),
   readOnly: PropTypes.bool,
+  revealable: PropTypes.bool,
   showVotes: PropTypes.bool,
   glowing: PropTypes.bool,
   draggable: PropTypes.bool,
