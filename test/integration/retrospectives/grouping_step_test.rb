@@ -131,7 +131,12 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       assert_logged_in(other_participant, with_flags: %i(self revealer))
       assert_text 'My reflections'
 
-      2.times { find('#reflections-pannel .eye-icon', visible: false, match: :first).click }
+      2.times do
+        find('#reflections-pannel .eye-icon', visible: false, match: :first).click
+        within find('.zone-column', match: :first) do
+          assert_text 'Lorem'
+        end
+      end
     end
 
     within find('.zone-column', match: :first) do

@@ -34,6 +34,17 @@ class ActionDispatch::IntegrationTest
     Capybara.current_driver.match? /headless/
   end
 
+  Capybara.register_driver :selenium_chrome_headless do |app|
+    browser_options = ::Selenium::WebDriver::Chrome::Options.new.tap do |opts|
+      opts.args << '--headless'
+      opts.args << '--disable-gpu' if Gem.win_platform?
+      opts.args << '--disable-site-isolation-trials'
+      opts.args << '--window-size=1024,768'
+    end
+    Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
+  end
+  Capybara.javascript_driver = :selenium_chrome_headless
+
   Capybara.server = :puma, { Silent: true }
   Capybara.default_driver = ENV.fetch('HEADLESS', false) == 'true' ? :selenium_chrome_headless : :selenium_chrome
   Capybara.default_max_wait_time = 5.seconds
