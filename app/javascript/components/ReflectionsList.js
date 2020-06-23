@@ -4,7 +4,6 @@ import classNames from 'classnames'
 import { groupBy } from 'lib/helpers/array'
 import StickyNote from './StickyNote'
 import Button from './Button'
-import ReflectionForm from './ReflectionForm'
 import Icon from './Icon'
 import ArrowIcon from 'images/arrow-icon.svg'
 
