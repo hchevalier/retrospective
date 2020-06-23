@@ -25,10 +25,17 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, rea
   const onEditTextAreaRefChange = React.useCallback(element => {
     setEditTextArea(element)
     if (element !== null) {
+      element.style.height = '5px'
+      element.style.height = (element.scrollHeight) + 'px'
       element.focus()
       element.setSelectionRange(element.value.length, element.value.length)
     }
   }, [])
+
+  const resizeTextArea = () => {
+    editTextArea.style.height = '5px'
+    editTextArea.style.height = (editTextArea.scrollHeight) + 'px'
+  }
 
   const handleMouseEnter = () => setHovered(true)
   const handleMouseLeave = () => setHovered(false)
@@ -81,7 +88,7 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, rea
       {...(draggable ? { draggable, onDragStart, onDrop, onDragOver } : {})}>
       <div className='reflection-content-container'>
         <div className='font-bold mb-2'>{reflection.owner.surname}</div>
-        {editing && <textarea className='content' ref={onEditTextAreaRefChange} defaultValue={reflection.content} onBlur={handleUpdate}/>}
+        {editing && <textarea className='content bg-transparent border-none outline-none overflow-hidden resize-none' ref={onEditTextAreaRefChange} onChange={resizeTextArea} defaultValue={reflection.content} onBlur={handleUpdate}/>}
         {!editing && <div className='content'>{reflection.content}</div>}
       </div>
       {!readOnly && <div className='absolute right-0 mr-2'>
