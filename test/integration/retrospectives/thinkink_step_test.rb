@@ -49,59 +49,61 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
   test 'a participant cannot see reflections written by other participants' do
     retrospective = create(:retrospective, step: 'thinking')
     other_participant = create(:other_participant, retrospective: retrospective)
-    create(:reflection, :glad, owner: retrospective.organizer)
+    create(:reflection, :glad, owner: retrospective.organizer, revealed: false)
 
     logged_in_as(other_participant)
     visit retrospective_path(retrospective)
 
     assert_retro_started
     refute_reflection_in_zone('Glad')
-    find('.zone', text: 'Glad').click
-    assert_text 'Close'
-    refute_text 'A glad reflection'
+    within '#reflections-pannel' do
+      refute_text 'A glad reflection'
+    end
   end
 
-  test 'can list reflections from a zone' do
+  test 'can list reflections from a zone in reflections pannel' do
     retrospective = create(:retrospective, step: 'thinking')
-    create(:reflection, :glad, owner: retrospective.organizer)
+    create(:reflection, :glad, owner: retrospective.organizer, revealed: false)
 
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
-    refute_text 'A glad reflection'
-    find('.zone', text: 'Glad (1)').click
-    assert_text 'A glad reflection'
+    within '#reflections-pannel' do
+      assert_text 'A glad reflection'
+    end
   end
 
   test 'can edit a reflection' do
     retrospective = create(:retrospective, step: 'thinking')
-    create(:reflection, :glad, owner: retrospective.organizer)
+    create(:reflection, :glad, owner: retrospective.organizer, revealed: false)
 
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
-    find('.zone', text: 'Glad (1)').click
-    assert_text 'A glad reflection'
-    click_on 'Edit'
+    within '#reflections-pannel' do
+      assert_text 'A glad reflection'
+      find('.edit-icon').click
+    end
 
     assert_field 'content', with: 'A glad reflection'
     fill_in 'content', with: 'I am still glad!'
-    click_on 'Update'
+    find('textarea[name="content"]').send_keys(:tab)
 
-    refute_text 'Update'
+    refute_field 'content'
     assert_text 'I am still glad!'
   end
 
   test 'can delete a reflection' do
     retrospective = create(:retrospective, step: 'thinking')
-    create(:reflection, :glad, owner: retrospective.organizer)
+    create(:reflection, :glad, owner: retrospective.organizer, revealed: false)
 
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
 
-    find('.zone', text: 'Glad (1)').click
-    assert_text 'A glad reflection'
-    click_on 'Delete'
+    within '#reflections-pannel' do
+      assert_text 'A glad reflection'
+      find('.delete-icon').click
+    end
 
     assert_retro_started
     refute_reflection_in_zone('Glad')

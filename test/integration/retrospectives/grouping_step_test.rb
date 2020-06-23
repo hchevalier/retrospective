@@ -78,7 +78,9 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
       assert_logged_in(other_participant, with_flags: %i(self))
-      refute_text 'A glad reflection'
+      within '#zones-container' do
+        refute_text 'A glad reflection'
+      end
     end
 
     logged_in_as(retrospective.organizer)
@@ -89,14 +91,16 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     within_window(other_participant_window) do
       assert_logged_in(other_participant, with_flags: %i(self revealer))
-      assert_css '#reflections-list-modal'
+      assert_text 'My reflections'
       assert_text 'A glad reflection'
-      click_on 'Reveal'
-      refute_css '#reflections-list-modal'
+      find('.eye-icon').click
+      refute_text 'My reflections'
       assert_logged_in(other_participant, with_flags: %i(self))
     end
 
-    assert_text 'A glad reflection'
+    within '#zones-container' do
+      assert_text 'A glad reflection'
+    end
   end
 
   test 'unread reflections out of viewport are noticed by a banner' do
@@ -125,9 +129,9 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       visit retrospective_path(retrospective)
 
       assert_logged_in(other_participant, with_flags: %i(self revealer))
-      assert_css '#reflections-list-modal'
+      assert_text 'My reflections'
 
-      all('#reflections-list-modal button', text: 'Reveal').each.with_index do |reveal_button, index|
+      all('#reflections-pannel .eye-icon').each.with_index do |reveal_button, index|
         next if index > 1
         reveal_button.click
       end
@@ -142,7 +146,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     end
 
     within_window(other_participant_window) do
-      all('#reflections-list-modal button', text: 'Reveal').last.click
+      all('#reflections-pannel .eye-icon').last.click
     end
 
     within all('.zone-column').last do
@@ -168,9 +172,9 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       visit retrospective_path(retrospective)
 
       assert_logged_in(other_participant, with_flags: %i(self revealer))
-      assert_css '#reflections-list-modal'
+      assert_text 'My reflections'
 
-      all('#reflections-list-modal button', text: 'Reveal').each(&:click)
+      all('#reflections-pannel .eye-icon', visible: false).each(&:click)
     end
 
     within find('.zone-column', match: :first) do
@@ -345,7 +349,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     within_window(open_new_window) do
       logged_in_as(revealer)
       visit retrospective_path(retrospective)
-      click_on 'Reveal'
+      find('.eye-icon').click
     end
   end
 
