@@ -21,6 +21,10 @@ module.exports = {
         'height': 'height',
         'width': 'width',
       },
+      zIndex: {
+        '1': 1,
+        '2': 2,
+      },
     },
   },
   variants: {

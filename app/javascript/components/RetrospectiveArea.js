@@ -93,7 +93,6 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
     .then(() => {
       dispatch({ type: 'delete-reflection', reflectionId: deletedId })
       setMode('initial')
-      setDisplayReflectionsList(false)
     })
     .catch(error => console.warn(error))
   }, [dispatch, retrospectiveId])

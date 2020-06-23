@@ -2,6 +2,7 @@ import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import classNames from 'classnames'
 import { groupBy } from 'lib/helpers/array'
+import StickyNote from './StickyNote'
 import Button from './Button'
 import ReflectionForm from './ReflectionForm'
 import Icon from './Icon'
@@ -63,7 +64,7 @@ const ReflectionsList = ({ open, retrospectiveKind, onUpdateReflection, onDestro
     <>
       <div id='reflections-pannel' className='bg-gray-200 mr-4 relative -left-4 -mt-6 p-4 shadow-right flex'>
         {!revealer && (
-          <div className='justify-start items-start'>
+          <div className='justify-start items-start px-2'>
             <img className={classNames('cursor-pointer duration-200 ease-in-out transition-transform transform rotate-90', { '-rotate-90': open })} src={ArrowIcon} width="24" onClick={onToggle} />
           </div>
         )}
@@ -77,7 +78,7 @@ const ReflectionsList = ({ open, retrospectiveKind, onUpdateReflection, onDestro
                 </div>
                 {reflectionsInZone.filter((reflection) => !reflection.revealed).map((reflection) => (
                   <div key={reflection.id}>
-                    <span>{reflection.content}</span>&nbsp;
+                    <StickyNote reflection={reflection} readOnly={false} />
                     {currentStep == 'thinking' && (
                       <>
                         <Button primary data-id={reflection.id} onClick={handleEditClick}>Edit</Button>&nbsp;

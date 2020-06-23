@@ -29,7 +29,7 @@ const InlineTopic = ({ reflection, allReflections, reactions, selectedReflection
 }
 
 InlineTopic.propTypes = {
-  reflection: reflectionShape,
+  reflection: reflectionShape.isRequired,
   allReflections: PropTypes.arrayOf(reflectionShape),
   selectedReflection: reflectionShape,
   reactions: PropTypes.arrayOf(reactionShape),
