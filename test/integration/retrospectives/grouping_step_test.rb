@@ -116,7 +116,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     retrospective = create(:retrospective, step: 'grouping')
     other_participant = create(:other_participant, retrospective: retrospective)
-    create_list(:reflection, 2, :glad, owner: other_participant, revealed: false, content: content)
+    reflections = create_list(:reflection, 2, :glad, owner: other_participant, revealed: false, content: content)
     create(:reflection, :mad, owner: other_participant, revealed: false)
 
     logged_in_as(retrospective.organizer)
@@ -131,11 +131,9 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       assert_logged_in(other_participant, with_flags: %i(self revealer))
       assert_text 'My reflections'
 
-      2.times do
-        find('#reflections-pannel .eye-icon', visible: false, match: :first).click
-        within find('.zone-column', match: :first) do
-          assert_text 'Lorem'
-        end
+      reflections.each do |reflection|
+        find("#reflections-pannel .reflection[data-id='#{reflection.id}'] .eye-icon", visible: false).click
+        refute_selector("#reflections-pannel .reflection[data-id='#{reflection.id}']")
       end
     end
 
@@ -162,7 +160,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
   test 'clicking on notice banner scrolls to last unread reflection from column' do
     retrospective = create(:retrospective, step: 'grouping')
     other_participant = create(:other_participant, retrospective: retrospective)
-    create_list(:reflection, 12, :glad, owner: other_participant, revealed: false)
+    reflections = create_list(:reflection, 12, :glad, owner: other_participant, revealed: false)
 
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
@@ -176,7 +174,10 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       assert_logged_in(other_participant, with_flags: %i(self revealer))
       assert_text 'My reflections'
 
-      all('#reflections-pannel .eye-icon', visible: false).each(&:click)
+      reflections.each do |reflection|
+        find("#reflections-pannel .reflection[data-id='#{reflection.id}'] .eye-icon", visible: false).click
+        refute_selector("#reflections-pannel .reflection[data-id='#{reflection.id}']")
+      end
     end
 
     within find('.zone-column', match: :first) do
@@ -214,7 +215,8 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     find('#participants-list').hover
     within ".reflection[data-id='#{reflection.id}']" do
       find('.reflection-content-container').hover
-      find('.reactions-bar .add-reaction').click
+      assert_selector '.add-reaction'
+      find('.add-reaction').click
       assert_css '.emoji-modal'
       find('.emoji-chip.star-struck').click
       refute_css '.emoji-modal'
@@ -280,12 +282,12 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
     end
 
-    initial_topic = Topic.last
+    initial_topic = Topic.order(:created_at).last
     assert_no_difference 'Topic.count' do
       sticky_note(reflection_b).drag_to(sticky_note(reflection_c))
     end
 
-    new_topic = Topic.last
+    new_topic = Topic.order(:created_at).last
     within topic_container(new_topic) do
       within '.topic-label' do
         assert_text 'Second'
