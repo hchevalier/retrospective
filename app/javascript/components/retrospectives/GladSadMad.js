@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import Zone from './Zone'
 import Icon from '../Icon'
 
-const GladSadMad = ({ mode, onZoneClicked }) => {
+const GladSadMad = ({ highlightZones, onZoneClicked }) => {
   const reflections = useSelector(state => state.reflections.ownReflections, shallowEqual)
   const zones = useSelector(state => state.retrospective.zones, shallowEqual)
 
@@ -16,19 +16,19 @@ const GladSadMad = ({ mode, onZoneClicked }) => {
     <>
       <Zone
         reference={glad}
-        mode={mode}
+        highlight={highlightZones}
         icon={<Icon retrospectiveKind='glad_sad_mad' zone='Glad' dataAttributes={{ 'data-id': glad.id }} onClick={onZoneClicked} />}
         reflections={reflections.filter((reflection) => reflection.zone.id === glad.id)}
         onClick={onZoneClicked} />
       <Zone
         reference={sad}
-        mode={mode}
+        highlight={highlightZones}
         icon={<Icon retrospectiveKind='glad_sad_mad' zone='Sad' dataAttributes={{ 'data-id': sad.id }} onClick={onZoneClicked} />}
         reflections={reflections.filter((reflection) => reflection.zone.id === sad.id)}
         onClick={onZoneClicked} />
       <Zone
         reference={mad}
-        mode={mode}
+        highlight={highlightZones}
         icon={<Icon retrospectiveKind='glad_sad_mad' zone='Mad' dataAttributes={{ 'data-id': mad.id }} onClick={onZoneClicked} />}
         reflections={reflections.filter((reflection) => reflection.zone.id === mad.id)}
         onClick={onZoneClicked} />
@@ -37,7 +37,7 @@ const GladSadMad = ({ mode, onZoneClicked }) => {
 }
 
 GladSadMad.propTypes = {
-  mode: PropTypes.string.isRequired,
+  highlightZones: PropTypes.bool,
   onZoneClicked: PropTypes.func.isRequired
 }
 

@@ -81,7 +81,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
   }, [channel, revealer])
 
   return (
-    <div id='main-container'>
+    <div id='main-container' className='flex flex-col min-h-screen'>
       <nav className="bg-gray-900 shadow text-white h-14" role="navigation">
         <div className="container mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
           <div className="mr-4 md:mr-8">
@@ -97,7 +97,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
           </div>
         </div>
       </nav>
-      <div className='flex flex-row'>
+      <div className='flex flex-row flex-1'>
         {shouldDisplayReflectionsList && (
           <ReflectionsList
             open={reflectionsListVisible || revealer}
