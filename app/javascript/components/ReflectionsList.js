@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import { groupBy } from 'lib/helpers/array'
 import StickyNote from './StickyNote'
 import Icon from './Icon'
-import ArrowIcon from 'images/arrow-icon.svg'
+import ArrowIcon from 'images/arrow-icon-black.svg'
 import './ReflectionsList.scss'
 
 const ReflectionsList = ({ open, retrospectiveKind, onToggle, onDone }) => {
