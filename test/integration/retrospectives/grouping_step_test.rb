@@ -11,23 +11,23 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     visit retrospective_path(retrospective)
     assert_logged_as_organizer
     assert_retro_started
-    assert_text 'New reflection'
+    assert_text 'Click here to add a reflection'
 
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
       assert_retro_started
-      assert_text 'New reflection'
+      assert_text 'Click here to add a reflection'
     end
 
     click_on 'Next'
     assert_grouping_step_for_organizer
-    refute_text 'New reflection'
+    refute_text 'Click here to add a reflection'
 
     within_window(other_participant_window) do
       assert_grouping_step_for_participant
-      refute_text 'New reflection'
+      refute_text 'Click here to add a reflection'
     end
   end
 

@@ -37,10 +37,10 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     assert_retro_started
     refute_reflection_in_zone('Glad')
 
-    click_on 'New reflection'
+    find('.create-icon').click
     fill_in 'content', with: 'This is my reflection'
-    click_on 'Choose zone'
-    assert_selector '.zone.mode-assigning-reflection'
+    find('textarea[name="content"]').send_keys(:tab)
+    assert_selector '.zone.highlight'
     find('.zone', text: 'Glad').click
 
     assert_reflection_in_zone('Glad')
