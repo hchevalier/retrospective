@@ -19,6 +19,7 @@ module.exports = {
         '14': '3.5rem',
       },
       minWidth: {
+        '1/2': '50%',
         '16': '16rem',
       },
       transitionProperty: {
