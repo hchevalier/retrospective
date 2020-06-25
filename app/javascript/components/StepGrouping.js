@@ -66,16 +66,6 @@ const StepGrouping = () => {
     stickyNote.scrollIntoView({ behavior: 'smooth' })
   }
 
-  React.useEffect(() => {
-    if (revealer && reflectionRefs) {
-      const stickyNotes = Object.entries(reflectionRefs).map(([, stickyNoteRef]) => stickyNoteRef?.current)
-      const unreadNotes = stickyNotes.filter((stickyNote) => stickyNote && !stickyNote.dataset.read)
-      if (unreadNotes.length > 0) {
-        scrollToStickyNote(unreadNotes[0])
-      }
-    }
-  }, [reflectionRefs, revealer])
-
   const setStickyNoteRef = (stickyNote) => {
     if (!stickyNote) return
 
