@@ -1,6 +1,9 @@
 class Account < ApplicationRecord
   has_many :participants
   has_many :retrospectives, through: :participants
+  has_many :group_accesses
+  has_many :groups, through: :group_accesses
+  has_many :accessible_groups, -> { where(group_accesses: { revoked_at: nil }) }, through: :group_accesses, class_name: 'Group', source: :group
 
   has_secure_password
   has_secure_token :password_reset_token

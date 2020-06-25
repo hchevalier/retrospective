@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
 
     session[:account_id] = account.id
 
-    redirect_to dashboard_path
+    redirect_to single_page_app_path(path: :dashboard)
   end
 
   def destroy
@@ -26,7 +26,7 @@ class SessionsController < ApplicationController
 
     session[:account_id] = account.id
 
-    redirect_to dashboard_path
+    redirect_to single_page_app_path(path: :dashboard)
   end
 
   private

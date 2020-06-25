@@ -5,6 +5,11 @@ const httpClient = axios.create({
   headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
 })
 
+export const get = async ({ url, payload = {}, headers = {} }) => {
+  const response = await httpClient.get(url, payload, headers)
+  return response.data
+}
+
 export const post = async ({ url, payload = {}, headers = {} }) => {
   const response = await httpClient.post(url, payload, headers)
   return response.data

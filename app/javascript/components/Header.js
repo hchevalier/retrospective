@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import HomeIcon from 'images/home-icon.svg'
 
 const Header = () => (
@@ -11,6 +12,9 @@ const Header = () => (
       <span className='px-4'>Docto retro</span>
     </div>
     <div className='flex flex-grow'>
+      <Link to="/groups" className='ml-auto'>
+        My groups
+      </Link>
       <div className='justify-end ml-auto'>
         <a href='/logout'>Log out</a>
       </div>

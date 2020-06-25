@@ -3,6 +3,10 @@ class RetrospectivesController < ApplicationController
   before_action :preload_current_user_and_relationships, only: :show
   skip_before_action :ensure_logged_in, only: :show
 
+  def index
+    render json: current_account.retrospectives.distinct.map(&:as_short_json)
+  end
+
   def new; end
 
   def create
