@@ -40,7 +40,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     find('.create-icon').click
     fill_in 'content', with: 'This is my reflection'
     find('textarea[name="content"]').send_keys(:tab)
-    assert_selector '.zone.highlight'
+    assert_selector '.background.highlight'
     find('.zone', text: 'Glad').click
 
     assert_reflection_in_zone('Glad')
