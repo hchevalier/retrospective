@@ -6,16 +6,19 @@ import consumer from 'channels/consumer'
 import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
 import RetrospectiveArea from './RetrospectiveArea'
 import ParticipantsList from './ParticipantsList'
+import ReflectionsList from './ReflectionsList'
 import FacilitatorToolkit from './FacilitatorToolkit'
 import LoginForm from './LoginForm'
 import HomeIcon from 'images/home-icon.svg'
 import ArrowIcon from 'images/arrow-icon.svg'
-import './RetrospectiveLobby.scss'
 
 const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
   const dispatch = useDispatch()
   const [participantsListVisible, setParticipantsListVisible] = React.useState(true)
+  const [reflectionsListVisible, setReflectionsListVisible] = React.useState(true)
   const profile = useSelector(state => state.profile)
+  const revealer = useSelector(state => state.profile.revealer)
+  const currentStep = useSelector(state => state.orchestrator.step)
   const channel = useSelector(state => state.orchestrator.subscription)
   const loggedIn = !!profile.uuid
 
@@ -61,10 +64,25 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
   }, [loggedIn])
 
   const toggleParticipantsList = () => setParticipantsListVisible(!participantsListVisible)
+  const shouldDisplayReflectionsList = currentStep === 'thinking' || currentStep === 'grouping'
+
+  const handleReflectionsListToggle = () => {
+    if (!reflectionsListVisible || !revealer) {
+      setReflectionsListVisible(!reflectionsListVisible)
+    }
+  }
+
+  const handleReflectionsListClose = React.useCallback(() => {
+    if (revealer && channel) {
+      channel.dropRevealerToken()
+    }
+
+    setReflectionsListVisible(false)
+  }, [channel, revealer])
 
   return (
-    <div id='main-container'>
-      <nav className="bg-gray-900 shadow text-white" role="navigation">
+    <div id='main-container' className='flex flex-col min-h-screen'>
+      <nav className="bg-gray-900 shadow text-white h-14" role="navigation">
         <div className="container mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
           <div className="mr-4 md:mr-8">
             <a href='/'>
@@ -79,19 +97,28 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
           </div>
         </div>
       </nav>
-      <div className={classNames('bg-gray-200 mb-6 shadow text-white duration-200 ease-linear transform transition-height h-24 origin-top overflow-hidden', { '!h-0': !participantsListVisible })}>
-        <div className="mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
-          <div className='flex flex-grow justify-end'>
-            {profile?.organizer && <FacilitatorToolkit />}
-            <ParticipantsList />
+      <div className='flex flex-row flex-1'>
+        {shouldDisplayReflectionsList && (
+          <ReflectionsList
+            open={reflectionsListVisible || revealer}
+            retrospectiveKind={kind}
+            onToggle={handleReflectionsListToggle}
+            onDone={handleReflectionsListClose} />
+        )}
+        <div className='flex flex-col flex-1'>
+          <div className={classNames('bg-gray-200 mb-6 shadow text-white duration-200 ease-linear transform transition-height h-24 origin-top overflow-hidden', { '!h-0': !participantsListVisible })}>
+            <div className="mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
+              <div className='flex flex-grow justify-end'>
+                {profile?.organizer && <FacilitatorToolkit />}
+                <ParticipantsList />
+              </div>
+            </div>
           </div>
+          {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} />}
+          {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
+        </div>
         </div>
       </div>
-      <div className="px-6">
-        {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} />}
-        {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
-      </div>
-    </div>
   )
 }
 

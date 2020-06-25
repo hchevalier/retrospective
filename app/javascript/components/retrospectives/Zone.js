@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import './Zone.scss'
 
-const Zone = ({ background, height, icon, mode, onClick, reference, reflections, width }) => {
+const Zone = ({ background, height, highlight, icon, onClick, reference, reflections, width }) => {
   const { id, name } = reference
   const reflectionsCount = reflections.length
   const displayedReflectionsCount = reflectionsCount > 0 ? `(${reflectionsCount})` : ''
@@ -13,7 +13,7 @@ const Zone = ({ background, height, icon, mode, onClick, reference, reflections,
   }
 
   return (
-    <div id={`zone-${name}`} data-id={id} onClick={onClick} className={`zone mode-${mode}`} style={inlineStyle}>
+    <div id={`zone-${name}`} data-id={id} onClick={onClick} className={classNames('zone', { highlight })} style={inlineStyle}>
       <div className={classNames('zone-label', { 'absolute-zone-label': !icon})} data-id={id}>
         {icon ? icon : null} {name} {displayedReflectionsCount}
       </div>
@@ -24,8 +24,8 @@ const Zone = ({ background, height, icon, mode, onClick, reference, reflections,
 Zone.propTypes = {
   background: PropTypes.node,
   height: PropTypes.number,
+  highlight: PropTypes.bool,
   icon: PropTypes.node,
-  mode: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   reference: PropTypes.shape({
     id: PropTypes.number.isRequired,

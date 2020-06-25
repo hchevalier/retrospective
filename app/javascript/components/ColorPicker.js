@@ -19,7 +19,7 @@ const ColorPicker = ({ retrospectiveId }) => {
   }
 
   return (
-    <div id='colors-container'>
+    <div id='colors-container' className='self-center'>
       {constants.allColors.map((color, index) => (
         <div
           key={index}

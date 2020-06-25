@@ -16,7 +16,7 @@ export const reflectionShape = PropTypes.shape({
     uuid: PropTypes.string.isRequired,
     surname: PropTypes.string.isRequired
   }).isRequired
-}).isRequired
+})
 
 export const reactionShape = PropTypes.shape({
   targetId: PropTypes.string,

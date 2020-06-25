@@ -1,13 +1,14 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import Timer from './Timer'
 import PropTypes from 'prop-types'
+import Timer from './Timer'
+import BlankStickyNote from './BlankStickyNote'
 
-const RetrospectiveBottomBar = ({ onReflectionFormOpen }) => {
+const RetrospectiveBottomBar = (delegatedProps) => {
   const profile = useSelector(state => state.profile)
-  const organizer = useSelector(state => state.profile.organizer)
   const currentStep = useSelector(state => state.orchestrator.step)
   const orchestratorChannel = useSelector(state => state.orchestrator.subscription)
+  const organizer = profile.organizer
 
   const canCreateReflection = () => profile && currentStep === 'thinking'
 
@@ -20,11 +21,11 @@ const RetrospectiveBottomBar = ({ onReflectionFormOpen }) => {
   }
 
   return (
-    <div className='flex items-center justify-between mt-10'>
+    <div className='flex flex-1 items-end justify-between pb-2 overflow-y-hidden'>
       <div className='w-2/12'>
         <Timer show={currentStep === 'thinking'} organizer={organizer} />
       </div>
-      {canCreateReflection() && <Button variant='contained' color='primary' onClick={onReflectionFormOpen}>New reflection</Button>}
+      {canCreateReflection() && <BlankStickyNote ownerProfile={profile} {...delegatedProps} />}
       {organizer && <Button variant='contained' color='primary' onClick={nextStep}>Next</Button>}
     </div>
   )
@@ -37,7 +38,9 @@ const Button = ({ children, ...rest }) => (
 )
 
 RetrospectiveBottomBar.propTypes = {
-  onReflectionFormOpen: PropTypes.func.isRequired
+  onReflectionReady: PropTypes.func.isRequired,
+  onReflectionPending: PropTypes.func.isRequired,
+  selectedZone: PropTypes.string
 }
 
 export default RetrospectiveBottomBar

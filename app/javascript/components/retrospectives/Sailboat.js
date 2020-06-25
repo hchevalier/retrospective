@@ -10,7 +10,7 @@ import IslandBackground from 'images/island.png'
 import SailboatImage from 'images/sailboat.png'
 import CloudImage from 'images/cloud.png'
 
-const Sailboat = ({ mode, onZoneClicked }) => {
+const Sailboat = ({ highlightZones, onZoneClicked }) => {
   const reflections = useSelector(state => state.reflections.ownReflections, shallowEqual)
   const zones = useSelector(state => state.retrospective.zones, shallowEqual)
 
@@ -26,25 +26,25 @@ const Sailboat = ({ mode, onZoneClicked }) => {
 
       <Zone
         reference={wind}
-        mode={mode}
+        highlight={highlightZones}
         background={WindBackground}
         reflections={reflections.filter((reflection) => reflection.zone.id === wind.id)}
         onClick={onZoneClicked} />
       <Zone
         reference={anchor}
-        mode={mode}
+        highlight={highlightZones}
         background={AnchorBackground}
         reflections={reflections.filter((reflection) => reflection.zone.id === anchor.id)}
         onClick={onZoneClicked} />
       <Zone
         reference={rocks}
-        mode={mode}
+        highlight={highlightZones}
         background={RocksBackground}
         reflections={reflections.filter((reflection) => reflection.zone.id === rocks.id)}
         onClick={onZoneClicked} />
       <Zone
         reference={island}
-        mode={mode}
+        highlight={highlightZones}
         background={IslandBackground}
         reflections={reflections.filter((reflection) => reflection.zone.id === island.id)}
         onClick={onZoneClicked} />
@@ -53,7 +53,7 @@ const Sailboat = ({ mode, onZoneClicked }) => {
 }
 
 Sailboat.propTypes = {
-  mode: PropTypes.string.isRequired,
+  highlightZones: PropTypes.bool,
   onZoneClicked: PropTypes.func.isRequired
 }
 

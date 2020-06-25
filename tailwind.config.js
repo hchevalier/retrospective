@@ -9,10 +9,29 @@ module.exports = {
       '1/2': '50%',
       '3/4': '75%',
       'full': '100%',
+      'screen': '100vh',
     },
     extend: {
+      boxShadow: {
+        right: '1px 0 rgba(0, 0, 0, 0.1)',
+      },
+      height: {
+        '14': '3.5rem',
+      },
+      minHeight: {
+        '8': '2rem',
+      },
+      minWidth: {
+        '1/2': '50%',
+        '16': '16rem',
+      },
       transitionProperty: {
         'height': 'height',
+        'width': 'width',
+      },
+      zIndex: {
+        '1': 1,
+        '2': 2,
       },
     },
   },

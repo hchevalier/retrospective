@@ -46,7 +46,7 @@ const AuthenticationForm = ({ onSignUpOrSignIn }) => {
   }
 
   return (
-    <div className='max-w-xl mx-auto mt-4'>
+    <div className='max-w-xl min-w-1/2 mx-auto mt-4'>
       <form noValidate autoComplete='off' onSubmit={handleSubmit}>
         <p className='mb-3'>{mode === 'signUp' ? 'Create an account' : 'Log in'}</p>
         <div>

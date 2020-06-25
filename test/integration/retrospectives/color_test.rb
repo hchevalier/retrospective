@@ -45,10 +45,9 @@ class Retrospective::ColorTest < ActionDispatch::IntegrationTest
     visit retrospective_path(retrospective)
 
     assert_retro_started
-    click_on 'New reflection'
 
     rgba_color = hex_color.scan(/[0-9a-f]{2}/).map { |color| color.to_i(16) }
-    assert find('textarea', style: /#{rgba_color.join(', ')}/)
+    assert find('.reflection', style: /#{rgba_color.join(', ')}/)
 
     other_color = retrospective.available_colors.sample
     refute_equal hex_color, other_color
@@ -58,10 +57,9 @@ class Retrospective::ColorTest < ActionDispatch::IntegrationTest
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
       assert_retro_started
-      click_on 'New reflection'
 
       rgba_color = other_color.scan(/[0-9a-f]{2}/).map { |color| color.to_i(16) }
-      assert find('textarea', style: /#{rgba_color.join(', ')}/)
+      assert find('.reflection', style: /#{rgba_color.join(', ')}/)
     end
   end
 end
