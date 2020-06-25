@@ -11,6 +11,7 @@ import FacilitatorToolkit from './FacilitatorToolkit'
 import LoginForm from './LoginForm'
 import HomeIcon from 'images/home-icon.svg'
 import ArrowIcon from 'images/arrow-icon.svg'
+import './RetrospectiveLobby.scss'
 
 const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
   const dispatch = useDispatch()
@@ -82,7 +83,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
 
   return (
     <div id='main-container' className='flex flex-col min-h-screen'>
-      <nav className="bg-gray-900 shadow text-white h-14" role="navigation">
+      <nav className="bg-gray-900 shadow text-white h-14 fixed w-full" role="navigation">
         <div className="container mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
           <div className="mr-4 md:mr-8">
             <a href='/'>
@@ -97,7 +98,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
           </div>
         </div>
       </nav>
-      <div className='flex flex-row flex-1'>
+      <div className='flex flex-row flex-1 fixed w-full top-14'>
         {shouldDisplayReflectionsList && (
           <ReflectionsList
             open={reflectionsListVisible || revealer}
@@ -105,7 +106,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
             onToggle={handleReflectionsListToggle}
             onDone={handleReflectionsListClose} />
         )}
-        <div className='flex flex-col flex-1'>
+        <div id='right-panel' className='flex flex-col flex-1 overflow-y-hidden'>
           <div className={classNames('bg-gray-200 mb-6 shadow text-white duration-200 ease-linear transform transition-height h-24 origin-top overflow-hidden', { '!h-0': !participantsListVisible })}>
             <div className="mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
               <div className='flex flex-grow justify-end'>

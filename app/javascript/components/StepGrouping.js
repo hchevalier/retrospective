@@ -69,6 +69,7 @@ const StepGrouping = () => {
     if (!stickyNote) return
 
     if (stickyNote.dataset.ownerUuid === profileUuid || initialReflectionIds.indexOf(stickyNote.dataset.id) >= 0) {
+      if (justRevealedOwnReflection(stickyNote)) scrollToStickyNote(stickyNote)
       stickyNote.dataset.read = true
       return
     }
@@ -77,6 +78,12 @@ const StepGrouping = () => {
     ref.current = stickyNote
     reflectionRefs[stickyNote.dataset.id] = ref
     visibilityObserver.observe(stickyNote)
+  }
+
+  const justRevealedOwnReflection = (stickyNote) => {
+    return stickyNote.dataset.ownerUuid === profileUuid &&
+      initialReflectionIds.indexOf(stickyNote.dataset.id) === -1 &&
+      !stickyNote.dataset.read
   }
 
   const handleDragStart = (event) => {

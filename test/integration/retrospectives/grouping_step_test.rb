@@ -104,19 +104,9 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
   end
 
   test 'unread reflections out of viewport are noticed by a banner' do
-    content = <<~LOREM
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nibh turpis, luctus eget semper faucibus,
-      lobortis dignissim leo. Cras ultricies lacinia lacinia. Etiam nec tortor in mi auctor posuere eu a metus.
-      Cras nec orci congue tortor aliquet elementum eu a erat. Vivamus pellentesque nunc in euismod vehicula.
-      Quisque tristique sed nisi vel interdum. Nulla eu ligula est. Praesent sit amet sodales massa.
-      Sed non sapien viverra, iaculis ante vel, pellentesque neque. Nullam a tellus eu erat fermentum bibendum vitae
-      nec arcu. Cras ultrices bibendum lectus, id porttitor tellus sagittis in. Quisque viverra velit euismod
-      ultricies interdum.'
-    LOREM
-
     retrospective = create(:retrospective, step: 'grouping')
     other_participant = create(:other_participant, retrospective: retrospective)
-    reflections = create_list(:reflection, 2, :glad, owner: other_participant, revealed: false, content: content)
+    reflections = create_list(:reflection, 2, :glad, :long, owner: other_participant, revealed: false)
     create(:reflection, :mad, owner: other_participant, revealed: false)
 
     logged_in_as(retrospective.organizer)
@@ -160,7 +150,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
   test 'clicking on notice banner scrolls to last unread reflection from column' do
     retrospective = create(:retrospective, step: 'grouping')
     other_participant = create(:other_participant, retrospective: retrospective)
-    reflections = create_list(:reflection, 12, :glad, owner: other_participant, revealed: false)
+    reflections = create_list(:reflection, 3, :glad, :long, owner: other_participant, revealed: false)
 
     logged_in_as(retrospective.organizer)
     visit retrospective_path(retrospective)
