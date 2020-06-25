@@ -16,6 +16,7 @@ const StepGrouping = () => {
   const reflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
   const zones = useSelector(state => state.retrospective.zones, shallowEqual)
   const organizer = useSelector(state => state.profile.organizer)
+  const revealer = useSelector(state => state.profile.revealer)
   const reactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
 
   const initialReflectionIds = React.useRef(reflections.map((reflection) => reflection.id)).current
@@ -65,10 +66,21 @@ const StepGrouping = () => {
     stickyNote.scrollIntoView({ behavior: 'smooth' })
   }
 
+  React.useEffect(() => {
+    if (revealer && reflectionRefs) {
+      const stickyNotes = Object.entries(reflectionRefs).map(([, stickyNoteRef]) => stickyNoteRef?.current)
+      const unreadNotes = stickyNotes.filter((stickyNote) => stickyNote && !stickyNote.dataset.read)
+      if (unreadNotes.length > 0) {
+        scrollToStickyNote(unreadNotes[0])
+      }
+    }
+  }, [reflectionRefs, revealer])
+
   const setStickyNoteRef = (stickyNote) => {
     if (!stickyNote) return
 
     if (stickyNote.dataset.ownerUuid === profileUuid || initialReflectionIds.indexOf(stickyNote.dataset.id) >= 0) {
+      if (justRevealedOwnReflection(stickyNote)) scrollToStickyNote(stickyNote)
       stickyNote.dataset.read = true
       return
     }
@@ -77,6 +89,12 @@ const StepGrouping = () => {
     ref.current = stickyNote
     reflectionRefs[stickyNote.dataset.id] = ref
     visibilityObserver.observe(stickyNote)
+  }
+
+  const justRevealedOwnReflection = (stickyNote) => {
+    return stickyNote.dataset.ownerUuid === profileUuid &&
+      initialReflectionIds.indexOf(stickyNote.dataset.id) === -1 &&
+      !stickyNote.dataset.read
   }
 
   const handleDragStart = (event) => {

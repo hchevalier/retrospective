@@ -18,6 +18,9 @@ module.exports = {
       height: {
         '14': '3.5rem',
       },
+      inset: {
+        '14': '3.5rem',
+      },
       minHeight: {
         '8': '2rem',
       },
