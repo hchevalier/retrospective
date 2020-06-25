@@ -16,7 +16,6 @@ const StepGrouping = () => {
   const reflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
   const zones = useSelector(state => state.retrospective.zones, shallowEqual)
   const organizer = useSelector(state => state.profile.organizer)
-  const revealer = useSelector(state => state.profile.revealer)
   const reactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
 
   const initialReflectionIds = React.useRef(reflections.map((reflection) => reflection.id)).current
