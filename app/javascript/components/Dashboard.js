@@ -6,7 +6,7 @@ const Dashboard = () => {
   const [tasks, setTasks] = React.useState([])
 
   React.useEffect(() => {
-    get({ url: '/retrospectives' })
+    get({ url: '/api/retrospectives' })
       .then((data) => setRetrospectives(data))
   }, [])
 

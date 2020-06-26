@@ -7,8 +7,6 @@ class RetrospectivesController < ApplicationController
     render json: current_account.retrospectives.distinct.map(&:as_short_json)
   end
 
-  def new; end
-
   def create
     retrospective = Retrospective.create(retrospective_params.merge(organizer_attributes: organizer_attributes))
 

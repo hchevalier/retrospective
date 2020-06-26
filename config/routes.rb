@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
-  resources :retrospectives, only: %i(index new create show) do
+  resources :retrospectives, only: %i(create show), id: /[a-zA-Z0-9\-]{36}/ do
     resources :reflections, only: %i(create update destroy) do
       resources :reactions, only: %i(create destroy)
     end
@@ -12,8 +12,10 @@ Rails.application.routes.draw do
   end
 
   scope :api do
+    resources :retrospectives, only: :index
     resources :tasks, only: :index
     resources :groups, only: :index
+    resources :retrospective_kinds, only: :index
   end
 
   resource :sessions, only: %i(new create)
