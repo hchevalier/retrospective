@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   scope :api do
     resources :retrospectives, only: :index
     resources :tasks, only: :index
-    resources :groups, only: :index
+    resources :groups, only: %i(index create)
     resources :retrospective_kinds, only: :index
   end
 

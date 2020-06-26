@@ -4,9 +4,7 @@ import PropTypes from 'prop-types'
 
 const Button = ({ children, contained, disabled, onClick, primary, secondary, ...rest }) => {
   const handleClick = (event) => {
-    event.preventDefault()
-
-    !disabled && onClick(event)
+    if (!disabled && onClick) onClick(event)
   }
 
   return (
@@ -38,7 +36,7 @@ Button.propTypes = {
   children: PropTypes.node.isRequired,
   contained: PropTypes.bool,
   disabled: PropTypes.bool,
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   primary: PropTypes.bool,
   secondary: PropTypes.bool
 }

@@ -1,5 +1,7 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { get } from 'lib/httpClient'
+import Button from './Button'
 
 const GroupsList = () => {
   const [groups, setGroups] = React.useState([])
@@ -13,8 +15,10 @@ const GroupsList = () => {
     <div className='container mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap'>
 
       <div className='flex flex-col my-8'>
+        <Link to='/groups/new'>
+          <Button primary contained>Create a group</Button>
+        </Link>
         <div className='flex-1 text-xl'>My groups</div>
-
         <div>
           {groups && groups.map((group) => {
             return (
