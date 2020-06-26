@@ -1,11 +1,12 @@
 import React from 'react'
 import classNames from 'classnames'
+import PropTypes from 'prop-types'
 
-const Button = ({ children, primary, secondary, contained, disabled, onClick, ...rest }) => {
-  const handleClick = () => {
+const Button = ({ children, contained, disabled, onClick, primary, secondary, ...rest }) => {
+  const handleClick = (event) => {
     event.preventDefault()
 
-    !disabled && onClick()
+    !disabled && onClick(event)
   }
 
   return (
@@ -31,6 +32,15 @@ const Button = ({ children, primary, secondary, contained, disabled, onClick, ..
 
 Button.defaultProps = {
   secondary: false
+}
+
+Button.propTypes = {
+  children: PropTypes.node.isRequired,
+  contained: PropTypes.bool,
+  disabled: PropTypes.bool,
+  onClick: PropTypes.func.isRequired,
+  primary: PropTypes.bool,
+  secondary: PropTypes.bool
 }
 
 export default Button

@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
-  resources :retrospectives, only: %i(create show), id: /[a-zA-Z0-9\-]{36}/ do
+  # So that /retrospectives/new is not using it
+  resources :retrospectives, only: :show, id: /[a-zA-Z0-9\-]{36}/
+
+  resources :retrospectives, only: %i(create) do
     resources :reflections, only: %i(create update destroy) do
       resources :reactions, only: %i(create destroy)
     end
