@@ -5,14 +5,14 @@ class Group < ApplicationRecord
   has_many :retrospectives
 
   def pending_tasks
-    Task
-      .includes(:assignee, :author, :reflection)
-      .where(status: :todo, retrospective: retrospectives.ids)
+    retrospectives.includes(tasks: %i(assignee author reflection)).where(tasks: { status: :todo }).flat_map(&:tasks)
   end
 
   def as_json
     {
+      createdAt: created_at,
       id: id,
+      members: accounts_without_revoked.as_json,
       name: name,
       pendingTasks: pending_tasks.as_json
     }

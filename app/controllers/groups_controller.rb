@@ -11,4 +11,8 @@ class GroupsController < ApplicationController
 
     render json: group.as_json
   end
+
+  def show
+    render json: current_account.accessible_groups.find(params[:id]).as_json
+  end
 end

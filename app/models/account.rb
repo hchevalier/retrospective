@@ -12,6 +12,13 @@ class Account < ApplicationRecord
 
   before_create :clear_password_reset_token
 
+  def as_json
+    {
+      id: id,
+      username: username
+    }
+  end
+
   def self.from_omniauth(auth)
     where(email: auth.info.email).first_or_initialize do |account|
       account.username = auth.info.name

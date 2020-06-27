@@ -8,8 +8,8 @@ const Header = () => (
     <div className='flex'>
       <Link to='/'>
         <img src={HomeIcon} width="24" />
+        <span className='px-4'>Docto retro</span>
       </Link>
-      <span className='px-4'>Docto retro</span>
     </div>
     <div className='flex flex-grow'>
       <Link to="/groups" className='ml-auto'>

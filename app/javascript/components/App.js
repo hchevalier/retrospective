@@ -3,10 +3,16 @@ import { BrowserRouter as Router, Switch, Route, useRouteMatch, useParams } from
 import Header from './Header'
 import Dashboard from './Dashboard'
 import GroupsList from './GroupsList'
+import GroupDetails from './GroupDetails'
 import GroupCreationForm from './GroupCreationForm'
 import RetrospectiveCreationForm from './RetrospectiveCreationForm'
 
 export default function App() {
+  const GroupShow = () => {
+    let params = useParams()
+    return < GroupDetails id={params.groupId} />
+  }
+
   const GroupSwitch = () => {
     let match = useRouteMatch()
 
@@ -14,6 +20,9 @@ export default function App() {
       <Switch>
         <Route path={`${match.path}/new`}>
           <GroupCreationForm />
+        </Route>
+        <Route path={`${match.path}/:groupId`}>
+          <GroupShow />
         </Route>
         <Route path={match.path}>
           <GroupsList />

@@ -2,9 +2,27 @@ class GroupAccess < ApplicationRecord
   belongs_to :account
   belongs_to :group
 
-  scope :active, -> { where(deleted_at: nil) }
+  scope :active, -> { where(revoked_at: nil) }
 
   validates :account, uniqueness: { scope: :group, constraint: -> { active } }
+
+  def as_json
+    {
+      account: {
+        id: account.id,
+        username: account.username
+      },
+      active: revoked_at.nil?,
+      createdAt: created_at,
+      id: id,
+      group: {
+        createdAt: group.created_at,
+        id: group.id,
+        membersCount: group.accounts_without_revoked.count,
+        name: group.name
+      }
+    }
+  end
 
   private
 
