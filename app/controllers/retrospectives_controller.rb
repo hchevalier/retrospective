@@ -4,7 +4,9 @@ class RetrospectivesController < ApplicationController
   skip_before_action :ensure_logged_in, only: :show
 
   def index
-    render json: current_account.retrospectives.distinct.map(&:as_short_json)
+    group_ids = current_account.accessible_groups.ids
+    retrospectives = current_account.retrospectives.where(group_id: group_ids)
+    render json: retrospectives.map(&:as_short_json).sort_by { | retrospective | retrospective[:createdAt] }.reverse
   end
 
   def create

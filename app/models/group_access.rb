@@ -4,7 +4,7 @@ class GroupAccess < ApplicationRecord
 
   scope :active, -> { where(revoked_at: nil) }
 
-  validates :account, uniqueness: { scope: :group, constraint: -> { active } }
+  validate :no_duplicate_active_access
 
   def as_json
     {
@@ -27,7 +27,7 @@ class GroupAccess < ApplicationRecord
   private
 
   def no_duplicate_active_access
-    return if GroupAccess.where.not(id: id).where(account: account, group: group).none?
+    return if GroupAccess.where.not(id: id).where(account: account, group: group, revoked_at: nil).none?
 
     errors.add(:account, "This account already has an active access to group #{group.name}")
   end

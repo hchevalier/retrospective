@@ -3,7 +3,9 @@ class TasksController < ApplicationController
   before_action :ensure_participant, except: :index
 
   def index
-    render json: current_account.participants.flat_map(&:assigned_tasks).map(&:as_json).sort_by { | task | task[:created_at] }
+    group_ids = current_account.accessible_groups.ids
+    participants = current_account.participants.joins(:retrospective).where(retrospectives: { group_id: group_ids })
+    render json: participants.flat_map(&:assigned_tasks).map(&:as_json).sort_by { | task | task[:createdAt] }.reverse
   end
 
   def create
