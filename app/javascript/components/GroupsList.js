@@ -42,7 +42,7 @@ const GroupsList = () => {
                       <div>Joined on {new Date(groupAccess.createdAt).toLocaleString()}</div>
                     </div>
                     <div className='flex flex-row border rounded self-start p-1 ml-2 hover:bg-gray-500'>
-                      <div onClick={(event) => { event.preventDefault(); handleLeaveGroup(groupAccess) }}>Leave group</div>
+                      <div className='leave-link' onClick={(event) => { event.preventDefault(); handleLeaveGroup(groupAccess) }}>Leave group</div>
                     </div>
                   </div>
                 </div>

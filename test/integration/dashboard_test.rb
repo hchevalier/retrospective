@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class DashboartTest < ActionDispatch::IntegrationTest
+class DashboardTest < ActionDispatch::IntegrationTest
   setup do
     @group = create(:group, name: '8357 620UP')
     @retrospective = create(:retrospective, group: @group)
