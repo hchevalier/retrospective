@@ -2,9 +2,9 @@
 
 FactoryBot.define do
   factory :retrospective do
-    name { 'Retrospective' }
     kind { 'glad_sad_mad' }
     association :organizer, strategy: :build
+    association :group, strategy: :build
 
     transient do
       participants_attributes { [] }

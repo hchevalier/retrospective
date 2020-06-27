@@ -13,7 +13,7 @@ import HomeIcon from 'images/home-icon.svg'
 import ArrowIcon from 'images/arrow-icon.svg'
 import './RetrospectiveLobby.scss'
 
-const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
+const RetrospectiveLobby = ({ id: retrospectiveId, groupName, kind }) => {
   const dispatch = useDispatch()
   const [participantsListVisible, setParticipantsListVisible] = React.useState(true)
   const [reflectionsListVisible, setReflectionsListVisible] = React.useState(true)
@@ -91,7 +91,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, name, kind }) => {
             </a>
           </div>
           <div className="mr-4 md:mr-8">
-            Lobby {name} - {kind}
+            Lobby {groupName} - {kind}
           </div>
           <div className='flex flex-grow justify-end'>
             <img className={classNames('cursor-pointer duration-200 ease-in-out transition-transform', { 'transform rotate-180': participantsListVisible })} src={ArrowIcon} width="24" onClick={toggleParticipantsList} />

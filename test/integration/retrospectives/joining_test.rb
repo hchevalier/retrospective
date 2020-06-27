@@ -3,17 +3,21 @@ require 'test_helper'
 class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
   test 'creates a new retrospective' do
     account = create(:account)
+    group = create(:group, name: 'B357 620UP')
+    group.accounts << account
     as_user(account)
 
     visit '/'
     assert_text 'Dashboard'
     click_on 'Create a retrospective'
 
-    fill_in 'retrospective_name', with: 'Retrospective'
+    find('input[name="group_name"]').click
+    assert_text 'B357 620UP'
+    find('[name="group_name_dropdown"] div', text: 'B357 620UP', match: :first).click
     select 'glad_sad_mad', from: 'retrospective_kind'
     click_on 'Start retrospective'
 
-    assert_text 'Lobby Retrospective'
+    assert_text 'Lobby B357 620UP'
   end
 
   test 'joins an existing retrospective by creating an account' do

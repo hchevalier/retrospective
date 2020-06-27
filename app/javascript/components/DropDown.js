@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const DropDown = ({ allowNew, options, onItemSelected, onItemAdded, ...rest }) => {
+const DropDown = ({ allowNew, name, options, onItemSelected, onItemAdded, ...rest }) => {
   const [value, setValue] = React.useState('')
   const [optionsDisplayed, setOptionsDisplayed] = React.useState(false)
   const [selection, setSelection] = React.useState({ value: null, isNewValue: false })
@@ -57,9 +57,9 @@ const DropDown = ({ allowNew, options, onItemSelected, onItemAdded, ...rest }) =
 
   return (
     <div className='flex flex-col w-64 relative'>
-      <input ref={inputRef} className="border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline" {...rest} value={value} onChange={handleInputChange} onFocus={handleFocus} onBlur={handleBlur}/>
+      <input ref={inputRef} className="border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline" {...rest} name={name} value={value} onChange={handleInputChange} onFocus={handleFocus} onBlur={handleBlur}/>
       {optionsDisplayed && (
-        <div className='absolute bg-white bg-opacity-100 border mt-8 w-64'>
+        <div className='absolute bg-white bg-opacity-100 border mt-8 w-64' name={`${name}_dropdown`}>
           {options.filter((option) => option.label.match(currentFilter)).map((option) => {
             if (option.label === value) {
               exactMatch = true
@@ -75,6 +75,7 @@ const DropDown = ({ allowNew, options, onItemSelected, onItemAdded, ...rest }) =
 
 DropDown.propTypes = {
   allowNew: PropTypes.bool,
+  name: PropTypes.string,
   onItemAdded: PropTypes.func,
   onItemSelected: PropTypes.func,
   options: PropTypes.arrayOf(PropTypes.shape({

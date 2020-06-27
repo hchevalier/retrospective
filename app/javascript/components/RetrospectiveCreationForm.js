@@ -68,7 +68,7 @@ const RetrospectiveCreationForm = () => {
         <div className='grid grid-cols-2 gap-4 mb-4'>
           <div>
             <label>Group</label>
-            <DropDown name='retrospective_name' options={groupOptions} allowNew onItemSelected={handleSelectedExistingGroup} onItemAdded={handleSelectedNewGroup} />
+            <DropDown name='group_name' options={groupOptions} allowNew onItemSelected={handleSelectedExistingGroup} onItemAdded={handleSelectedNewGroup} />
           </div>
           <div>
             <label id='label-kind'>Retrospective kind</label>

@@ -28,7 +28,7 @@ const copyUrlToClipboard = () => {
 
 const ParticipantsList = () => {
   const profile = useSelector(state => state.profile)
-  const { name: retrospectiveName } = useSelector(state => state.retrospective)
+  const { id: retrospectiveId } = useSelector(state => state.retrospective)
   const { organizerInfo: encryptedOrganizerInfo, step } = useSelector(state => state.orchestrator)
   const participants = useSelector(state => state.participants, shallowEqual)
   const visibleReflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
@@ -46,7 +46,7 @@ const ParticipantsList = () => {
 
     if (!organizer) return {}
 
-    const encodedName = btoa(retrospectiveName)
+    const encodedName = btoa(retrospectiveId)
     const initializationVector = encodedName.length < 16 ? encodedName + '0'.repeat(16 - encodedName.length) : encodedName
     const message = decrypt(encryptedOrganizerInfo, decryptionKey, initializationVector)
     if (message !== '') {
@@ -54,7 +54,7 @@ const ParticipantsList = () => {
     }
 
     return {}
-  }, [encryptedOrganizerInfo, profile, retrospectiveName])
+  }, [encryptedOrganizerInfo, profile, retrospectiveId])
 
   const revealers = uniqBy(visibleReflections.map((reflection) => reflection.owner), 'uuid').map(participant => participant.uuid)
 

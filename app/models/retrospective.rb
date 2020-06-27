@@ -18,8 +18,6 @@ class Retrospective < ApplicationRecord
 
   accepts_nested_attributes_for :organizer
 
-  delegate :name, to: :group
-
   enum kind: {
     kds: 'kds',
     kalm: 'kalm',
@@ -56,7 +54,7 @@ class Retrospective < ApplicationRecord
   def as_json
     {
       id: id,
-      name: name,
+      groupName: group.name,
       kind: kind,
       zones: zones.as_json,
       discussedReflection: discussed_reflection&.readable,
@@ -67,7 +65,7 @@ class Retrospective < ApplicationRecord
   def as_short_json
     {
       id: id,
-      name: name,
+      groupName: group.name,
       kind: kind,
       createdAt: created_at
     }
@@ -114,7 +112,7 @@ class Retrospective < ApplicationRecord
     cipher = OpenSSL::Cipher.new('AES-256-CBC')
     cipher.encrypt
     cipher.key = Digest::SHA256.new.update(organizer.encryption_key).digest
-    cipher.iv = Base64.encode64(name).chomp.ljust(16, '0')[0...16]
+    cipher.iv = Base64.encode64(id).chomp.ljust(16, '0')[0...16]
     encrypted_data = cipher.update(clear_info.to_json) + cipher.final
 
     Base64.strict_encode64(encrypted_data).chomp
