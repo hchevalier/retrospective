@@ -5,10 +5,11 @@ import Button from './Button'
 
 const GroupsList = () => {
   const [groupAccesses, setGroupAccesses] = React.useState([])
+  const [loading, setLoading] = React.useState(true)
 
   React.useEffect(() => {
     get({ url: '/api/group_accesses' })
-      .then((data) => setGroupAccesses(data))
+      .then((data) => { setGroupAccesses(data); setLoading(false)})
   }, [])
 
   const handleLeaveGroup = (groupAccessToRevoke) => {
@@ -24,7 +25,7 @@ const GroupsList = () => {
         <Link to='/groups/new'>
           <Button primary contained>Create a group</Button>
         </Link>
-        <div className='flex-1 text-xl'>My groups</div>
+        <div className='flex-1 text-xl mt-4'>My groups</div>
         <div>
           {groupAccesses && groupAccesses.map((groupAccess) => {
             const { group } = groupAccess
@@ -40,7 +41,7 @@ const GroupsList = () => {
                       </div>
                       <div>Joined on {new Date(groupAccess.createdAt).toLocaleString()}</div>
                     </div>
-                    <div className='flex flex-row border rounded self-start p-1 hover:bg-gray-500'>
+                    <div className='flex flex-row border rounded self-start p-1 ml-2 hover:bg-gray-500'>
                       <div onClick={(event) => { event.preventDefault(); handleLeaveGroup(groupAccess) }}>Leave group</div>
                     </div>
                   </div>
@@ -48,6 +49,7 @@ const GroupsList = () => {
               </Link>
             )
           })}
+          {!loading && !groupAccesses && <span>You did not join nor create any group</span>}
         </div>
       </div>
     </div>
