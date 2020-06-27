@@ -118,7 +118,9 @@ CREATE TABLE public.group_accesses (
     id bigint NOT NULL,
     group_id uuid NOT NULL,
     account_id uuid NOT NULL,
-    revoked_at timestamp without time zone
+    revoked_at timestamp without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -231,7 +233,6 @@ CREATE TABLE public.reflections (
 
 CREATE TABLE public.retrospectives (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    name character varying NOT NULL,
     sub_step bigint DEFAULT 0,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
@@ -240,7 +241,8 @@ CREATE TABLE public.retrospectives (
     timer_end_at timestamp without time zone,
     discussed_reflection_id uuid,
     organizer_id uuid NOT NULL,
-    revealer_id uuid
+    revealer_id uuid,
+    group_id uuid NOT NULL
 );
 
 
@@ -432,6 +434,13 @@ ALTER TABLE ONLY public.zones
 
 
 --
+-- Name: current_access_to_group_for_account; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX current_access_to_group_for_account ON public.group_accesses USING btree (group_id, account_id) WHERE (revoked_at IS NULL);
+
+
+--
 -- Name: index_accounts_on_email; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -506,6 +515,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200614130855'),
 ('20200614154701'),
 ('20200625205131'),
-('20200625210311');
+('20200625210311'),
+('20200627114326'),
+('20200627120729');
 
 

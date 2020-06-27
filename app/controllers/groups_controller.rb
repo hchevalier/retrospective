@@ -9,6 +9,6 @@ class GroupsController < ApplicationController
     group = Group.create!(name: params[:name])
     group.accounts << current_account
 
-    render json: :created
+    render json: group.as_json
   end
 end

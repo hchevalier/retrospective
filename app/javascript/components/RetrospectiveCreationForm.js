@@ -1,11 +1,13 @@
 import React from 'react'
 import { get, post } from 'lib/httpClient'
-import Input from './Input'
 import Button from './Button'
+import DropDown from './DropDown'
 
 const RetrospectiveCreationForm = () => {
+  const [existingGroups, setExistingGroups] = React.useState([])
   const [retrospectiveKinds, setRetrospectiveKinds] = React.useState([])
-  const [retrospectiveName, setRetrospectiveName] = React.useState('')
+  const [newGroupName, setNewGroupName] = React.useState('')
+  const [retrospectiveGroup, setRetrospectiveGroup] = React.useState('')
   const [retrospectiveKind, setRetrospectiveKind] = React.useState('')
 
   React.useEffect(() => {
@@ -13,11 +15,33 @@ const RetrospectiveCreationForm = () => {
       .then((data) => setRetrospectiveKinds(data))
   }, [])
 
-  const createRetrospective = (event) => {
+  React.useEffect(() => {
+    get({ url: '/api/groups' })
+      .then((data) => setExistingGroups(data))
+  }, [])
+
+  const handleSubmit = () => {
+    if (newGroupName) {
+      post({
+        url: '/api/groups',
+        payload: {
+          name: newGroupName
+        }
+      })
+        .then(group => {
+          createRetrospective(group.id)
+        })
+        .catch(error => console.warn(error))
+    } else {
+      createRetrospective()
+    }
+  }
+
+  const createRetrospective = (newGroupId) => {
     post({
       url: '/retrospectives',
       payload: {
-        name: retrospectiveName,
+        group_id: retrospectiveGroup || newGroupId,
         kind: retrospectiveKind
       }
     })
@@ -25,15 +49,26 @@ const RetrospectiveCreationForm = () => {
       .catch(error => console.warn(error))
   }
 
-  const formInvalid =  !retrospectiveName || !retrospectiveKind
+  const handleSelectedNewGroup = (name) => {
+    setRetrospectiveGroup('')
+    setNewGroupName(name)
+  }
+
+  const handleSelectedExistingGroup = (groupId) => {
+    setRetrospectiveGroup(groupId)
+    setNewGroupName('')
+  }
+
+  const formInvalid = (!retrospectiveGroup && !newGroupName) || !retrospectiveKind
+  const groupOptions = React.useMemo(() => existingGroups.map((group) => ({ label: group.name, value: group.id })), [existingGroups])
 
   return (
     <div className='container'>
-      <form noValidate autoComplete='off' className='max-w-xl mx-auto mt-4' onSubmit={createRetrospective}>
+      <form noValidate autoComplete='off' className='max-w-xl mx-auto mt-4' onSubmit={handleSubmit}>
         <div className='grid grid-cols-2 gap-4 mb-4'>
           <div>
-            <label>Team name</label>
-            <Input placeholder='Team name' name='retrospective_name' value={retrospectiveName} onChange={(event) => setRetrospectiveName(event.target.value)} />
+            <label>Group</label>
+            <DropDown name='retrospective_name' options={groupOptions} allowNew onItemSelected={handleSelectedExistingGroup} onItemAdded={handleSelectedNewGroup} />
           </div>
           <div>
             <label id='label-kind'>Retrospective kind</label>
@@ -49,7 +84,7 @@ const RetrospectiveCreationForm = () => {
           </div>
         </div>
 
-        <Button primary contained disabled={formInvalid} onClick={createRetrospective}>Start retrospective</Button>
+        <Button primary contained disabled={formInvalid} onClick={handleSubmit}>Start retrospective</Button>
       </form>
     </div>
   )

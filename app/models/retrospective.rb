@@ -8,6 +8,7 @@ class Retrospective < ApplicationRecord
   has_many :reactions
   has_many :tasks, through: :participants, source: :created_tasks
 
+  belongs_to :group
   belongs_to :organizer, class_name: 'Participant', inverse_of: :organized_retrospective
   belongs_to :revealer, class_name: 'Participant', inverse_of: :revealing_retrospective, optional: true
   belongs_to :discussed_reflection, class_name: 'Reflection', optional: true
@@ -16,6 +17,8 @@ class Retrospective < ApplicationRecord
   before_create :initialize_zones
 
   accepts_nested_attributes_for :organizer
+
+  delegate :name, to: :group
 
   enum kind: {
     kds: 'kds',

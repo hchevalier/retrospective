@@ -53,7 +53,7 @@ class RetrospectivesController < ApplicationController
   private
 
   def retrospective_params
-    params.permit(:name, :kind)
+    params.permit(:group_id, :kind)
   end
 
   def organizer_attributes
