@@ -2,7 +2,7 @@ require 'test_helper'
 
 class GroupsTest < ActionDispatch::IntegrationTest
   setup do
-    @account = create(:account)
+    @account = create(:account, username: 'Groupie')
     as_user(@account)
   end
 
@@ -80,5 +80,90 @@ class GroupsTest < ActionDispatch::IntegrationTest
     refute_text '8357 620UP'
 
     refute_nil group.reload.deleted_at
+  end
+
+  test 'shows the list of active members' do
+    group = create(:group, name: '8357 620UP')
+    group.accounts << @account
+
+    other_account = create(:account, username: 'Other member')
+    group.accounts << other_account
+
+    visit '/groups'
+    click_on '8357 620UP'
+
+    assert_text 'Group 8357 620UP'
+    assert_text 'Group members: 2'
+    assert_text 'Groupie'
+    assert_text 'Other member'
+  end
+
+  test 'do not show old members unless they have a new active access' do
+    group = create(:group, name: '8357 620UP')
+    group.accounts << @account
+
+    other_account = create(:account, username: 'Other member')
+    group.accounts << other_account
+    group.group_accesses.find_by(account: other_account).update!(revoked_at: Time.current)
+
+    visit "/groups/#{group.id}"
+    assert_text 'Group members: 1'
+    refute_text 'Other member'
+
+    group.accounts << other_account
+
+    visit "/groups/#{group.id}"
+    assert_text 'Group members: 2'
+    assert_text 'Other member', count: 1
+  end
+
+  test 'shows all tasks created when user was part of the group as long as he has one active access' do
+    group = create(:group, name: '8357 620UP')
+    group.accounts << @account
+    other_account = create(:account)
+    group.accounts << other_account
+
+    # can see tasks created during this retrospective
+    do_a_retrospective_with_actions(group, 'Retrospective 1 action', @account, other_account)
+    visit "/groups/#{group.id}"
+    assert_text 'Retrospective 1 action', count: 2
+
+    group.group_accesses.where(account: @account, revoked_at: nil).update_all(revoked_at: Time.current)
+
+    retrospective2 = do_a_retrospective_with_actions(group, 'Retrospective 2 action', other_account)
+    retrospective3 = do_a_retrospective_with_actions(group, 'Retrospective 3 action', other_account)
+    retrospective3.tasks.update_all(status: :done, updated_at: Time.current)
+
+    group.accounts << @account
+    # can see pending tasks created during this second retrospective thanks to the active access, even if they change status
+    # cannot see tasks that were created during the third retrospective because they were closed before he had a chance to see them
+    visit "/groups/#{group.id}"
+    assert_text 'Retrospective 1 action', count: 2
+    assert_text 'Retrospective 2 action'
+    refute_text 'Retrospective 3 action'
+
+    retrospective2.tasks.update_all(status: :done, updated_at: Time.current)
+    # @account can see all tasks created during this retrospective as he has any active access at this time, even if he did not participate
+    do_a_retrospective_with_actions(group, 'Retrospective 4 action', other_account)
+
+    visit "/groups/#{group.id}"
+    assert_text 'Retrospective 2 action'
+    assert_text 'Retrospective 4 action'
+  end
+
+  private
+
+  def do_a_retrospective_with_actions(group, task_description, *accounts)
+    organizer_account = accounts.first
+    retrospective =
+      Retrospective.create!(kind: :glad_sad_mad, group: group, organizer_attributes: { surname: organizer_account.username, account_id: organizer_account.id })
+    organizer = retrospective.organizer
+    accounts[1..].each { |account| Participant.create!(account: account, retrospective: retrospective, surname: account.username) }
+    reflection = create(:reflection, :glad, retrospective: retrospective, owner: organizer)
+    retrospective.reload.participants.each do |participant|
+      create(:task, reflection: reflection, description: task_description, author: organizer, assignee: participant)
+    end
+
+    retrospective
   end
 end

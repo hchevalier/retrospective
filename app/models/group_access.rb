@@ -24,6 +24,14 @@ class GroupAccess < ApplicationRecord
     }
   end
 
+  def active?
+    revoked_at.nil?
+  end
+
+  def range
+    created_at...revoked_at
+  end
+
   private
 
   def no_duplicate_active_access

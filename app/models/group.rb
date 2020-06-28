@@ -4,17 +4,26 @@ class Group < ApplicationRecord
   has_many :accounts_without_revoked, -> { where(group_accesses: { revoked_at: nil }) }, through: :group_accesses, class_name: 'Account', source: :account
   has_many :retrospectives
 
-  def pending_tasks
-    retrospectives.includes(tasks: %i(assignee author reflection)).where(tasks: { status: :todo }).flat_map(&:tasks)
+  def tasks_visible_by(account)
+    retrospectives
+      .includes(tasks: %i(assignee author reflection))
+      .flat_map(&:tasks)
+      .filter { |task| account.sees_task?(task) }
   end
 
-  def as_json
+  def as_short_json
     {
       createdAt: created_at,
       id: id,
+      name: name
+    }
+  end
+
+  def as_json(account)
+    {
+      **as_short_json,
       members: accounts_without_revoked.as_json,
-      name: name,
-      pendingTasks: pending_tasks.as_json
+      tasks: tasks_visible_by(account).as_json
     }
   end
 end

@@ -104,6 +104,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
       assert_text 'First'
     end
 
+    topic_sticky_bookmark.hover
     topic_sticky_bookmark.click
     within '.reflection' do
       assert_text 'First reflection'

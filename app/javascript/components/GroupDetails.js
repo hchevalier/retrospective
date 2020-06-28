@@ -39,8 +39,8 @@ const GroupsDetails = ({ id }) => {
 
             <h2 className='mt-4 font-bold'>Tasks</h2>
             <div className='flex flex-row flex-wrap'>
-              {group.pendingTasks.length === 0 && <span>No task</span>}
-              {group.pendingTasks.map((task) => {
+              {group.tasks.length === 0 && <span>No task</span>}
+              {group.tasks.map((task) => {
                 return (
                   <div key={task.id} className='block bg-gray-400 rounded-md p-2 m-2 w-64'>
                     <div className='flex items-stretch'>

@@ -19,6 +19,16 @@ class Account < ApplicationRecord
     }
   end
 
+  def sees_task?(task)
+    accesses_to_group = group_accesses.where(group_id: task.retrospective.group_id).to_a
+
+    retrospectives.ids.include?(task.retrospective.id) ||
+      accesses_to_group.filter(&:active?).present? && (
+        task.todo? ||
+        accesses_to_group.any? { |access| access.range.cover?(task.created_at) || access.range.cover?(task.updated_at) }
+      )
+  end
+
   def self.from_omniauth(auth)
     where(email: auth.info.email).first_or_initialize do |account|
       account.username = auth.info.name
