@@ -1,10 +1,12 @@
 require 'test_helper'
 
 class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
-  test 'creates a new retrospective' do
+  test 'creates a new retrospective with an existing group' do
     account = create(:account)
     group = create(:group, name: '8357 620UP')
     group.accounts << account
+    other_group = create(:group, name: '07H32 620UP')
+    other_group.accounts << account
     as_user(account)
 
     visit '/'
@@ -13,11 +15,46 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
 
     find('input[name="group_name"]').click
     assert_text '8357 620UP'
+    assert_text '07H32 620UP'
     find('[name="group_name_dropdown"] div', text: '8357 620UP', match: :first).click
+    assert_field 'group_name', with: '8357 620UP'
+    refute_text '07H32 620UP'
+    find('input[name="group_name"]').click
+    fill_in 'group_name', with: '07H32'
+    refute_text '8357 620UP'
+    assert_text '07H32 620UP'
+    assert_text 'Create group "07H32"'
+    fill_in 'group_name', with: '07H32 620UP'
+    refute_text 'Create group "07H32"'
+
+    select 'glad_sad_mad', from: 'retrospective_kind'
+    assert_field 'group_name', with: '8357 620UP'
+    refute_text '07H32 620UP'
+
+    click_on 'Start retrospective'
+
+    assert_text 'Lobby 8357 620UP'
+  end
+
+  test 'creates a new retrospective with a new group' do
+    account = create(:account)
+    as_user(account)
+
+    visit '/'
+    assert_text 'Dashboard'
+    click_on 'Create a retrospective'
+
+    find('input[name="group_name"]').click
+    refute_text '8357 620UP'
+    fill_in 'group_name', with: '8357 620UP'
+    find('[name="group_name_dropdown"] div', text: 'Create group "8357 620UP"', match: :first).click
     select 'glad_sad_mad', from: 'retrospective_kind'
     click_on 'Start retrospective'
 
     assert_text 'Lobby 8357 620UP'
+    account.reload
+    visit '/'
+    assert_text '8357 620UP - glad_sad_mad'
   end
 
   test 'joins an existing retrospective by creating an account' do

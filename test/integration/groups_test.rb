@@ -156,9 +156,13 @@ class GroupsTest < ActionDispatch::IntegrationTest
   def do_a_retrospective_with_actions(group, task_description, *accounts)
     organizer_account = accounts.first
     retrospective =
-      Retrospective.create!(kind: :glad_sad_mad, group: group, organizer_attributes: { surname: organizer_account.username, account_id: organizer_account.id })
+      Retrospective.create!(kind: :glad_sad_mad, group: group, organizer_attributes: {
+        surname: organizer_account.username, account_id: organizer_account.id
+      })
     organizer = retrospective.organizer
-    accounts[1..].each { |account| Participant.create!(account: account, retrospective: retrospective, surname: account.username) }
+    accounts[1..].each do |account|
+      Participant.create!(account: account, retrospective: retrospective, surname: account.username)
+    end
     reflection = create(:reflection, :glad, retrospective: retrospective, owner: organizer)
     retrospective.reload.participants.each do |participant|
       create(:task, reflection: reflection, description: task_description, author: organizer, assignee: participant)
