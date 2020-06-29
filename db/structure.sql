@@ -111,6 +111,52 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: group_accesses; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.group_accesses (
+    id bigint NOT NULL,
+    group_id uuid NOT NULL,
+    account_id uuid NOT NULL,
+    revoked_at timestamp without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: group_accesses_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.group_accesses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: group_accesses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.group_accesses_id_seq OWNED BY public.group_accesses.id;
+
+
+--
+-- Name: groups; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.groups (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    name character varying NOT NULL,
+    deleted_at timestamp without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
 -- Name: participants; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -187,7 +233,6 @@ CREATE TABLE public.reflections (
 
 CREATE TABLE public.retrospectives (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    name character varying NOT NULL,
     sub_step bigint DEFAULT 0,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
@@ -196,7 +241,8 @@ CREATE TABLE public.retrospectives (
     timer_end_at timestamp without time zone,
     discussed_reflection_id uuid,
     organizer_id uuid NOT NULL,
-    revealer_id uuid
+    revealer_id uuid,
+    group_id uuid NOT NULL
 );
 
 
@@ -271,6 +317,13 @@ ALTER SEQUENCE public.zones_id_seq OWNED BY public.zones.id;
 
 
 --
+-- Name: group_accesses id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.group_accesses ALTER COLUMN id SET DEFAULT nextval('public.group_accesses_id_seq'::regclass);
+
+
+--
 -- Name: reactions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -298,6 +351,22 @@ ALTER TABLE ONLY public.accounts
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: group_accesses group_accesses_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.group_accesses
+    ADD CONSTRAINT group_accesses_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: groups groups_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.groups
+    ADD CONSTRAINT groups_pkey PRIMARY KEY (id);
 
 
 --
@@ -365,10 +434,24 @@ ALTER TABLE ONLY public.zones
 
 
 --
+-- Name: current_access_to_group_for_account; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX current_access_to_group_for_account ON public.group_accesses USING btree (group_id, account_id) WHERE (revoked_at IS NULL);
+
+
+--
 -- Name: index_accounts_on_email; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_accounts_on_email ON public.accounts USING btree (email);
+
+
+--
+-- Name: index_group_accesses_on_group_id_and_account_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_group_accesses_on_group_id_and_account_id ON public.group_accesses USING btree (group_id, account_id);
 
 
 --
@@ -430,6 +513,10 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200523191205'),
 ('20200614110955'),
 ('20200614130855'),
-('20200614154701');
+('20200614154701'),
+('20200625205131'),
+('20200625210311'),
+('20200627114326'),
+('20200627120729');
 
 

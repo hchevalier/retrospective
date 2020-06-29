@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
   def current_account
     @current_account ||= begin
       (account_id = session[:account_id]) ?
-      Account.find(account_id) :
+      Account.includes(:groups).find(account_id) :
       nil
     end
   end

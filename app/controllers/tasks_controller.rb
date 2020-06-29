@@ -1,5 +1,14 @@
 class TasksController < ApplicationController
-  before_action :ensure_participant
+  before_action :ensure_logged_in, only: :index
+  before_action :ensure_participant, except: :index
+
+  def index
+    group_ids = current_account.accessible_groups.ids
+    participants = current_account.participants.joins(:retrospective).where(retrospectives: { group_id: group_ids })
+    tasks = participants.flat_map(&:assigned_tasks).map(&:as_json).sort_by { | task | task[:createdAt] }.reverse
+
+    render json: tasks
+  end
 
   def create
     retrospective = Retrospective.find(params[:retrospective_id])

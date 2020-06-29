@@ -8,6 +8,7 @@ class Retrospective < ApplicationRecord
   has_many :reactions
   has_many :tasks, through: :participants, source: :created_tasks
 
+  belongs_to :group
   belongs_to :organizer, class_name: 'Participant', inverse_of: :organized_retrospective
   belongs_to :revealer, class_name: 'Participant', inverse_of: :revealing_retrospective, optional: true
   belongs_to :discussed_reflection, class_name: 'Reflection', optional: true
@@ -53,7 +54,7 @@ class Retrospective < ApplicationRecord
   def as_json
     {
       id: id,
-      name: name,
+      groupName: group.name,
       kind: kind,
       zones: zones.as_json,
       discussedReflection: discussed_reflection&.readable,
@@ -64,7 +65,7 @@ class Retrospective < ApplicationRecord
   def as_short_json
     {
       id: id,
-      name: name,
+      groupName: group.name,
       kind: kind,
       createdAt: created_at
     }
@@ -111,7 +112,7 @@ class Retrospective < ApplicationRecord
     cipher = OpenSSL::Cipher.new('AES-256-CBC')
     cipher.encrypt
     cipher.key = Digest::SHA256.new.update(organizer.encryption_key).digest
-    cipher.iv = Base64.encode64(name).chomp.ljust(16, '0')[0...16]
+    cipher.iv = Base64.encode64(id).chomp.ljust(16, '0')[0...16]
     encrypted_data = cipher.update(clear_info.to_json) + cipher.final
 
     Base64.strict_encode64(encrypted_data).chomp

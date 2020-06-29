@@ -67,7 +67,7 @@ const AuthenticationForm = ({ onSignUpOrSignIn }) => {
 
         <div className='flex items-center justify-between'>
           <Button contained primary type='submit'>{mode === 'signUp' ? 'Create account' : 'Login'}</Button>
-          <Button primary onClick={toggleMode} type='button'>
+          <Button primary onClick={toggleMode}>
             {mode === 'signIn' ? "Don't have an account yet?" : 'Already have an account?'}
           </Button>
         </div>

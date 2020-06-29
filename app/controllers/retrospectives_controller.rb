@@ -3,7 +3,11 @@ class RetrospectivesController < ApplicationController
   before_action :preload_current_user_and_relationships, only: :show
   skip_before_action :ensure_logged_in, only: :show
 
-  def new; end
+  def index
+    group_ids = current_account.accessible_groups.ids
+    retrospectives = current_account.retrospectives.where(group_id: group_ids)
+    render json: retrospectives.map(&:as_short_json).sort_by { | retrospective | retrospective[:createdAt] }.reverse
+  end
 
   def create
     retrospective = Retrospective.create(retrospective_params.merge(organizer_attributes: organizer_attributes))
@@ -51,7 +55,7 @@ class RetrospectivesController < ApplicationController
   private
 
   def retrospective_params
-    params.permit(:name, :kind)
+    params.permit(:group_id, :kind)
   end
 
   def organizer_attributes
