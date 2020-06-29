@@ -7,8 +7,8 @@ import Icon from './Icon'
 import './StepGrouping.scss'
 
 const inScreen = (target) => target.dataset.timeoutId && target.dataset.timeoutId !== 'null'
-const noteAboveViewport = (stickyNote) => stickyNote.dataset.read !== 'true' && stickyNote.dataset.above === 'true' && !inScreen(stickyNote)
-const noteBelowViewport = (stickyNote) => stickyNote.dataset.read !== 'true' && stickyNote.dataset.below === 'true' && !inScreen(stickyNote)
+const noteAboveViewport = (stickyNote) => stickyNote.dataset.read !== 'true' && stickyNote.getBoundingClientRect().top < stickyNote.dataset.rootTop && !inScreen(stickyNote)
+const noteBelowViewport = (stickyNote) => stickyNote.dataset.read !== 'true' && stickyNote.getBoundingClientRect().top > stickyNote.dataset.rootTop && !inScreen(stickyNote)
 
 const StepGrouping = () => {
   const { id: retrospectiveId, kind } = useSelector(state => state.retrospective)
@@ -44,8 +44,7 @@ const StepGrouping = () => {
           target.dataset.timeoutId = timeoutId
           forceUpdate()
         } else {
-          target.dataset.above = entry.boundingClientRect.top < entry.rootBounds.top
-          target.dataset.below = entry.boundingClientRect.top > entry.rootBounds.top
+          target.dataset.rootTop = entry.rootBounds.top
           if (target.dataset.timeoutId) {
             clearTimeout(target.dataset.timeoutId)
             target.dataset.timeoutId = null
