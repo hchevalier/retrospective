@@ -13,32 +13,20 @@ export default function App() {
     return < GroupDetails id={params.groupId} />
   }
 
-  const GroupSwitch = () => {
-    let match = useRouteMatch()
-
-    return (
-      <Switch>
-        <Route path={`${match.path}/new`}>
-          <GroupCreationForm />
-        </Route>
-        <Route path={`${match.path}/:groupId`}>
-          <GroupShow />
-        </Route>
-        <Route path={match.path}>
-          <GroupsList />
-        </Route>
-      </Switch>
-    )
-  }
-
   return (
     <Router>
       <div>
         <Header />
 
         <Switch>
+          <Route path='/groups/new'>
+            <GroupCreationForm />
+          </Route>
+          <Route path='/groups/:groupId'>
+            <GroupShow />
+          </Route>
           <Route path='/groups'>
-            <GroupSwitch />
+            <GroupsList />
           </Route>
           <Route path='/retrospectives/new'>
             <RetrospectiveCreationForm />
