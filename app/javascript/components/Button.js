@@ -1,6 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
+import { compact } from 'lib/helpers/array'
 
 const Button = ({ children, contained, disabled, primary, secondary, className, ...rest }) => (
   <button
@@ -8,7 +9,7 @@ const Button = ({ children, contained, disabled, primary, secondary, className, 
     disabled={disabled && 'disabled'}
     {...rest}
     className={classNames(
-      ['font-medium rounded focus:outline-none focus:shadow-outline', className].filter(element => element).join(' '),
+      compact(['font-medium rounded focus:outline-none focus:shadow-outline', className]).join(' '),
       {
         'text-white py-1 px-2': (primary || secondary) && contained,
         'bg-blue-500 hover:bg-blue-700': primary && contained,
