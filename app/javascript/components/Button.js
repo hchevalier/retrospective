@@ -2,7 +2,7 @@ import React from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
-const Button = ({ children, contained, disabled, primary, secondary, ...rest }) => (
+const Button = ({ children, contained, disabled, primary, secondary, additionalClassNames, ...rest }) => (
   <button
     type='button'
     disabled={disabled && 'disabled'}
@@ -15,7 +15,8 @@ const Button = ({ children, contained, disabled, primary, secondary, ...rest }) 
         'bg-red-500 hover:bg-red-700': secondary && contained,
         'text-sm text-blue-600': primary && !contained,
         'text-sm text-red-600': secondary && !contained,
-        'opacity-50 cursor-not-allowed': disabled
+        'opacity-50 cursor-not-allowed': disabled,
+        ...additionalClassNames
       }
     )}>
     {children}
@@ -23,10 +24,12 @@ const Button = ({ children, contained, disabled, primary, secondary, ...rest }) 
 )
 
 Button.defaultProps = {
+  additionalClassNames: {},
   secondary: false
 }
 
 Button.propTypes = {
+  additionalClassNames: PropTypes.object,
   children: PropTypes.node.isRequired,
   contained: PropTypes.bool,
   disabled: PropTypes.bool,

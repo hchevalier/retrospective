@@ -7,14 +7,9 @@ import BlankStickyNote from './BlankStickyNote'
 const RetrospectiveBottomBar = (delegatedProps) => {
   const profile = useSelector(state => state.profile)
   const currentStep = useSelector(state => state.orchestrator.step)
-  const orchestratorChannel = useSelector(state => state.orchestrator.subscription)
   const organizer = profile.organizer
 
   const canCreateReflection = () => profile && currentStep === 'thinking'
-
-  const nextStep = () => {
-    orchestratorChannel?.send({ intent: 'next' })
-  }
 
   if (currentStep === 'done') {
     return null
@@ -26,16 +21,9 @@ const RetrospectiveBottomBar = (delegatedProps) => {
         <Timer show={currentStep === 'thinking'} organizer={organizer} />
       </div>
       {canCreateReflection() && <BlankStickyNote ownerProfile={profile} {...delegatedProps} />}
-      {organizer && <Button variant='contained' color='primary' onClick={nextStep}>Next</Button>}
     </div>
   )
 }
-
-const Button = ({ children, ...rest }) => (
-  <button className='bg-blue-500 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-700 mt-6 px-5 py-1 rounded text-white' {...rest}>
-    {children}
-  </button>
-)
 
 RetrospectiveBottomBar.propTypes = {
   onReflectionReady: PropTypes.func.isRequired,
