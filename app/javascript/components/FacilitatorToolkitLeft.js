@@ -1,9 +1,10 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import { uniqBy } from 'lib/helpers/array'
+import Button from './Button'
 import RandomIcon from 'images/random-icon.svg'
 
-const FacilitatorToolkit = () => {
+const FacilitatorToolkitLeft = () => {
   const channel = useSelector(state => state.orchestrator.subscription)
   const step = useSelector(state => state.orchestrator.step)
   const visibleReflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
@@ -18,18 +19,14 @@ const FacilitatorToolkit = () => {
   }
 
   return (
-    <div className='flex flex-column'>
+    <div className='flex flex-col'>
       {step === 'grouping' && revealers.length < participants.length && (
-        <button
-          id='assign-random-revealer'
-          className='bg-blue-400 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-600 h-8 w-8 mr-2 rounded text-white cursor-pointer'
-          color='primary'
-          onClick={pickRandomRevealer}>
-            <img className='mx-auto w-6' src={RandomIcon} />
-          </button>
+        <Button id='assign-random-revealer' className='w-8 h-8' primary contained onClick={pickRandomRevealer}>
+          <img className='mx-auto w-6' src={RandomIcon} />
+        </Button>
       )}
     </div>
   )
 }
 
-export default FacilitatorToolkit
+export default FacilitatorToolkitLeft

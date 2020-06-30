@@ -7,7 +7,8 @@ import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
 import RetrospectiveArea from './RetrospectiveArea'
 import ParticipantsList from './ParticipantsList'
 import ReflectionsList from './ReflectionsList'
-import FacilitatorToolkit from './FacilitatorToolkit'
+import FacilitatorToolkitLeft from './FacilitatorToolkitLeft'
+import FacilitatorToolkitRight from './FacilitatorToolkitRight'
 import LoginForm from './LoginForm'
 import HomeIcon from 'images/home-icon.svg'
 import ArrowIcon from 'images/arrow-icon.svg'
@@ -110,8 +111,9 @@ const RetrospectiveLobby = ({ id: retrospectiveId, groupName, kind }) => {
           <div className={classNames('bg-gray-200 mb-6 shadow text-white duration-200 ease-linear transform transition-height h-24 origin-top overflow-hidden', { '!h-0': !participantsListVisible })}>
             <div className="mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
               <div className='flex flex-grow justify-end'>
-                {profile?.organizer && <FacilitatorToolkit />}
+                {profile?.organizer && <FacilitatorToolkitLeft />}
                 <ParticipantsList />
+                {profile?.organizer && <FacilitatorToolkitRight />}
               </div>
             </div>
           </div>
