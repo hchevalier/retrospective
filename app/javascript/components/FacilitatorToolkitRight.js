@@ -13,7 +13,7 @@ const FacilitatorToolkitRight = () => {
 
   return (
     <div className='flex flex-row'>
-      <Button primary contained onClick={nextStep} additionalClassNames={{ 'w-16': true, 'h-16': true, 'ml-5': true }}>Next</Button>
+      <Button primary contained onClick={nextStep} className='w-16 h-16 ml-5'>Next</Button>
     </div>
   )
 }

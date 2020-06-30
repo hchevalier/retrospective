@@ -21,7 +21,7 @@ const FacilitatorToolkitLeft = () => {
   return (
     <div className='flex flex-col'>
       {step === 'grouping' && revealers.length < participants.length && (
-        <Button id='assign-random-revealer' additionalClassNames={{ 'w-8': true, 'h-8': true }} primary contained onClick={pickRandomRevealer}>
+        <Button id='assign-random-revealer' className='w-8 h-8' primary contained onClick={pickRandomRevealer}>
           <img className='mx-auto w-6' src={RandomIcon} />
         </Button>
       )}
