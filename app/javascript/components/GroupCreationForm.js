@@ -1,5 +1,5 @@
 import React from 'react'
-import { get, post } from 'lib/httpClient'
+import { post } from 'lib/httpClient'
 import Input from './Input'
 import Button from './Button'
 

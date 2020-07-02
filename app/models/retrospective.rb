@@ -54,7 +54,10 @@ class Retrospective < ApplicationRecord
   def as_json
     {
       id: id,
-      groupName: group.name,
+      group: {
+        id: group.id,
+        name: group.name
+      },
       kind: kind,
       zones: zones.as_json,
       discussedReflection: discussed_reflection&.readable,
@@ -65,7 +68,10 @@ class Retrospective < ApplicationRecord
   def as_short_json
     {
       id: id,
-      groupName: group.name,
+      group: {
+        id: group.id,
+        name: group.name
+      },
       kind: kind,
       createdAt: created_at
     }

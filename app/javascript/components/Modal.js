@@ -12,7 +12,7 @@ const Modal = ({ open, onClose, children }) => {
       <div
         className="bg-black absolute h-screen left-0 opacity-25 top-0 w-full"
         onClick={onBackDropClick} />
-      <div className="w-1/2 bg-white mx-auto p-4 rounded z-2 max-h-3/4 overflow-y-auto">{children}</div>
+      <div className="w-1/2 bg-white mx-auto p-4 rounded z-2 max-h-3/4 overflow-y-auto flex flex-col">{children}</div>
     </div>
   )
 }

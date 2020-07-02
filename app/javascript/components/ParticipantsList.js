@@ -1,32 +1,16 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
+import PropTypes from 'prop-types'
 import { decrypt } from 'lib/utils/decryption'
 import { uniqBy } from 'lib/helpers/array'
 import Avatar from './Avatar'
+import Button from './Button'
 import MegaphoneIcon from 'images/megaphone-icon.svg'
 import LightBulbIcon from 'images/lightbulb-icon.svg'
 import SpeechBubbleIcon from 'images/speech-bubble-icon.svg'
 import CheckIcon from 'images/check-icon.svg'
 
-const copyUrlToClipboard = () => {
-  const toCopy = document.createElement('span')
-  toCopy.setAttribute('type', 'hidden')
-  toCopy.appendChild(document.createTextNode(window.location.href))
-  document.body.appendChild(toCopy);
-  const range = document.createRange()
-  const selection = window.getSelection()
-
-  range.selectNodeContents(toCopy)
-  selection.removeAllRanges()
-  selection.addRange(range)
-  document.execCommand('copy')
-  selection.removeAllRanges()
-
-  toCopy.remove()
-  alert('Copied invite URL to clipboard')
-}
-
-const ParticipantsList = () => {
+const ParticipantsList = ({ onAddParticipantsClick }) => {
   const profile = useSelector(state => state.profile)
   const { id: retrospectiveId } = useSelector(state => state.retrospective)
   const { organizerInfo: encryptedOrganizerInfo, step } = useSelector(state => state.orchestrator)
@@ -96,13 +80,13 @@ const ParticipantsList = () => {
           </Avatar>
         )
       })}
-      <button
-        className='add-new bg-blue-500 hover:bg-blue-700 focus:outline-none focus:shadow-outline font-medium rounded text-white ml-4 w-16 h-16'
-        color='primary' onClick={copyUrlToClipboard}>
-        +
-        </button>
+      <Button primary contained className='add-new w-16 h-16' onClick={onAddParticipantsClick}>+</Button>
     </div>
   )
+}
+
+ParticipantsList.propTypes = {
+  onAddParticipantsClick: PropTypes.func.isRequired
 }
 
 export default ParticipantsList
