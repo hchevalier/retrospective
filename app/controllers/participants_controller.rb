@@ -8,6 +8,8 @@ class ParticipantsController < ApplicationController
       account_id: current_account.id,
       retrospective: retrospective
     )
+    group = retrospective.group
+    group.accounts << current_account unless group.accessible_by?(current_account)
 
     cookies.signed[:user_id] = participant.id
     participant.join

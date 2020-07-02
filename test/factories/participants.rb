@@ -8,5 +8,11 @@ FactoryBot.define do
     factory :other_participant do
       surname { 'Other participant' }
     end
+
+    after(:create) do |participant, _evaluator|
+      group = participant.retrospective.group
+      account = participant.account
+      group.accounts << account unless group.accessible_by?(account)
+    end
   end
 end

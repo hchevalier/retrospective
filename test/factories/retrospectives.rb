@@ -14,6 +14,10 @@ FactoryBot.define do
       evaluator.participants_attributes.each do |participant|
         create(:participant, participant.merge(retrospective: retrospective))
       end
+
+      group = retrospective.group
+      account = retrospective.organizer.account
+      group.accounts << account unless group.accessible_by?(account)
     end
   end
 end

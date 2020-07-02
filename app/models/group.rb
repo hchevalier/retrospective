@@ -4,6 +4,10 @@ class Group < ApplicationRecord
   has_many :accounts_without_revoked, -> { where(group_accesses: { revoked_at: nil }) }, through: :group_accesses, class_name: 'Account', source: :account
   has_many :retrospectives
 
+  def accessible_by?(account)
+    group_accesses.where(revoked_at: nil, account: account).exists?
+  end
+
   def tasks_visible_by(account)
     retrospectives
       .includes(tasks: %i(assignee author reflection))

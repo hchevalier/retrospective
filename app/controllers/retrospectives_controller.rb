@@ -38,6 +38,8 @@ class RetrospectivesController < ApplicationController
           retrospective: @retrospective
         )
         cookies.signed[:user_id] = participant.id
+        group = @retrospective.group
+        group.accounts << current_account unless group.accessible_by?(current_account)
       end
       reload_current_user
     end

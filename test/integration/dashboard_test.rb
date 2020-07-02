@@ -6,7 +6,6 @@ class DashboardTest < ActionDispatch::IntegrationTest
     @retrospective = create(:retrospective, group: @group)
     participant = @retrospective.participants.first
     @account = participant.account
-    @group.accounts << @account
     reflection = create(:reflection, :glad, retrospective: @retrospective, owner: participant)
     @task = create(:task, reflection: reflection, description: 'My simple task')
     as_user(@account)
@@ -35,7 +34,6 @@ class DashboardTest < ActionDispatch::IntegrationTest
   test 'does not display retrospective the user did not took part in even if he was part of the group' do
     other_retrospective = create(:retrospective, kind: :sailboat, group: @group)
     new_account = other_retrospective.participants.first.account
-    @group.accounts << new_account
 
     visit '/'
     refute_text '8357 620UP - sailboat'

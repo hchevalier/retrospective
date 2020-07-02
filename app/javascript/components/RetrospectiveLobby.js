@@ -168,7 +168,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, group, kind }) => {
         <div>
           <div className='font-bold'>Group members</div>
           <div className='mb-4'>
-            {groupInfo && groupInfo.members.map((member) => <div key={member.id}>{member.username}</div>)}
+            {groupInfo && groupInfo.members?.map((member) => <div key={member.id}>{member.username}</div>)}
           </div>
 
           <textarea className='w-full border p-2 resize-none' name='email_addresses' rows='3' placeholder={`Enter email addresses of people you want to add to ${group.name}, separated with comas`} />
