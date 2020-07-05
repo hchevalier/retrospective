@@ -2,6 +2,7 @@
 
 class Retrospective < ApplicationRecord
   has_many :participants, inverse_of: :retrospective
+  has_many :pending_invitations
   has_many :zones, inverse_of: :retrospective
   has_many :reflections, through: :zones
   has_many :topics

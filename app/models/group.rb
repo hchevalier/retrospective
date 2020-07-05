@@ -1,5 +1,6 @@
 class Group < ApplicationRecord
   has_many :group_accesses
+  has_many :pending_invitations
   has_many :accounts, through: :group_accesses
   has_many :accounts_without_revoked, -> { where(group_accesses: { revoked_at: nil }) }, through: :group_accesses, class_name: 'Account', source: :account
   has_many :retrospectives

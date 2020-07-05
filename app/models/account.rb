@@ -1,5 +1,6 @@
 class Account < ApplicationRecord
   has_many :participants
+  has_many :pending_invitations
   has_many :retrospectives, through: :participants
   has_many :group_accesses
   has_many :groups, through: :group_accesses
