@@ -4,10 +4,10 @@ import { post } from 'lib/httpClient'
 import Input from './Input'
 import Button from './Button'
 
-const AuthenticationForm = ({ onSignUpOrSignIn }) => {
+const AuthenticationForm = ({ defaultEmail, onSignUpOrSignIn, returnUrl }) => {
   const [mode, setMode] = React.useState('signIn')
   const [username, setUsername] = React.useState('')
-  const [email, setEmail] = React.useState('')
+  const [email, setEmail] = React.useState(defaultEmail)
   const [password, setPassword] = React.useState('')
   const [passwordResetToastDisplayed, setPasswordResetToastDisplayed] = React.useState(false)
 
@@ -19,7 +19,7 @@ const AuthenticationForm = ({ onSignUpOrSignIn }) => {
       url: mode === 'signIn' ? '/sessions' : '/accounts',
       payload: { username, email, password }
     })
-      .then(onSignUpOrSignIn)
+      .then(() => onSignUpOrSignIn(returnUrl))
       .catch(error => console.warn(error))
   }
 
@@ -77,11 +77,14 @@ const AuthenticationForm = ({ onSignUpOrSignIn }) => {
 }
 
 AuthenticationForm.propTypes = {
-  onSignUpOrSignIn: PropTypes.func.isRequired
+  defaultEmail: PropTypes.string,
+  onSignUpOrSignIn: PropTypes.func.isRequired,
+  returnUrl: PropTypes.string
 }
 
 AuthenticationForm.defaultProps = {
-  onSignUpOrSignIn: () => { window.location.pathname = '/' }
+  defaultEmail: '',
+  onSignUpOrSignIn: (returnUrl) => { window.location.pathname = returnUrl || '/' }
 }
 
 export default AuthenticationForm

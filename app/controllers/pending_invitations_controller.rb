@@ -1,6 +1,4 @@
 class PendingInvitationsController < ApplicationController
-  before_action :ensure_logged_in
-
   def index
     render json: current_group.pending_invitations.map(&:as_json)
   end

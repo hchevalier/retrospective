@@ -21,7 +21,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
     visit '/'
     refute_text 'My simple task'
 
-    @retrospective.group.accounts << @account
+    @retrospective.group.add_member(@account)
     visit '/'
     assert_text 'My simple task'
   end
@@ -49,7 +49,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
     visit '/'
     refute_text '8357 620UP - glad_sad_mad'
 
-    @retrospective.group.accounts << @account
+    @retrospective.group.add_member(@account)
     visit '/'
     assert_text '8357 620UP - glad_sad_mad'
   end

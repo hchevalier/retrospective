@@ -1,6 +1,4 @@
 class GroupAccessesController < ApplicationController
-  before_action :ensure_logged_in
-
   def index
     render json: current_account.group_accesses.active.map(&:as_json)
   end

@@ -9,6 +9,10 @@ class Group < ApplicationRecord
     group_accesses.where(revoked_at: nil, account: account).exists?
   end
 
+  def add_member(account)
+    accounts << account unless accessible_by?(account)
+  end
+
   def tasks_visible_by(account)
     retrospectives
       .includes(tasks: %i(assignee author reflection))

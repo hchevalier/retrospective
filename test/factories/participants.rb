@@ -10,9 +10,7 @@ FactoryBot.define do
     end
 
     after(:create) do |participant, _evaluator|
-      group = participant.retrospective.group
-      account = participant.account
-      group.accounts << account unless group.accessible_by?(account)
+      participant.retrospective.group.add_member(participant.account)
     end
   end
 end

@@ -11,6 +11,12 @@ class SessionsController < ApplicationController
 
     session[:account_id] = account.id
 
+    invitation = PendingInvitation.find_by(id: session[:invitation]) if session[:invitation]
+    if invitation&.email == account.email
+      invitation.group.add_member(account)
+      invitation.destroy
+    end
+
     redirect_to single_page_app_path(path: :dashboard)
   end
 
