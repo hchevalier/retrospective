@@ -1,5 +1,5 @@
 class PendingInvitation < ApplicationRecord
-  belongs_to :accounts
+  belongs_to :account
   belongs_to :group
   belongs_to :retrospective, optional: true
 

@@ -28,6 +28,7 @@ class Group < ApplicationRecord
     {
       **as_short_json,
       members: accounts_without_revoked.as_json,
+      pendingInvitations: pending_invitations.as_json,
       tasks: tasks_visible_by(account).as_json
     }
   end

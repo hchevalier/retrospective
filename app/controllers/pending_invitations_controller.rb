@@ -11,7 +11,11 @@ class PendingInvitationsController < ApplicationController
       email.strip!
       next if pending_invitations.include?(email)
 
-      current_group.pending_invitations.create(account: current_account, email: email)
+      current_group.pending_invitations.create(
+        account: current_account,
+        email: email,
+        retrospective_id: params[:retrospective_id]
+      )
     end
   end
 
