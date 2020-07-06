@@ -7,6 +7,7 @@ class AccountsController < ApplicationController
     redirect_to :back unless account
 
     session[:account_id] = account.id
+    consume_invitation(account) if session[:invitation]
 
     render json: :created
   end

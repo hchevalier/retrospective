@@ -7,7 +7,7 @@ import Button from './Button'
 
 const GroupsDetails = ({ id }) => {
   const [groupRefresh, setGroupRefresh] = React.useState(1)
-  const [group, setGroup] = React.useState(null)
+  const [group, setGroup] = React.useState({ members: [], pendingInvitations: [] })
   const [addMembersModalVisible, setAddMembersModalVisible] = React.useState(false)
 
   const handleAddGroupMembersClick = () => setAddMembersModalVisible(true)
@@ -20,6 +20,11 @@ const GroupsDetails = ({ id }) => {
     })
       .then(refreshGroup)
       .catch(error => console.warn(error))
+  }
+
+  const handleSendInvitation = () => {
+    setAddMembersModalVisible(false)
+    refreshGroup()
   }
 
   React.useEffect(() => {
@@ -38,7 +43,7 @@ const GroupsDetails = ({ id }) => {
         <Button primary contained onClick={handleAddGroupMembersClick}>Add members</Button>
       </div>
 
-      {group && (
+      {group.members.length && (
         <>
           <div className='flex flex-col my-8'>
             <div className='flex-1 text-xl font-bold'>Group {group.name}</div>
@@ -98,7 +103,7 @@ const GroupsDetails = ({ id }) => {
           </div>
           <AddGroupMembersModal
             visible={addMembersModalVisible}
-            onInvitationsSent={refreshGroup}
+            onInvitationsSent={handleSendInvitation}
             onModalClose={handleAddGroupMembersModalClose}
             group={group} />
         </>

@@ -10,12 +10,7 @@ class SessionsController < ApplicationController
     return render(json: { status: :unauthorized }) unless account unless account.authenticate(params[:password])
 
     session[:account_id] = account.id
-
-    invitation = PendingInvitation.find_by(id: session[:invitation]) if session[:invitation]
-    if invitation&.email == account.email
-      invitation.group.add_member(account)
-      invitation.destroy
-    end
+    consume_invitation(account) if session[:invitation]
 
     redirect_to single_page_app_path(path: :dashboard)
   end

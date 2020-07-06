@@ -34,7 +34,7 @@ const AddGroupMembersModal = ({ group, onInvitationsSent, onModalClose, retrospe
         emails: emails
       }
     })
-      .then(onModalClose)
+      .then(onInvitationsSent)
       .catch(error => console.warn(error))
   }
 
