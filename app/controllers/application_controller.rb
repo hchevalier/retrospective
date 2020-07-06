@@ -31,7 +31,13 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_logged_in
-    redirect_to :new_sessions unless current_account
+    return if current_account
+
+    respond_to do |format|
+      byebug
+      format.json { render(json: { status: :unauthorized }) }
+      format.html { redirect_to :new_sessions }
+    end
   end
 
   def ensure_participant

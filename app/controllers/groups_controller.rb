@@ -11,6 +11,9 @@ class GroupsController < ApplicationController
   end
 
   def show
-    render json: current_account.accessible_groups.find(params[:id]).as_json(current_account)
+    group = current_account.accessible_groups.find_by(id: params[:id])
+    return render(json: { status: :not_found }) unless group
+
+    render json: group.as_json(current_account)
   end
 end

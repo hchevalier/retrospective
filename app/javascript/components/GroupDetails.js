@@ -43,7 +43,7 @@ const GroupsDetails = ({ id }) => {
         <Button primary contained onClick={handleAddGroupMembersClick}>Add members</Button>
       </div>
 
-      {group.members.length && (
+      {group.members.length > 0 && (
         <>
           <div className='flex flex-col my-8'>
             <div className='flex-1 text-xl font-bold'>Group {group.name}</div>

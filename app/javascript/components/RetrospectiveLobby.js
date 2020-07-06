@@ -31,13 +31,12 @@ const RetrospectiveLobby = ({ id: retrospectiveId, group, kind }) => {
   const channel = useSelector(state => state.orchestrator.subscription)
   const loggedIn = !!profile.uuid
 
-
   React.useEffect(() => {
     if (!group.id) return
 
     get({ url: `/api/groups/${group.id}` })
       .then((data) => setGroupInfo(data))
-  }, [group.id])
+  }, [group.id, loggedIn])
 
   const handleOpenAddParticipantsModal = () => {
     setDisplayAddParticipantsModal(true)
@@ -144,14 +143,16 @@ const RetrospectiveLobby = ({ id: retrospectiveId, group, kind }) => {
           {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
         </div>
       </div>
-      <AddGroupMembersModal
-        visible={displayAddParticipantsModal}
-        onInvitationsSent={handleAddParticipantsModalClose}
-        onModalClose={handleAddParticipantsModalClose}
-        group={groupInfo}
-        retrospectiveId={retrospectiveId}
-        withGroupMembers
-        withShareableLink />
+      {loggedIn && groupInfo && (
+        <AddGroupMembersModal
+          visible={displayAddParticipantsModal}
+          onInvitationsSent={handleAddParticipantsModalClose}
+          onModalClose={handleAddParticipantsModalClose}
+          group={groupInfo}
+          retrospectiveId={retrospectiveId}
+          withGroupMembers
+          withShareableLink />
+      )}
     </div>
   )
 }

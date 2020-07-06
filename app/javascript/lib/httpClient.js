@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const csrfToken = document.querySelector('[name=csrf-token]').content
 const httpClient = axios.create({
-  headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+  headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
 })
 
 export const get = async ({ url, payload = {}, headers = {} }) => {

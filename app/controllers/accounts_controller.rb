@@ -1,4 +1,6 @@
 class AccountsController < ApplicationController
+  include ApplicationHelper
+
   skip_before_action :ensure_logged_in, only: :create
 
   def create

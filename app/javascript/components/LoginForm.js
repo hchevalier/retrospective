@@ -18,7 +18,7 @@ const LoginForm = ({ retrospectiveId }) => {
   }
 
   return (
-    <AuthenticationForm onSignUpOrSignIn={handleSignUpOrSignIn} />
+    <AuthenticationForm onSignUpOrSignIn={handleSignUpOrSignIn} returnUrl={window.location.url} />
   )
 }
 

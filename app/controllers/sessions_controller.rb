@@ -1,5 +1,7 @@
 class SessionsController < ApplicationController
-  skip_before_action :ensure_logged_in
+  include ApplicationHelper
+
+  skip_before_action :ensure_logged_in, only: %i(new create omniauth)
 
   def new; end
 
