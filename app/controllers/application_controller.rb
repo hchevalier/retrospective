@@ -34,7 +34,6 @@ class ApplicationController < ActionController::Base
     return if current_account
 
     respond_to do |format|
-      byebug
       format.json { render(json: { status: :unauthorized }) }
       format.html { redirect_to :new_sessions }
     end
