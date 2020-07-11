@@ -236,7 +236,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     assert_topic_contains(Topic.last, reflection_a, reflection_b)
   end
 
-   test 'group label is the first word of the first reflection' do
+   test 'group label is the word that comes up the most from the reflections list' do
     retrospective = create(:retrospective, step: 'grouping')
     reflection_a = create(:reflection, :glad, owner: retrospective.organizer, content: 'First reflection')
     reflection_b = create(:reflection, :glad, owner: retrospective.organizer, content: 'Second reflection')
@@ -251,9 +251,9 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     within topic_container(Topic.last) do
       within '.topic-label' do
-        assert_text 'First'
+        assert_text 'reflection'
         refute_text 'second'
-        refute_text 'reflection'
+        refute_text 'first'
       end
     end
   end
@@ -280,7 +280,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     new_topic = Topic.order(:created_at).last
     within topic_container(new_topic) do
       within '.topic-label' do
-        assert_text 'Second'
+        assert_text 'reflection'
       end
     end
 
