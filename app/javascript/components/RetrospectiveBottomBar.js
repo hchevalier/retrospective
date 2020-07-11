@@ -7,7 +7,7 @@ import BlankStickyNote from './BlankStickyNote'
 const RetrospectiveBottomBar = (delegatedProps) => {
   const profile = useSelector(state => state.profile)
   const currentStep = useSelector(state => state.orchestrator.step)
-  const organizer = profile.organizer
+  const facilitator = profile.facilitator
 
   const canCreateReflection = () => profile && currentStep === 'thinking'
 
@@ -18,7 +18,7 @@ const RetrospectiveBottomBar = (delegatedProps) => {
   return (
     <div className='flex flex-1 items-end justify-between pb-2 overflow-y-hidden'>
       <div className='w-2/12'>
-        <Timer show={currentStep === 'thinking'} organizer={organizer} />
+        <Timer show={currentStep === 'thinking'} facilitator={facilitator} />
       </div>
       {canCreateReflection() && <BlankStickyNote ownerProfile={profile} {...delegatedProps} />}
     </div>

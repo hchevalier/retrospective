@@ -14,7 +14,7 @@ class ReactionsController < ApplicationController
     if retrospective.step != 'voting' || reaction.emoji?
       OrchestratorChannel.broadcast_to(retrospective, action: 'newReaction', parameters: { reaction: reaction.readable })
     elsif retrospective.step == 'voting' && reaction.vote?
-      OrchestratorChannel.broadcast_to(retrospective, action: 'updateOrganizerInfo', parameters: { organizerInfo: retrospective.organizer_info })
+      OrchestratorChannel.broadcast_to(retrospective, action: 'updateFacilitatorInfo', parameters: { facilitatorInfo: retrospective.facilitator_info })
     end
 
     render json: reaction.readable
@@ -28,7 +28,7 @@ class ReactionsController < ApplicationController
     reaction.destroy!
     OrchestratorChannel.broadcast_to(retrospective, action: 'dropReaction', parameters: { reactionId: params[:id] })
     if retrospective.step == 'voting' && reaction.vote?
-      OrchestratorChannel.broadcast_to(retrospective, action: 'updateOrganizerInfo', parameters: { organizerInfo: retrospective.organizer_info })
+      OrchestratorChannel.broadcast_to(retrospective, action: 'updateFacilitatorInfo', parameters: { facilitatorInfo: retrospective.facilitator_info })
     end
 
     render json: :ok

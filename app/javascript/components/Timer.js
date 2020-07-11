@@ -7,7 +7,7 @@ const computeRemainingTime = endTime => {
   return Math.max((endTime - new Date().getTime()) / 1000, 0)
 }
 
-const Timer = ({ organizer, show }) => {
+const Timer = ({ facilitator, show }) => {
   const timerEndAt = useSelector(state => state.timer.timerEndAt)
   const timeOffset = useSelector(state => state.timer.timeOffset)
   const orchestratorChannel = useSelector(state => state.orchestrator.subscription)
@@ -29,7 +29,7 @@ const Timer = ({ organizer, show }) => {
   }, [endTime])
 
   const handleTimerClick = () => {
-    if (organizer) {
+    if (facilitator) {
       setDisplayDurationDialog(true)
     }
   }
@@ -46,7 +46,7 @@ const Timer = ({ organizer, show }) => {
   const remainingMinutes = Math.floor(remainingTime / 60)
   const remainingSeconds = Math.floor(remainingTime % 60)
 
-  const displayTimer = organizer || timerEndAt !== null
+  const displayTimer = facilitator || timerEndAt !== null
 
   if (!show) {
     return null
