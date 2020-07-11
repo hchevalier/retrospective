@@ -101,7 +101,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     assert_equal 4, all('#reflections-list .sticky-bookmark').count
     topic_sticky_bookmark = all('#reflections-list .sticky-bookmark')[1]
     within topic_sticky_bookmark do
-      assert_text 'First'
+      assert_text 'reflection'
     end
 
     topic_sticky_bookmark.hover
