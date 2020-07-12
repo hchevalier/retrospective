@@ -1,7 +1,7 @@
 class Participant < ApplicationRecord
   belongs_to :account
   belongs_to :retrospective, optional: true
-  has_one :organized_retrospective, class_name: 'Retrospective', foreign_key: :organizer_id, inverse_of: :organizer
+  has_one :organized_retrospective, class_name: 'Retrospective', foreign_key: :facilitator_id, inverse_of: :facilitator
   has_one :revealing_retrospective, class_name: 'Retrospective', foreign_key: :revealer_id, inverse_of: :revealer
   has_many :reflections, foreign_key: :owner_id, inverse_of: :owner
   has_many :reactions, foreign_key: :author_id, inverse_of: :author
@@ -39,7 +39,7 @@ class Participant < ApplicationRecord
       surname: surname,
       color: color,
       status: logged_in,
-      organizer: organizer?,
+      facilitator: facilitator?,
       revealer: revealer?
     }
   end
@@ -48,15 +48,15 @@ class Participant < ApplicationRecord
     profile.merge(decryptionKey: encryption_key)
   end
 
-  def organizer?
-    association(:retrospective).loaded? ? retrospective.organizer_id == self.id : organized_retrospective.present?
+  def facilitator?
+    association(:retrospective).loaded? ? retrospective.facilitator_id == self.id : organized_retrospective.present?
   end
 
   def revealer?
     association(:retrospective).loaded? ? retrospective.revealer_id == self.id : revealing_retrospective.present?
   end
 
-  def original_organizer?
+  def original_facilitator?
     retrospective.participants.order(:created_at).first == self
   end
 

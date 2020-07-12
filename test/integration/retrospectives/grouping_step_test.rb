@@ -7,9 +7,9 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     retrospective = create(:retrospective, step: 'thinking')
     other_participant = create(:other_participant, retrospective: retrospective)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
-    assert_logged_as_organizer
+    assert_logged_as_facilitator
     assert_retro_started
     assert_text 'Click here to add a reflection'
 
@@ -22,7 +22,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     end
 
     click_on 'Next'
-    assert_grouping_step_for_organizer
+    assert_grouping_step_for_facilitator
     refute_text 'Click here to add a reflection'
 
     within_window(other_participant_window) do
@@ -35,9 +35,9 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     retrospective = create(:retrospective, step: 'grouping')
     other_participant = create(:other_participant, retrospective: retrospective)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
-    assert_logged_as_organizer
+    assert_logged_as_facilitator
     assert_logged_in(other_participant, with_flags: [])
 
     find(".avatar[data-id='#{other_participant.id}']").click
@@ -49,11 +49,11 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     participant = create(:other_participant, retrospective: retrospective)
     other_participant = create(:other_participant, retrospective: retrospective, surname: 'Other participant')
 
-    create(:reflection, :glad, owner: retrospective.organizer, revealed: false)
+    create(:reflection, :glad, owner: retrospective.facilitator, revealed: false)
     create(:reflection, :glad, owner: participant, revealed: false)
     create(:reflection, :glad, owner: other_participant, revealed: false)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
 
     assert_css('#assign-random-revealer')
@@ -61,7 +61,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     3.times do
       assert_no_one_has_the_revealer_token
       find('#assign-random-revealer').click
-      revealer = current_revealer(retrospective.organizer, participant, other_participant)
+      revealer = current_revealer(retrospective.facilitator, participant, other_participant)
       close_modal_on_current_revealer_window(retrospective, revealer)
     end
 
@@ -83,9 +83,9 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       end
     end
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
-    assert_logged_as_organizer
+    assert_logged_as_facilitator
     find(".avatar[data-id='#{other_participant.id}']").click
     refute_text 'A glad reflection'
 
@@ -109,7 +109,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     reflections = create_list(:reflection, 2, :glad, :long, owner: other_participant, revealed: false)
     create(:reflection, :mad, owner: other_participant, revealed: false)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
     find(".avatar[data-id='#{other_participant.id}']").click
 
@@ -152,7 +152,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     other_participant = create(:other_participant, retrospective: retrospective)
     reflections = create_list(:reflection, 3, :glad, :long, owner: other_participant, revealed: false)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
     find(".avatar[data-id='#{other_participant.id}']").click
 
@@ -183,11 +183,11 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
   test 'can add reactions to a revealed reflection' do
     retrospective = create(:retrospective, step: 'grouping')
     other_participant = create(:other_participant, retrospective: retrospective)
-    reflection = create(:reflection, :glad, owner: retrospective.organizer)
+    reflection = create(:reflection, :glad, owner: retrospective.facilitator)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
-    assert_grouping_step_for_organizer
+    assert_grouping_step_for_facilitator
     assert_text 'A glad reflection'
     refute_text Reaction::EMOJI_LIST[:star_struck]
 
@@ -222,12 +222,12 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
   test 'can group two reflections together if they belong to the same column' do
     retrospective = create(:retrospective, step: 'grouping')
-    reflection_a = create(:reflection, :glad, owner: retrospective.organizer)
-    reflection_b = create(:reflection, :glad, owner: retrospective.organizer)
+    reflection_a = create(:reflection, :glad, owner: retrospective.facilitator)
+    reflection_b = create(:reflection, :glad, owner: retrospective.facilitator)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
-    assert_grouping_step_for_organizer
+    assert_grouping_step_for_facilitator
 
     assert_difference 'Topic.count' do
       sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
@@ -238,12 +238,12 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
    test 'group label is the first word of the first reflection' do
     retrospective = create(:retrospective, step: 'grouping')
-    reflection_a = create(:reflection, :glad, owner: retrospective.organizer, content: 'First reflection')
-    reflection_b = create(:reflection, :glad, owner: retrospective.organizer, content: 'Second reflection')
+    reflection_a = create(:reflection, :glad, owner: retrospective.facilitator, content: 'First reflection')
+    reflection_b = create(:reflection, :glad, owner: retrospective.facilitator, content: 'Second reflection')
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
-    assert_grouping_step_for_organizer
+    assert_grouping_step_for_facilitator
 
     assert_difference 'Topic.count' do
       sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
@@ -260,13 +260,13 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
   test 'group can be changed for a reflection' do
     retrospective = create(:retrospective, step: 'grouping')
-    reflection_a = create(:reflection, :glad, owner: retrospective.organizer, content: 'First reflection')
-    reflection_b = create(:reflection, :glad, owner: retrospective.organizer, content: 'Second reflection')
-    reflection_c = create(:reflection, :glad, owner: retrospective.organizer, content: 'Third reflection')
+    reflection_a = create(:reflection, :glad, owner: retrospective.facilitator, content: 'First reflection')
+    reflection_b = create(:reflection, :glad, owner: retrospective.facilitator, content: 'Second reflection')
+    reflection_c = create(:reflection, :glad, owner: retrospective.facilitator, content: 'Third reflection')
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
-    assert_grouping_step_for_organizer
+    assert_grouping_step_for_facilitator
 
     assert_difference 'Topic.count' do
       sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
@@ -291,12 +291,12 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
   test 'cannot group reflections from different columns' do
     retrospective = create(:retrospective, step: 'grouping')
-    reflection_a = create(:reflection, :glad, owner: retrospective.organizer, content: 'First reflection')
-    reflection_b = create(:reflection, :sad, owner: retrospective.organizer, content: 'Second reflection')
+    reflection_a = create(:reflection, :glad, owner: retrospective.facilitator, content: 'First reflection')
+    reflection_b = create(:reflection, :sad, owner: retrospective.facilitator, content: 'Second reflection')
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
-    assert_grouping_step_for_organizer
+    assert_grouping_step_for_facilitator
 
     assert_no_difference 'Topic.count' do
       sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
@@ -317,21 +317,21 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     end
   end
 
-  def assert_grouping_step_for_organizer
+  def assert_grouping_step_for_facilitator
     assert_text 'Click on a participant so that he can reveal his reflections'
   end
 
   def assert_grouping_step_for_participant
-    assert_text 'The organizer now chooses a participant so that he can reveal his reflections'
+    assert_text 'The facilitator now chooses a participant so that he can reveal his reflections'
   end
 
   private
 
-  def current_revealer(organizer, participant, other_participant)
+  def current_revealer(facilitator, participant, other_participant)
     revealer_id = find('.revealer').find(:xpath, '..')['data-id']
     case revealer_id
-    when organizer.id
-      organizer
+    when facilitator.id
+      facilitator
     when participant.id
       participant
     when other_participant.id

@@ -61,7 +61,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     retrospective = create(:retrospective)
 
     visit retrospective_path(retrospective)
-    assert_text 'Organizer'
+    assert_text 'Facilitator'
 
     click_on "Don't have an account yet?"
     fill_in 'username', with: 'Other one'
@@ -77,7 +77,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     create(:account, username: 'Other one', email: 'other_one@yopmail.com', password: 'mypasword')
 
     visit retrospective_path(retrospective)
-    assert_text 'Organizer'
+    assert_text 'Facilitator'
 
     fill_in 'email', with: 'other_one@yopmail.com'
     fill_in 'password', with: 'mypassword'
@@ -110,7 +110,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
       visit retrospective_path(retrospective)
     end
 
-    assert_text 'Organizer'
+    assert_text 'Facilitator'
     refute_field 'email'
     refute_button 'Login'
 
@@ -135,35 +135,35 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
   test 'can join a retrospective without loging in again' do
     retrospective = create(:retrospective)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
 
-    assert_logged_as_organizer
+    assert_logged_as_facilitator
     refute_button 'Login'
   end
 
-  test 'only organizer can see the button to start the retrospective' do
+  test 'only facilitator can see the button to start the retrospective' do
     retrospective = create(:retrospective)
     other_participant = create(:other_participant, retrospective: retrospective)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
-    assert_logged_as_organizer
+    assert_logged_as_facilitator
     assert_button 'Next'
 
     logged_in_as(other_participant)
     visit retrospective_path(retrospective)
-    refute_logged_as_organizer
+    refute_logged_as_facilitator
     refute_button 'Next'
   end
 
   test 'sees new participant joining' do
     retrospective = create(:retrospective)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
 
-    assert_logged_as_organizer
+    assert_logged_as_facilitator
     refute_text 'Other one'
 
     within_window(open_new_window) do

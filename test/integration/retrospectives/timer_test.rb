@@ -1,20 +1,20 @@
 require 'test_helper'
 
 class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
-  test 'timer does not show in waiting lobby even when organizer' do
+  test 'timer does not show in waiting lobby even when facilitator' do
     retrospective = create(:retrospective)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
 
-    assert_logged_as_organizer
+    assert_logged_as_facilitator
     assert_no_css('#timer')
   end
 
-  test 'timer displays --:-- for organizer by default' do
+  test 'timer displays --:-- for facilitator by default' do
     retrospective = create(:retrospective, step: 'thinking')
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
 
     assert_equal 'Timer:--:--', find('#timer').text.split("\n").join
@@ -27,15 +27,15 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     logged_in_as(other_participant)
     visit retrospective_path(retrospective)
 
-    refute_logged_as_organizer
+    refute_logged_as_facilitator
     assert_no_css('#timer')
   end
 
-  test 'organizer can set timer for all participants' do
+  test 'facilitator can set timer for all participants' do
     retrospective = create(:retrospective, step: 'thinking')
     other_participant = create(:other_participant, retrospective: retrospective)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
 
     find('#timer .minutes').click

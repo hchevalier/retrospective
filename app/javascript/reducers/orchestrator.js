@@ -4,7 +4,7 @@ export const initialState = {
   zones: [],
   step: '',
   subscription: null,
-  organizerInfo: null
+  facilitatorInfo: null
 }
 
 const orchestrator = (state = initialState, action) => {
@@ -13,8 +13,8 @@ const orchestrator = (state = initialState, action) => {
       return { ...state, step: action.step }
     case 'set-channel':
       return { ...state, subscription: action.subscription }
-    case 'update-organizer-info':
-      return { ...state, organizerInfo: action.organizerInfo }
+    case 'update-facilitator-info':
+      return { ...state, facilitatorInfo: action.facilitatorInfo }
     default:
       return state
   }

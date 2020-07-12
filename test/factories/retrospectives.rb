@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :retrospective do
     kind { 'glad_sad_mad' }
-    association :organizer, strategy: :build
+    association :facilitator, strategy: :build
     association :group, strategy: :build
 
     transient do

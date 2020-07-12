@@ -4,9 +4,9 @@ class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
   test 'can add the same reaction than someone else by clicking on it' do
     retrospective = create(:retrospective, step: 'grouping')
     other_participant = create(:other_participant, retrospective: retrospective)
-    reflection = create(:reflection, :glad, owner: retrospective.organizer)
+    reflection = create(:reflection, :glad, owner: retrospective.facilitator)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
     add_reaction(reflection, :star_struck)
     within ".reflection[data-id='#{reflection.id}']" do
@@ -39,9 +39,9 @@ class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
 
   test 'remove own reaction by clicking on it' do
     retrospective = create(:retrospective, step: 'grouping')
-    reflection = create(:reflection, :glad, owner: retrospective.organizer)
+    reflection = create(:reflection, :glad, owner: retrospective.facilitator)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
     add_reaction(reflection, :star_struck)
     within ".reflection[data-id='#{reflection.id}']" do
@@ -58,9 +58,9 @@ class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
   test 'remove own reaction by choosing it again in the emoji modal' do
     retrospective = create(:retrospective, step: 'grouping')
     create(:other_participant, retrospective: retrospective)
-    reflection = create(:reflection, :glad, owner: retrospective.organizer)
+    reflection = create(:reflection, :glad, owner: retrospective.facilitator)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
     add_reaction(reflection, :star_struck)
     within ".reflection[data-id='#{reflection.id}']" do

@@ -15,7 +15,7 @@ const StepGrouping = () => {
   const { uuid: profileUuid } = useSelector(state => state.profile)
   const reflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
   const zones = useSelector(state => state.retrospective.zones, shallowEqual)
-  const organizer = useSelector(state => state.profile.organizer)
+  const facilitator = useSelector(state => state.profile.facilitator)
   const reactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
 
   const initialReflectionIds = React.useRef(reflections.map((reflection) => reflection.id)).current
@@ -164,8 +164,8 @@ const StepGrouping = () => {
 
   return (
     <>
-      {organizer && <div>Click on a participant so that he can reveal his reflections or randomly pick one</div>}
-      {!organizer && <div>The organizer now chooses a participant so that he can reveal his reflections</div>}
+      {facilitator && <div>Click on a participant so that he can reveal his reflections or randomly pick one</div>}
+      {!facilitator && <div>The facilitator now chooses a participant so that he can reveal his reflections</div>}
       <div id="zones-container" className="flex">
         {zones.map((zone) => {
           const reflectionsInZone = reflections.filter((reflection) => reflection.zone.id === zone.id)
