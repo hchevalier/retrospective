@@ -9,29 +9,29 @@ class Retrospective::ColorTest < ActionDispatch::IntegrationTest
     clicked_color = Participant::ALL_COLORS.third
 
     retrospective = create(:retrospective)
-    retrospective.organizer.update!(color: color)
+    retrospective.facilitator.update!(color: color)
     other_participant = create(:other_participant, retrospective: retrospective, color: other_color)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
-    assert_has_color(retrospective.organizer, color)
+    assert_has_color(retrospective.facilitator, color)
     assert_has_color(other_participant, other_color)
 
     other_partipant_window = open_new_window
     within_window(other_partipant_window) do
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
-      assert_has_color(retrospective.organizer, color)
+      assert_has_color(retrospective.facilitator, color)
       assert_has_color(other_participant, other_color)
     end
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     find(".color-square[data-color='#{clicked_color}']").click
-    assert_has_color(retrospective.organizer, clicked_color)
+    assert_has_color(retrospective.facilitator, clicked_color)
     assert_has_color(other_participant, other_color)
 
     within_window(other_partipant_window) do
-      assert_has_color(retrospective.organizer, clicked_color)
+      assert_has_color(retrospective.facilitator, clicked_color)
       assert_has_color(other_participant, other_color)
     end
   end
@@ -39,9 +39,9 @@ class Retrospective::ColorTest < ActionDispatch::IntegrationTest
   test "sticky notes use their author's color" do
     hex_color = Participant::ALL_COLORS.sample
     retrospective = create(:retrospective, step: 'thinking')
-    retrospective.organizer.update!(color: hex_color)
+    retrospective.facilitator.update!(color: hex_color)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
 
     assert_retro_started

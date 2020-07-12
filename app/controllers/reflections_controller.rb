@@ -15,8 +15,8 @@ class ReflectionsController < ApplicationController
     case current_user
     when reflection.owner
       reflection.update!(reflections_params)
-    when reflection.retrospective.organizer
-      reflection.update!(reflections_organizer_params)
+    when reflection.retrospective.facilitator
+      reflection.update!(reflections_facilitator_params)
     else
       return render(json: { status: :forbidden })
     end
@@ -36,7 +36,7 @@ class ReflectionsController < ApplicationController
     params.permit(:content, :zone_id)
   end
 
-  def reflections_organizer_params
+  def reflections_facilitator_params
     params.permit(:topic_id, :position_in_zone, :position_in_topic)
   end
 end

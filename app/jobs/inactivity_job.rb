@@ -4,8 +4,8 @@ class InactivityJob < ApplicationJob
   def perform(participant)
     return if participant.logged_in
 
-    if participant.organizer?
-      participant.retrospective.change_organizer!
+    if participant.facilitator?
+      participant.retrospective.change_facilitator!
       participant.reload
     end
 

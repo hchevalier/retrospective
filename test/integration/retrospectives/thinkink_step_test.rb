@@ -7,16 +7,16 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     retrospective = create(:retrospective)
     other_participant = create(:other_participant, retrospective: retrospective)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
-    assert_logged_as_organizer
+    assert_logged_as_facilitator
     refute_retro_started
 
     new_window = open_new_window
     within_window(new_window) do
       logged_in_as(other_participant)
       visit retrospective_path(retrospective)
-      refute_logged_as_organizer
+      refute_logged_as_facilitator
       refute_retro_started
     end
 
@@ -31,7 +31,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
   test 'can write a reflection and assign it to a zone' do
     retrospective = create(:retrospective, step: 'thinking')
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
 
     assert_retro_started
@@ -49,7 +49,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
   test 'a participant cannot see reflections written by other participants' do
     retrospective = create(:retrospective, step: 'thinking')
     other_participant = create(:other_participant, retrospective: retrospective)
-    create(:reflection, :glad, owner: retrospective.organizer, revealed: false)
+    create(:reflection, :glad, owner: retrospective.facilitator, revealed: false)
 
     logged_in_as(other_participant)
     visit retrospective_path(retrospective)
@@ -63,9 +63,9 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
 
   test 'can list reflections from a zone in reflections pannel' do
     retrospective = create(:retrospective, step: 'thinking')
-    create(:reflection, :glad, owner: retrospective.organizer, revealed: false)
+    create(:reflection, :glad, owner: retrospective.facilitator, revealed: false)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
 
     within '#reflections-pannel' do
@@ -75,9 +75,9 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
 
   test 'can edit a reflection' do
     retrospective = create(:retrospective, step: 'thinking')
-    create(:reflection, :glad, owner: retrospective.organizer, revealed: false)
+    create(:reflection, :glad, owner: retrospective.facilitator, revealed: false)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
 
     within '#reflections-pannel' do
@@ -95,9 +95,9 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
 
   test 'can delete a reflection' do
     retrospective = create(:retrospective, step: 'thinking')
-    create(:reflection, :glad, owner: retrospective.organizer, revealed: false)
+    create(:reflection, :glad, owner: retrospective.facilitator, revealed: false)
 
-    logged_in_as(retrospective.organizer)
+    logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
 
     within '#reflections-pannel' do

@@ -10,14 +10,14 @@ class Retrospective < ApplicationRecord
   has_many :tasks, through: :participants, source: :created_tasks
 
   belongs_to :group
-  belongs_to :organizer, class_name: 'Participant', inverse_of: :organized_retrospective
+  belongs_to :facilitator, class_name: 'Participant', inverse_of: :organized_retrospective
   belongs_to :revealer, class_name: 'Participant', inverse_of: :revealing_retrospective, optional: true
   belongs_to :discussed_reflection, class_name: 'Reflection', optional: true
 
   before_create :add_first_participant
   before_create :initialize_zones
 
-  accepts_nested_attributes_for :organizer
+  accepts_nested_attributes_for :facilitator
 
   enum kind: {
     kds: 'kds',
@@ -90,7 +90,7 @@ class Retrospective < ApplicationRecord
       tasks: tasks.order(:created_at).as_json,
       serverTime: Time.zone.now,
       timerEndAt: timer_end_at,
-      organizerInfo: organizer_info
+      facilitatorInfo: facilitator_info
     }
 
     unless step.in?(%w[gathering thinking])
@@ -106,7 +106,7 @@ class Retrospective < ApplicationRecord
     state
   end
 
-  def organizer_info
+  def facilitator_info
     clear_info =
       participants.includes(:reactions).reduce({}) do |memo, participant|
         memo[participant.id] = {
@@ -118,7 +118,7 @@ class Retrospective < ApplicationRecord
 
     cipher = OpenSSL::Cipher.new('AES-256-CBC')
     cipher.encrypt
-    cipher.key = Digest::SHA256.new.update(organizer.encryption_key).digest
+    cipher.key = Digest::SHA256.new.update(facilitator.encryption_key).digest
     cipher.iv = Base64.encode64(id).chomp.ljust(16, '0')[0...16]
     encrypted_data = cipher.update(clear_info.to_json) + cipher.final
 
@@ -173,26 +173,26 @@ class Retrospective < ApplicationRecord
     broadcast_order(:next, **params)
   end
 
-  def change_organizer!
-    other_participant = participants.logged_in.order(:created_at).reject { |participant| participant === organizer }.first
+  def change_facilitator!
+    other_participant = participants.logged_in.order(:created_at).reject { |participant| participant === facilitator }.first
     return unless other_participant
 
-    current_organizer = organizer
-    update!(organizer: other_participant)
+    current_facilitator = facilitator
+    update!(facilitator: other_participant)
     broadcast_order(:refreshParticipant, participant: other_participant.reload.profile)
-    broadcast_order(:refreshParticipant, participant: current_organizer.reload.profile)
-    broadcast_order(:updateOrganizerInfo, organizerInfo: organizer_info)
+    broadcast_order(:refreshParticipant, participant: current_facilitator.reload.profile)
+    broadcast_order(:updateFacilitatorInfo, facilitatorInfo: facilitator_info)
   end
 
-  def reset_original_organizer!
-    original_organizer = participants.order(:created_at).first
-    return unless original_organizer.logged_in
+  def reset_original_facilitator!
+    original_facilitator = participants.order(:created_at).first
+    return unless original_facilitator.logged_in
 
-    previous_organizer = organizer
-    update!(organizer: original_organizer)
-    broadcast_order(:refreshParticipant, participant: original_organizer.reload.profile)
-    broadcast_order(:refreshParticipant, participant: previous_organizer.reload.profile)
-    broadcast_order(:updateOrganizerInfo, organizerInfo: organizer_info)
+    previous_facilitator = facilitator
+    update!(facilitator: original_facilitator)
+    broadcast_order(:refreshParticipant, participant: original_facilitator.reload.profile)
+    broadcast_order(:refreshParticipant, participant: previous_facilitator.reload.profile)
+    broadcast_order(:updateFacilitatorInfo, facilitatorInfo: facilitator_info)
   end
 
   def available_colors
@@ -202,7 +202,7 @@ class Retrospective < ApplicationRecord
   private
 
   def add_first_participant
-    participants << organizer
+    participants << facilitator
   end
 
   def initialize_zones

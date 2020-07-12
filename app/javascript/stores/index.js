@@ -8,14 +8,14 @@ const appStore = (props) => {
   const {
     serverTime, participants, profile, ownReactions,
     visibleReactions, timerEndAt, tasks, retrospective,
-    ownReflections, visibleReflections, discussedReflection, organizerInfo,
+    ownReflections, visibleReflections, discussedReflection, facilitatorInfo,
     ...initialState
   } = props
 
   return createStore(
     reducer,
     {
-      orchestrator: { ...initialState, organizerInfo },
+      orchestrator: { ...initialState, facilitatorInfo },
       participants,
       profile,
       reactions: { visibleReactions, ownReactions },

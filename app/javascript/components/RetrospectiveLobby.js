@@ -71,8 +71,8 @@ const RetrospectiveLobby = ({ id: retrospectiveId, group, kind }) => {
       dispatch({ type: 'change-task', task: data.task })
     } else if (action === 'dropTask') {
       dispatch({ type: 'drop-task', taskId: data.taskId })
-    } else if (action === 'updateOrganizerInfo') {
-      dispatch({ type: 'update-organizer-info', organizerInfo: data.organizerInfo })
+    } else if (action === 'updateFacilitatorInfo') {
+      dispatch({ type: 'update-facilitator-info', facilitatorInfo: data.facilitatorInfo })
     } else if (action === 'changeTopic') {
       dispatch({ type: 'change-topic', reflection: data.reflection })
     }
@@ -133,9 +133,9 @@ const RetrospectiveLobby = ({ id: retrospectiveId, group, kind }) => {
           <div className={classNames('bg-gray-200 mb-6 shadow text-white duration-200 ease-linear transform transition-height h-24 origin-top overflow-hidden', { '!h-0': !participantsListVisible })}>
             <div className="mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
               <div className='flex flex-grow justify-end'>
-                {profile?.organizer && <FacilitatorToolkitLeft />}
+                {profile?.facilitator && <FacilitatorToolkitLeft />}
                 <ParticipantsList onAddParticipantsClick={handleOpenAddParticipantsModal} />
-                {profile?.organizer && <FacilitatorToolkitRight />}
+                {profile?.facilitator && <FacilitatorToolkitRight />}
               </div>
             </div>
           </div>

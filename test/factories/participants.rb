@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :participant, aliases: %i[organizer revealer owner] do
-    surname { 'Organizer' }
+  factory :participant, aliases: %i[facilitator revealer owner] do
+    surname { 'Facilitator' }
     association :account, strategy: :build
 
     factory :other_participant do

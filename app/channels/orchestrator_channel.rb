@@ -11,7 +11,7 @@ class OrchestratorChannel < ApplicationCable::Channel
     current_user.update!(logged_in: true)
     broadcast_to(current_user.retrospective, action: 'refreshParticipant', parameters: { participant: current_user.profile })
 
-    current_user.retrospective.reset_original_organizer! if current_user.original_organizer?
+    current_user.retrospective.reset_original_facilitator! if current_user.original_facilitator?
   end
 
   def unsubscribed
@@ -24,7 +24,7 @@ class OrchestratorChannel < ApplicationCable::Channel
   end
 
   def start_timer(data)
-    return unless current_user.reload.organizer?
+    return unless current_user.reload.facilitator?
 
     timer_end_at = Time.zone.now + data['duration'].to_i.seconds
     broadcast_to(
@@ -36,7 +36,7 @@ class OrchestratorChannel < ApplicationCable::Channel
   end
 
   def set_revealer(data)
-    return unless current_user.reload.organizer?
+    return unless current_user.reload.facilitator?
 
     retrospective = current_user.retrospective
     current_revealer = retrospective.revealer
@@ -66,7 +66,7 @@ class OrchestratorChannel < ApplicationCable::Channel
   end
 
   def change_discussed_reflection(data)
-    return unless current_user.reload.organizer?
+    return unless current_user.reload.facilitator?
 
     retrospective = current_user.retrospective
     reflection = retrospective.reflections.find(data['uuid'])
@@ -75,7 +75,7 @@ class OrchestratorChannel < ApplicationCable::Channel
   end
 
   def receive(data)
-    return unless current_user&.organizer?
+    return unless current_user&.facilitator?
 
     retrospective = Retrospective.find(current_user.retrospective_id)
     case data.fetch('intent')

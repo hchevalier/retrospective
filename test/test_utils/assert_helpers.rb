@@ -5,13 +5,13 @@ module AssertHelpers
       return unless with_flags
 
       if with_flags.empty?
-        refute_selector '.organizer'
+        refute_selector '.facilitator'
         refute_selector '.revealer'
       else
         with_flags.each do |flag|
           case flag
-          when :organizer
-            assert_selector '.organizer'
+          when :facilitator
+            assert_selector '.facilitator'
           when :revealer
             assert_selector '.revealer'
           end
@@ -31,16 +31,16 @@ module AssertHelpers
     end
   end
 
-  def assert_logged_as_organizer
+  def assert_logged_as_facilitator
     within '#participants-list' do
-      assert_selector('.avatar.self .organizer')
+      assert_selector('.avatar.self .facilitator')
     end
   end
 
-  def refute_logged_as_organizer
+  def refute_logged_as_facilitator
     within '#participants-list' do
       assert_selector('.avatar.self')
-      refute_selector('.avatar.self .organizer')
+      refute_selector('.avatar.self .facilitator')
     end
   end
 

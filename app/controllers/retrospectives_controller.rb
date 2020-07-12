@@ -10,10 +10,10 @@ class RetrospectivesController < ApplicationController
   end
 
   def create
-    retrospective = Retrospective.create(retrospective_params.merge(organizer_attributes: organizer_attributes))
+    retrospective = Retrospective.create(retrospective_params.merge(facilitator_attributes: facilitator_attributes))
 
     if retrospective.persisted?
-      cookies.signed[:user_id] = retrospective.organizer_id
+      cookies.signed[:user_id] = retrospective.facilitator_id
       render json: { id: retrospective.id }
     else
       render json: { status: :unprocessable_entity, errors: retrospective.errors }
@@ -59,7 +59,7 @@ class RetrospectivesController < ApplicationController
     params.permit(:group_id, :kind)
   end
 
-  def organizer_attributes
+  def facilitator_attributes
     { surname: current_account.username, account_id: current_account.id }
   end
 

@@ -13,37 +13,37 @@ import CheckIcon from 'images/check-icon.svg'
 const ParticipantsList = ({ onAddParticipantsClick }) => {
   const profile = useSelector(state => state.profile)
   const { id: retrospectiveId } = useSelector(state => state.retrospective)
-  const { organizerInfo: encryptedOrganizerInfo, step } = useSelector(state => state.orchestrator)
+  const { facilitatorInfo: encryptedFacilitatorInfo, step } = useSelector(state => state.orchestrator)
   const participants = useSelector(state => state.participants, shallowEqual)
   const visibleReflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
   const channel = useSelector(state => state.orchestrator.subscription)
 
   const handleParticipantClick = (event) => {
-    if (profile?.organizer && step === 'grouping') {
+    if (profile?.facilitator && step === 'grouping') {
       const uuid = event.currentTarget.dataset.id
       channel.setRevealer(uuid)
     }
   }
 
-  const organizerInfo = React.useMemo(() => {
-    const { organizer, decryptionKey } = profile
+  const facilitatorInfo = React.useMemo(() => {
+    const { facilitator, decryptionKey } = profile
 
-    if (!organizer) return {}
+    if (!facilitator) return {}
 
     const encodedName = btoa(retrospectiveId)
     const initializationVector = encodedName.length < 16 ? encodedName + '0'.repeat(16 - encodedName.length) : encodedName
-    const message = decrypt(encryptedOrganizerInfo, decryptionKey, initializationVector)
+    const message = decrypt(encryptedFacilitatorInfo, decryptionKey, initializationVector)
     if (message !== '') {
       return JSON.parse(message)
     }
 
     return {}
-  }, [encryptedOrganizerInfo, profile, retrospectiveId])
+  }, [encryptedFacilitatorInfo, profile, retrospectiveId])
 
   const revealers = uniqBy(visibleReflections.map((reflection) => reflection.owner), 'uuid').map(participant => participant.uuid)
 
-  const displayOrganizerInfo = (revealer, uuid) => {
-    if (!profile?.organizer) return null
+  const displayFacilitatorInfo = (revealer, uuid) => {
+    if (!profile?.facilitator) return null
 
     const children = []
 
@@ -55,15 +55,15 @@ const ParticipantsList = ({ onAddParticipantsClick }) => {
     if (step === 'grouping' && !revealer && revealers.includes(uuid))
       children.push(<img key='check' className='flex-row absolute right-0' src={CheckIcon} width='16' />)
 
-    if (step === 'voting' && organizerInfo[uuid])
-      children.push(<span key='remaining-votes' className='remaining-votes absolute flex right-0 p-1 text-xs rounded-full bg-black bg-opacity-25'>{organizerInfo[uuid].remainingVotes}</span>)
+    if (step === 'voting' && facilitatorInfo[uuid])
+      children.push(<span key='remaining-votes' className='remaining-votes absolute flex right-0 p-1 text-xs rounded-full bg-black bg-opacity-25'>{facilitatorInfo[uuid].remainingVotes}</span>)
 
     return <>{children}</>
   }
 
   return (
     <div id='participants-list' className='flex flex-row'>
-      {participants.map(({ surname, status, organizer, revealer, uuid, color }, index) => {
+      {participants.map(({ surname, status, facilitator, revealer, uuid, color }, index) => {
         return (
           <Avatar
             key={index}
@@ -73,10 +73,10 @@ const ParticipantsList = ({ onAddParticipantsClick }) => {
             surname={surname}
             self={profile?.uuid === uuid}
             onClick={handleParticipantClick}
-            flags={{ organizer, revealer }}>
-            {organizer && <img className='organizer flex-row absolute left-0' src={MegaphoneIcon} width='16' />}
+            flags={{ facilitator, revealer }}>
+            {facilitator && <img className='facilitator flex-row absolute left-0' src={MegaphoneIcon} width='16' />}
             {revealer && <img className='revealer flex-row absolute right-0' src={SpeechBubbleIcon} width='16' />}
-            {displayOrganizerInfo(revealer, uuid)}
+            {displayFacilitatorInfo(revealer, uuid)}
           </Avatar>
         )
       })}

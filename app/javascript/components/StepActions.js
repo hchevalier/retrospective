@@ -8,7 +8,7 @@ import InlineTopic from './InlineTopic'
 import './StepActions.scss'
 
 const StepActions = () => {
-  const { organizer } = useSelector(state => state.profile)
+  const { facilitator } = useSelector(state => state.profile)
   const visibleReflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
   const currentReflection = useSelector(state => state.reflections.discussedReflection)
   const visibleReactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
@@ -27,10 +27,10 @@ const StepActions = () => {
   }).sort((a, b) => b[1].length - a[1].length)
 
   const handleStickyBookmarkClicked = React.useCallback((reflection) => {
-    if (organizer) {
+    if (facilitator) {
       channel.changeDiscussedReflection(reflection.id)
     }
-  }, [organizer, channel])
+  }, [facilitator, channel])
 
   if (!currentReflection) return null
 
