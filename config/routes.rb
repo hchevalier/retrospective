@@ -30,7 +30,4 @@ Rails.application.routes.draw do
   get '/auth/:provider/callback' => 'sessions#omniauth'
   get '/logout', to: 'sessions#destroy', as: :logout
   get '/(*path)', to: 'static#single_page_app', as: :single_page_app
-
-  # Front routes, inaccessible due to the wildcard route above, but will generate url_helpers
-  get '/groups/:id', to: 'static#single_page_app', as: :spa_group
 end

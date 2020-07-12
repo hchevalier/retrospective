@@ -7,7 +7,7 @@ class InvitationMailer < ApplicationMailer
     @link =
       @invitation.retrospective ?
       retrospective_url(id: @invitation.retrospective_id, invitation_id: @invitation.id, host: host) :
-      spa_group_url(id: @invitation.group.id, invitation_id: @invitation.id, host: host)
+      single_page_app_url(path: "groups/#{@invitation.group.id}", invitation_id: @invitation.id, host: host)
 
     mail(to: @invitation.email, subject: "Invitation to retrospective group #{@invitation.group.name}")
   end

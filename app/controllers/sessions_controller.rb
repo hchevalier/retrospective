@@ -14,7 +14,7 @@ class SessionsController < ApplicationController
     session[:account_id] = account.id
     consume_invitation(account) if session[:invitation]
 
-    redirect_to single_page_app_path(path: :dashboard)
+    return :head
   end
 
   def destroy
