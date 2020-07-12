@@ -15,7 +15,7 @@ FactoryBot.define do
         create(:participant, participant.merge(retrospective: retrospective))
       end
 
-      retrospective.group.add_member(retrospective.organizer.account)
+      retrospective.group.add_member(retrospective.facilitator.account)
     end
   end
 end
