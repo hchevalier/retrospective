@@ -1,4 +1,6 @@
 class PendingInvitation < ApplicationRecord
+  include Rails.application.routes.url_helpers
+
   belongs_to :account
   belongs_to :group
   belongs_to :retrospective, optional: true
@@ -11,6 +13,12 @@ class PendingInvitation < ApplicationRecord
       email: email,
       id: id
     }
+  end
+
+  def link(host)
+    retrospective ?
+      retrospective_url(id: retrospective_id, invitation_id: id, host: host) :
+      single_page_app_url(path: "groups/#{group.id}", invitation_id: id, host: host)
   end
 
   def deprecaded?

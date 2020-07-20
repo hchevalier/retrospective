@@ -26,6 +26,8 @@ class RetrospectivesController < ApplicationController
       current_user.retrospective :
       Retrospective.includes(:participants, :zones).find(params[:id])
 
+    @invitation = PendingInvitation.find(params[:invitation_id]) if params[:invitation_id]
+
     if current_account
       participant = @retrospective.participants.find { |participant| participant.account == current_account }
 

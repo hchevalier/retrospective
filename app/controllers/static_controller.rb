@@ -2,7 +2,9 @@ class StaticController < ApplicationController
   skip_before_action :ensure_logged_in, only: :single_page_app
   before_action :check_invitation
 
-  def single_page_app; end
+  def single_page_app
+    consume_invitation(account) if session[:invitation]
+  end
 
   private
 
@@ -13,6 +15,7 @@ class StaticController < ApplicationController
     if current_account&.email == invitation.email
       invitation.group.add_member(current_account)
       invitation.destroy
+      return
     elsif current_account
       session.delete(:account_id)
     end

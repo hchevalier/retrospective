@@ -18,7 +18,7 @@ import ArrowIcon from 'images/arrow-icon.svg'
 import './RetrospectiveLobby.scss'
 
 
-const RetrospectiveLobby = ({ id: retrospectiveId, group, kind }) => {
+const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) => {
   const dispatch = useDispatch()
   const [participantsListVisible, setParticipantsListVisible] = React.useState(true)
   const [reflectionsListVisible, setReflectionsListVisible] = React.useState(true)
@@ -32,11 +32,17 @@ const RetrospectiveLobby = ({ id: retrospectiveId, group, kind }) => {
   const loggedIn = !!profile.uuid
 
   React.useEffect(() => {
-    if (!group.id) return
+    if (!group.id || !loggedIn) return
 
     get({ url: `/api/groups/${group.id}` })
       .then((data) => setGroupInfo(data))
   }, [group.id, loggedIn])
+
+  React.useEffect(() => {
+    if (!loggedIn) return
+
+    window.history.replaceState({}, '', window.location.pathname)
+  }, [loggedIn])
 
   const handleOpenAddParticipantsModal = () => {
     setDisplayAddParticipantsModal(true)
@@ -139,7 +145,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, group, kind }) => {
               </div>
             </div>
           </div>
-          {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} />}
+          {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} invitation={invitation} />}
           {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
         </div>
       </div>
@@ -159,6 +165,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, group, kind }) => {
 
 RetrospectiveLobby.propTypes = {
   id: PropTypes.string.isRequired,
+  invitation: PropTypes.object,
   group: PropTypes.shape({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
@@ -171,13 +178,14 @@ const RetrospectiveLobbyWithProvider = (props) => {
 
   return (
     <Provider store={store}>
-      <RetrospectiveLobby {...props.retrospective} />
+      <RetrospectiveLobby {...{ invitation: props.invitation, ...props.retrospective }} />
     </Provider>
   )
 }
 
 RetrospectiveLobbyWithProvider.propTypes = {
   initialState: PropTypes.object.isRequired,
+  invitation: PropTypes.object,
   retrospective: PropTypes.object.isRequired
 }
 

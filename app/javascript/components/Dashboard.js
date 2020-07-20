@@ -8,6 +8,7 @@ const Dashboard = () => {
   React.useEffect(() => {
     get({ url: '/api/retrospectives' })
       .then((data) => setRetrospectives(data))
+      .catch(() => window.location.href = '/sessions/new')
   }, [])
 
   React.useEffect(() => {
