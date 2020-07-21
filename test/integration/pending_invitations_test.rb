@@ -2,9 +2,9 @@ require 'test_helper'
 
 class PendingInvitationsTest < ActionDispatch::IntegrationTest
   test 'can sent invitations from a group page' do
-    account = create(:account)
+    account = create(:account, username: 'Host')
     as_user(account)
-    group = create(:group)
+    group = create(:group, name: 'Group A')
     group.add_member(account)
 
     visit "/groups/#{group.id}"
@@ -18,6 +18,21 @@ class PendingInvitationsTest < ActionDispatch::IntegrationTest
     assert_text 'Pending invitations'
     assert_text 'someone@mycompany.com'
     assert_text 'someone.else@mycompany.com'
+
+    perform_enqueued_jobs
+    email = ActionMailer::Base.deliveries.last
+    assert_equal ['noreply@docto-retrospective.herokuapp.com'], email.from
+    assert_equal ['someone.else@mycompany.com'], email.to
+    assert_equal 'Invitation to retrospective group Group A', email.subject
+
+    invitation = PendingInvitation.order(:created_at).last
+
+    body = email.body.to_s
+    link = <<~HTML
+      Click on <a href=\"https://docto-retrospective.herokuapp.com/groups/#{group.id}\?invitation_id=#{invitation.id}\">this link</a> to join
+    HTML
+    assert_match "You've been invited by Host to join the retropective group Group A", body
+    assert_match link.squish, body
   end
 
   test 'can cancel an invitation' do
