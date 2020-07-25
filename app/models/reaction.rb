@@ -21,16 +21,23 @@ class Reaction < ApplicationRecord
     joy: '😂',
     sweat_smile: '😅',
     star_struck:'🤩',
+    love: '❤️',
     hugging_face: '🤗',
-    exploding_head: '🤯',
-    rage: '😡',
+    grimacing: '😬',
     thinking_face: '🤔',
+    exploding_head: '🤯',
+    confused: '😕',
+    tired_face: '😫',
+    rage: '😡',
+    cry: '😢',
     pray: '🙏',
     clap: '👏',
     muscle: '💪',
     fingers_crossed: '🤞',
+    ok_hand: '👌',
     rocket: '🚀',
-    fire: '🔥'
+    fire: '🔥',
+    tada: '🎉'
   }
 
   def readable
