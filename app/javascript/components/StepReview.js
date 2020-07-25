@@ -1,18 +1,17 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
-import PropTypes from 'prop-types'
 import { put } from 'lib/httpClient'
 import Button from './Button'
 
-const StepReview = ({ groupId }) => {
+const StepReview = () => {
   const tasks = useSelector(state => state.group.pendingTasks, shallowEqual)
   const [buttonStates, setButtonStates] = React.useState({})
 
   const resolveStatus = (event, status) => {
     const taskId = event.currentTarget.dataset.id
     put({
-      url: `/api/groups/${groupId}/update_task`,
-      payload: { status, task_id: taskId }
+      url: `/api/tasks/${taskId}`,
+      payload: { status }
     })
       .then(() => setButtonStates({ ...buttonStates, [taskId]: status }))
   }
@@ -49,11 +48,6 @@ const StepReview = ({ groupId }) => {
       </div>
     </>
   )
-}
-
-
-StepReview.propTypes = {
-  groupId: PropTypes.string.isRequired
 }
 
 export default StepReview

@@ -146,7 +146,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) =>
             </div>
           </div>
           {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} invitation={invitation} />}
-          {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} groupId={group.id} />}
+          {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
         </div>
       </div>
       {loggedIn && groupInfo && (

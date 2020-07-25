@@ -21,10 +21,18 @@ class TasksController < ApplicationController
 
   def update
     retrospective = current_user.retrospective
-    task = retrospective.tasks.find_by(id: params[:id])
-    return render(json: { status: :not_found }) unless task
+    if retrospective.step == 'actions'
+      task = retrospective.tasks.find_by(id: params[:id])
+      return render(json: { status: :not_found }) unless task
 
-    task.update!(update_task_params)
+      task.update!(actions_step_update_task_params)
+    elsif retrospective.step == 'reviewing'
+      task = retrospective.group.tasks_visible_by(current_account).find { |task| task.id == params[:id] }
+      return render(json: { status: :not_found }) unless task
+
+      task.update!(reviewing_step_update_task_params)
+    end
+
     OrchestratorChannel.broadcast_to(retrospective, action: 'updateTask', parameters: { task: task.as_json })
 
     render json: task.as_json
@@ -47,7 +55,11 @@ class TasksController < ApplicationController
     params.permit(:assignee_id, :reflection_id, :description)
   end
 
-  def update_task_params
+  def actions_step_update_task_params
     params.permit(:assignee_id, :description)
+  end
+
+  def reviewing_step_update_task_params
+    params.permit(:status)
   end
 end

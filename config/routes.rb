@@ -18,9 +18,6 @@ Rails.application.routes.draw do
     resources :tasks, only: %i(index create update)
     resources :groups, only: %i(index create show) do
       resources :pending_invitations, only: %i(index create destroy)
-      member do
-        put :update_task
-      end
     end
     resources :group_accesses, only: %i(index destroy)
     resources :retrospective_kinds, only: :index
