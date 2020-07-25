@@ -8,6 +8,7 @@ class Retrospective < ApplicationRecord
   has_many :topics
   has_many :reactions
   has_many :tasks, through: :participants, source: :created_tasks
+  has_many :pending_tasks, -> { where(status: :todo) }, through: :participants, class_name: 'Task', source: :created_tasks
 
   belongs_to :group
   belongs_to :facilitator, class_name: 'Participant', inverse_of: :organized_retrospective
@@ -41,6 +42,7 @@ class Retrospective < ApplicationRecord
 
   enum step: {
     gathering: 'gathering',
+    reviewing: 'reviewing',
     thinking: 'thinking',
     grouping: 'grouping',
     voting: 'voting',
@@ -88,6 +90,7 @@ class Retrospective < ApplicationRecord
       allColors: Participant::COLORS,
       availableColors: available_colors,
       tasks: tasks.order(:created_at).as_json,
+      pendingTasks: group.pending_tasks.as_json,
       serverTime: Time.zone.now,
       timerEndAt: timer_end_at,
       facilitatorInfo: facilitator_info
@@ -129,6 +132,8 @@ class Retrospective < ApplicationRecord
     return if step == 'done'
 
     next_step = Retrospective.steps.keys[step_index + 1]
+    next_step = Retrospective.steps.keys[step_index + 2] if next_step == 'reviewing' && group.pending_tasks.none?
+
     if next_step == 'actions'
       most_upvoted_target =
         reactions
@@ -168,6 +173,7 @@ class Retrospective < ApplicationRecord
         []
       end
 
+    params[:pendingTasks] = group.pending_tasks.as_json if step == 'reviewings'
     params[:discussedReflection] = discussed_reflection&.readable if %w(actions done).include?(step)
 
     broadcast_order(:next, **params)

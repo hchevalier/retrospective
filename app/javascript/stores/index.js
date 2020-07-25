@@ -7,7 +7,7 @@ const LATENCY = 200
 const appStore = (props) => {
   const {
     serverTime, participants, profile, ownReactions,
-    visibleReactions, timerEndAt, tasks, retrospective,
+    visibleReactions, timerEndAt, tasks, pendingTasks, retrospective,
     ownReflections, visibleReflections, discussedReflection, facilitatorInfo,
     ...initialState
   } = props
@@ -22,6 +22,7 @@ const appStore = (props) => {
       reflections: { ownReflections, visibleReflections: visibleReflections || [], discussedReflection },
       retrospective: { ...retrospective },
       tasks,
+      group: { pendingTasks },
       timer: { timerEndAt, timeOffset: new Date(serverTime) - new Date() + LATENCY }
     },
     applyMiddleware(logger)

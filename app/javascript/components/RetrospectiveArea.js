@@ -5,12 +5,13 @@ import GladSadMad from './retrospectives/GladSadMad'
 import Starfish from './retrospectives/Starfish'
 import RetrospectiveBottomBar from './RetrospectiveBottomBar'
 import Sailboat from './retrospectives/Sailboat'
+import StepReview from './StepReview'
 import StepGrouping from './StepGrouping'
 import StepVoting from './StepVoting'
 import StepActions from './StepActions'
 import StepDone from './StepDone'
 
-const RetrospectiveArea = ({ retrospectiveId, kind }) => {
+const RetrospectiveArea = ({ retrospectiveId, kind, groupId }) => {
   const currentStep = useSelector(state => state.orchestrator.step)
 
   const [selectedZone, setSelectedZone] = useState(null)
@@ -47,6 +48,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
     <>
       <div className='flex flex-col flex-1 px-4 overflow-y-scroll'>
         {currentStep === 'gathering' && <ColorPicker retrospectiveId={retrospectiveId} />}
+        {currentStep === 'reviewing' && <StepReview groupId={groupId} />}
         {currentStep === 'thinking' && renderRetrospective()}
         {currentStep === 'grouping' && <StepGrouping />}
         {currentStep === 'voting' && <StepVoting />}

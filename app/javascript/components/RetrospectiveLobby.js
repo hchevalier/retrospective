@@ -58,7 +58,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) =>
     } else if (action === 'refreshParticipant') {
       dispatch({ type: 'refresh-participant', participant: data.participant })
     } else if (action === 'next') {
-      dispatch({ type: 'change-step', step: data.next_step, visibleReflections: data.visibleReflections, discussedReflection: data.discussedReflection, visibleReactions: data.visibleReactions })
+      dispatch({ type: 'change-step', step: data.next_step, visibleReflections: data.visibleReflections, discussedReflection: data.discussedReflection, visibleReactions: data.visibleReactions, pendingTasks: data.pendingTasks })
     } else if (action === 'setTimer') {
       dispatch({ type: 'start-timer', timerEndAt: data.timer_end_at })
     } else if (action === 'changeColor') {
@@ -146,7 +146,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) =>
             </div>
           </div>
           {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} invitation={invitation} />}
-          {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
+          {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} groupId={group.id} />}
         </div>
       </div>
       {loggedIn && groupInfo && (

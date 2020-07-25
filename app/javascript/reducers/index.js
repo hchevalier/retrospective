@@ -6,8 +6,9 @@ import reactions from './reactions'
 import reflections from './reflections'
 import retrospective from './retrospective'
 import tasks from './tasks'
+import group from './group'
 import timer from './timer'
 
 export default combineReducers({
-  orchestrator, participants, profile, reactions, reflections, retrospective, tasks, timer
+  orchestrator, participants, profile, reactions, reflections, retrospective, tasks, group, timer
 })

@@ -10,23 +10,22 @@ class TasksController < ApplicationController
   end
 
   def create
-    retrospective = Retrospective.find(params[:retrospective_id])
-    return render(json: { status: :forbidden }) unless current_user.retrospective_id == retrospective.id
+    retrospective = current_user.retrospective
     return render(json: { status: :not_found }) unless retrospective.reflections.find_by(id: params[:reflection_id])
 
     task = current_user.created_tasks.create!(task_params)
-    OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'addTask', parameters: { task: task.as_json })
+    OrchestratorChannel.broadcast_to(retrospective, action: 'addTask', parameters: { task: task.as_json })
 
     render json: task.as_json
   end
 
   def update
-    retrospective = Retrospective.find(params[:retrospective_id])
+    retrospective = current_user.retrospective
     task = retrospective.tasks.find_by(id: params[:id])
     return render(json: { status: :not_found }) unless task
 
     task.update!(update_task_params)
-    OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'updateTask', parameters: { task: task.as_json })
+    OrchestratorChannel.broadcast_to(retrospective, action: 'updateTask', parameters: { task: task.as_json })
 
     render json: task.as_json
   end

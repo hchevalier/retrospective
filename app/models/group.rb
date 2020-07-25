@@ -20,6 +20,12 @@ class Group < ApplicationRecord
       .filter { |task| account.sees_task?(task) }
   end
 
+  def pending_tasks
+    retrospectives
+      .includes(pending_tasks: %i(assignee author reflection))
+      .flat_map(&:pending_tasks)
+  end
+
   def as_short_json
     {
       createdAt: created_at,

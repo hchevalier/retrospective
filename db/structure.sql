@@ -64,6 +64,7 @@ CREATE TYPE public.retrospective_kinds AS ENUM (
 
 CREATE TYPE public.retrospective_steps AS ENUM (
     'gathering',
+    'reviewing',
     'thinking',
     'grouping',
     'voting',
@@ -549,6 +550,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200627114326'),
 ('20200627120729'),
 ('20200705171159'),
-('20200711153629');
+('20200711153629'),
+('20200725200805');
 
 

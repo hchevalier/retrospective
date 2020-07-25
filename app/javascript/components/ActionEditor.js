@@ -26,7 +26,7 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
   const onTakeActionClick = () => {
     const method = editedTask ? put : post
     method({
-      url: `/retrospectives/${retrospectiveId}/tasks${editedTask ? `/${editedTask}` : ''}`,
+      url: `/api/tasks${editedTask ? `/${editedTask}` : ''}`,
       payload: {
         reflection_id: reflectionOnTypeStart.id,
         assignee_id: assignee,
