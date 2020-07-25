@@ -174,6 +174,21 @@ CREATE TABLE public.participants (
 
 
 --
+-- Name: pending_invitations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.pending_invitations (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    group_id uuid NOT NULL,
+    account_id uuid NOT NULL,
+    retrospective_id uuid,
+    email character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
 -- Name: reactions; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -378,6 +393,14 @@ ALTER TABLE ONLY public.participants
 
 
 --
+-- Name: pending_invitations pending_invitations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.pending_invitations
+    ADD CONSTRAINT pending_invitations_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: reactions reactions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -462,6 +485,13 @@ CREATE INDEX index_participants_on_retrospective_id ON public.participants USING
 
 
 --
+-- Name: index_pending_invitations_on_group_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_pending_invitations_on_group_id ON public.pending_invitations USING btree (group_id);
+
+
+--
 -- Name: index_reflections_on_zone_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -518,6 +548,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200625210311'),
 ('20200627114326'),
 ('20200627120729'),
+('20200705171159'),
 ('20200711153629');
 
 

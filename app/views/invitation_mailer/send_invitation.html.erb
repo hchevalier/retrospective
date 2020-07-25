@@ -1,0 +1,5 @@
+<div>Hello <%= @invitation.email %></div>
+
+<div>You've been invited by <%= @invitation.account.username %> to join the retropective group <%= @invitation.group.name %></div>
+
+<div>Click on <%= link_to 'this link', @link %> to join</div>

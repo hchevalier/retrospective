@@ -26,6 +26,8 @@ class RetrospectivesController < ApplicationController
       current_user.retrospective :
       Retrospective.includes(:participants, :zones).find(params[:id])
 
+    @invitation = PendingInvitation.find(params[:invitation_id]) if params[:invitation_id]
+
     if current_account
       participant = @retrospective.participants.find { |participant| participant.account == current_account }
 
@@ -38,6 +40,7 @@ class RetrospectivesController < ApplicationController
           retrospective: @retrospective
         )
         cookies.signed[:user_id] = participant.id
+        @retrospective.group.add_member(current_account)
       end
       reload_current_user
     end

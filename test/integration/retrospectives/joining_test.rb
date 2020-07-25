@@ -4,9 +4,9 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
   test 'creates a new retrospective with an existing group' do
     account = create(:account)
     group = create(:group, name: '8357 620UP')
-    group.accounts << account
+    group.add_member(account)
     other_group = create(:group, name: '07H32 620UP')
-    other_group.accounts << account
+    other_group.add_member(account)
     as_user(account)
 
     visit '/'

@@ -8,6 +8,7 @@ class ParticipantsController < ApplicationController
       account_id: current_account.id,
       retrospective: retrospective
     )
+    retrospective.group.add_member(current_account)
 
     cookies.signed[:user_id] = participant.id
     participant.join

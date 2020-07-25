@@ -2,6 +2,8 @@ import React from 'react'
 import { Provider, useSelector, useDispatch } from 'react-redux'
 import appStore from 'stores'
 import classNames from 'classnames'
+import PropTypes from 'prop-types'
+import { get } from 'lib/httpClient'
 import consumer from 'channels/consumer'
 import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
 import RetrospectiveArea from './RetrospectiveArea'
@@ -10,19 +12,45 @@ import ReflectionsList from './ReflectionsList'
 import FacilitatorToolkitLeft from './FacilitatorToolkitLeft'
 import FacilitatorToolkitRight from './FacilitatorToolkitRight'
 import LoginForm from './LoginForm'
+import AddGroupMembersModal from './AddGroupMembersModal'
 import HomeIcon from 'images/home-icon.svg'
 import ArrowIcon from 'images/arrow-icon.svg'
 import './RetrospectiveLobby.scss'
 
-const RetrospectiveLobby = ({ id: retrospectiveId, groupName, kind }) => {
+
+const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) => {
   const dispatch = useDispatch()
   const [participantsListVisible, setParticipantsListVisible] = React.useState(true)
   const [reflectionsListVisible, setReflectionsListVisible] = React.useState(true)
+  const [displayAddParticipantsModal, setDisplayAddParticipantsModal] = React.useState(false)
+  const [groupInfo, setGroupInfo] = React.useState(null)
+
   const profile = useSelector(state => state.profile)
   const revealer = useSelector(state => state.profile.revealer)
   const currentStep = useSelector(state => state.orchestrator.step)
   const channel = useSelector(state => state.orchestrator.subscription)
   const loggedIn = !!profile.uuid
+
+  React.useEffect(() => {
+    if (!group.id || !loggedIn) return
+
+    get({ url: `/api/groups/${group.id}` })
+      .then((data) => setGroupInfo(data))
+  }, [group.id, loggedIn])
+
+  React.useEffect(() => {
+    if (!loggedIn) return
+
+    window.history.replaceState({}, '', window.location.pathname)
+  }, [loggedIn])
+
+  const handleOpenAddParticipantsModal = () => {
+    setDisplayAddParticipantsModal(true)
+  }
+
+  const handleAddParticipantsModalClose = () => {
+    setDisplayAddParticipantsModal(false)
+  }
 
   const handleActionReceived = React.useCallback((action, data) => {
     if (action === 'newParticipant') {
@@ -92,7 +120,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, groupName, kind }) => {
             </a>
           </div>
           <div className="mr-4 md:mr-8">
-            Lobby {groupName} - {kind}
+            Lobby {group.name} - {kind}
           </div>
           <div className='flex flex-grow justify-end'>
             <img className={classNames('cursor-pointer duration-200 ease-in-out transition-transform', { 'transform rotate-180': participantsListVisible })} src={ArrowIcon} width="24" onClick={toggleParticipantsList} />
@@ -112,17 +140,37 @@ const RetrospectiveLobby = ({ id: retrospectiveId, groupName, kind }) => {
             <div className="mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
               <div className='flex flex-grow justify-end'>
                 {profile?.facilitator && <FacilitatorToolkitLeft />}
-                <ParticipantsList />
+                <ParticipantsList onAddParticipantsClick={handleOpenAddParticipantsModal} />
                 {profile?.facilitator && <FacilitatorToolkitRight />}
               </div>
             </div>
           </div>
-          {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} />}
+          {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} invitation={invitation} />}
           {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
         </div>
-        </div>
       </div>
+      {loggedIn && groupInfo && (
+        <AddGroupMembersModal
+          visible={displayAddParticipantsModal}
+          onInvitationsSent={handleAddParticipantsModalClose}
+          onModalClose={handleAddParticipantsModalClose}
+          group={groupInfo}
+          retrospectiveId={retrospectiveId}
+          withGroupMembers
+          withShareableLink />
+      )}
+    </div>
   )
+}
+
+RetrospectiveLobby.propTypes = {
+  id: PropTypes.string.isRequired,
+  invitation: PropTypes.object,
+  group: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
+  }).isRequired,
+  kind: PropTypes.string.isRequired,
 }
 
 const RetrospectiveLobbyWithProvider = (props) => {
@@ -130,9 +178,15 @@ const RetrospectiveLobbyWithProvider = (props) => {
 
   return (
     <Provider store={store}>
-      <RetrospectiveLobby {...props.retrospective} />
+      <RetrospectiveLobby {...{ invitation: props.invitation, ...props.retrospective }} />
     </Provider>
   )
+}
+
+RetrospectiveLobbyWithProvider.propTypes = {
+  initialState: PropTypes.object.isRequired,
+  invitation: PropTypes.object,
+  retrospective: PropTypes.object.isRequired
 }
 
 export default RetrospectiveLobbyWithProvider

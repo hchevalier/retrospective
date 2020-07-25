@@ -8,5 +8,9 @@ FactoryBot.define do
     factory :other_participant do
       surname { 'Other participant' }
     end
+
+    after(:create) do |participant, _evaluator|
+      participant.retrospective.group.add_member(participant.account)
+    end
   end
 end

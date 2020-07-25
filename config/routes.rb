@@ -16,7 +16,9 @@ Rails.application.routes.draw do
   scope :api do
     resources :retrospectives, only: :index
     resources :tasks, only: :index
-    resources :groups, only: %i(index create show)
+    resources :groups, only: %i(index create show) do
+      resources :pending_invitations, only: %i(index create destroy)
+    end
     resources :group_accesses, only: %i(index destroy)
     resources :retrospective_kinds, only: :index
   end

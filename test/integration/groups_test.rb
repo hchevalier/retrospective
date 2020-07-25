@@ -21,13 +21,13 @@ class GroupsTest < ActionDispatch::IntegrationTest
 
   test 'shows the number of members in a group' do
     group = create(:group, name: '8357 620UP')
-    group.accounts << @account
+    group.add_member(@account)
 
     visit '/groups'
     assert_text '8357 620UP (1 members)'
 
     other_account = create(:account, username: 'Other member')
-    group.accounts << other_account
+    group.add_member(other_account)
 
     visit '/groups'
     assert_text '8357 620UP (2 members)'
@@ -40,7 +40,7 @@ class GroupsTest < ActionDispatch::IntegrationTest
 
   test 'hides groups that have been left' do
     group = create(:group, name: '8357 620UP')
-    group.accounts << @account
+    group.add_member(@account)
 
     visit '/groups'
     assert_text '8357 620UP (1 members)'
@@ -56,10 +56,10 @@ class GroupsTest < ActionDispatch::IntegrationTest
 
   test 'deletes abandoned groups' do
     group = create(:group, name: '8357 620UP')
-    group.accounts << @account
+    group.add_member(@account)
 
     other_account = create(:account, username: 'Other member')
-    group.accounts << other_account
+    group.add_member(other_account)
 
     visit '/groups'
     assert_text '8357 620UP (2 members)'
@@ -84,10 +84,10 @@ class GroupsTest < ActionDispatch::IntegrationTest
 
   test 'shows the list of active members' do
     group = create(:group, name: '8357 620UP')
-    group.accounts << @account
+    group.add_member(@account)
 
     other_account = create(:account, username: 'Other member')
-    group.accounts << other_account
+    group.add_member(other_account)
 
     visit '/groups'
     click_on '8357 620UP'
@@ -100,17 +100,17 @@ class GroupsTest < ActionDispatch::IntegrationTest
 
   test 'do not show old members unless they have a new active access' do
     group = create(:group, name: '8357 620UP')
-    group.accounts << @account
+    group.add_member(@account)
 
     other_account = create(:account, username: 'Other member')
-    group.accounts << other_account
+    group.add_member(other_account)
     group.group_accesses.find_by(account: other_account).update!(revoked_at: Time.current)
 
     visit "/groups/#{group.id}"
     assert_text 'Group members: 1'
     refute_text 'Other member'
 
-    group.accounts << other_account
+    group.add_member(other_account)
 
     visit "/groups/#{group.id}"
     assert_text 'Group members: 2'
@@ -119,9 +119,9 @@ class GroupsTest < ActionDispatch::IntegrationTest
 
   test 'shows all tasks created when user was part of the group as long as he has one active access' do
     group = create(:group, name: '8357 620UP')
-    group.accounts << @account
+    group.add_member(@account)
     other_account = create(:account)
-    group.accounts << other_account
+    group.add_member(other_account)
 
     # can see tasks created during this retrospective
     do_a_retrospective_with_actions(group, 'Retrospective 1 action', @account, other_account)
@@ -134,7 +134,7 @@ class GroupsTest < ActionDispatch::IntegrationTest
     retrospective3 = do_a_retrospective_with_actions(group, 'Retrospective 3 action', other_account)
     retrospective3.tasks.update_all(status: :done, updated_at: Time.current)
 
-    group.accounts << @account
+    group.add_member(@account)
     # can see pending tasks created during this second retrospective thanks to the active access, even if they change status
     # cannot see tasks that were created during the third retrospective because they were closed before he had a chance to see them
     visit "/groups/#{group.id}"

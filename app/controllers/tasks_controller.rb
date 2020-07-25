@@ -1,5 +1,4 @@
 class TasksController < ApplicationController
-  before_action :ensure_logged_in, only: :index
   before_action :ensure_participant, except: :index
 
   def index

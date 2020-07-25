@@ -4,7 +4,7 @@ import { post } from 'lib/httpClient'
 import PropTypes from 'prop-types'
 import AuthenticationForm from './AuthenticationForm'
 
-const LoginForm = ({ retrospectiveId }) => {
+const LoginForm = ({ retrospectiveId, invitation }) => {
   const dispatch = useDispatch()
 
   const handleSignUpOrSignIn = () => {
@@ -18,11 +18,12 @@ const LoginForm = ({ retrospectiveId }) => {
   }
 
   return (
-    <AuthenticationForm onSignUpOrSignIn={handleSignUpOrSignIn} />
+    <AuthenticationForm onSignUpOrSignIn={handleSignUpOrSignIn} returnUrl={window.location.url} defaultEmail={invitation?.email} />
   )
 }
 
 LoginForm.propTypes = {
+  invitation: PropTypes.object,
   retrospectiveId: PropTypes.string.isRequired
 }
 

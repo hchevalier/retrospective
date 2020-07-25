@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Switch, Route, useRouteMatch, useParams } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, useParams } from 'react-router-dom'
 import Header from './Header'
 import Dashboard from './Dashboard'
 import GroupsList from './GroupsList'

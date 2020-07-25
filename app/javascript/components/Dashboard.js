@@ -8,6 +8,7 @@ const Dashboard = () => {
   React.useEffect(() => {
     get({ url: '/api/retrospectives' })
       .then((data) => setRetrospectives(data))
+      .catch(() => window.location.href = '/sessions/new')
   }, [])
 
   React.useEffect(() => {
@@ -34,7 +35,7 @@ const Dashboard = () => {
               return (
                 <a key={retrospective.id} className='block bg-gray-400 rounded-md p-2 m-2' href={`/retrospectives/${retrospective.id}`}>
                   <div>
-                    {retrospective.groupName} - {retrospective.kind}<br />
+                    {retrospective.group.name} - {retrospective.kind}<br />
                     {new Date(retrospective.createdAt).toLocaleString()}
                   </div>
                 </a>
