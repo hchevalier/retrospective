@@ -1,9 +1,11 @@
 class StaticController < ApplicationController
+  include ApplicationHelper
+
   skip_before_action :ensure_logged_in, only: :single_page_app
   before_action :check_invitation
 
   def single_page_app
-    consume_invitation(account) if session[:invitation]
+    consume_invitation(current_account) if session[:invitation] && current_account
   end
 
   private
