@@ -27,6 +27,7 @@ class Retrospective::ReviewStepTest < ActionDispatch::IntegrationTest
     assert_logged_in(retrospective.facilitator, with_flags: %i(self facilitator))
     click_on 'Next'
 
+    assert_selector '.task'
     within ".task[data-id='#{something.id}']" do
       assert_text 'Something to do'
       assert_changes -> { something.reload.status }, from: 'todo', to: 'done' do
