@@ -17,7 +17,7 @@ const Button = ({ children, contained, disabled, primary, secondary, selected, c
         'text-sm text-blue-600': primary && !contained,
         'text-sm text-red-600': secondary && !contained,
         'opacity-50 cursor-not-allowed': disabled,
-        'opacity-75 shadow-outline': selected,
+        'opacity-75 shadow-outline selected': selected,
       }
     )}>
     {children}

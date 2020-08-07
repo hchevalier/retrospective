@@ -173,7 +173,7 @@ class Retrospective < ApplicationRecord
         []
       end
 
-    params[:pendingTasks] = group.pending_tasks.as_json if step == 'reviewings'
+    params[:pendingTasks] = group.pending_tasks.as_json if step == 'reviewing'
     params[:discussedReflection] = discussed_reflection&.readable if %w(actions done).include?(step)
 
     broadcast_order(:next, **params)

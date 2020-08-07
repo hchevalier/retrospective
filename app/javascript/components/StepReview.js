@@ -31,9 +31,9 @@ const StepReview = () => {
   return (
     <>
       Tasks review
-      <div id='zones-container' className="flex flex-col">
+      <div id='tasks-container' className="flex flex-col">
         {tasks.filter((task) => task.status === 'todo').map((task) => (
-          <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0' key={task.id}>
+          <div data-id={task.id} className='task border flex-1 p-4 rounded my-2' key={task.id}>
             <div>Reflection: {task.reflection.content}</div>
             <div>Task: {task.description}</div>
             <div>Assigned to {task.assignee.surname}</div>
@@ -41,7 +41,7 @@ const StepReview = () => {
             <div>
               <Button contained primary selected={buttonStates[task.id] === 'done'} data-id={task.id} onClick={handleDoneClicked}>Done</Button>
               <Button contained primary selected={buttonStates[task.id] === 'stuck'} data-id={task.id} className='ml-4' onClick={handleWontDoClicked}>Won&apos;t do</Button>
-              <Button contained primary selected={buttonStates[task.id] === 'todo'} data-id={task.id} className='ml-4' onClick={handleLaterClicked}>Ask again next retrospective</Button>
+              <Button contained primary selected={buttonStates[task.id] === 'todo'} data-id={task.id} className='ml-4' onClick={handleLaterClicked}>Ask next time</Button>
             </div>
           </div>
         ))}
