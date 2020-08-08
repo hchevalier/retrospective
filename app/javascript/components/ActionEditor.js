@@ -17,8 +17,10 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
   const tasks = useSelector(state => state.tasks, shallowEqual)
 
   const onDescriptionChange = event => {
-    if (!reflectionOnTypeStart) {
+    if (!reflectionOnTypeStart && event.target.value.length > 0) {
       setReflectionOnTypeStart({ id: reflectionId, content: reflectionContent })
+    } else if (reflectionOnTypeStart && !editedTask && event.target.value.length == 0) {
+      setReflectionOnTypeStart(null)
     }
     setDescription(event.target.value)
   }
