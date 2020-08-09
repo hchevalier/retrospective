@@ -64,7 +64,7 @@ const StepActions = () => {
           })}
         </div>
       </div>
-      <div id='action-editor-container'>
+      <div id='action-editor-container' className='items-start'>
         <ActionEditor reflectionId={currentReflection.id} reflectionContent={currentReflection.content} />
       </div>
     </div>
