@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import { compact } from 'lib/helpers/array'
 
-const Button = ({ children, contained, disabled, primary, secondary, className, ...rest }) => (
+const Button = ({ children, contained, disabled, primary, secondary, selected, className, ...rest }) => (
   <button
     type='button'
     disabled={disabled && 'disabled'}
@@ -16,7 +16,8 @@ const Button = ({ children, contained, disabled, primary, secondary, className, 
         'bg-red-500 hover:bg-red-700': secondary && contained,
         'text-sm text-blue-600': primary && !contained,
         'text-sm text-red-600': secondary && !contained,
-        'opacity-50 cursor-not-allowed': disabled
+        'opacity-50 cursor-not-allowed': disabled,
+        'opacity-75 shadow-outline selected': selected,
       }
     )}>
     {children}
@@ -34,7 +35,8 @@ Button.propTypes = {
   disabled: PropTypes.bool,
   onClick: PropTypes.func,
   primary: PropTypes.bool,
-  secondary: PropTypes.bool
+  secondary: PropTypes.bool,
+  selected: PropTypes.bool
 }
 
 export default Button

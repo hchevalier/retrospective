@@ -10,23 +10,30 @@ class TasksController < ApplicationController
   end
 
   def create
-    retrospective = Retrospective.find(params[:retrospective_id])
-    return render(json: { status: :forbidden }) unless current_user.retrospective_id == retrospective.id
+    retrospective = current_user.retrospective
     return render(json: { status: :not_found }) unless retrospective.reflections.find_by(id: params[:reflection_id])
 
     task = current_user.created_tasks.create!(task_params)
-    OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'addTask', parameters: { task: task.as_json })
+    OrchestratorChannel.broadcast_to(retrospective, action: 'addTask', parameters: { task: task.as_json })
 
     render json: task.as_json
   end
 
   def update
-    retrospective = Retrospective.find(params[:retrospective_id])
-    task = retrospective.tasks.find_by(id: params[:id])
-    return render(json: { status: :not_found }) unless task
+    retrospective = current_user.retrospective
+    if retrospective.step == 'actions'
+      task = retrospective.tasks.find_by(id: params[:id])
+      return render(json: { status: :not_found }) unless task
 
-    task.update!(update_task_params)
-    OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'updateTask', parameters: { task: task.as_json })
+      task.update!(actions_step_update_task_params)
+    elsif retrospective.step == 'reviewing'
+      task = retrospective.group.tasks_visible_by(current_account).find { |task| task.id == params[:id] }
+      return render(json: { status: :not_found }) unless task
+
+      task.update!(reviewing_step_update_task_params)
+    end
+
+    OrchestratorChannel.broadcast_to(retrospective, action: 'updateTask', parameters: { task: task.as_json })
 
     render json: task.as_json
   end
@@ -48,7 +55,11 @@ class TasksController < ApplicationController
     params.permit(:assignee_id, :reflection_id, :description)
   end
 
-  def update_task_params
+  def actions_step_update_task_params
     params.permit(:assignee_id, :description)
+  end
+
+  def reviewing_step_update_task_params
+    params.permit(:status)
   end
 end

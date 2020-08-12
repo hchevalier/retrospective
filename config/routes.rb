@@ -10,12 +10,12 @@ Rails.application.routes.draw do
       resources :reactions, only: %i(create destroy)
     end
     resources :participants, only: %i(create update)
-    resources :tasks, only: %i(create update destroy)
+    resources :tasks, only: %i(destroy)
   end
 
   scope :api do
     resources :retrospectives, only: :index
-    resources :tasks, only: :index
+    resources :tasks, only: %i(index create update)
     resources :groups, only: %i(index create show) do
       resources :pending_invitations, only: %i(index create destroy)
     end
