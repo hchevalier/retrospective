@@ -2,10 +2,14 @@ class ReflectionsController < ApplicationController
   before_action :ensure_participant
 
   def create
-    zone = Zone.find_by(id: params[:zone_id], retrospective: current_user.retrospective)
+    retrospective = current_user.retrospective
+    zone = Zone.find_by(id: params[:zone_id], retrospective: retrospective)
     return render(json: { status: :not_found }) unless zone
 
-    reflection = current_user.reflections.create(reflections_params)
+    reflection = Reflection.transaction do
+      current_user.reflections.where(zone: zone).delete_all if retrospective.zones_typology == :single_choice
+      current_user.reflections.create(reflections_params)
+    end
 
     render json: reflection.readable
   end

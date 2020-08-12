@@ -7,9 +7,10 @@ import BlankStickyNote from './BlankStickyNote'
 const RetrospectiveBottomBar = (delegatedProps) => {
   const profile = useSelector(state => state.profile)
   const currentStep = useSelector(state => state.orchestrator.step)
+  const zonesTypology = useSelector(state => state.retrospective.zonesTypology)
   const facilitator = profile.facilitator
 
-  const canCreateReflection = () => profile && currentStep === 'thinking'
+  const canCreateReflection = () => profile && currentStep === 'thinking' && zonesTypology === 'open'
 
   if (currentStep === 'done') {
     return null

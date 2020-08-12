@@ -50,8 +50,19 @@ class Retrospective < ApplicationRecord
     done: 'done'
   }
 
+  BUILDERS = {
+    kinds[:glad_sad_mad] => 'Builders::GladSadMad',
+    kinds[:sailboat] => 'Builders::Sailboat',
+    kinds[:starfish] => 'Builders::Starfish',
+    kinds[:traffic_lights] => 'Builders::TrafficLights',
+  }.freeze
+
   def self.available_kinds
-    [kinds[:glad_sad_mad], kinds[:starfish], kinds[:sailboat]]
+    [kinds[:glad_sad_mad], kinds[:sailboat], kinds[:starfish], kinds[:traffic_lights]]
+  end
+
+  def zones_typology
+    builder.zones_typology
   end
 
   def as_json
@@ -63,6 +74,7 @@ class Retrospective < ApplicationRecord
       },
       kind: kind,
       zones: zones.as_json,
+      zonesTypology: zones_typology,
       discussedReflection: discussed_reflection&.readable,
       tasks: tasks.order(:created_at).as_json
     }
@@ -76,6 +88,7 @@ class Retrospective < ApplicationRecord
         name: group.name
       },
       kind: kind,
+      zonesTypology: zones_typology,
       createdAt: created_at
     }
   end
@@ -207,28 +220,16 @@ class Retrospective < ApplicationRecord
 
   private
 
+  def builder
+    BUILDERS[kind].constantize
+  end
+
   def add_first_participant
     participants << facilitator
   end
 
   def initialize_zones
-    case kind
-    when 'glad_sad_mad'
-      zones.build(identifier: 'Glad')
-      zones.build(identifier: 'Sad')
-      zones.build(identifier: 'Mad')
-    when 'sailboat'
-      zones.build(identifier: 'Wind')
-      zones.build(identifier: 'Anchor')
-      zones.build(identifier: 'Rocks')
-      zones.build(identifier: 'Island')
-    when 'starfish'
-      zones.build(identifier: 'Keep')
-      zones.build(identifier: 'Start')
-      zones.build(identifier: 'Stop')
-      zones.build(identifier: 'More')
-      zones.build(identifier: 'Less')
-    end
+    builder.build(self)
   end
 
   def step_index

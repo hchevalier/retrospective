@@ -5,7 +5,7 @@ class Zone < ApplicationRecord
   def as_json
     {
       id: id,
-      name: identifier
+      name: identifier,
     }
   end
 end

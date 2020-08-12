@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import ColorPicker from './ColorPicker'
 import GladSadMad from './retrospectives/GladSadMad'
 import Starfish from './retrospectives/Starfish'
+import TrafficLights from './retrospectives/TrafficLights'
 import RetrospectiveBottomBar from './RetrospectiveBottomBar'
 import Sailboat from './retrospectives/Sailboat'
 import StepReview from './StepReview'
@@ -13,6 +14,7 @@ import StepDone from './StepDone'
 
 const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   const currentStep = useSelector(state => state.orchestrator.step)
+  const zonesTypology = useSelector(state => state.retrospective.zonesTypology)
 
   const [selectedZone, setSelectedZone] = useState(null)
   const [highlightZones, setHighlightZones] = useState(false)
@@ -20,7 +22,9 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   const handleZoneClicked = (event) => {
     event.stopPropagation()
 
-    setSelectedZone(event.target.dataset.id)
+    if (zonesTypology === 'open') {
+      setSelectedZone(event.target.dataset.id)
+    }
   }
 
   const handleReflectionPending = useCallback(() => {
@@ -39,6 +43,8 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
       return <Sailboat highlightZones={highlightZones} onZoneClicked={handleZoneClicked} selectedZone={selectedZone} />
     } else if (kind === 'starfish') {
       return <Starfish highlightZones={highlightZones} onZoneClicked={handleZoneClicked} selectedZone={selectedZone} />
+    } else if (kind === 'traffic_lights') {
+      return <TrafficLights highlightZones={highlightZones} onZoneClicked={handleZoneClicked} selectedZone={selectedZone} />
     }
 
     return <div>Unknown retrospective {kind}</div>
