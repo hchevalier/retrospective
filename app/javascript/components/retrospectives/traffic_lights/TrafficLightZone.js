@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { post } from 'lib/httpClient'
-import classNames from 'classnames'
+import SingleChoice from '../../SingleChoice'
 import './TrafficLightZone.scss'
 
 const TrafficLightZone = ({ reference, hint, value }) => {
@@ -30,9 +30,9 @@ const TrafficLightZone = ({ reference, hint, value }) => {
       <div>{name}</div>
       <div className='hint'>{hint}</div>
       <div>
-        <div data-id={`zone-${name}`} data-value='green' className={classNames('choice green', { selected: selectedChoice === 'green' })} onClick={onClick}></div>
-        <div data-id={`zone-${name}`} data-value='orange' className={classNames('choice orange', { selected: selectedChoice === 'orange' })} onClick={onClick}></div>
-        <div data-id={`zone-${name}`} data-value='red' className={classNames('choice red', { selected: selectedChoice === 'red' })} onClick={onClick}></div>
+        <SingleChoice value='green' zone={name} selected={selectedChoice === 'green'} onClick={onClick} badge={1} />
+        <SingleChoice value='orange' zone={name} selected={selectedChoice === 'orange'} onClick={onClick} badge={1} />
+        <SingleChoice value='red' zone={name} selected={selectedChoice === 'red'} onClick={onClick} badge={1} />
       </div>
     </div>
   )

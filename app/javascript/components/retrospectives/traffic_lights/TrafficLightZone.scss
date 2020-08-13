@@ -1,0 +1,14 @@
+.zone {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid gray;
+  position: relative;
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: 50%;
+  flex-wrap: wrap;
+
+  .hint {
+    font-size: 10px;
+  }
+}

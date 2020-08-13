@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
-import TrafficLightZone from './TrafficLightZone'
+import TrafficLightZone from './traffic_lights/TrafficLightZone'
 
 const TrafficLights = () => {
   const reflections = useSelector(state => state.reflections.ownReflections, shallowEqual)

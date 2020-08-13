@@ -147,6 +147,13 @@ class Retrospective < ApplicationRecord
     next_step = Retrospective.steps.keys[step_index + 1]
     next_step = Retrospective.steps.keys[step_index + 2] if next_step == 'reviewing' && group.pending_tasks.none?
 
+    if next_step == 'voting' && zones_typology == :single_choice
+      reflections.revealed.group(:zone_id, :content).select('min(reflections.id) id, zone_id, content').distinct.each do |reflection|
+        reflection.votes.create!(author: facilitator, target: reflection, content: Reaction::VOTE_EMOJI, retrospective: self)
+      end
+      next_step = Retrospective.steps.keys[step_index + 2]
+    end
+
     if next_step == 'actions'
       most_upvoted_target =
         reactions

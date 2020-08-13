@@ -84,6 +84,50 @@ CREATE TYPE public.task_statuses AS ENUM (
 );
 
 
+--
+-- Name: min_uuid(uuid, uuid); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.min_uuid(uuid, uuid) RETURNS uuid
+    LANGUAGE plpgsql
+    AS $_$
+BEGIN
+    -- if they're both null, return null
+    IF $2 IS NULL AND $1 IS NULL THEN
+        RETURN NULL ;
+    END IF;
+
+    -- if just 1 is null, return the other
+    IF $2 IS NULL THEN
+        RETURN $1;
+    END IF ;
+    IF $1 IS NULL THEN
+        RETURN $2;
+      END IF;
+
+    -- neither are null, return the smaller one
+    IF $1 > $2 THEN
+        RETURN $2;
+    END IF;
+
+    RETURN $1;
+END;
+$_$;
+
+
+--
+-- Name: min(uuid); Type: AGGREGATE; Schema: public; Owner: -
+--
+
+CREATE AGGREGATE public.min(uuid) (
+    SFUNC = public.min_uuid,
+    STYPE = uuid,
+    COMBINEFUNC = public.min_uuid,
+    SORTOP = OPERATOR(pg_catalog.<),
+    PARALLEL = safe
+);
+
+
 SET default_tablespace = '';
 
 --
@@ -551,6 +595,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200627120729'),
 ('20200705171159'),
 ('20200711153629'),
-('20200725200805');
+('20200725200805'),
+('20200813231630');
 
 
