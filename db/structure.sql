@@ -353,7 +353,8 @@ CREATE TABLE public.zones (
     identifier character varying NOT NULL,
     retrospective_id uuid NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    hint text
 );
 
 
@@ -596,6 +597,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200705171159'),
 ('20200711153629'),
 ('20200725200805'),
-('20200813231630');
+('20200813231630'),
+('20200817225716');
 
 

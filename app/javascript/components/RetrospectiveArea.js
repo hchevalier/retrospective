@@ -10,6 +10,7 @@ import StepReview from './StepReview'
 import StepGrouping from './StepGrouping'
 import StepVoting from './StepVoting'
 import StepActions from './StepActions'
+import StepActionsForSingleChoice from './StepActionsForSingleChoice'
 import StepDone from './StepDone'
 
 const RetrospectiveArea = ({ retrospectiveId, kind }) => {
@@ -58,7 +59,9 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
         {currentStep === 'thinking' && renderRetrospective()}
         {currentStep === 'grouping' && <StepGrouping />}
         {currentStep === 'voting' && <StepVoting />}
-        {currentStep === 'actions' && <StepActions />}
+        {currentStep === 'actions' && (
+          zonesTypology === 'open' ? <StepActions /> : <StepActionsForSingleChoice />
+        )}
         {currentStep === 'done' && <StepDone />}
         <RetrospectiveBottomBar onReflectionReady={handleReflectionReady} onReflectionPending={handleReflectionPending} selectedZone={selectedZone} />
       </div>

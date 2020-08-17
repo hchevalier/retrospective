@@ -109,9 +109,7 @@ class Retrospective < ApplicationRecord
       facilitatorInfo: facilitator_info
     }
 
-    unless step.in?(%w[gathering thinking])
-      state.merge!(visibleReflections: reflections.revealed.includes(:owner).order(:created_at).map(&:readable))
-    end
+    state.merge!(visibleReflections: visible_reflections_for_step(step)) unless step.in?(%w[gathering thinking])
 
     if step.in?(%w[grouping voting])
       state.merge!(visibleReactions: reactions.emoji.map(&:readable))
@@ -148,9 +146,7 @@ class Retrospective < ApplicationRecord
     next_step = Retrospective.steps.keys[step_index + 2] if next_step == 'reviewing' && group.pending_tasks.none?
 
     if next_step == 'voting' && zones_typology == :single_choice
-      reflections.revealed.group(:zone_id, :content).select('min(reflections.id) id, zone_id, content').distinct.each do |reflection|
-        reflection.votes.create!(author: facilitator, target: reflection, content: Reaction::VOTE_EMOJI, retrospective: self)
-      end
+      builder.autovote!(self)
       next_step = Retrospective.steps.keys[step_index + 2]
     end
 
@@ -170,18 +166,7 @@ class Retrospective < ApplicationRecord
     update!(step: next_step, discussed_reflection: most_upvoted_target || discussed_reflection)
 
     params = { next_step: next_step }
-    params[:visibleReflections] =
-      case next_step
-      when 'grouping'
-        reflections.revealed.map(&:readable)
-      when 'actions', 'done'
-        reflections
-          .eager_load(:owner, :votes, topic: :votes, zone: :retrospective)
-          .reject { |reflection| reflection.votes.none? && reflection.topic&.votes&.none? }
-          .map(&:readable)
-      else
-        []
-      end
+    params[:visibleReflections] = visible_reflections_for_step(next_step)
 
     params[:visibleReactions] =
       case next_step
@@ -197,6 +182,20 @@ class Retrospective < ApplicationRecord
     params[:discussedReflection] = discussed_reflection&.readable if %w(actions done).include?(step)
 
     broadcast_order(:next, **params)
+  end
+
+  def visible_reflections_for_step(step)
+    case step
+    when 'grouping'
+      reflections.revealed.includes(:owner).order(:created_at).map(&:readable)
+    when 'actions', 'done'
+      reflections
+        .eager_load(:owner, :votes, topic: :votes, zone: :retrospective)
+        .reject { |reflection| reflection.votes.none? && (reflection.topic.nil? || reflection.topic.votes.none?) }
+        .map(&:readable)
+    else
+      []
+    end
   end
 
   def change_facilitator!

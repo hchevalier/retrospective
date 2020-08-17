@@ -21,52 +21,42 @@ const TrafficLights = () => {
     <div style={{ height: '430px', display: 'flex', flexWrap: 'wrap' }}>
       <TrafficLightZone
         reference={support}
-        hint={'We always get support and help when we ask for it'}
         value={reflections.find((reflection) => reflection.zone.id === support.id)?.content} />
 
       <TrafficLightZone
         reference={teamWork}
-        hint={'We are a strong team and collaborate well together'}
         value={reflections.find((reflection) => reflection.zone.id === teamWork.id)?.content} />
 
       <TrafficLightZone
         reference={mission}
-        hint={'We know why we are here, are aligned with it and excited about it'}
         value={reflections.find((reflection) => reflection.zone.id === mission.id)?.content} />
 
       <TrafficLightZone
         reference={codebase}
-        hint={'We are proud of the quality of our code. It is clean, easy to read and has sufficient test coverage'}
         value={reflections.find((reflection) => reflection.zone.id === codebase.id)?.content} />
 
       <TrafficLightZone
         reference={process}
-        hint={'Our way of working fits us perfectly'}
         value={reflections.find((reflection) => reflection.zone.id === process.id)?.content} />
 
       <TrafficLightZone
         reference={value}
-        hint={'We are proud of what we deliver and our end users feel the same.'}
         value={reflections.find((reflection) => reflection.zone.id === value.id)?.content} />
 
       <TrafficLightZone
         reference={learning}
-        hint={'We are learning interesting stuff all the time'}
         value={reflections.find((reflection) => reflection.zone.id === learning.id)?.content} />
 
       <TrafficLightZone
         reference={ticketFlow}
-        hint={'We get stuff done without useless waiting or delays. Releasing is simple, safe and painless'}
         value={reflections.find((reflection) => reflection.zone.id === ticketFlow.id)?.content} />
 
       <TrafficLightZone
         reference={fun}
-        hint={'We love going to work and have great fun working together'}
         value={reflections.find((reflection) => reflection.zone.id === fun.id)?.content} />
 
       <TrafficLightZone
         reference={influence}
-        hint={'We are in control of our roadmap, we can intervene in decision process regarding what to build and how to build it'}
         value={reflections.find((reflection) => reflection.zone.id === influence.id)?.content} />
     </div>
   )

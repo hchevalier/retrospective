@@ -5,11 +5,11 @@ import { post } from 'lib/httpClient'
 import SingleChoice from '../../SingleChoice'
 import './TrafficLightZone.scss'
 
-const TrafficLightZone = ({ reference, hint, value }) => {
+const TrafficLightZone = ({ reference, value }) => {
   const retrospectiveId = useSelector(state => state.retrospective.id)
   const [selectedChoice, setSelectedChoice] = React.useState(value)
 
-  const { name } = reference
+  const { name, hint } = reference
 
   const onClick = (event) => {
     const { value } = event.currentTarget.dataset
@@ -30,9 +30,9 @@ const TrafficLightZone = ({ reference, hint, value }) => {
       <div>{name}</div>
       <div className='hint'>{hint}</div>
       <div>
-        <SingleChoice value='green' zone={name} selected={selectedChoice === 'green'} onClick={onClick} badge={1} />
-        <SingleChoice value='orange' zone={name} selected={selectedChoice === 'orange'} onClick={onClick} badge={1} />
         <SingleChoice value='red' zone={name} selected={selectedChoice === 'red'} onClick={onClick} badge={1} />
+        <SingleChoice value='orange' zone={name} selected={selectedChoice === 'orange'} onClick={onClick} badge={1} />
+        <SingleChoice value='green' zone={name} selected={selectedChoice === 'green'} onClick={onClick} badge={1} />
       </div>
     </div>
   )
@@ -42,9 +42,9 @@ TrafficLightZone.propTypes = {
   highlight: PropTypes.bool,
   reference: PropTypes.shape({
     id: PropTypes.number.isRequired,
+    hint: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   }),
-  hint: PropTypes.string.isRequired,
   value: PropTypes.string
 }
 
