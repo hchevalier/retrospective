@@ -54,7 +54,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
 
   return (
     <>
-      <div className='flex flex-col flex-1 px-4 overflow-y-scroll'>
+      <div id={kind} className='flex flex-col flex-1 px-4 overflow-y-scroll'>
         {currentStep === 'gathering' && <ColorPicker retrospectiveId={retrospectiveId} />}
         {currentStep === 'reviewing' && <StepReview />}
         {currentStep === 'thinking' && renderRetrospective()}

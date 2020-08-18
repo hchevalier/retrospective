@@ -1,72 +1,75 @@
-.circle-outer {
-  position: relative;
-  border: 1px solid black;
-  padding: 0;
-  margin: 1em auto;
-  width: 430px;
-  height: 430px;
-  border-radius: 50%;
-  list-style: none;
-  overflow: hidden;
-}
-.circle {
-  position: absolute;
-  border: 1px solid black;
-  padding: 0;
-  margin: 1em auto;
-  width: 580px;
-  height: 580px;
-  border-radius: 50%;
-  list-style: none;
-  overflow: hidden;
-  left: -70px;
-  top: -95px;
-}
-
-li .background {
-  overflow: hidden;
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50%;
-  height: 50%;
-  transform-origin: 0% 100%;
-
-  &.highlight {
-    border: 1px dashed red;
-    cursor: pointer;
+#glad_sad_mad {
+  .circle-outer {
+    position: relative;
+    border: 1px solid black;
+    padding: 0;
+    margin: 1em auto;
+    width: 430px;
+    height: 430px;
+    border-radius: 50%;
+    list-style: none;
+    overflow: hidden;
   }
-}
 
-.zone {
-  position: absolute;
-  z-index: 1;
-  text-align: center;
-  width: 200px;
-}
+  .circle {
+    position: absolute;
+    border: 1px solid black;
+    padding: 0;
+    margin: 1em auto;
+    width: 580px;
+    height: 580px;
+    border-radius: 50%;
+    list-style: none;
+    overflow: hidden;
+    left: -70px;
+    top: -95px;
+  }
 
-.zone#zone-Glad {
-  left: 33%;
-  top: 70%;
-}
-.zone#zone-Sad {
-  right: 50%;
-  top: 40%;
-}
-.zone#zone-Mad {
-  bottom: 55%;
-  left: 50%;
-}
+  li .background {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 50%;
+    transform-origin: 0% 100%;
 
-li:first-child .background {
-  transform: rotate(120deg) skewY(30deg);
-  background: #D8F1F6;
-}
-li:nth-child(2) .background {
-  transform: rotate(240deg) skewY(30deg);
-  background: #FFCDB6;
-}
-li:nth-child(3) .background {
-  transform: rotate(0deg) skewY(30deg);
-  background: #FFEAC5;
+    &.highlight {
+      border: 1px dashed red;
+      cursor: pointer;
+    }
+  }
+
+  .zone {
+    position: absolute;
+    z-index: 1;
+    text-align: center;
+    width: 200px;
+  }
+
+  .zone#zone-Glad {
+    left: 33%;
+    top: 70%;
+  }
+  .zone#zone-Sad {
+    right: 50%;
+    top: 40%;
+  }
+  .zone#zone-Mad {
+    bottom: 55%;
+    left: 50%;
+  }
+
+  li:first-child .background {
+    transform: rotate(120deg) skewY(30deg);
+    background: #D8F1F6;
+  }
+  li:nth-child(2) .background {
+    transform: rotate(240deg) skewY(30deg);
+    background: #FFCDB6;
+  }
+  li:nth-child(3) .background {
+    transform: rotate(0deg) skewY(30deg);
+    background: #FFEAC5;
+  }
 }
