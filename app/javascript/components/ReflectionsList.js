@@ -62,7 +62,8 @@ const ReflectionsList = ({ open, retrospectiveKind, onToggle, onDone }) => {
 
             return (
               <div key={zone.id} className='p-2 border-t min-w-16'>
-                <div className='mb-2'>{zone.name}</div>
+                <div className='mb-2 font-semibold'>{zone.name}</div>
+                <div className='text-xs'>{zone.hint}</div>
                 {unrevealedReflection && (
                   <>
                     <SingleChoice selected badge={1} value={unrevealedReflection.content} />

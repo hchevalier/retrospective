@@ -12,6 +12,7 @@ import StepVoting from './StepVoting'
 import StepActions from './StepActions'
 import StepActionsForSingleChoice from './StepActionsForSingleChoice'
 import StepDone from './StepDone'
+import StepDoneForSingleChoice from './StepDoneForSingleChoice'
 
 const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   const currentStep = useSelector(state => state.orchestrator.step)
@@ -62,7 +63,9 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
         {currentStep === 'actions' && (
           zonesTypology === 'open' ? <StepActions /> : <StepActionsForSingleChoice />
         )}
-        {currentStep === 'done' && <StepDone />}
+        {currentStep === 'done' && (
+          zonesTypology === 'open' ? <StepDone /> : <StepDoneForSingleChoice />
+        )}
         <RetrospectiveBottomBar onReflectionReady={handleReflectionReady} onReflectionPending={handleReflectionPending} selectedZone={selectedZone} />
       </div>
     </>

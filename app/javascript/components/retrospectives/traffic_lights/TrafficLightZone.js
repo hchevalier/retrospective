@@ -1,11 +1,13 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 import { post } from 'lib/httpClient'
 import SingleChoice from '../../SingleChoice'
 import './TrafficLightZone.scss'
 
 const TrafficLightZone = ({ reference, value }) => {
+  const dispatch = useDispatch()
+
   const retrospectiveId = useSelector(state => state.retrospective.id)
   const [selectedChoice, setSelectedChoice] = React.useState(value)
 
@@ -21,7 +23,10 @@ const TrafficLightZone = ({ reference, value }) => {
         zone_id: reference.id
       }
     })
-      .then(() => setSelectedChoice(value))
+      .then((data) => {
+        dispatch({ type: 'replace-reflection', reflection: data })
+        setSelectedChoice(value)
+      })
       .catch(error => console.warn(error))
   }
 

@@ -26,3 +26,18 @@ export const groupBy = (items, attribute) => {
 export const updateArray = (array, newItem, attribute) => {
   return array.map(item => item[attribute] === newItem[attribute] ? newItem : item)
 }
+
+export const upsertArray = (array, newItem, attribute) => {
+  let arrayChanged = false
+  const resultingArray = array.map(item => {
+    if (dig(attribute.split('.'), item) === dig(attribute.split('.'), newItem)) {
+      arrayChanged = true
+      return newItem
+    } else {
+      return item
+    }
+  })
+
+  if (arrayChanged) return resultingArray
+  return [...resultingArray, newItem]
+}
