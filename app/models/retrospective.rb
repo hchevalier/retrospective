@@ -188,11 +188,13 @@ class Retrospective < ApplicationRecord
     case step
     when 'grouping', 'voting'
       reflections.revealed.includes(:owner).order(:created_at).map(&:readable)
-    when 'actions', 'done'
+    when 'actions'
       reflections
         .eager_load(:owner, :votes, topic: :votes, zone: :retrospective)
         .reject { |reflection| reflection.votes.none? && (reflection.topic.nil? || reflection.topic.votes.none?) }
         .map(&:readable)
+    when 'done'
+      reflections.eager_load(:owner, :votes, topic: :votes, zone: :retrospective).map(&:readable)
     else
       []
     end
