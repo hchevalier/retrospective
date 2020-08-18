@@ -186,7 +186,7 @@ class Retrospective < ApplicationRecord
 
   def visible_reflections_for_step(step)
     case step
-    when 'grouping'
+    when 'grouping', 'voting'
       reflections.revealed.includes(:owner).order(:created_at).map(&:readable)
     when 'actions', 'done'
       reflections
