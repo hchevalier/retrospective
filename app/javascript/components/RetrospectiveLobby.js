@@ -29,6 +29,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) =>
   const revealer = useSelector(state => state.profile.revealer)
   const currentStep = useSelector(state => state.orchestrator.step)
   const channel = useSelector(state => state.orchestrator.subscription)
+  const zonesTypology = useSelector(state => state.retrospective.zonesTypology)
   const loggedIn = !!profile.uuid
 
   React.useEffect(() => {
@@ -94,7 +95,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) =>
   }, [loggedIn])
 
   const toggleParticipantsList = () => setParticipantsListVisible(!participantsListVisible)
-  const shouldDisplayReflectionsList = currentStep === 'thinking' || currentStep === 'grouping'
+  const shouldDisplayReflectionsList = (currentStep === 'thinking' && zonesTypology === 'open') || currentStep === 'grouping'
 
   const handleReflectionsListToggle = () => {
     if (!reflectionsListVisible || !revealer) {

@@ -1,4 +1,5 @@
 import { reject, updateArray } from 'lib/helpers/array'
+import { upsertArray } from '../lib/helpers/array'
 
 const initialState = {
   ownReflections: [],
@@ -22,6 +23,8 @@ const reflections = (state = initialState, action) => {
     case 'change-reflection':
       ownReflections = updateArray(ownReflections, action.reflection, 'id')
       return { ...state, ownReflections: ownReflections }
+    case 'replace-reflection':
+      return { ...state, ownReflections: upsertArray(state.ownReflections, action.reflection, 'zone.id') }
     case 'change-topic':
       visibleReflections = updateArray(visibleReflections, action.reflection, 'id')
       return { ...state, visibleReflections: visibleReflections }

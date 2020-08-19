@@ -47,8 +47,9 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     retrospective = create(:retrospective, step: 'actions')
     other_participant = create(:other_participant, retrospective: retrospective)
     reflection_a = create(:reflection, :glad, owner: retrospective.facilitator)
-    create(:reflection, :sad, owner: other_participant)
+    reflection_b = create(:reflection, :sad, owner: other_participant)
     create(:vote, target: reflection_a, author: retrospective.facilitator)
+    create(:vote, target: reflection_b, author: retrospective.facilitator)
     retrospective.update!(discussed_reflection: reflection_a)
 
     logged_in_as(retrospective.facilitator)
@@ -144,7 +145,9 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
   test 'can create a task even when the discussed reflection changed' do
     retrospective = create(:retrospective, step: 'actions')
     reflection_a = create(:reflection, :glad, owner: retrospective.facilitator)
-    create(:reflection, :sad, owner: retrospective.facilitator)
+    reflection_b = create(:reflection, :sad, owner: retrospective.facilitator)
+    create(:vote, target: reflection_a, author: retrospective.facilitator)
+    create(:vote, target: reflection_b, author: retrospective.facilitator)
     retrospective.update!(discussed_reflection: reflection_a)
 
     logged_in_as(retrospective.facilitator)
@@ -178,7 +181,9 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
   test 'can start to write a task and change to the currently discussed reflection' do
     retrospective = create(:retrospective, step: 'actions')
     reflection_a = create(:reflection, :glad, owner: retrospective.facilitator)
-    create(:reflection, :sad, owner: retrospective.facilitator)
+    reflection_b = create(:reflection, :sad, owner: retrospective.facilitator)
+    create(:vote, target: reflection_a, author: retrospective.facilitator)
+    create(:vote, target: reflection_b, author: retrospective.facilitator)
     retrospective.update!(discussed_reflection: reflection_a)
 
     logged_in_as(retrospective.facilitator)

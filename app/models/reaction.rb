@@ -65,15 +65,17 @@ class Reaction < ApplicationRecord
   def max_five_votes_per_author_and_retrospective
     return unless vote?
 
-    retrospective_id =
+    retrospective =
       case target.class.name
       when 'Reflection'
-        target.zone.retrospective_id
+        target.zone.retrospective
       when 'Topic'
-        target.retrospective_id
+        target.retrospective
       else
         raise "Don't know how to access a Retrospective from target"
       end
+
+    return if retrospective.zones_typology == :single_choice
 
     votes_count = author.reactions.vote.count
     return unless votes_count >= Reaction::MAX_VOTES

@@ -4,6 +4,8 @@ import { post, put } from 'lib/httpClient'
 import Topic from './Topic'
 import StickyNote from './StickyNote'
 import Icon from './Icon'
+import { groupBy } from 'lib/helpers/array'
+import SingleChoice from './SingleChoice'
 import './StepGrouping.scss'
 
 const inScreen = (target) => target.dataset.timeoutId && target.dataset.timeoutId !== 'null'
@@ -17,6 +19,7 @@ const StepGrouping = () => {
   const zones = useSelector(state => state.retrospective.zones, shallowEqual)
   const facilitator = useSelector(state => state.profile.facilitator)
   const reactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
+  const zonesTypology = useSelector(state => state.retrospective.zonesTypology)
 
   const initialReflectionIds = React.useRef(reflections.map((reflection) => reflection.id)).current
   const [, setUpdateCount] = React.useState(0)
@@ -176,36 +179,57 @@ const StepGrouping = () => {
           const unreadReflectionBelow = stickyNotesInZone.reverse().find(noteBelowViewport)
 
           const topics = {}
+          let reflectionsByValue = {}
+          if (zonesTypology === 'single_choice') {
+            reflectionsByValue = groupBy(reflectionsInZone, 'content')
+          }
 
           return (
             <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0' key={zone.id}>
               <div className='zone-header mb-4'>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</div>
-              {!!unreadReflectionAbove && <div className='unread-notice above' onClick={() => scrollToStickyNote(unreadReflectionAbove)}>⬆︎ Unread reflection ⬆︎</div>}
-              <div className='scrolling-zone flex flex-col'>
-                {reflectionsInZone.map((reflection) => {
-                  if (reflection.topic?.id && !topics[reflection.topic?.id]) {
-                    topics[reflection.topic?.id] = reflection.topic
-                    return renderTopic(reflection, reflectionsInZone, stickyNotesInZone)
-                  } else if (!reflection.topic?.id) {
-                    const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
-                    const stickyNote = stickyNotesInZone.find((stickyNote) => stickyNote.dataset.id === reflection.id)
-                    const isUnread = stickyNote && stickyNote.dataset.read !== 'true'
+              {zonesTypology === 'open' && (
+                <>
+                  {!!unreadReflectionAbove && <div className='unread-notice above' onClick={() => scrollToStickyNote(unreadReflectionAbove)}>⬆︎ Unread reflection ⬆︎</div>}
+                  <div className='scrolling-zone flex flex-col'>
+                    {reflectionsInZone.map((reflection) => {
+                      if (reflection.topic?.id && !topics[reflection.topic?.id]) {
+                        topics[reflection.topic?.id] = reflection.topic
+                        return renderTopic(reflection, reflectionsInZone, stickyNotesInZone)
+                      } else if (!reflection.topic?.id) {
+                        const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
+                        const stickyNote = stickyNotesInZone.find((stickyNote) => stickyNote.dataset.id === reflection.id)
+                        const isUnread = stickyNote && stickyNote.dataset.read !== 'true'
 
-                    return <StickyNote
-                      key={reflection.id}
-                      ref={setStickyNoteRef}
-                      reflection={reflection}
-                      showReactions
-                      reactions={concernedReactions}
-                      glowing={isUnread}
-                      draggable
-                      onDragStart={handleDragStart}
-                      onDragOver={handleDragOver}
-                      onDrop={handleDrop} />
-                  }
-                })}
-              </div>
-              {!!unreadReflectionBelow && <div className='unread-notice below' onClick={() => scrollToStickyNote(unreadReflectionBelow)}>⬇︎ Unread reflection ⬇︎</div>}
+                        if (zonesTypology === 'open') {
+                          return <StickyNote
+                            key={reflection.id}
+                            ref={setStickyNoteRef}
+                            reflection={reflection}
+                            showReactions
+                            reactions={concernedReactions}
+                            glowing={isUnread}
+                            draggable
+                            onDragStart={handleDragStart}
+                            onDragOver={handleDragOver}
+                            onDrop={handleDrop} />
+                        } else if (zonesTypology === 'single_choice') {
+                          return <StickyNote
+                            key={reflection.id}
+                            ref={setStickyNoteRef}
+                            reflection={reflection}
+                            glowing={isUnread} />
+                        }
+                      }
+                    })}
+                  </div>
+                  {!!unreadReflectionBelow && <div className='unread-notice below' onClick={() => scrollToStickyNote(unreadReflectionBelow)}>⬇︎ Unread reflection ⬇︎</div>}
+                </>
+              )}
+              {zonesTypology === 'single_choice' && (
+                <>
+                  {Object.keys(reflectionsByValue).map((key) => <SingleChoice key={key} selected value={key} badge={reflectionsByValue[key].length} />)}
+                </>
+              )}
             </div>
           )
         })}

@@ -1,0 +1,31 @@
+.choice {
+  border-radius: 15px;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+
+  &.red {
+    background-color: #510B0B;
+
+    &.selected {
+      background-color: #EF3127;
+    }
+  }
+
+  &.orange {
+    background-color: #554615;
+
+    &.selected {
+      background-color: #F7D44E;
+    }
+  }
+
+  &.green {
+    background-color: #355615;
+
+    &.selected {
+      background-color: #98F44B;
+    }
+  }
+}

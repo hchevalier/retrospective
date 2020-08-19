@@ -50,8 +50,19 @@ class Retrospective < ApplicationRecord
     done: 'done'
   }
 
+  BUILDERS = {
+    kinds[:glad_sad_mad] => 'Builders::GladSadMad',
+    kinds[:sailboat] => 'Builders::Sailboat',
+    kinds[:starfish] => 'Builders::Starfish',
+    kinds[:traffic_lights] => 'Builders::TrafficLights',
+  }.freeze
+
   def self.available_kinds
-    [kinds[:glad_sad_mad], kinds[:starfish], kinds[:sailboat]]
+    [kinds[:glad_sad_mad], kinds[:sailboat], kinds[:starfish], kinds[:traffic_lights]]
+  end
+
+  def zones_typology
+    builder.zones_typology
   end
 
   def as_json
@@ -63,6 +74,7 @@ class Retrospective < ApplicationRecord
       },
       kind: kind,
       zones: zones.as_json,
+      zonesTypology: zones_typology,
       discussedReflection: discussed_reflection&.readable,
       tasks: tasks.order(:created_at).as_json
     }
@@ -76,6 +88,7 @@ class Retrospective < ApplicationRecord
         name: group.name
       },
       kind: kind,
+      zonesTypology: zones_typology,
       createdAt: created_at
     }
   end
@@ -96,9 +109,7 @@ class Retrospective < ApplicationRecord
       facilitatorInfo: facilitator_info
     }
 
-    unless step.in?(%w[gathering thinking])
-      state.merge!(visibleReflections: reflections.revealed.includes(:owner).order(:created_at).map(&:readable))
-    end
+    state.merge!(visibleReflections: visible_reflections_for_step(step)) unless step.in?(%w[gathering thinking])
 
     if step.in?(%w[grouping voting])
       state.merge!(visibleReactions: reactions.emoji.map(&:readable))
@@ -134,6 +145,11 @@ class Retrospective < ApplicationRecord
     next_step = Retrospective.steps.keys[step_index + 1]
     next_step = Retrospective.steps.keys[step_index + 2] if next_step == 'reviewing' && group.pending_tasks.none?
 
+    if next_step == 'voting' && zones_typology == :single_choice
+      builder.autovote!(self)
+      next_step = Retrospective.steps.keys[step_index + 2]
+    end
+
     if next_step == 'actions'
       most_upvoted_target =
         reactions
@@ -150,18 +166,7 @@ class Retrospective < ApplicationRecord
     update!(step: next_step, discussed_reflection: most_upvoted_target || discussed_reflection)
 
     params = { next_step: next_step }
-    params[:visibleReflections] =
-      case next_step
-      when 'grouping'
-        reflections.revealed.map(&:readable)
-      when 'actions', 'done'
-        reflections
-          .eager_load(:owner, :votes, topic: :votes, zone: :retrospective)
-          .reject { |reflection| reflection.votes.none? && reflection.topic&.votes&.none? }
-          .map(&:readable)
-      else
-        []
-      end
+    params[:visibleReflections] = visible_reflections_for_step(next_step)
 
     params[:visibleReactions] =
       case next_step
@@ -177,6 +182,22 @@ class Retrospective < ApplicationRecord
     params[:discussedReflection] = discussed_reflection&.readable if %w(actions done).include?(step)
 
     broadcast_order(:next, **params)
+  end
+
+  def visible_reflections_for_step(step)
+    case step
+    when 'grouping', 'voting'
+      reflections.revealed.includes(:owner).order(:created_at).map(&:readable)
+    when 'actions'
+      reflections
+        .eager_load(:owner, :votes, topic: :votes, zone: :retrospective)
+        .reject { |reflection| reflection.votes.none? && (reflection.topic.nil? || reflection.topic.votes.none?) }
+        .map(&:readable)
+    when 'done'
+      reflections.eager_load(:owner, :votes, topic: :votes, zone: :retrospective).map(&:readable)
+    else
+      []
+    end
   end
 
   def change_facilitator!
@@ -207,28 +228,16 @@ class Retrospective < ApplicationRecord
 
   private
 
+  def builder
+    BUILDERS[kind].constantize
+  end
+
   def add_first_participant
     participants << facilitator
   end
 
   def initialize_zones
-    case kind
-    when 'glad_sad_mad'
-      zones.build(identifier: 'Glad')
-      zones.build(identifier: 'Sad')
-      zones.build(identifier: 'Mad')
-    when 'sailboat'
-      zones.build(identifier: 'Wind')
-      zones.build(identifier: 'Anchor')
-      zones.build(identifier: 'Rocks')
-      zones.build(identifier: 'Island')
-    when 'starfish'
-      zones.build(identifier: 'Keep')
-      zones.build(identifier: 'Start')
-      zones.build(identifier: 'Stop')
-      zones.build(identifier: 'More')
-      zones.build(identifier: 'Less')
-    end
+    builder.build(self)
   end
 
   def step_index
