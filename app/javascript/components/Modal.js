@@ -8,7 +8,7 @@ const Modal = ({ open, onClose, children }) => {
     onClose()
   }
   return (
-    <div className="fixed flex items-center h-screen left-0 top-0 w-full z-1">
+    <div className="fixed flex items-center h-screen left-0 top-0 w-full z-10">
       <div
         className="bg-black absolute h-screen left-0 opacity-25 top-0 w-full"
         onClick={onBackDropClick} />
