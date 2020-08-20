@@ -21,6 +21,7 @@
     "react_ujs": "^2.6.1",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
+    "sanitize-html": "^1.27.3",
     "tailwindcss": "^1.4.6",
     "turbolinks": "^5.2.0"
   },

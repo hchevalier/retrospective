@@ -17,7 +17,7 @@ const RetrospectiveBottomBar = (delegatedProps) => {
   }
 
   return (
-    <div className='flex flex-1 items-end justify-between pb-2 overflow-y-hidden'>
+    <div className='flex items-end justify-between sticky'>
       <div className='w-2/12'>
         <Timer show={currentStep === 'thinking'} facilitator={facilitator} />
       </div>

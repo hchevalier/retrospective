@@ -185,7 +185,7 @@ const StepGrouping = () => {
           }
 
           return (
-            <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0' key={zone.id}>
+            <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0 relative' key={zone.id}>
               <div className='zone-header mb-4'>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</div>
               {zonesTypology === 'open' && (
                 <>

@@ -3,6 +3,7 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import sanitizeHtml from 'sanitize-html'
 import { put, destroy } from 'lib/httpClient'
 import ReactionBar from './ReactionBar'
 import VoteCorner from './VoteCorner'
@@ -82,6 +83,10 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, rea
       .catch(error => console.warn(error))
   }
 
+  const sanitize = (dirtyHtml) => ({
+    __html: sanitizeHtml(dirtyHtml, { options: { allowedTags: ['br'] } })
+  })
+
   return (
     <div
       ref={ref}
@@ -96,7 +101,7 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, rea
       <div className='reflection-content-container'>
         <div className='font-bold mb-2'>{reflection.owner.surname}</div>
         {editing && <textarea name='content' className='bg-transparent border-none outline-none overflow-hidden resize-none' ref={onEditTextAreaRefChange} onChange={resizeTextArea} defaultValue={reflection.content} onBlur={handleUpdate}/>}
-        {!editing && <div name='content' onClick={handleEdit}>{reflection.content}</div>}
+        {!editing && <div name='content' onClick={handleEdit} dangerouslySetInnerHTML={sanitize(reflection.content.replace(/(?:\r\n|\r|\n)/g, '<br>'))}></div>}
       </div>
       {!readOnly && <div className='absolute right-0 mr-2'>
         <img src={EditIcon} className='edit-icon inline cursor-pointer mr-2' onClick={handleEdit} />

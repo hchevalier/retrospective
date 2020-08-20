@@ -19,6 +19,8 @@ module.exports = {
         '14': '3.5rem',
       },
       inset: {
+        '-8': '-2rem',
+        '2': '0.5rem',
         '14': '3.5rem',
       },
       minHeight: {
@@ -35,6 +37,7 @@ module.exports = {
       zIndex: {
         '1': 1,
         '2': 2,
+        '10': 10,
       },
     },
   },

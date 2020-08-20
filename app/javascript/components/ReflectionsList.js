@@ -34,7 +34,7 @@ const ReflectionsList = ({ open, retrospectiveKind, onToggle, onDone }) => {
 
   return (
     <>
-      <div id='reflections-pannel' className='bg-gray-200 relative p-4 shadow-right flex flex-row'>
+      <div id='reflections-pannel' className={classNames('bg-gray-200 relative p-4 shadow-right flex flex-row', { infinite: currentStep !== 'thinking' })}>
         <div className='justify-start items-start px-2 w-10'>
           <img className={classNames('cursor-pointer duration-200 ease-in-out transition-transform transform rotate-90', { '-rotate-90': open, 'invisible': revealer })} src={ArrowIcon} width="24" onClick={onToggle} />
         </div>

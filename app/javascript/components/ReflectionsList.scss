@@ -1,6 +1,9 @@
 #reflections-pannel {
   min-height: calc(100vh - 3.5rem);
+  position: fixed;
+  z-index: 11;
   max-height: calc(100vh - 3.5rem);
+  overflow-y: scroll;
 }
 
 #reflections-container::-webkit-scrollbar {

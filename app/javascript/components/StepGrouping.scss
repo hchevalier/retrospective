@@ -4,18 +4,24 @@
       background: #000000aa;
       color: white;
       text-align: center;
-      position: sticky;
+      margin: 0 -17px;
       cursor: pointer;
       z-index: 2;
-      width:100%;
+      width: calc(100% + 34px);
 
       &.above {
-        top: 20px;
+        position: sticky;
+        top: 70px;
       }
 
       &.below {
+        position: sticky;
         bottom: 20px;
       }
     }
   }
+}
+
+#right-panel.pushed-top #zones-container .zone-column .unread-notice.above {
+  top: 170px;
 }
