@@ -15,6 +15,7 @@ import LoginForm from './LoginForm'
 import AddGroupMembersModal from './AddGroupMembersModal'
 import HomeIcon from 'images/home-icon.svg'
 import ArrowIcon from 'images/arrow-icon.svg'
+import './RetrospectiveLobby.scss'
 
 const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) => {
   const dispatch = useDispatch()
@@ -144,7 +145,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) =>
               </div>
             </div>
           </div>
-          <div id='right-panel' className={classNames('flex flex-col flex-1', { 'pushed': participantsListVisible })}>
+          <div id='right-panel' className={classNames('flex flex-col flex-1', { 'pushed-top': participantsListVisible, 'pushed-left': shouldDisplayReflectionsList && (reflectionsListVisible || revealer)})}>
             {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} invitation={invitation} />}
             {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
           </div>

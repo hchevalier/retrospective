@@ -66,8 +66,8 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
         {currentStep === 'done' && (
           zonesTypology === 'open' ? <StepDone /> : <StepDoneForSingleChoice />
         )}
-        <RetrospectiveBottomBar onReflectionReady={handleReflectionReady} onReflectionPending={handleReflectionPending} selectedZone={selectedZone} />
       </div>
+      <RetrospectiveBottomBar onReflectionReady={handleReflectionReady} onReflectionPending={handleReflectionPending} selectedZone={selectedZone} />
     </>
   )
 }
