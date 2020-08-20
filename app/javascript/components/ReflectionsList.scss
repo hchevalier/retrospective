@@ -1,5 +1,10 @@
 #reflections-pannel {
   min-height: calc(100vh - 3.5rem);
+  max-height: calc(100vh - 3.5rem);
+
+  &.infinite {
+    max-height: 100% !important;
+  }
 }
 
 #reflections-container::-webkit-scrollbar {

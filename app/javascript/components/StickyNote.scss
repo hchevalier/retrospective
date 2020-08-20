@@ -1,4 +1,7 @@
 .reflection {
+  overflow-wrap: break-word;
+  max-width: 300px;
+
   &.glowing {
     border-color: goldenrod !important;
   }

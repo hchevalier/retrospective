@@ -79,12 +79,12 @@ const BlankStickyNote = ({ ownerProfile, onReflectionReady, onReflectionPending,
   }
 
   return (
-    <div className='flex flex-col'>
-      {ready && <div>Now click on a zone above</div>}
+    <div className='flex flex-col relative'>
       <div
-        className={classNames('reflection flex flex-col p-2 rounded-md absolute w-64 min-h-8 right-2 bottom-0 overflow-y-hidden', { '-mb-4': !editing, 'cursor-pointer': !editing })}
+        className={classNames('reflection flex flex-col p-2 rounded-md absolute w-64 min-h-8 right-2 bottom-0', { '-mb-4': !editing, 'cursor-pointer': !editing })}
         style={colorStyle}
         onClick={() => !editing && handleStartEditing()}>
+        {ready && <div className='absolute -top-8'>Now click on a zone above</div>}
         <div className='reflection-content-container'>
           {!editing && <div className='font-bold mb-2'>Click here to add a reflection</div>}
           {editing && (
