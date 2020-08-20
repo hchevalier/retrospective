@@ -144,7 +144,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) =>
               </div>
             </div>
           </div>
-          <div id='right-panel' className='flex flex-col flex-1'>
+          <div id='right-panel' className={classNames('flex flex-col flex-1', { 'pushed': participantsListVisible })}>
             {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} invitation={invitation} />}
             {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
           </div>
