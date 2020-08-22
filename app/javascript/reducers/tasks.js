@@ -7,6 +7,7 @@ const tasks = (state = inititalState, action) => {
     case 'add-task':
       return [...state, action.task]
     case 'change-task':
+    case 'change-pending-task':
       return updateArray(state, action.task, 'id')
     case 'drop-task':
       return reject(state, (task) => task.id == action.taskId)
