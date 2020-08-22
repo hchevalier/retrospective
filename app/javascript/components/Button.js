@@ -3,10 +3,11 @@ import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import { compact } from 'lib/helpers/array'
 
-const Button = ({ children, contained, disabled, primary, secondary, selected, className, ...rest }) => (
+const Button = ({ children, contained, disabled, name, primary, secondary, selected, className, ...rest }) => (
   <button
     type='button'
     disabled={disabled && 'disabled'}
+    name={name}
     {...rest}
     className={classNames(
       compact(['font-medium rounded focus:outline-none focus:shadow-outline', className]).join(' '),
@@ -33,6 +34,7 @@ Button.propTypes = {
   className: PropTypes.string,
   contained: PropTypes.bool,
   disabled: PropTypes.bool,
+  name: PropTypes.string,
   onClick: PropTypes.func,
   primary: PropTypes.bool,
   secondary: PropTypes.bool,

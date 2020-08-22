@@ -75,6 +75,8 @@ const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) =>
       dispatch({ type: 'add-task', task: data.task })
     } else if (action === 'updateTask') {
       dispatch({ type: 'change-task', task: data.task })
+    } else if (action === 'updatePendingTask') {
+      dispatch({ type: 'change-pending-task', task: data.task })
     } else if (action === 'dropTask') {
       dispatch({ type: 'drop-task', taskId: data.taskId })
     } else if (action === 'updateFacilitatorInfo') {

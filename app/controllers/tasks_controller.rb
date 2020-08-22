@@ -33,7 +33,7 @@ class TasksController < ApplicationController
       task.update!(reviewing_step_update_task_params)
     end
 
-    OrchestratorChannel.broadcast_to(retrospective, action: 'updateTask', parameters: { task: task.as_json })
+    OrchestratorChannel.broadcast_to(retrospective, action: 'updatePendingTask', parameters: { task: task.as_json })
 
     render json: task.as_json
   end
