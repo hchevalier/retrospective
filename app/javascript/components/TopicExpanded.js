@@ -61,26 +61,23 @@ const TopicExpanded = ({ editable, forceTopicEditing, topic, onCollapseTopic, on
   }
 
   return (
-    <>
-      <div className='absolute w-full h-full top-0 left-0' style={{ background: 'rgba(0, 0, 0, 0.8)' }} />
-      <div id='topic-content-backdrop' data-id={topic.id} className='absolute w-full h-full flex flex-col justify-center' onClick={handleBackdropClick} >
-        <div id='topic-content' className='topic relative flex flex-row justify-evenly w-full flex-wrap'>
-          {editing && <textarea name='topic_name' className='w-full flex flex-no-wrap text-white justify-center text-center bg-gray-700 mb-4 border-none outline-none overflow-hidden resize-none' ref={onEditTextAreaRefChange} defaultValue={topic.label} onKeyDown={handleKeyDown} onBlur={handleUpdate} />}
-          {!editing && <div id='topic-name' className='w-full flex flex-no-wrap text-white justify-center bg-gray-700 mb-4 cursor-text' onClick={handleEditLabel}>{topic.label}</div>}
-          {reflectionsInTopic.map((reflection) => {
-            const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
-            return (
-              <StickyNote
-                key={reflection.id}
-                reflection={reflection}
-                noShrink
-                showReactions
-                reactions={concernedReactions} />
-            )
-          })}
-        </div>
+    <div id='topic-content-backdrop' data-id={topic.id} className='fixed z-100 top-0 left-0 w-full h-full flex flex-col justify-center' onClick={handleBackdropClick} style={{ background: 'rgba(0, 0, 0, 0.8)' }}>
+      <div id='topic-content' className='topic relative flex flex-row justify-evenly w-full flex-wrap'>
+        {editing && <textarea name='topic_name' className='w-full flex flex-no-wrap text-white justify-center text-center bg-gray-700 mb-4 border-none outline-none overflow-hidden resize-none' ref={onEditTextAreaRefChange} defaultValue={topic.label} onKeyDown={handleKeyDown} onBlur={handleUpdate} />}
+        {!editing && <div id='topic-name' className='w-full flex flex-no-wrap text-white justify-center bg-gray-700 mb-4 cursor-text' onClick={handleEditLabel}>{topic.label}</div>}
+        {reflectionsInTopic.map((reflection) => {
+          const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
+          return (
+            <StickyNote
+              key={reflection.id}
+              reflection={reflection}
+              noShrink
+              showReactions
+              reactions={concernedReactions} />
+          )
+        })}
       </div>
-    </>
+    </div>
   )
 }
 
