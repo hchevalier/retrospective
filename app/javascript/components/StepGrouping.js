@@ -12,7 +12,7 @@ const inScreen = (target) => target.dataset.timeoutId && target.dataset.timeoutI
 const noteAboveViewport = (stickyNote) => stickyNote.dataset.read !== 'true' && stickyNote.getBoundingClientRect().top < stickyNote.dataset.rootTop && !inScreen(stickyNote)
 const noteBelowViewport = (stickyNote) => stickyNote.dataset.read !== 'true' && stickyNote.getBoundingClientRect().top > stickyNote.dataset.rootTop && !inScreen(stickyNote)
 
-const StepGrouping = () => {
+const StepGrouping = ({ onExpandTopic }) => {
   const { id: retrospectiveId, kind } = useSelector(state => state.retrospective)
   const { uuid: profileUuid } = useSelector(state => state.profile)
   const reflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
@@ -159,6 +159,7 @@ const StepGrouping = () => {
       showReactions
       stickyNotesRefCallback={setStickyNoteRef}
       stickyNotes={stickyNotesInTopic || []}
+      onClick={onExpandTopic}
       draggable
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}

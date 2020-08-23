@@ -11,14 +11,16 @@ const Vote = ({ badge, own, selected, disabled, onAdd, onRemove }) => {
     setTimeout(() => setRecentlyTouchedReaction(false), 50)
   }
 
-  const handleClickAdd = React.useCallback(() => {
+  const handleClickAdd = React.useCallback((event) => {
+    event.stopPropagation()
     if (recentlyTouchedReaction) return
 
     touchReaction()
     onAdd({ kind: 'vote', name: 'vote' })
   }, [recentlyTouchedReaction])
 
-  const handleClickRemove = React.useCallback(() => {
+  const handleClickRemove = React.useCallback((event) => {
+    event.stopPropagation()
     if (badge === 0 || recentlyTouchedReaction) return
 
     touchReaction()

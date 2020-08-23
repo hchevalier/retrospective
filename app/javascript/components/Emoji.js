@@ -4,7 +4,9 @@ import constants from 'lib/utils/constants'
 import './Emoji.scss'
 
 const Emoji = ({ name, badge, own, selected, onAdd, onRemove }) => {
-  const handleClick = React.useCallback(() => {
+  const handleClick = React.useCallback((event) => {
+    event.stopPropagation()
+
     if (selected && own) {
       onRemove(selected)
     } else {

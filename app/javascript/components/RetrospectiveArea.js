@@ -11,6 +11,7 @@ import StepGrouping from './StepGrouping'
 import StepVoting from './StepVoting'
 import StepActions from './StepActions'
 import StepDone from './StepDone'
+import TopicExpanded from './TopicExpanded'
 
 const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   const currentStep = useSelector(state => state.orchestrator.step)
@@ -18,6 +19,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
 
   const [selectedZone, setSelectedZone] = useState(null)
   const [highlightZones, setHighlightZones] = useState(false)
+  const [expandedTopic, setExpandedTopic] = useState(null)
 
   const handleZoneClicked = (event) => {
     event.stopPropagation()
@@ -50,18 +52,23 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
     return <div>Unknown retrospective {kind}</div>
   }
 
+  const handleExpandTopic = (topic) => setExpandedTopic(topic)
+
+  const handleCollapseTopic = () => setExpandedTopic(null)
+
   return (
     <>
       <div id={kind} className='flex flex-col pt-6 flex-1 px-4'>
         {currentStep === 'gathering' && <ColorPicker retrospectiveId={retrospectiveId} />}
         {currentStep === 'reviewing' && <StepReview />}
         {currentStep === 'thinking' && renderRetrospective()}
-        {currentStep === 'grouping' && <StepGrouping />}
-        {currentStep === 'voting' && <StepVoting />}
+        {currentStep === 'grouping' && <StepGrouping onExpandTopic={handleExpandTopic} />}
+        {currentStep === 'voting' && <StepVoting onExpandTopic={handleExpandTopic} />}
         {currentStep === 'actions' && <StepActions />}
         {currentStep === 'done' && <StepDone />}
       </div>
       <RetrospectiveBottomBar onReflectionReady={handleReflectionReady} onReflectionPending={handleReflectionPending} selectedZone={selectedZone} />
+      {expandedTopic && <TopicExpanded topic={expandedTopic} onCollapseTopic={handleCollapseTopic} />}
     </>
   )
 }
