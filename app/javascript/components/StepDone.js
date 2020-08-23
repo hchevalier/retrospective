@@ -5,9 +5,11 @@ import StickyBookmark from './StickyBookmark'
 import VoteCorner from './VoteCorner'
 import Task from './Task'
 import InlineTopic from './InlineTopic'
+import TrafficLightResult from './retrospectives/traffic_lights/TrafficLightResult'
 import './StepActions.scss'
 
 const StepDone = () => {
+  const zonesTypology = useSelector(state => state.retrospective.zonesTypology)
   const visibleReflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
   const initialDiscussedReflection = useSelector(state => state.reflections.discussedReflection)
   const [currentReflection, setCurrentReflection] = React.useState(initialDiscussedReflection)
@@ -37,10 +39,12 @@ const StepDone = () => {
     <div id='actions-zone'>
       <div id='discussed-reflections-panel'>
         <div id='discussed-reflection'>
-          <StickyNote reflection={currentReflection} showVotes reactions={relevantReactions} />
+          {zonesTypology === 'open' ?
+            <StickyNote reflection={currentReflection} showVotes reactions={relevantReactions} /> :
+            <TrafficLightResult reflection={currentReflection} />}
         </div>
         <div id='reflections-list'>
-          {reflectionsWithVotes.map(([reflection, votes], index) => {
+          {zonesTypology === 'open' && reflectionsWithVotes.map(([reflection, votes], index) => {
             if (reflection.topic?.id && !topics[reflection.topic.id]) {
               topics[reflection.topic.id] = reflection.topic
               return <InlineTopic
@@ -58,6 +62,9 @@ const StepDone = () => {
                 </StickyBookmark>
               )
             }
+          })}
+          {zonesTypology === 'single_choice' && reflectionsWithVotes.map(([reflection]) => {
+            return <TrafficLightResult key={reflection.id} reflection={reflection} onClick={() => handleStickyBookmarkClicked(reflection)} />
           })}
         </div>
       </div>
