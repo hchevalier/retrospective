@@ -44,7 +44,7 @@ const Topic = ({ onClick, topic, reflections, reactions, stickyNotes, stickyNote
           stackSize={reflections.length}
           {...delegatedAttributes} />
       </div>
-      <div className='flex flex-row justify-center cursor-pointer h-4' onClick={handleStackClick}>
+      <div className='circles flex flex-row justify-center cursor-pointer h-4' onClick={handleStackClick}>
         {reflectionIds.map((reflectionId, index) => {
           return <div key={reflectionId} className={classNames('rounded-full p-1 bg-gray-400 mx-1 h-2', { 'bg-gray-600': index === cycleIndex })} />
         })}
