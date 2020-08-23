@@ -56,7 +56,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
 
     assert_retro_started
     refute_reflection_in_zone('Glad')
-    within '#reflections-pannel' do
+    within '#reflections-panel' do
       refute_text 'A glad reflection'
     end
   end
@@ -68,7 +68,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
 
-    within '#reflections-pannel' do
+    within '#reflections-panel' do
       assert_text 'A glad reflection'
     end
   end
@@ -80,7 +80,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
 
-    within '#reflections-pannel' do
+    within '#reflections-panel' do
       assert_text 'A glad reflection'
       find('.edit-icon').click
     end
@@ -100,7 +100,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)
 
-    within '#reflections-pannel' do
+    within '#reflections-panel' do
       assert_text 'A glad reflection'
       find('.delete-icon').click
     end

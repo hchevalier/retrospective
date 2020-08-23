@@ -122,8 +122,8 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       assert_text 'My reflections'
 
       reflections.each do |reflection|
-        find("#reflections-pannel .reflection[data-id='#{reflection.id}'] .eye-icon", visible: false).click
-        refute_selector("#reflections-pannel .reflection[data-id='#{reflection.id}']")
+        find("#reflections-panel .reflection[data-id='#{reflection.id}'] .eye-icon", visible: false).click
+        refute_selector("#reflections-panel .reflection[data-id='#{reflection.id}']")
       end
     end
 
@@ -136,7 +136,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     end
 
     within_window(other_participant_window) do
-      all('#reflections-pannel .eye-icon').last.click
+      all('#reflections-panel .eye-icon').last.click
     end
 
     within all('.zone-column').last do
@@ -165,8 +165,8 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       assert_text 'My reflections'
 
       reflections.each do |reflection|
-        find("#reflections-pannel .reflection[data-id='#{reflection.id}'] .eye-icon", visible: false).click
-        refute_selector("#reflections-pannel .reflection[data-id='#{reflection.id}']")
+        find("#reflections-panel .reflection[data-id='#{reflection.id}'] .eye-icon", visible: false).click
+        refute_selector("#reflections-panel .reflection[data-id='#{reflection.id}']")
       end
     end
 
