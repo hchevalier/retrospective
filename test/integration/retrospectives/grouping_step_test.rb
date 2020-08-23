@@ -233,7 +233,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
     end
 
-    assert_topic_contains(Topic.last, reflection_b)
+    assert_topic_contains(Topic.last, reflection_a, reflection_b)
   end
 
    test 'group label is the first word of the first reflection' do
@@ -271,6 +271,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     assert_difference 'Topic.count' do
       sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
     end
+    assert_topic_contains(Topic.first, reflection_a, reflection_b)
 
     initial_topic = Topic.order(:created_at).last
     assert_no_difference 'Topic.count' do
@@ -278,13 +279,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     end
 
     new_topic = Topic.order(:created_at).last
-    within topic_container(new_topic) do
-      within '.topic-label' do
-        assert_text 'Second'
-      end
-    end
-
-    assert_topic_contains(new_topic, reflection_c)
+    assert_topic_contains(new_topic, reflection_b, reflection_c)
 
     refute_css ".topic[data-id='#{initial_topic.id}']"
   end
@@ -312,9 +307,11 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
   end
 
   def assert_topic_contains(topic, *reflections)
-    within ".topic[data-id='#{topic.id}']" do
+    topic_container(topic).click
+    within '#topic-content' do
       reflections.each { |reflection| assert_css ".reflection[data-id='#{reflection.id}']" }
     end
+    find('#topic-content-backdrop').click
   end
 
   def assert_grouping_step_for_facilitator

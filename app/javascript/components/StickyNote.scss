@@ -2,6 +2,20 @@
   overflow-wrap: break-word;
   max-width: 300px;
 
+  &.stack {
+    cursor: pointer;
+  }
+
+  &.stack-2 {
+    top: -10px;
+    &:hover { top: -13px; }
+  }
+
+  &.stack-1 {
+    top: -5px;
+    &:hover { top: -8px; }
+  }
+
   &.glowing {
     border-color: goldenrod !important;
   }

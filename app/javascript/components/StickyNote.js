@@ -14,7 +14,7 @@ import EyeIcon from 'images/eye-icon.svg'
 import './StickyNote.scss'
 import './Topic.scss'
 
-const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, readOnly, showVotes, stackSize, glowing, revealable, noShrink, draggable, onDragStart, onDragOver, onDrop }, ref) => {
+const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, readOnly, showVotes, stackSize, glowing, revealable, noShrink, onStackClick, draggable, onDragStart, onDragOver, onDrop }, ref) => {
   const dispatch = useDispatch()
   const [hovered, setHovered] = React.useState(false)
   const [editing, setEditing] = React.useState(false)
@@ -89,8 +89,8 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, rea
 
   return (
     <>
-      {stackSize > 2 && <div className='reflection flex flex-col mb-3 mx-auto p-2 rounded-md absolute w-full' style={{ ...colorStyle, top: '-10px '}} />}
-      {stackSize > 1 && <div className='reflection flex flex-col mb-3 mx-auto p-2 rounded-md absolute w-full' style={{ ...colorStyle, top: '-5px '}} />}
+      {stackSize > 2 && <div className='reflection stack stack-2 flex flex-col mb-3 mx-auto p-2 rounded-md absolute w-full' style={{ ...colorStyle}} onClick={onStackClick} />}
+      {stackSize > 1 && <div className='reflection stack stack-1 flex flex-col mb-3 mx-auto p-2 rounded-md absolute w-full' style={{ ...colorStyle}} onClick={onStackClick} />}
       <div
         ref={ref}
         className={classNames('reflection flex flex-col mb-3 mx-auto p-2 rounded-md relative w-full', { glowing, 'flex-shrink-0': noShrink })}
@@ -133,7 +133,8 @@ StickyNote.propTypes = {
   noShrink: PropTypes.bool,
   onDragStart: PropTypes.func,
   onDragOver: PropTypes.func,
-  onDrop: PropTypes.func
+  onDrop: PropTypes.func,
+  onStackClick: PropTypes.func
 }
 
 StickyNote.defaultProps = {

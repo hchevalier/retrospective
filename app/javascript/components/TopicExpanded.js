@@ -15,8 +15,8 @@ const TopicExpanded = ({ topic, onCollapseTopic }) => {
   return (
     <>
       <div className='absolute w-full h-full top-0 left-0' style={{ background: 'rgba(0, 0, 0, 0.8)' }} />
-      <div data-id={topic.id} className='absolute w-full h-full flex flex-col justify-center' onClick={onCollapseTopic} >
-        <div className='topic relative flex flex-row justify-evenly w-full flex-wrap'>
+      <div id='topic-content-backdrop' data-id={topic.id} className='absolute w-full h-full flex flex-col justify-center' onClick={onCollapseTopic} >
+        <div id='topic-content' className='topic relative flex flex-row justify-evenly w-full flex-wrap'>
           {reflectionsInTopic.map((reflection) => {
             const concernedReactions = reactions.filter((reaction) => reaction.targetId === `Reflection-${reflection.id}`)
             return (
