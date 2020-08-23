@@ -14,7 +14,7 @@ import EyeIcon from 'images/eye-icon.svg'
 import './StickyNote.scss'
 import './Topic.scss'
 
-const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, readOnly, showVotes, stackSize, glowing, revealable, noShrink, onStackClick, draggable, onDragStart, onDragOver, onDrop }, ref) => {
+const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, readOnly, showVotes, stackSize, glowing, revealable, noShrink, onStackClick, draggable, onDragStart, onDragOver, onDragEnd, onDrop }, ref) => {
   const dispatch = useDispatch()
   const [hovered, setHovered] = React.useState(false)
   const [editing, setEditing] = React.useState(false)
@@ -100,7 +100,7 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, rea
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         style={colorStyle}
-        {...(draggable ? { draggable, onDragStart, onDrop, onDragOver } : {})}>
+        {...(draggable ? { draggable, onDragStart, onDrop, onDragOver, onDragEnd } : {})}>
         <div className='reflection-content-container'>
           <div className='font-bold mb-2'>{reflection.owner.surname}</div>
           {editing && <textarea name='content' className='bg-transparent border-none outline-none overflow-hidden resize-none' ref={onEditTextAreaRefChange} onChange={resizeTextArea} defaultValue={reflection.content} onBlur={handleUpdate}/>}
@@ -133,6 +133,7 @@ StickyNote.propTypes = {
   noShrink: PropTypes.bool,
   onDragStart: PropTypes.func,
   onDragOver: PropTypes.func,
+  onDragEnd: PropTypes.func,
   onDrop: PropTypes.func,
   onStackClick: PropTypes.func
 }
