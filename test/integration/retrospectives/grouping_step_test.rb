@@ -233,7 +233,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
     end
 
-    assert_topic_contains(Topic.last, reflection_a, reflection_b)
+    assert_topic_contains(Topic.last, reflection_b)
   end
 
    test 'group label is the first word of the first reflection' do
@@ -284,7 +284,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       end
     end
 
-    assert_topic_contains(new_topic, reflection_b, reflection_c)
+    assert_topic_contains(new_topic, reflection_c)
 
     refute_css ".topic[data-id='#{initial_topic.id}']"
   end
