@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import StickyBookmark from './StickyBookmark'
 import VoteCorner from './VoteCorner'
 import InlineTopic from './InlineTopic'
+import TrafficLightResult from './retrospectives/traffic_lights/TrafficLightResult'
 import ArrowIcon from 'images/arrow-icon-black.svg'
 import './ReflectionsList.scss'
 
@@ -13,7 +14,7 @@ const ReflectionsListForActionStep = ({ open, onToggle }) => {
   const currentReflection = useSelector(state => state.reflections.discussedReflection)
   const visibleReactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
   const channel = useSelector(state => state.orchestrator.subscription)
-  const zonesTypology = useSelector(state => state.retrospective.zonesTypology)
+  const { zonesTypology, kind } = useSelector(state => state.retrospective)
 
   const reflectionsWithVotes = visibleReflections.map((reflection) => {
     const reactions = visibleReactions.filter((reaction) => {
@@ -33,7 +34,7 @@ const ReflectionsListForActionStep = ({ open, onToggle }) => {
 
   return (
     <>
-      <div id='reflections-pannel' className='bg-gray-200 relative p-4 shadow-right flex flex-row'>
+      <div id='reflections-panel' className='bg-gray-200 relative p-4 shadow-right flex flex-row'>
         <div className='justify-start items-start px-2 w-10'>
           <img className={classNames('cursor-pointer duration-200 ease-in-out transition-transform transform rotate-90', { '-rotate-90': open })} src={ArrowIcon} width="24" onClick={onToggle} />
         </div>
@@ -57,6 +58,13 @@ const ReflectionsListForActionStep = ({ open, onToggle }) => {
                 </StickyBookmark>
               )
             }
+          })}
+          {zonesTypology === 'single_choice' && reflectionsWithVotes.map(([reflection]) => {
+            return (
+              <div id={kind} key={reflection.id} onClick={() => handleStickyBookmarkClicked(reflection)}>
+                <TrafficLightResult reflection={reflection} />
+              </div>
+            )
           })}
         </div>
       </div>

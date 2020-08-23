@@ -59,7 +59,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
       assert_text 'A glad reflection'
     end
 
-    all('#reflections-list .sticky-bookmark').last.click
+    all('#reflections-panel .sticky-bookmark').last.click
 
     within '.reflection' do
       assert_text 'A sad reflection'
@@ -74,7 +74,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
         assert_text 'A sad reflection'
       end
 
-      all('#reflections-list .sticky-bookmark').first.click
+      all('#reflections-panel .sticky-bookmark').first.click
 
       within '.reflection' do
         assert_text 'A sad reflection'
@@ -82,7 +82,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'changing the discussed reflection to a topic selects the first reflection from this topic' do
+  test 'changing the discussed reflection to a topic displays all reflections from this topic' do
     retrospective = create(:retrospective, step: 'actions')
     reflection_a = create(:reflection, :glad, owner: retrospective.facilitator, content: 'Most upvoted reflection')
     reflection_b = create(:reflection, :glad, owner: retrospective.facilitator, content: 'First reflection')
@@ -99,16 +99,17 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
       assert_text 'Most upvoted reflection'
     end
 
-    assert_equal 4, all('#reflections-list .sticky-bookmark').count
-    topic_sticky_bookmark = all('#reflections-list .sticky-bookmark')[1]
+    assert_equal 4, all('#reflections-panel .sticky-bookmark').count
+    topic_sticky_bookmark = all('#reflections-panel .sticky-bookmark')[1]
     within topic_sticky_bookmark do
       assert_text 'First'
     end
 
     topic_sticky_bookmark.hover
     topic_sticky_bookmark.click
-    within '.reflection' do
+    within '#discussed-reflection' do
       assert_text 'First reflection'
+      assert_text 'Second reflection'
     end
   end
 
@@ -156,7 +157,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     fill_in 'content', with: 'my task'
     select retrospective.facilitator.surname, from: 'assignee'
 
-    all('#reflections-list .sticky-bookmark').last.click
+    all('#reflections-panel .sticky-bookmark').last.click
 
     within '#action-editor' do
       assert_text 'You are writing an action for a reflection that is not the one currently displayed'
@@ -170,7 +171,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
       refute_text 'my task'
     end
 
-    all('#reflections-list .sticky-bookmark').first.click
+    all('#reflections-panel .sticky-bookmark').first.click
 
     within '#tasks-list' do
       assert_text 'Assigned to Facilitator'
@@ -192,7 +193,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     fill_in 'content', with: 'my task'
     select retrospective.facilitator.surname, from: 'assignee'
 
-    all('#reflections-list .sticky-bookmark').last.click
+    all('#reflections-panel .sticky-bookmark').last.click
 
     within '#action-editor' do
       assert_text 'You are writing an action for a reflection that is not the one currently displayed'
