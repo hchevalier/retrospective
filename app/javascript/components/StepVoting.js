@@ -5,7 +5,7 @@ import Topic from './Topic'
 import constants from 'lib/utils/constants'
 import Icon from './Icon'
 
-const StepVoting = () => {
+const StepVoting = ({ onExpandTopic }) => {
   const { kind } = useSelector(state => state.retrospective)
   const reflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
   const zones = useSelector(state => state.retrospective.zones, shallowEqual)
@@ -25,6 +25,7 @@ const StepVoting = () => {
 
     return <Topic
       key={reflection.topic.id}
+      onClick={onExpandTopic}
       topic={reflection.topic}
       reflections={reflectionsInTopic}
       reactions={reactionsInTopic}

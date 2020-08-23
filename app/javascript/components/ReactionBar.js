@@ -25,7 +25,11 @@ const ReactionBar = ({ reflection, displayed, reactions }) => {
     .catch(error => console.warn(error))
   }
 
-  const showEmojiModal = () => setEmojiDisplayed(true)
+  const showEmojiModal = (event) => {
+    event.stopPropagation()
+    setEmojiDisplayed(true)
+  }
+
   const hideEmojiModal = () => setEmojiDisplayed(false)
 
   const handleRemoveReaction = (reaction) => {

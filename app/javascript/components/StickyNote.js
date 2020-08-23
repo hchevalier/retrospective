@@ -14,7 +14,7 @@ import EyeIcon from 'images/eye-icon.svg'
 import './StickyNote.scss'
 import './Topic.scss'
 
-const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, readOnly, showVotes, glowing, revealable, draggable, onDragStart, onDragOver, onDrop }, ref) => {
+const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, readOnly, showVotes, stackSize, glowing, revealable, noShrink, onStackClick, draggable, onDragStart, onDragOver, onDrop }, ref) => {
   const dispatch = useDispatch()
   const [hovered, setHovered] = React.useState(false)
   const [editing, setEditing] = React.useState(false)
@@ -88,31 +88,35 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, rea
   })
 
   return (
-    <div
-      ref={ref}
-      className={classNames('reflection flex flex-col mb-3 mx-auto p-2 rounded-md relative w-full', { glowing })}
-      data-id={reflection.id}
-      data-owner-uuid={reflection.owner.uuid}
-      data-zone-id={reflection.zone.id}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      style={colorStyle}
-      {...(draggable ? { draggable, onDragStart, onDrop, onDragOver } : {})}>
-      <div className='reflection-content-container'>
-        <div className='font-bold mb-2'>{reflection.owner.surname}</div>
-        {editing && <textarea name='content' className='bg-transparent border-none outline-none overflow-hidden resize-none' ref={onEditTextAreaRefChange} onChange={resizeTextArea} defaultValue={reflection.content} onBlur={handleUpdate}/>}
-        {!editing && <div name='content' onClick={handleEdit} dangerouslySetInnerHTML={sanitize(reflection.content.replace(/(?:\r\n|\r|\n)/g, '<br>'))}></div>}
+    <>
+      {stackSize > 2 && <div className='reflection stack stack-2 flex flex-col mb-3 mx-auto p-2 rounded-md absolute w-full' style={{ ...colorStyle}} onClick={onStackClick} />}
+      {stackSize > 1 && <div className='reflection stack stack-1 flex flex-col mb-3 mx-auto p-2 rounded-md absolute w-full' style={{ ...colorStyle}} onClick={onStackClick} />}
+      <div
+        ref={ref}
+        className={classNames('reflection flex flex-col mb-3 mx-auto p-2 rounded-md relative w-full', { glowing, 'flex-shrink-0': noShrink })}
+        data-id={reflection.id}
+        data-owner-uuid={reflection.owner.uuid}
+        data-zone-id={reflection.zone.id}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={colorStyle}
+        {...(draggable ? { draggable, onDragStart, onDrop, onDragOver } : {})}>
+        <div className='reflection-content-container'>
+          <div className='font-bold mb-2'>{reflection.owner.surname}</div>
+          {editing && <textarea name='content' className='bg-transparent border-none outline-none overflow-hidden resize-none' ref={onEditTextAreaRefChange} onChange={resizeTextArea} defaultValue={reflection.content} onBlur={handleUpdate}/>}
+          {!editing && <div name='content' onClick={handleEdit} dangerouslySetInnerHTML={sanitize(reflection.content.replace(/(?:\r\n|\r|\n)/g, '<br>'))}></div>}
+        </div>
+        {!readOnly && <div className='absolute right-0 mr-2'>
+          <img src={EditIcon} className='edit-icon inline cursor-pointer mr-2' onClick={handleEdit} />
+          <img src={DeleteIcon} className='delete-icon inline cursor-pointer' onClick={handleDelete} />
+        </div>}
+        {revealer && revealable && <div className='absolute right-0 mr-2'>
+          <img src={EyeIcon} className='eye-icon inline cursor-pointer' onClick={handleReveal} width='24px' />
+        </div>}
+        {showVotes && <VoteCorner target={reflection} targetType={'reflection'} votes={votes} canVote={step === 'voting'} />}
+        {showReactions && <ReactionBar displayed={displayReactionBar} reflection={reflection} reactions={emojis} />}
       </div>
-      {!readOnly && <div className='absolute right-0 mr-2'>
-        <img src={EditIcon} className='edit-icon inline cursor-pointer mr-2' onClick={handleEdit} />
-        <img src={DeleteIcon} className='delete-icon inline cursor-pointer' onClick={handleDelete} />
-      </div>}
-      {revealer && revealable && <div className='absolute right-0 mr-2'>
-        <img src={EyeIcon} className='eye-icon inline cursor-pointer' onClick={handleReveal} width='24px' />
-      </div>}
-      {showVotes && <VoteCorner target={reflection} targetType={'reflection'} votes={votes} canVote={step === 'voting'} />}
-      {showReactions && <ReactionBar displayed={displayReactionBar} reflection={reflection} reactions={emojis} />}
-    </div>
+    </>
   )
 })
 
@@ -123,16 +127,20 @@ StickyNote.propTypes = {
   readOnly: PropTypes.bool,
   revealable: PropTypes.bool,
   showVotes: PropTypes.bool,
+  stackSize: PropTypes.number,
   glowing: PropTypes.bool,
   draggable: PropTypes.bool,
+  noShrink: PropTypes.bool,
   onDragStart: PropTypes.func,
   onDragOver: PropTypes.func,
-  onDrop: PropTypes.func
+  onDrop: PropTypes.func,
+  onStackClick: PropTypes.func
 }
 
 StickyNote.defaultProps = {
   reactions: [],
-  readOnly: true
+  readOnly: true,
+  stackSize: 1,
 }
 
 export default StickyNote

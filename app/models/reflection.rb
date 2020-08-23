@@ -15,7 +15,8 @@ class Reflection < ApplicationRecord
       topic: topic&.as_json,
       zone: zone.as_json,
       color: owner.color,
-      revealed: revealed
+      revealed: revealed,
+      updatedAt: updated_at
     }
   end
 

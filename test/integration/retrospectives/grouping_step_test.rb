@@ -272,21 +272,31 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
     end
 
+    assert_text 'First' # Topic name
+    refute_text 'First reflection'
+    assert_text 'Second reflection'
+    assert_topic_contains(Topic.first, reflection_a, reflection_b)
+
     initial_topic = Topic.order(:created_at).last
     assert_no_difference 'Topic.count' do
       sticky_note(reflection_b).drag_to(sticky_note(reflection_c))
     end
 
-    new_topic = Topic.order(:created_at).last
-    within topic_container(new_topic) do
-      within '.topic-label' do
-        assert_text 'Second'
-      end
-    end
+    refute_css ".topic[data-id='#{initial_topic.id}']"
 
+    assert_text 'Third' # Topic name
+    assert_text 'First reflection'
+    assert_text 'Third reflection'
+    refute_text 'Second reflection'
+    new_topic = Topic.order(:created_at).last
     assert_topic_contains(new_topic, reflection_b, reflection_c)
 
-    refute_css ".topic[data-id='#{initial_topic.id}']"
+    within topic_container(new_topic) do
+      find('.circles').click
+      assert_text 'Second reflection'
+      find('.circles').click
+      assert_text 'Third reflection'
+    end
   end
 
   test 'cannot group reflections from different columns' do
@@ -312,9 +322,11 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
   end
 
   def assert_topic_contains(topic, *reflections)
-    within ".topic[data-id='#{topic.id}']" do
+    topic_container(topic).click
+    within '#topic-content' do
       reflections.each { |reflection| assert_css ".reflection[data-id='#{reflection.id}']" }
     end
+    find('#topic-content-backdrop').click
   end
 
   def assert_grouping_step_for_facilitator

@@ -151,7 +151,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) =>
               </div>
             </div>
           </div>
-          <div id='right-panel' className={classNames('flex flex-col flex-1', { 'pushed-top': participantsListVisible, 'pushed-left': shouldDisplayReflectionsList && (reflectionsListVisible || revealer)})}>
+          <div id='right-panel' className={classNames('flex flex-col flex-1 relative', { 'pushed-top': participantsListVisible, 'pushed-left': shouldDisplayReflectionsList && (reflectionsListVisible || revealer)})}>
             {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} invitation={invitation} />}
             {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
           </div>

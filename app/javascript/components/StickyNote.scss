@@ -2,6 +2,20 @@
   overflow-wrap: break-word;
   max-width: 300px;
 
+  &.stack {
+    cursor: pointer;
+  }
+
+  &.stack-2 {
+    top: -10px;
+    &:hover { top: -13px; }
+  }
+
+  &.stack-1 {
+    top: -5px;
+    &:hover { top: -8px; }
+  }
+
   &.glowing {
     border-color: goldenrod !important;
   }
@@ -10,20 +24,5 @@
 .topic {
   .reflection {
     box-shadow: -1px -1px #00000044, 1px 1px #00000044;
-  }
-
-  .reflection:not(:first-child) {
-    position: absolute;
-  }
-
-  @for $i from 2 through 12 {
-    .reflection:nth-child(#{$i}) {
-      top: ($i - 1) * 10px;
-      left: ($i - 1) * 10px;
-    }
-  }
-
-  .reflection:hover {
-    z-index: 2;
   }
 }
