@@ -16,8 +16,7 @@ class Topic < ApplicationRecord
   private
 
   def update_label
-    # TODO: only update label if it was not set manually
     # TODO: get main word(s) for each reflection
-    self.label = reflections.first.content.split(' ').first
+    self.label ||= reflections.first.content.split(' ').first
   end
 end

@@ -299,6 +299,41 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'can rename a topic' do
+    retrospective = create(:retrospective, step: 'grouping')
+    reflection_a = create(:reflection, :glad, owner: retrospective.facilitator, content: 'First reflection')
+    reflection_b = create(:reflection, :glad, owner: retrospective.facilitator, content: 'Second reflection')
+
+    logged_in_as(retrospective.facilitator)
+    visit retrospective_path(retrospective)
+    assert_grouping_step_for_facilitator
+
+    sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
+    assert_text 'Second reflection'
+    refute_text 'First reflection'
+
+    other_participant = create(:other_participant, retrospective: retrospective)
+    other_participant_window = open_new_window
+    within_window(other_participant_window) do
+      logged_in_as(other_participant)
+      visit retrospective_path(retrospective)
+      assert_logged_in(other_participant, with_flags: %i(self))
+      assert_text 'First'
+    end
+
+    topic_container(Topic.first).click
+
+    assert_text 'First reflection'
+    find('#topic-name').click
+    fill_in 'topic_name', with: 'First + second'
+    find('#topic-content-backdrop').click
+    assert_text 'First + second'
+
+    within_window(other_participant_window) do
+      assert_text 'First + second'
+    end
+  end
+
   test 'cannot group reflections from different columns' do
     retrospective = create(:retrospective, step: 'grouping')
     reflection_a = create(:reflection, :glad, owner: retrospective.facilitator, content: 'First reflection')

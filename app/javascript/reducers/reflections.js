@@ -26,7 +26,12 @@ const reflections = (state = initialState, action) => {
     case 'replace-reflection':
       return { ...state, ownReflections: upsertArray(state.ownReflections, action.reflection, 'zone.id') }
     case 'change-topic':
-      visibleReflections = updateArray(visibleReflections, action.reflection, 'id')
+      visibleReflections =
+        action.reflection ?
+          updateArray(visibleReflections, action.reflection, 'id') :
+        visibleReflections.map((reflection) => {
+          return { ...reflection, topic: reflection.topic?.id === action.topic.id ? action.topic : reflection.topic }
+        })
       return { ...state, visibleReflections: visibleReflections }
     case 'delete-reflection':
       return { ...state, ownReflections: reject(state.ownReflections, (reflection) => reflection.id === action.reflectionId) }

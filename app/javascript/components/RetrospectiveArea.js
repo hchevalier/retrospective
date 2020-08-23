@@ -20,6 +20,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   const [selectedZone, setSelectedZone] = useState(null)
   const [highlightZones, setHighlightZones] = useState(false)
   const [expandedTopic, setExpandedTopic] = useState(null)
+  const [forceTopicEditing, setForceTopicEditing] = useState(false)
 
   const handleZoneClicked = (event) => {
     event.stopPropagation()
@@ -52,9 +53,15 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
     return <div>Unknown retrospective {kind}</div>
   }
 
-  const handleExpandTopic = (topic) => setExpandedTopic(topic)
+  const handleExpandTopic = (topic, forceEditing = false) => {
+    setExpandedTopic(topic)
+    setForceTopicEditing(forceEditing)
+  }
 
-  const handleCollapseTopic = () => setExpandedTopic(null)
+  const handleCollapseTopic = () => {
+    setExpandedTopic(null)
+    setForceTopicEditing(false)
+  }
 
   return (
     <>
@@ -68,7 +75,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
         {currentStep === 'done' && <StepDone />}
       </div>
       <RetrospectiveBottomBar onReflectionReady={handleReflectionReady} onReflectionPending={handleReflectionPending} selectedZone={selectedZone} />
-      {expandedTopic && <TopicExpanded topic={expandedTopic} onCollapseTopic={handleCollapseTopic} />}
+      {expandedTopic && <TopicExpanded topic={expandedTopic} editable={currentStep === 'grouping'} forceTopicEditing={forceTopicEditing} onCollapseTopic={handleCollapseTopic} onTopicChange={handleExpandTopic} />}
     </>
   )
 }
