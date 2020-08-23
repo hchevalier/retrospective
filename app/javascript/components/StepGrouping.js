@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
+import PropTypes from 'prop-types'
 import { post, put } from 'lib/httpClient'
 import Topic from './Topic'
 import StickyNote from './StickyNote'
@@ -237,6 +238,10 @@ const StepGrouping = ({ onExpandTopic }) => {
       </div>
     </>
   )
+}
+
+StepGrouping.propTypes = {
+  onExpandTopic: PropTypes.func
 }
 
 export default StepGrouping

@@ -83,7 +83,11 @@ const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) =>
     } else if (action === 'updateFacilitatorInfo') {
       dispatch({ type: 'update-facilitator-info', facilitatorInfo: data.facilitatorInfo })
     } else if (action === 'changeTopic') {
-      dispatch({ type: 'change-topic', reflection: data.reflection })
+      if (data.reflection) {
+        dispatch({ type: 'change-topic', reflection: data.reflection })
+      } else {
+        dispatch({ type: 'change-topic', topic: data.topic })
+      }
     }
   }, [dispatch])
 

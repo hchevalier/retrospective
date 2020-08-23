@@ -19,19 +19,29 @@ class TopicsController < ApplicationController
   end
 
   def update
-    reflection = current_user.retrospective.reflections.find(params[:reflection_id])
-    previous_topic = reflection.topic
-
     topic = current_user.retrospective.topics.find(params[:id])
-    topic.reflections << reflection
-    OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'changeTopic', parameters: { reflection: reflection.reload.readable })
 
-    clean_orphans(previous_topic) if previous_topic
+    if params[:reflection_id]
+      reflection = current_user.retrospective.reflections.find(params[:reflection_id])
+      previous_topic = reflection.topic
 
-    render json: :ok
+      topic.reflections << reflection
+      OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'changeTopic', parameters: { reflection: reflection.reload.readable })
+
+      clean_orphans(previous_topic) if previous_topic
+    else
+      topic.update(topic_params)
+      OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'changeTopic', parameters: { topic: topic.as_json })
+    end
+
+    render json: topic.as_json
   end
 
   private
+
+  def topic_params
+    params.permit(:label)
+  end
 
   def clean_orphans(topic)
     remaining_reflections = topic.reflections

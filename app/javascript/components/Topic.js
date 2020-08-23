@@ -31,7 +31,7 @@ const Topic = ({ onClick, topic, reflections, reactions, stickyNotes, stickyNote
 
   return (
     <div className='topic-container relative p-4 my-2' onClick={() => onClick && onClick(topic)}>
-      <div className='topic-label font-bold inline-block mb-3'>{topic.label}</div>
+      <div className='topic-label font-bold inline-block mb-3' onClick={(event) => { event.stopPropagation(); onClick && onClick(topic, true) }}>{topic.label}</div>
       {showVotes && <VoteCorner target={topic} targetType={'topic'} votes={votes} canVote={step === 'voting'} />}
       <div id={topic.id} data-id={topic.id} className='topic relative flex flex-row justify-center'>
         <StickyNote
