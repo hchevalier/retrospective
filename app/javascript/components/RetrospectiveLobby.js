@@ -9,6 +9,7 @@ import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
 import RetrospectiveArea from './RetrospectiveArea'
 import ParticipantsList from './ParticipantsList'
 import ReflectionsList from './ReflectionsList'
+import ReflectionsListForActionStep from './ReflectionsListForActionStep'
 import FacilitatorToolkitLeft from './FacilitatorToolkitLeft'
 import FacilitatorToolkitRight from './FacilitatorToolkitRight'
 import LoginForm from './LoginForm'
@@ -96,7 +97,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) =>
   }, [loggedIn])
 
   const toggleParticipantsList = () => setParticipantsListVisible(!participantsListVisible)
-  const shouldDisplayReflectionsList = (currentStep === 'thinking' && zonesTypology === 'open') || currentStep === 'grouping'
+  const shouldDisplayReflectionsList = (currentStep === 'thinking' && zonesTypology === 'open') || currentStep === 'grouping' || currentStep === 'actions'
 
   const handleReflectionsListToggle = () => {
     if (!reflectionsListVisible || !revealer) {
@@ -130,7 +131,10 @@ const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) =>
         </div>
       </nav>
       <div className='flex flex-row flex-1 w-full relative'>
-        {shouldDisplayReflectionsList && (
+        {shouldDisplayReflectionsList && (currentStep === 'actions' ?
+          <ReflectionsListForActionStep
+            open={reflectionsListVisible || revealer}
+            onToggle={handleReflectionsListToggle} /> :
           <ReflectionsList
             open={reflectionsListVisible || revealer}
             retrospectiveKind={kind}
