@@ -176,7 +176,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     retrospective = create(:retrospective, step: 'voting')
     reflection_a = create(:reflection, :glad, owner: retrospective.facilitator, content: 'First reflection')
     reflection_b = create(:reflection, :glad, owner: retrospective.facilitator, content: 'Second reflection')
-    topic = create(:topic, retrospective: retrospective, reflections: [reflection_a, reflection_b])
+    topic = create(:topic, retrospective: retrospective, reflections: [reflection_a, reflection_b], label: nil)
 
     logged_in_as(retrospective.facilitator)
     visit retrospective_path(retrospective)

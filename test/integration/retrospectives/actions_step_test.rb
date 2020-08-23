@@ -87,7 +87,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     reflection_a = create(:reflection, :glad, owner: retrospective.facilitator, content: 'Most upvoted reflection')
     reflection_b = create(:reflection, :glad, owner: retrospective.facilitator, content: 'First reflection')
     reflection_c = create(:reflection, :glad, owner: retrospective.facilitator, content: 'Second reflection')
-    topic = create(:topic, retrospective: retrospective, reflections: [reflection_b, reflection_c])
+    topic = create(:topic, retrospective: retrospective, reflections: [reflection_b, reflection_c], label: nil)
     create_list(:vote, 2, target: reflection_a, author: retrospective.facilitator)
     create(:vote, target: topic, author: retrospective.facilitator)
     retrospective.update!(discussed_reflection: reflection_a)
