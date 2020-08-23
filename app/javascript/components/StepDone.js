@@ -35,7 +35,7 @@ const StepDone = () => {
 
   return (
     <div id='actions-zone'>
-      <div id='reflections-panel'>
+      <div id='discussed-reflections-panel'>
         <div id='discussed-reflection'>
           <StickyNote reflection={currentReflection} showVotes reactions={relevantReactions} />
         </div>
