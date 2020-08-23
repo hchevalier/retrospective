@@ -25,7 +25,12 @@ class TopicsController < ApplicationController
       reflection = current_user.retrospective.reflections.find(params[:reflection_id])
       previous_topic = reflection.topic
 
-      topic.reflections << reflection
+      if params[:remove]
+        reflection.update(topic: nil)
+      else
+        topic.reflections << reflection
+      end
+
       OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'changeTopic', parameters: { reflection: reflection.reload.readable })
 
       clean_orphans(previous_topic) if previous_topic
@@ -47,8 +52,10 @@ class TopicsController < ApplicationController
     remaining_reflections = topic.reflections
     return unless remaining_reflections.size <= 1
 
-    topic.destroy
     lone_reflection = remaining_reflections.first
+    topic.destroy
+    return unless lone_reflection
+
     lone_reflection.update(topic_id: nil)
 
     OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'changeTopic', parameters: { reflection: lone_reflection.reload.readable })

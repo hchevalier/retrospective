@@ -334,6 +334,45 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'can ungroup a topic' do
+    retrospective = create(:retrospective, step: 'grouping')
+    reflection_a = create(:reflection, :glad, owner: retrospective.facilitator, content: 'First reflection')
+    reflection_b = create(:reflection, :glad, owner: retrospective.facilitator, content: 'Second reflection')
+    topic = create(:topic, retrospective: retrospective, reflections: [reflection_a, reflection_b], label: 'Topic')
+
+    logged_in_as(retrospective.facilitator)
+    visit retrospective_path(retrospective)
+    assert_grouping_step_for_facilitator
+
+    assert_text 'Topic'
+    refute_text 'First reflection'
+
+    other_participant = create(:other_participant, retrospective: retrospective)
+    other_participant_window = open_new_window
+    within_window(other_participant_window) do
+      logged_in_as(other_participant)
+      visit retrospective_path(retrospective)
+      assert_logged_in(other_participant, with_flags: %i(self))
+
+      assert_text 'Topic'
+      refute_text 'First reflection'
+    end
+
+    topic_container(topic).click
+
+    within '#topic-content-backdrop' do
+      sticky_note(reflection_b).drag_to(find('#ungroup-zone'))
+    end
+
+    refute_text 'Topic'
+    assert_text 'First reflection'
+
+    within_window(other_participant_window) do
+      refute_text 'Topic'
+      assert_text 'First reflection'
+    end
+  end
+
   test 'cannot group reflections from different columns' do
     retrospective = create(:retrospective, step: 'grouping')
     reflection_a = create(:reflection, :glad, owner: retrospective.facilitator, content: 'First reflection')
