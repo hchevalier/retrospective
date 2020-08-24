@@ -142,6 +142,25 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     refute_button 'Login'
   end
 
+  test 'cannot join a retrospective when it is done if logged out' do
+    retrospective = create(:retrospective, step: :done)
+
+    visit retrospective_path(retrospective)
+
+    assert_text 'Log in'
+    refute_text 'Lobby'
+  end
+
+  test 'cannot join a retrospective when it is done if logged in but not in participants list' do
+    retrospective = create(:retrospective, step: :done)
+    other_retrospective = create(:retrospective)
+    logged_in_as(other_retrospective.facilitator)
+
+    visit retrospective_path(retrospective)
+
+    assert_text 'Dashboard'
+  end
+
   test 'only facilitator can see the button to start the retrospective' do
     retrospective = create(:retrospective)
     other_participant = create(:other_participant, retrospective: retrospective)
