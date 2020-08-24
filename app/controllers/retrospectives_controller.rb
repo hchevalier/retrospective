@@ -34,6 +34,8 @@ class RetrospectivesController < ApplicationController
       if participant && current_user&.id != participant.id
         cookies.signed[:user_id] = participant.id
       elsif !participant
+        return redirect_to '/' if @retrospective.step == 'done'
+
         participant = Participant.create!(
           surname: current_account.username,
           account_id: current_account.id,
@@ -43,6 +45,8 @@ class RetrospectivesController < ApplicationController
         @retrospective.group.add_member(current_account)
       end
       reload_current_user
+    else
+      return redirect_to '/' if @retrospective.step == 'done'
     end
 
     @initial_state = @retrospective.initial_state(current_user)
