@@ -7,13 +7,17 @@ class DashboardTest < ActionDispatch::IntegrationTest
     participant = @retrospective.participants.first
     @account = participant.account
     reflection = create(:reflection, :glad, retrospective: @retrospective, owner: participant)
-    @task = create(:task, reflection: reflection, description: 'My simple task')
+    create(:task, reflection: reflection, description: 'My simple task')
+    create(:task, reflection: reflection, description: 'My finished simple task', status: :done)
+    create(:task, reflection: reflection, description: 'My skipped hard task', status: :stuck)
     as_user(@account)
   end
 
   test 'displays pending tasks assigned to the user' do
     visit '/'
     assert_text 'My simple task'
+    refute_text 'My finished simple task'
+    refute_text 'My skipped hard task'
   end
 
   test 'does not display pending tasks assigned to the user if he has no active access to the group' do
