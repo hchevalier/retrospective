@@ -117,6 +117,8 @@ const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) =>
     setReflectionsListVisible(false)
   }, [channel, revealer])
 
+  const pushedLeft = reflectionsListVisible || revealer || (profile?.facilitator && currentStep === 'actions')
+
   return (
     <div id='main-container' className='flex flex-col min-h-screen'>
       <nav className="bg-gray-900 shadow text-white h-14 sticky w-full z-10 top-0" role="navigation">
@@ -137,7 +139,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) =>
       <div className='flex flex-row flex-1 w-full relative'>
         {shouldDisplayReflectionsList && (currentStep === 'actions' ?
           <ReflectionsListForActionStep
-            open={reflectionsListVisible || revealer}
+            open={reflectionsListVisible || revealer || profile?.facilitator}
             onToggle={handleReflectionsListToggle} /> :
           <ReflectionsList
             open={reflectionsListVisible || revealer}
@@ -155,7 +157,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) =>
               </div>
             </div>
           </div>
-          <div id='right-panel' className={classNames('flex flex-col flex-1 relative', { 'pushed-top': participantsListVisible, 'pushed-left': shouldDisplayReflectionsList && (reflectionsListVisible || revealer)})}>
+          <div id='right-panel' className={classNames('flex flex-col flex-1 relative', { 'pushed-top': participantsListVisible, 'pushed-left': shouldDisplayReflectionsList && pushedLeft})}>
             {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} invitation={invitation} />}
             {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
           </div>

@@ -19,7 +19,6 @@ const ReflectionsList = ({ open, retrospectiveKind, onToggle, onDone }) => {
 
   const unrevealed = reflections.filter((reflection) => !reflection.revealed).length
 
-
   const handleReveal = (reflection) => {
     channel.reveal(reflection.id)
   }
