@@ -36,7 +36,7 @@ const ReflectionsListForActionStep = ({ open, onToggle }) => {
     <>
       <div id='reflections-panel' className='bg-gray-200 relative p-4 shadow-right flex flex-row'>
         <div className='justify-start items-start px-2 w-10'>
-          <img className={classNames('cursor-pointer duration-200 ease-in-out transition-transform transform rotate-90', { '-rotate-90': open })} src={ArrowIcon} width="24" onClick={onToggle} />
+          {!facilitator && <img className={classNames('cursor-pointer duration-200 ease-in-out transition-transform transform rotate-90', { '-rotate-90': open })} src={ArrowIcon} width="24" onClick={onToggle} />}
         </div>
         <div id='reflections-container' className={classNames('transition-width duration-500 ease-in-out w-0 overflow-x-hidden', { 'w-64': open })}>
           <div className='font-bold'>Voted topics</div>
