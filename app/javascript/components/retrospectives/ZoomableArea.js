@@ -32,6 +32,9 @@ const ZoomableArea = ({ children }) => {
   }, [canZoomIn, zoomLevel, setZoomLevel, MAX_ZOOM])
 
   useEffect(() => {
+    // https://github.com/facebook/react/issues/14856
+    // Chrome 73 made wheel events passive by default, preventing us to call preventDefault on these events
+    // As React does not allow to set an active event listener yet, we have to do that manually
     const handleMouseWheel = (event) => {
       event.stopPropagation()
 
