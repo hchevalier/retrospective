@@ -6,6 +6,7 @@ import './ZoomableArea.scss'
 const ZoomableArea = ({ children }) => {
   const MIN_ZOOM = -30
   const MAX_ZOOM = 20
+  const MOUSE_WHEEL_STEP = 2
 
   const [zoomLevel, setZoomLevel] = useState(0)
 
@@ -36,10 +37,10 @@ const ZoomableArea = ({ children }) => {
 
       if (event.wheelDelta > 100) {
         event.preventDefault()
-        handleZoomIn(null, 1)
+        handleZoomIn(null, MOUSE_WHEEL_STEP)
       } else if (event.wheelDelta < -100) {
         event.preventDefault()
-        handleZoomOut(null, 1)
+        handleZoomOut(null, MOUSE_WHEEL_STEP)
       }
     }
 
