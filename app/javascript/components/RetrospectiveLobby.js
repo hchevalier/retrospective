@@ -147,8 +147,8 @@ const RetrospectiveLobby = ({ id: retrospectiveId, invitation, group, kind }) =>
             onToggle={handleReflectionsListToggle}
             onDone={handleReflectionsListClose} />
         )}
-        <div className='flex flex-col flex-1'>
-          <div className={classNames('bg-gray-200 shadow sticky w-full top-14 z-10 text-white duration-200 ease-linear transform transition-height h-24 origin-top overflow-hidden', { '!h-0': !participantsListVisible })}>
+        <div className='flex flex-col flex-1 overflow-x-hidden'>
+          <div id='toolbar' className={classNames('bg-gray-200 shadow top-14 z-10 text-white duration-200 ease-linear transform transition-height h-24 origin-top overflow-hidden', { '!h-0': !participantsListVisible, 'pushed-left': shouldDisplayReflectionsList && pushedLeft })}>
             <div className="mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
               <div className='flex flex-grow justify-end'>
                 {profile?.facilitator && <FacilitatorToolkitLeft />}

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import ColorPicker from './ColorPicker'
 import GladSadMad from './retrospectives/GladSadMad'
@@ -21,6 +21,20 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   const [highlightZones, setHighlightZones] = useState(false)
   const [expandedTopic, setExpandedTopic] = useState(null)
   const [forceTopicEditing, setForceTopicEditing] = useState(false)
+
+  const handleLocationChange = () => {
+    const leavePage = confirm('Are you sure you want to quit the retrospective?')
+    if (leavePage) {
+      history.back()
+    } else {
+      history.pushState(null, document.title, location.href)
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('popstate', handleLocationChange)
+    return () => window.removeEventListener('popstate', handleLocationChange)
+  }, [])
 
   const handleZoneClicked = (event) => {
     event.stopPropagation()
@@ -65,7 +79,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
 
   return (
     <>
-      <div id={kind} className='flex flex-col pt-6 flex-1 px-4'>
+      <div id={kind} className='flex flex-col pt-6 flex-1 px-4 overflow-scroll'>
         {currentStep === 'gathering' && <ColorPicker retrospectiveId={retrospectiveId} />}
         {currentStep === 'reviewing' && <StepReview />}
         {currentStep === 'thinking' && renderRetrospective()}

@@ -6,11 +6,11 @@
   transform-origin: left;
   max-height: calc(100vh - 3.5rem);
 
-  &.pushed-left {
-    margin-left: 328px;
-  }
-
   &.pushed-top {
     max-height: calc(100vh - 9.5rem);
   }
+}
+
+#right-panel.pushed-left, #toolbar.pushed-left {
+  margin-left: 328px;
 }
