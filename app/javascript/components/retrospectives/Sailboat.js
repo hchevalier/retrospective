@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import PropTypes from 'prop-types'
+import ZoomableArea from './ZoomableArea'
 import Zone from './Zone'
 import './Sailboat.scss'
 import WindBackground from 'images/wind.png'
@@ -20,35 +21,37 @@ const Sailboat = ({ highlightZones, onZoneClicked }) => {
   const island = zones.find((zone) => zone.name === 'Island')
 
   return (
-    <div style={{ position: 'relative', height: '500px' }}>
-      <img id='img-sailboat' src={SailboatImage} height='320' />
-      <img id='img-cloud' src={CloudImage} width='200' />
+    <ZoomableArea>
+      <>
+        <img id='img-sailboat' src={SailboatImage} height='320' />
+        <img id='img-cloud' src={CloudImage} width='200' />
 
-      <Zone
-        reference={wind}
-        highlight={highlightZones}
-        background={WindBackground}
-        reflections={reflections.filter((reflection) => reflection.zone.id === wind.id)}
-        onClick={onZoneClicked} />
-      <Zone
-        reference={anchor}
-        highlight={highlightZones}
-        background={AnchorBackground}
-        reflections={reflections.filter((reflection) => reflection.zone.id === anchor.id)}
-        onClick={onZoneClicked} />
-      <Zone
-        reference={rocks}
-        highlight={highlightZones}
-        background={RocksBackground}
-        reflections={reflections.filter((reflection) => reflection.zone.id === rocks.id)}
-        onClick={onZoneClicked} />
-      <Zone
-        reference={island}
-        highlight={highlightZones}
-        background={IslandBackground}
-        reflections={reflections.filter((reflection) => reflection.zone.id === island.id)}
-        onClick={onZoneClicked} />
-    </div>
+        <Zone
+          reference={wind}
+          highlight={highlightZones}
+          background={WindBackground}
+          reflections={reflections.filter((reflection) => reflection.zone.id === wind.id)}
+          onClick={onZoneClicked} />
+        <Zone
+          reference={anchor}
+          highlight={highlightZones}
+          background={AnchorBackground}
+          reflections={reflections.filter((reflection) => reflection.zone.id === anchor.id)}
+          onClick={onZoneClicked} />
+        <Zone
+          reference={rocks}
+          highlight={highlightZones}
+          background={RocksBackground}
+          reflections={reflections.filter((reflection) => reflection.zone.id === rocks.id)}
+          onClick={onZoneClicked} />
+        <Zone
+          reference={island}
+          highlight={highlightZones}
+          background={IslandBackground}
+          reflections={reflections.filter((reflection) => reflection.zone.id === island.id)}
+          onClick={onZoneClicked} />
+      </>
+    </ZoomableArea>
   )
 }
 
