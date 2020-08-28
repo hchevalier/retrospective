@@ -170,7 +170,8 @@ CREATE TABLE public.participants (
     color character varying,
     logged_in boolean DEFAULT true NOT NULL,
     encryption_key character varying NOT NULL,
-    account_id uuid NOT NULL
+    account_id uuid NOT NULL,
+    step_done boolean DEFAULT false NOT NULL
 );
 
 
@@ -553,6 +554,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200705171159'),
 ('20200711153629'),
 ('20200725200805'),
-('20200817225716');
+('20200817225716'),
+('20200828211927');
 
 

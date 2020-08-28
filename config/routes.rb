@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     end
     resources :group_accesses, only: %i(index destroy)
     resources :retrospective_kinds, only: :index
+    resources :notices, only: :create
   end
 
   resource :sessions, only: %i(new create)
