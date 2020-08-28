@@ -45,7 +45,7 @@ class Participant < ApplicationRecord
   end
 
   def full_profile
-    profile.merge(decryptionKey: encryption_key)
+    profile.merge(decryptionKey: encryption_key, stepDone: step_done)
   end
 
   def facilitator?

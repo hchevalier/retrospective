@@ -108,4 +108,86 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     assert_retro_started
     refute_reflection_in_zone('Glad')
   end
+
+  test 'can notice thinking statuses as facilitator' do
+    retrospective = create(:retrospective, step: 'thinking')
+    other_participant = create(:other_participant, retrospective: retrospective)
+
+    logged_in_as(retrospective.facilitator)
+    visit retrospective_path(retrospective)
+    assert_logged_in(retrospective.facilitator, with_flags: %i(self facilitator))
+
+    other_participant_window = open_new_window
+    within_window(other_participant_window) do
+      logged_in_as(other_participant)
+      visit retrospective_path(retrospective)
+      assert_logged_in(other_participant, with_flags: %i(self))
+
+      refute_status_visibility(retrospective.facilitator)
+      refute_status_visibility(other_participant)
+    end
+
+    logged_in_as(retrospective.facilitator)
+    assert_thinking(retrospective.facilitator)
+    assert_thinking(other_participant)
+
+    within '#reflections-panel' do
+      click_on "I'm done"
+      assert_text 'I forgot something'
+    end
+
+    assert_done(retrospective.facilitator)
+    assert_thinking(other_participant)
+
+    within_window(other_participant_window) do
+      logged_in_as(other_participant)
+      refute_status_visibility(retrospective.facilitator)
+      refute_status_visibility(other_participant)
+      within '#reflections-panel' do
+        click_on "I'm done"
+        assert_text 'I forgot something'
+      end
+    end
+
+    assert_done(retrospective.facilitator)
+    assert_done(other_participant)
+
+    within_window(other_participant_window) do
+      logged_in_as(other_participant)
+      refute_status_visibility(retrospective.facilitator)
+      refute_status_visibility(other_participant)
+      within '#reflections-panel' do
+        click_on 'I forgot something'
+        assert_text "I'm done"
+      end
+    end
+
+    assert_done(retrospective.facilitator)
+    assert_thinking(other_participant)
+
+    logged_out
+  end
+
+  private
+
+  def refute_status_visibility(participant)
+    within ".avatar[data-id='#{participant.id}']" do
+      refute_css '.light-bulb'
+      refute_css '.check'
+    end
+  end
+
+  def assert_thinking(participant)
+    within ".avatar[data-id='#{participant.id}']" do
+      assert_css '.light-bulb'
+      refute_css '.check'
+    end
+  end
+
+  def assert_done(participant)
+    within ".avatar[data-id='#{participant.id}']" do
+      refute_css '.light-bulb'
+      assert_css '.check'
+    end
+  end
 end

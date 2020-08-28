@@ -47,13 +47,15 @@ const ParticipantsList = ({ onAddParticipantsClick }) => {
 
     const children = []
 
-    if (step === 'thinking') {
-      // TODO: display a check when participant clicked on "I'm done" button
-      children.push(<img key='lightbulb' className='flex-row absolute right-0' src={LightBulbIcon} width='16' />)
+    if (step === 'thinking' && profile?.facilitator) {
+      if (facilitatorInfo[uuid]?.stepDone)
+        children.push(<img key='check' className='flex-row absolute right-0 check' src={CheckIcon} width='16' />)
+      else
+        children.push(<img key='lightbulb' className='flex-row absolute right-0 light-bulb' src={LightBulbIcon} width='16' />)
     }
 
     if (step === 'grouping' && !revealer && revealers.includes(uuid))
-      children.push(<img key='check' className='flex-row absolute right-0' src={CheckIcon} width='16' />)
+      children.push(<img key='check' className='flex-row absolute right-0 check' src={CheckIcon} width='16' />)
 
     if (step === 'voting' && facilitatorInfo[uuid])
       children.push(<span key='remaining-votes' className='remaining-votes absolute flex right-0 p-1 text-xs rounded-full bg-black bg-opacity-25'>{facilitatorInfo[uuid].remainingVotes}</span>)

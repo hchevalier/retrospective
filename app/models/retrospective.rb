@@ -127,6 +127,8 @@ class Retrospective < ApplicationRecord
           remainingVotes: Reaction::MAX_VOTES - participant.reactions.select(&:vote?).count
         }
 
+        memo[participant.id].merge!(stepDone: participant.step_done) if step == 'thinking'
+
         memo
       end
 

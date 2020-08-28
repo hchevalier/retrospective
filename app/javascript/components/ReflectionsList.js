@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import classNames from 'classnames'
+import { post } from 'lib/httpClient'
 import { groupBy } from 'lib/helpers/array'
 import StickyNote from './StickyNote'
 import SingleChoice from './SingleChoice'
@@ -10,12 +11,14 @@ import EyeIcon from 'images/eye-icon.svg'
 import './ReflectionsList.scss'
 
 const ReflectionsList = ({ open, retrospectiveKind, onToggle, onDone }) => {
-  const revealer = useSelector(state => state.profile.revealer)
+  const { revealer, stepDone } = useSelector(state => state.profile)
   const channel = useSelector(state => state.orchestrator.subscription)
   const currentStep = useSelector(state => state.orchestrator.step)
   const reflections = useSelector(state => state.reflections.ownReflections, shallowEqual)
   const zones = useSelector(state => state.retrospective.zones, shallowEqual)
   const zonesTypology = useSelector(state => state.retrospective.zonesTypology)
+
+  const [thinkingDone, setThinkingDone] = React.useState(stepDone)
 
   const unrevealed = reflections.filter((reflection) => !reflection.revealed).length
 
@@ -31,6 +34,14 @@ const ReflectionsList = ({ open, retrospectiveKind, onToggle, onDone }) => {
 
   const reflectionsByZone = groupBy(reflections, 'zone.id')
 
+  const handleDone = () => {
+    if (currentStep === 'thinking') {
+      return post({ url: `/api/notices`, payload: { message: 'toggle_step_done' } }).then(() => setThinkingDone(!thinkingDone))
+    }
+
+    onDone()
+  }
+
   return (
     <>
       <div id='reflections-panel' className={classNames('bg-gray-200 relative p-4 shadow-right flex flex-row', { infinite: currentStep !== 'thinking' })}>
@@ -40,7 +51,11 @@ const ReflectionsList = ({ open, retrospectiveKind, onToggle, onDone }) => {
         <div id='reflections-container' className={classNames('transition-width duration-500 ease-in-out w-0 overflow-x-hidden', { 'w-64': open })}>
           <div className='flex min-w-16 flex-rows justify-between pb-2'>
             <div className='font-bold'>My reflections</div>
-            {revealer && <button className='bg-blue-400 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-600 rounded text-white cursor-pointer p-1' onClick={onDone}>I'm done</button>}
+            {(currentStep === 'thinking' || revealer) &&
+              <button className='bg-blue-400 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-600 rounded text-white cursor-pointer p-1 text-xs' onClick={handleDone}>
+                {thinkingDone && !revealer ? 'I forgot something' : "I'm done"}
+              </button>
+            }
           </div>
           {zonesTypology === 'open' && zones.map((zone) => {
             const reflectionsInZone = reflectionsByZone[zone.id] || []
