@@ -53,7 +53,7 @@ const ReflectionsList = ({ open, retrospectiveKind, onToggle, onDone }) => {
             <div className='font-bold'>My reflections</div>
             {(currentStep === 'thinking' || revealer) &&
               <button className='bg-blue-400 focus:outline-none focus:shadow-outline font-medium hover:bg-blue-600 rounded text-white cursor-pointer p-1 text-xs' onClick={handleDone}>
-                {thinkingDone ? 'I forgot something' : "I'm done"}
+                {thinkingDone && !revealer ? 'I forgot something' : "I'm done"}
               </button>
             }
           </div>
