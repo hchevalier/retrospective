@@ -46,6 +46,23 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     assert_reflection_in_zone('Glad')
   end
 
+  test 'can use a shortcut to open a blank reflection' do
+    retrospective = create(:retrospective, step: 'thinking')
+
+    logged_in_as(retrospective.facilitator)
+    visit retrospective_path(retrospective)
+
+    assert_retro_started
+
+    page.document.evaluate_script("document.dispatchEvent(new KeyboardEvent('keydown', { key: '+' }))")
+    assert_equal '', find('textarea[name="content"]').value
+    find('textarea[name="content"]').send_keys("Used + to write my reflection\t")
+    assert_selector '.background.highlight'
+    find('.zone', text: 'Glad').click
+
+    assert_text 'Used + to write my reflection'
+  end
+
   test 'a participant cannot see reflections written by other participants' do
     retrospective = create(:retrospective, step: 'thinking')
     other_participant = create(:other_participant, retrospective: retrospective)
