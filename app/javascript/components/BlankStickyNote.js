@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 import { post } from 'lib/httpClient'
@@ -72,6 +72,25 @@ const BlankStickyNote = ({ ownerProfile, onReflectionReady, onReflectionPending,
   const handleStartEditing = () => {
     setEditing(true)
   }
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.isComposing || event.keyCode === 229) {
+        return
+      }
+
+      if (event.key === '+') {
+        event.preventDefault()
+        event.stopPropagation()
+        handleFocus()
+      }
+    }
+
+    if (!editing) {
+      document.addEventListener('keydown', handleKeyDown)
+      return () => { document.removeEventListener('keydown', handleKeyDown) }
+    }
+  }, [handleFocus, editing])
 
   const colorStyle = {
     borderColor: ownerProfile.color,
