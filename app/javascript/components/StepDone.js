@@ -39,12 +39,12 @@ const StepDone = () => {
     <div id='actions-zone'>
       <div id='discussed-reflections-panel'>
         <div id='discussed-reflection'>
-          {zonesTypology === 'open' ?
+          {['open', 'limited'].includes(zonesTypology) ?
             <StickyNote reflection={currentReflection} showVotes reactions={relevantReactions} /> :
             <TrafficLightResult reflection={currentReflection} />}
         </div>
         <div id='reflections-list'>
-          {zonesTypology === 'open' && reflectionsWithVotes.map(([reflection, votes], index) => {
+          {['open', 'limited'].includes(zonesTypology) && reflectionsWithVotes.map(([reflection, votes], index) => {
             if (reflection.topic?.id && !topics[reflection.topic.id]) {
               topics[reflection.topic.id] = reflection.topic
               return <InlineTopic

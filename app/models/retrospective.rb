@@ -55,10 +55,11 @@ class Retrospective < ApplicationRecord
     kinds[:sailboat] => 'Builders::Sailboat',
     kinds[:starfish] => 'Builders::Starfish',
     kinds[:traffic_lights] => 'Builders::TrafficLights',
+    kinds[:oscars_gerards] => 'Builders::OscarsGerards',
   }.freeze
 
   def self.available_kinds
-    [kinds[:glad_sad_mad], kinds[:sailboat], kinds[:starfish], kinds[:traffic_lights]]
+    [kinds[:glad_sad_mad], kinds[:sailboat], kinds[:starfish], kinds[:traffic_lights], kinds[:oscars_gerards]]
   end
 
   def zones_typology

@@ -27,7 +27,7 @@ const StepActions = () => {
     <div id='actions-zone'>
       <div id='discussed-reflections-panel'>
         <div id='discussed-reflection' className='flex flex-col'>
-          {zonesTypology === 'open' && displayedReflections.map((reflection) => {
+          {['open', 'limited'].includes(zonesTypology) && displayedReflections.map((reflection) => {
             return <StickyNote key={reflection.id} reflection={reflection} showReactions showVotes reactions={reactionsForReflection(reflection)} />
           })}
           {zonesTypology === 'single_choice' && displayedReflections.map((reflection) => {

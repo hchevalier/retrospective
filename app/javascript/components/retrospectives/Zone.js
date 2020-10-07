@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import './Zone.scss'
 
-const Zone = ({ background, height, highlight, icon, onClick, reference, reflections, width }) => {
+const Zone = ({ background, hideCount, height, highlight, icon, onClick, reference, reflections, width, children }) => {
   const { id, name } = reference
   const reflectionsCount = reflections.length
-  const displayedReflectionsCount = reflectionsCount > 0 ? `(${reflectionsCount})` : ''
+  const displayedReflectionsCount = reflectionsCount > 0 && !hideCount ? `(${reflectionsCount})` : ''
 
   const inlineStyle = icon ? {} : {
     backgroundImage: `url(${background})`, backgroundSize: 'cover', backgroundPosition: 'center', width, height
@@ -17,6 +17,7 @@ const Zone = ({ background, height, highlight, icon, onClick, reference, reflect
       <div className={classNames('zone-label', { 'absolute-zone-label': !icon})} data-id={id}>
         {icon ? icon : null} {name} {displayedReflectionsCount}
       </div>
+      {children}
     </div>
   )
 }
@@ -24,6 +25,7 @@ const Zone = ({ background, height, highlight, icon, onClick, reference, reflect
 Zone.propTypes = {
   background: PropTypes.node,
   height: PropTypes.number,
+  hideCount: PropTypes.bool,
   highlight: PropTypes.bool,
   icon: PropTypes.node,
   onClick: PropTypes.func.isRequired,

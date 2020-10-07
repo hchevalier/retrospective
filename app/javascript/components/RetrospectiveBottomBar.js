@@ -10,7 +10,7 @@ const RetrospectiveBottomBar = (delegatedProps) => {
   const zonesTypology = useSelector(state => state.retrospective.zonesTypology)
   const facilitator = profile.facilitator
 
-  const canCreateReflection = () => profile && currentStep === 'thinking' && zonesTypology === 'open'
+  const canCreateReflection = () => profile && currentStep === 'thinking' && (zonesTypology === 'open' || zonesTypology === 'limited')
 
   if (currentStep === 'done') {
     return null

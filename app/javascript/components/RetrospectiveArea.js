@@ -4,6 +4,7 @@ import ColorPicker from './ColorPicker'
 import GladSadMad from './retrospectives/GladSadMad'
 import Starfish from './retrospectives/Starfish'
 import TrafficLights from './retrospectives/TrafficLights'
+import OscarsGerards from './retrospectives/OscarsGerards'
 import RetrospectiveBottomBar from './RetrospectiveBottomBar'
 import Sailboat from './retrospectives/Sailboat'
 import StepReview from './StepReview'
@@ -25,7 +26,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   const handleZoneClicked = (event) => {
     event.stopPropagation()
 
-    if (zonesTypology === 'open') {
+    if (zonesTypology === 'open' || zonesTypology === 'limited') {
       setSelectedZone(event.target.dataset.id)
     }
   }
@@ -48,6 +49,8 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
       return <Starfish highlightZones={highlightZones} onZoneClicked={handleZoneClicked} selectedZone={selectedZone} />
     } else if (kind === 'traffic_lights') {
       return <TrafficLights highlightZones={highlightZones} onZoneClicked={handleZoneClicked} selectedZone={selectedZone} />
+    } else if (kind === 'oscars_gerards') {
+      return <OscarsGerards highlightZones={highlightZones} onZoneClicked={handleZoneClicked} selectedZone={selectedZone} />
     }
 
     return <div>Unknown retrospective {kind}</div>

@@ -189,7 +189,7 @@ const StepGrouping = ({ onExpandTopic }) => {
           return (
             <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0 relative' key={zone.id}>
               <div className='zone-header mb-4'>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</div>
-              {zonesTypology === 'open' && (
+              {['open', 'limited'].includes(zonesTypology) && (
                 <>
                   {!!unreadReflectionAbove && <div className='unread-notice above' onClick={() => scrollToStickyNote(unreadReflectionAbove)}>⬆︎ Unread reflection ⬆︎</div>}
                   <div className='scrolling-zone flex flex-col'>
@@ -202,25 +202,17 @@ const StepGrouping = ({ onExpandTopic }) => {
                         const stickyNote = stickyNotesInZone.find((stickyNote) => stickyNote.dataset.id === reflection.id)
                         const isUnread = stickyNote && stickyNote.dataset.read !== 'true'
 
-                        if (zonesTypology === 'open') {
-                          return <StickyNote
-                            key={reflection.id}
-                            ref={setStickyNoteRef}
-                            reflection={reflection}
-                            showReactions
-                            reactions={concernedReactions}
-                            glowing={isUnread}
-                            draggable
-                            onDragStart={handleDragStart}
-                            onDragOver={handleDragOver}
-                            onDrop={handleDrop} />
-                        } else if (zonesTypology === 'single_choice') {
-                          return <StickyNote
-                            key={reflection.id}
-                            ref={setStickyNoteRef}
-                            reflection={reflection}
-                            glowing={isUnread} />
-                        }
+                        return <StickyNote
+                          key={reflection.id}
+                          ref={setStickyNoteRef}
+                          reflection={reflection}
+                          showReactions
+                          reactions={concernedReactions}
+                          glowing={isUnread}
+                          draggable
+                          onDragStart={handleDragStart}
+                          onDragOver={handleDragOver}
+                          onDrop={handleDrop} />
                       }
                     })}
                   </div>
