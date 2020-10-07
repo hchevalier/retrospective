@@ -40,7 +40,7 @@ const ReflectionsListForActionStep = ({ open, onToggle }) => {
         </div>
         <div id='reflections-container' className={classNames('transition-width duration-500 ease-in-out w-0 overflow-x-hidden', { 'w-64': open })}>
           <div className='font-bold'>Voted topics</div>
-          {zonesTypology === 'open' && reflectionsWithVotes.map(([reflection, votes]) => {
+          {['open', 'limited'].includes(zonesTypology) && reflectionsWithVotes.map(([reflection, votes]) => {
             if (reflection.topic?.id && !topics[reflection.topic.id]) {
               topics[reflection.topic.id] = reflection.topic
               return <InlineTopic

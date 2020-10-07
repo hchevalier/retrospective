@@ -57,7 +57,7 @@ const ReflectionsList = ({ open, retrospectiveKind, onToggle, onDone }) => {
               </button>
             }
           </div>
-          {zonesTypology === 'open' && zones.map((zone) => {
+          {['open', 'limited'].includes(zonesTypology) && zones.map((zone) => {
             const reflectionsInZone = reflectionsByZone[zone.id] || []
             return (
               <div key={zone.id} className='p-2 border-t min-w-16'>

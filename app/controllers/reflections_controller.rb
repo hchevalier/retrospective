@@ -6,6 +6,8 @@ class ReflectionsController < ApplicationController
     zone = Zone.find_by(id: params[:zone_id], retrospective: retrospective)
     return render(json: { status: :not_found }) unless zone
 
+    return render(json: { status: :forbidden }) if current_user.reflections.where(zone: zone).any? && retrospective.zones_typology == :limited
+
     reflection = Reflection.transaction do
       current_user.reflections.where(zone: zone).delete_all if retrospective.zones_typology == :single_choice
       current_user.reflections.create(reflections_params)
