@@ -7,7 +7,7 @@ import Button from './Button'
 const AuthenticationForm = ({ defaultEmail, onSignUpOrSignIn, returnUrl }) => {
   const [mode, setMode] = React.useState('signIn')
   const [username, setUsername] = React.useState('')
-  const [email, setEmail] = React.useState(defaultEmail)
+  const [email, setEmail] = React.useState(defaultEmail || '')
   const [password, setPassword] = React.useState('')
   const [passwordResetToastDisplayed, setPasswordResetToastDisplayed] = React.useState(false)
 
@@ -20,7 +20,7 @@ const AuthenticationForm = ({ defaultEmail, onSignUpOrSignIn, returnUrl }) => {
       payload: { username, email, password }
     })
       .then(() => onSignUpOrSignIn(returnUrl))
-      .catch(error => console.warn(error))
+      .catch(error => alert(error))
   }
 
   const onPasswordReset = () => {
@@ -41,7 +41,7 @@ const AuthenticationForm = ({ defaultEmail, onSignUpOrSignIn, returnUrl }) => {
         payload: { email }
       })
         .then(onPasswordReset)
-        .catch(error => console.warn(error))
+        .catch(error => alert(error))
     }
   }
 
@@ -84,7 +84,9 @@ AuthenticationForm.propTypes = {
 
 AuthenticationForm.defaultProps = {
   defaultEmail: '',
-  onSignUpOrSignIn: (returnUrl) => { window.location.pathname = returnUrl || '/' }
+  onSignUpOrSignIn: (returnUrl) => {
+    window.location.replace(returnUrl ? (window.location.origin + returnUrl) : '/')
+  }
 }
 
 export default AuthenticationForm

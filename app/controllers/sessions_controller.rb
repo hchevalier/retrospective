@@ -7,9 +7,9 @@ class SessionsController < ApplicationController
 
   def create
     account = Account.find_by(email: params[:email])
-    return render(json: { status: :not_found }) unless account
+    return render(json: { status: :not_found }, status: :not_found) unless account
 
-    return render(json: { status: :unauthorized }) unless account unless account.authenticate(params[:password])
+    return render(json: { status: :unauthorized }, status: :unauthorized) unless account unless account.authenticate(params[:password])
 
     session[:account_id] = account.id
     consume_invitation(account) if session[:invitation]
@@ -19,7 +19,7 @@ class SessionsController < ApplicationController
 
   def destroy
     session[:account_id] = nil
-    cookies.signed[:user_id] = nil
+    cookies.signed[:participant_id] = nil
     redirect_to :new_sessions
   end
 

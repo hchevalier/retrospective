@@ -16,17 +16,17 @@ class TasksController < ApplicationController
   end
 
   def create
-    retrospective = current_user.retrospective
+    retrospective = current_participant.retrospective
     return render(json: { status: :not_found }) unless retrospective.reflections.find_by(id: params[:reflection_id])
 
-    task = current_user.created_tasks.create!(task_params)
+    task = current_participant.created_tasks.create!(task_params)
     OrchestratorChannel.broadcast_to(retrospective, action: 'addTask', parameters: { task: task.as_json })
 
     render json: task.as_json
   end
 
   def update
-    retrospective = current_user.retrospective
+    retrospective = current_participant.retrospective
     if retrospective.step == 'actions'
       task = retrospective.tasks.find_by(id: params[:id])
       return render(json: { status: :not_found }) unless task
@@ -50,7 +50,7 @@ class TasksController < ApplicationController
     return render(json: { status: :not_found }) unless task
 
     task.destroy!
-    OrchestratorChannel.broadcast_to(current_user.retrospective, action: 'dropTask', parameters: { taskId: task.id })
+    OrchestratorChannel.broadcast_to(current_participant.retrospective, action: 'dropTask', parameters: { taskId: task.id })
 
     render json: { status: :ok }
   end

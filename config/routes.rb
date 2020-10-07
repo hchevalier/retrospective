@@ -1,7 +1,4 @@
 Rails.application.routes.draw do
-  # So that /retrospectives/new is not using it
-  resources :retrospectives, only: :show, id: /[a-zA-Z0-9\-]{36}/
-
   resources :retrospectives, only: %i(create) do
     resources :reflections, only: %i(create update destroy) do
       resources :reactions, only: %i(create destroy)
@@ -14,7 +11,6 @@ Rails.application.routes.draw do
   end
 
   scope :api do
-    resources :retrospectives, only: :index
     resources :tasks, only: %i(index create update)
     resources :groups, only: %i(index create show) do
       resources :pending_invitations, only: %i(index create destroy)
@@ -22,6 +18,12 @@ Rails.application.routes.draw do
     resources :group_accesses, only: %i(index destroy)
     resources :retrospective_kinds, only: :index
     resources :notices, only: :create
+  end
+
+  namespace :api do
+    resource :account, only: %i(show)
+    resources :pending_invitations, only: %i(update)
+    resources :retrospectives, only: %i(index show)
   end
 
   resource :sessions, only: %i(new create)

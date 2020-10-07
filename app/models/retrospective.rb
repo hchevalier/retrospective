@@ -94,12 +94,12 @@ class Retrospective < ApplicationRecord
     }
   end
 
-  def initial_state(current_user = nil)
+  def initial_state(current_participant = nil)
     state = {
       participants: participants.order(:created_at).map(&:profile),
       step: step,
-      ownReflections: current_user ? current_user.reflections.includes(:zone, :topic).order(:created_at).map(&:readable) : [],
-      ownReactions: current_user ? current_user.reactions.map(&:readable) : [],
+      ownReflections: current_participant ? current_participant.reflections.includes(:zone, :topic).order(:created_at).map(&:readable) : [],
+      ownReactions: current_participant ? current_participant.reactions.map(&:readable) : [],
       discussedReflection: discussed_reflection&.readable,
       allColors: Participant::COLORS,
       availableColors: available_colors,

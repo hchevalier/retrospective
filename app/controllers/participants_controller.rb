@@ -10,7 +10,7 @@ class ParticipantsController < ApplicationController
     )
     retrospective.group.add_member(current_account)
 
-    cookies.signed[:user_id] = participant.id
+    cookies.signed[:participant_id] = participant.id
     participant.join
 
     additionnal_info = { step: retrospective.step }
@@ -19,16 +19,16 @@ class ParticipantsController < ApplicationController
   end
 
   def update
-    retrospective = current_user.retrospective
+    retrospective = current_participant.retrospective
     participant = Participant.find(params[:id])
-    return render(json: { status: :forbidden }) if current_user != participant || retrospective != participant.retrospective
+    return render(json: { status: :forbidden }) if current_participant != participant || retrospective != participant.retrospective
 
-    if current_user.update!(update_participants_params)
+    if current_participant.update!(update_participants_params)
       OrchestratorChannel.broadcast_to(
         retrospective,
         action: 'changeColor',
         parameters: {
-          participant: current_user.profile,
+          participant: current_participant.profile,
           availableColors: retrospective.available_colors
         }
       )

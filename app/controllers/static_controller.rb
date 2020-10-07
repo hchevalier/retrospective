@@ -13,7 +13,9 @@ class StaticController < ApplicationController
   def check_invitation
     return unless params[:invitation_id]
 
-    invitation = PendingInvitation.find(params[:invitation_id])
+    invitation = PendingInvitation.find_by(id: params[:invitation_id])
+    return unless invitation
+
     if current_account&.email == invitation.email
       invitation.group.add_member(current_account)
       invitation.destroy
