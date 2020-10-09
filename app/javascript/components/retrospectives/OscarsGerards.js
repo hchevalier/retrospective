@@ -19,6 +19,8 @@ const OscarsGerards = ({ highlightZones, onZoneClicked }) => {
   const bestPerson = zones.find((zone) => zone.name === 'Best person')
   const bestQuote = zones.find((zone) => zone.name === 'Best quote')
   const worstQuote = zones.find((zone) => zone.name === 'Worst quote')
+  const greatestExpectation = zones.find((zone) => zone.name === 'Greatest expectation')
+  const greatestFear = zones.find((zone) => zone.name === 'Greatest fear')
 
   const reflectionInBestTicket = reflections.filter((reflection) => reflection.zone.id === bestTicket.id)[0]
   const reflectionInWorstTicket = reflections.filter((reflection) => reflection.zone.id === worstTicket.id)[0]
@@ -28,10 +30,12 @@ const OscarsGerards = ({ highlightZones, onZoneClicked }) => {
   const reflectionInBestPerson = reflections.filter((reflection) => reflection.zone.id === bestPerson.id)[0]
   const reflectionInBestQuote = reflections.filter((reflection) => reflection.zone.id === bestQuote.id)[0]
   const reflectionInWorstQuote = reflections.filter((reflection) => reflection.zone.id === worstQuote.id)[0]
+  const reflectionInGreatestExpectation = reflections.filter((reflection) => reflection.zone.id === greatestExpectation.id)[0]
+  const reflectionInGreatestFear = reflections.filter((reflection) => reflection.zone.id === greatestFear.id)[0]
 
   return (
     <>
-      <div className='grid grid-cols-4 h-48'>
+      <div className='grid grid-cols-5 h-48'>
         <Zone
           reference={bestTicket}
           hideCount
@@ -68,8 +72,17 @@ const OscarsGerards = ({ highlightZones, onZoneClicked }) => {
           onClick={!reflectionInBestQuote ? onZoneClicked : null}>
           {reflectionInBestQuote && <StickyNote key={reflectionInBestQuote.id} reflection={reflectionInBestQuote} readOnly={currentStep !== 'thinking'} />}
         </Zone>
+        <Zone
+          reference={greatestExpectation}
+          hideCount
+          highlight={!reflectionInGreatestExpectation ? highlightZones : null}
+          icon={<Icon retrospectiveKind='oscars_gerards' zone='Greatest expectation' dataAttributes={{ 'data-id': greatestExpectation.id }} onClick={!reflectionInGreatestExpectation ? onZoneClicked : null} />}
+          reflections={[reflectionInGreatestExpectation]}
+          onClick={!reflectionInGreatestExpectation ? onZoneClicked : null}>
+          {reflectionInGreatestExpectation && <StickyNote key={reflectionInGreatestExpectation.id} reflection={reflectionInGreatestExpectation} readOnly={currentStep !== 'thinking'} />}
+        </Zone>
       </div>
-      <div className='grid grid-cols-4 h-48'>
+      <div className='grid grid-cols-5 h-48'>
         <Zone
           reference={worstTicket}
           hideCount
@@ -105,6 +118,15 @@ const OscarsGerards = ({ highlightZones, onZoneClicked }) => {
           reflections={[reflectionInWorstQuote]}
           onClick={!reflectionInWorstQuote ? onZoneClicked : null}>
           {reflectionInWorstQuote && <StickyNote key={reflectionInWorstQuote.id} reflection={reflectionInWorstQuote} readOnly={currentStep !== 'thinking'} />}
+        </Zone>
+        <Zone
+          reference={greatestFear}
+          hideCount
+          highlight={!reflectionInGreatestFear ? highlightZones : null}
+          icon={<Icon retrospectiveKind='oscars_gerards' zone='Greatest fear' dataAttributes={{ 'data-id': greatestFear.id }} onClick={!reflectionInGreatestFear ? onZoneClicked : null} />}
+          reflections={[reflectionInGreatestFear]}
+          onClick={!reflectionInGreatestFear ? onZoneClicked : null}>
+          {reflectionInGreatestFear && <StickyNote key={reflectionInGreatestFear.id} reflection={reflectionInGreatestFear} readOnly={currentStep !== 'thinking'} />}
         </Zone>
       </div>
     </>

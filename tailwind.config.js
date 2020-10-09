@@ -19,8 +19,11 @@ module.exports = {
         '14': '3.5rem',
       },
       inset: {
+        '-32': '-8rem',
         '-8': '-2rem',
+        '-2': '-0.5rem',
         '2': '0.5rem',
+        '8': '2rem',
         '14': '3.5rem',
       },
       minHeight: {
