@@ -1,16 +1,15 @@
 import React, { useState } from 'react'
-import { BrowserRouter as Router, Switch, Route, useParams, withRouter } from 'react-router-dom'
-import PropTypes from 'prop-types'
+import { BrowserRouter as Router, Switch, Route, useParams } from 'react-router-dom'
 import Header from './Header'
 import Dashboard from './Dashboard'
 import GroupsList from './GroupsList'
 import GroupDetails from './GroupDetails'
 import GroupCreationForm from './GroupCreationForm'
 import RetrospectiveCreationForm from './RetrospectiveCreationForm'
-import RetrospectiveLobby from './RetrospectiveLobby'
+import RetrospectiveContainer from './RetrospectiveContainer'
 import { get, put } from '../lib/httpClient'
 
-const MainLayout = withRouter(({ history }) => {
+const MainLayout = () => {
   const GroupShow = () => {
     let params = useParams()
     return <GroupDetails id={params.groupId} />
@@ -18,15 +17,12 @@ const MainLayout = withRouter(({ history }) => {
 
   const RetrospectiveShow = () => {
     let params = useParams()
-    return <RetrospectiveLobby id={params.retrospectiveId} />
+    return <RetrospectiveContainer id={params.retrospectiveId} />
   }
-
-  const pathname = history.location.pathname
-  const headerVisible = !pathname.match(/\/retrospectives\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)
 
   return (
     <div>
-      {headerVisible && <Header />}
+      <Header />
 
       <Switch>
         <Route path='/groups/new'>
@@ -50,16 +46,6 @@ const MainLayout = withRouter(({ history }) => {
       </Switch>
     </div>
   )
-})
-
-MainLayout.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-    replace: PropTypes.func.isRequired,
-    location: PropTypes.shape({
-      pathname: PropTypes.string.isRequired
-    }).isRequired
-  })
 }
 
 const App = () => {
