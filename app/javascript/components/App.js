@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { BrowserRouter as Router, Switch, Route, useParams } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, useParams, withRouter } from 'react-router-dom'
+import PropTypes from 'prop-types'
 import Header from './Header'
 import Dashboard from './Dashboard'
 import GroupsList from './GroupsList'
@@ -9,11 +10,7 @@ import RetrospectiveCreationForm from './RetrospectiveCreationForm'
 import RetrospectiveLobby from './RetrospectiveLobby'
 import { get, put } from '../lib/httpClient'
 
-export default function App() {
-  const params = new URLSearchParams(window.location.search)
-  const [loggedIn, setLoggedIn] = useState(null)
-  const [pendingInvitation, setPendingInvitation] = useState(params.get('invitation_id'))
-
+const MainLayout = withRouter(({ history }) => {
   const GroupShow = () => {
     let params = useParams()
     return <GroupDetails id={params.groupId} />
@@ -23,6 +20,52 @@ export default function App() {
     let params = useParams()
     return <RetrospectiveLobby id={params.retrospectiveId} />
   }
+
+  const pathname = history.location.pathname
+  const headerVisible = !pathname.match(/\/retrospectives\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)
+
+  return (
+    <div>
+      {headerVisible && <Header />}
+
+      <Switch>
+        <Route path='/groups/new'>
+          <GroupCreationForm />
+        </Route>
+        <Route path='/groups/:groupId'>
+          <GroupShow />
+        </Route>
+        <Route path='/groups'>
+          <GroupsList />
+        </Route>
+        <Route path='/retrospectives/new'>
+          <RetrospectiveCreationForm />
+        </Route>
+        <Route path='/retrospectives/:retrospectiveId'>
+          <RetrospectiveShow />
+        </Route>
+        <Route path='/'>
+          <Dashboard />
+        </Route>
+      </Switch>
+    </div>
+  )
+})
+
+MainLayout.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+    replace: PropTypes.func.isRequired,
+    location: PropTypes.shape({
+      pathname: PropTypes.string.isRequired
+    }).isRequired
+  })
+}
+
+const App = () => {
+  const params = new URLSearchParams(window.location.search)
+  const [loggedIn, setLoggedIn] = useState(null)
+  const [pendingInvitation, setPendingInvitation] = useState(params.get('invitation_id'))
 
   React.useEffect(() => {
     get({ url: '/api/account' })
@@ -35,11 +78,7 @@ export default function App() {
       setPendingInvitation(false)
       params.delete('invitation_id')
       const newUrl = `${window.location.pathname}${params.toString().length > 0 ? '?' : ''}${params.toString()}`
-      if (history.replaceState) {
-        history.replaceState(null, '', newUrl)
-      } else {
-        window.location.search = `?${params.toString()}`
-      }
+      history.replaceState(null, '', newUrl)
     }
 
     if (loggedIn && pendingInvitation) {
@@ -55,7 +94,7 @@ export default function App() {
   if (loggedIn === null) return null
 
   if (!loggedIn) {
-    window.location.href = '/sessions/new?return_url=' + window.location.pathname + window.location.search
+    history.replaceState(null, '', '/sessions/new?return_url=' + window.location.pathname + window.location.search)
     return null
   }
 
@@ -63,30 +102,9 @@ export default function App() {
 
   return (
     <Router>
-      <div>
-        <Header />
-
-        <Switch>
-          <Route path='/groups/new'>
-            <GroupCreationForm />
-          </Route>
-          <Route path='/groups/:groupId'>
-            <GroupShow />
-          </Route>
-          <Route path='/groups'>
-            <GroupsList />
-          </Route>
-          <Route path='/retrospective/new'>
-            <RetrospectiveCreationForm />
-          </Route>
-          <Route path='/retrospectives/:retrospectiveId'>
-            <RetrospectiveShow />
-          </Route>
-          <Route path='/'>
-            <Dashboard />
-          </Route>
-        </Switch>
-      </div>
+      <MainLayout />
     </Router>
   )
 }
+
+export default App

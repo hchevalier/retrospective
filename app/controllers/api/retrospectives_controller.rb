@@ -7,7 +7,7 @@ class Api::RetrospectivesController < ApplicationController
 
   def show
     retrospective =
-      current_participant?.retrospective_id == params[:id] ?
+      current_participant&.retrospective_id == params[:id] ?
       current_participant.retrospective :
       Retrospective.includes(:participants, :zones).find(params[:id])
 
@@ -35,6 +35,6 @@ class Api::RetrospectivesController < ApplicationController
     current_participant.join
     initial_state = retrospective.initial_state(current_participant).merge(profile: current_participant.full_profile)
 
-    render json: retrospective.as_json, initialState: initial_state
+    render json: { retrospective: retrospective.as_json, initialState: initial_state }
   end
 end

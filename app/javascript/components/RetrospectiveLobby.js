@@ -12,14 +12,12 @@ import ReflectionsList from './ReflectionsList'
 import ReflectionsListForActionStep from './ReflectionsListForActionStep'
 import FacilitatorToolkitLeft from './FacilitatorToolkitLeft'
 import FacilitatorToolkitRight from './FacilitatorToolkitRight'
-import LoginForm from './LoginForm'
 import AddGroupMembersModal from './AddGroupMembersModal'
 import HomeIcon from 'images/home-icon.svg'
 import ArrowIcon from 'images/arrow-icon.svg'
 import './RetrospectiveLobby.scss'
 
-// , invitation, group, kind
-const RetrospectiveLobby = ({ id: retrospectiveId }) => {
+const RetrospectiveLobby = ({ id: retrospectiveId, group, kind }) => {
   const dispatch = useDispatch()
   const [participantsListVisible, setParticipantsListVisible] = React.useState(true)
   const [reflectionsListVisible, setReflectionsListVisible] = React.useState(true)
@@ -31,20 +29,13 @@ const RetrospectiveLobby = ({ id: retrospectiveId }) => {
   const currentStep = useSelector(state => state.orchestrator.step)
   const channel = useSelector(state => state.orchestrator.subscription)
   const zonesTypology = useSelector(state => state.retrospective.zonesTypology)
-  const loggedIn = !!profile.uuid
 
   React.useEffect(() => {
-    if (!group.id || !loggedIn) return
+    if (!group.id) return
 
     get({ url: `/api/groups/${group.id}` })
       .then((data) => setGroupInfo(data))
-  }, [group.id, loggedIn])
-
-  React.useEffect(() => {
-    if (!loggedIn) return
-
-    window.history.replaceState({}, '', window.location.pathname)
-  }, [loggedIn])
+  }, [group.id])
 
   const handleOpenAddParticipantsModal = () => {
     setDisplayAddParticipantsModal(true)
@@ -99,7 +90,7 @@ const RetrospectiveLobby = ({ id: retrospectiveId }) => {
     }
     const orchestratorChannel = joinOrchestratorChannel({ retrospectiveId: retrospectiveId, onReceivedAction: handleActionReceived })
     dispatch({ type: 'set-channel', subscription: orchestratorChannel })
-  }, [loggedIn])
+  }, [])
 
   const toggleParticipantsList = () => setParticipantsListVisible(!participantsListVisible)
   const shouldDisplayReflectionsList = (currentStep === 'thinking' && zonesTypology === 'open') || currentStep === 'grouping' || currentStep === 'actions'
@@ -159,12 +150,11 @@ const RetrospectiveLobby = ({ id: retrospectiveId }) => {
             </div>
           </div>
           <div id='right-panel' className={classNames('flex flex-col flex-1 relative', { 'pushed-top': participantsListVisible, 'pushed-left': shouldDisplayReflectionsList && pushedLeft})}>
-            {!loggedIn && <LoginForm retrospectiveId={retrospectiveId} invitation={invitation} />}
-            {loggedIn && <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />}
+            <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />
           </div>
         </div>
       </div>
-      {loggedIn && groupInfo && (
+      {groupInfo && (
         <AddGroupMembersModal
           visible={displayAddParticipantsModal}
           onInvitationsSent={handleAddParticipantsModalClose}
@@ -192,13 +182,15 @@ const RetrospectiveLobbyWithProvider = ({ id }) => {
   const [store, setStore] = useState()
 
   useEffect(() => {
-    // get initial state
-    get(`/api/retrospective/${id}`)
+    get({ url: `/api/retrospectives/${id}` })
       .then(({ initialState, retrospective }) => {
         setRetrospectiveInfo(retrospective)
         setStore(appStore({ ...initialState, retrospective: retrospective }))
       })
-      .catch(() => history.pushState(null, '', '/'))
+      .catch((error) => {
+        console.log(error)
+        history.pushState(null, '', '/')
+      })
   }, [id])
 
   if (!store || !retrospectiveInfo) return null
@@ -211,7 +203,7 @@ const RetrospectiveLobbyWithProvider = ({ id }) => {
 }
 
 RetrospectiveLobbyWithProvider.propTypes = {
-  id: PropTypes.number.isRequired
+  id: PropTypes.string.isRequired
 }
 
 export default RetrospectiveLobbyWithProvider
