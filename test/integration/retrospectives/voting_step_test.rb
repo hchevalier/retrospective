@@ -11,7 +11,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     unrevealed = create(:reflection, :mad, owner: other_participant, revealed: false)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
     assert_logged_as_facilitator
 
     assert_text 'A glad reflection'
@@ -21,7 +21,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       assert_text 'A glad reflection'
       assert_text 'A sad reflection'
       refute_text unrevealed.content
@@ -35,7 +35,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     reflection_b = create(:reflection, :sad, owner: other_participant)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_text 'Remaining votes: 5'
     assert_votes_count(reflection_a, count: 0)
@@ -62,7 +62,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     reflection_b = create(:reflection, :sad, owner: retrospective.facilitator)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_text 'Remaining votes: 5'
     assert_can_vote_for(reflection_a)
@@ -81,7 +81,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     reflection_b = create(:reflection, :sad, owner: retrospective.facilitator)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_text 'Remaining votes: 5'
     refute_can_unvote(reflection_a)
@@ -100,14 +100,14 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     reflection_a = create(:reflection, :glad, owner: retrospective.facilitator)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     vote_for_reflection(reflection_a, times: 2)
 
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       assert_votes_count(reflection_a, count: 0)
       vote_for_reflection(reflection_a, times: 3)
     end
@@ -121,7 +121,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     reflection_a = create(:reflection, :glad, owner: retrospective.facilitator)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_remaining_votes_for(retrospective.facilitator, 5)
     vote_for_reflection(reflection_a, times: 2)
@@ -132,7 +132,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       assert_votes_count(reflection_a, count: 0)
       vote_for_reflection(reflection_a, times: 3)
 
@@ -154,7 +154,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     facilitator_window = open_new_window
     within_window(facilitator_window) do
       logged_in_as(retrospective.facilitator)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
       assert_logged_in(retrospective.facilitator, with_flags: %i(self facilitator))
       assert_remaining_votes_for(retrospective.facilitator, 5)
@@ -166,7 +166,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     perform_enqueued_jobs
 
     logged_in_as(other_participant)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
     assert_logged_in(other_participant, with_flags: %i(self facilitator))
     assert_votes_count(reflection_a, count: 0)
     assert_remaining_votes_for(retrospective.facilitator, 3)
@@ -179,7 +179,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
     topic = create(:topic, retrospective: retrospective, reflections: [reflection_a, reflection_b], label: nil)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
     assert_remaining_votes_for(retrospective.facilitator, 5)
 
     topic_container = find(".topic[data-id='#{topic.id}']").ancestor('.topic-container')

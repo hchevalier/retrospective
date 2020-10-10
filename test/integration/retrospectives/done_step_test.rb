@@ -12,7 +12,7 @@ class Retrospective::DoneStepTest < ActionDispatch::IntegrationTest
     reflection.tasks.create!(author: facilitator, assignee: facilitator, description: 'my task')
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_text 'Lobby'
     refute_text 'Next'

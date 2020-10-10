@@ -8,14 +8,14 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     other_participant = create(:other_participant, retrospective: retrospective)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
     assert_logged_as_facilitator
     refute_retro_started
 
     new_window = open_new_window
     within_window(new_window) do
       logged_in_as(other_participant)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       refute_logged_as_facilitator
       refute_retro_started
     end
@@ -32,7 +32,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     retrospective = create(:retrospective, step: 'thinking')
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_retro_started
     refute_reflection_in_zone('Glad')
@@ -50,7 +50,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     retrospective = create(:retrospective, step: 'thinking')
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_retro_started
 
@@ -69,7 +69,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     create(:reflection, :glad, owner: retrospective.facilitator, revealed: false)
 
     logged_in_as(other_participant)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_retro_started
     refute_reflection_in_zone('Glad')
@@ -83,7 +83,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     create(:reflection, :glad, owner: retrospective.facilitator, revealed: false)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     within '#reflections-panel' do
       assert_text 'A glad reflection'
@@ -95,7 +95,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     create(:reflection, :glad, owner: retrospective.facilitator, revealed: false)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     within '#reflections-panel' do
       assert_text 'A glad reflection'
@@ -115,7 +115,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     create(:reflection, :glad, owner: retrospective.facilitator, revealed: false)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     within '#reflections-panel' do
       assert_text 'A glad reflection'
@@ -131,13 +131,13 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     other_participant = create(:other_participant, retrospective: retrospective)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
     assert_logged_in(retrospective.facilitator, with_flags: %i(self facilitator))
 
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       assert_logged_in(other_participant, with_flags: %i(self))
 
       refute_status_visibility(retrospective.facilitator)

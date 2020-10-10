@@ -80,7 +80,7 @@ const App = () => {
   if (loggedIn === null) return null
 
   if (!loggedIn) {
-    history.replaceState(null, '', '/sessions/new?return_url=' + window.location.pathname + window.location.search)
+    window.location.href = '/sessions/new?return_url=' + window.location.pathname + window.location.search
     return null
   }
 

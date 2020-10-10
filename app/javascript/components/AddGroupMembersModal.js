@@ -63,7 +63,7 @@ const AddGroupMembersModal = ({ group, onInvitationsSent, onModalClose, retrospe
 
         {withShareableLink && (
           <div className='mt-4'>
-            <div>You can also send them this link:</div>
+            <div>You can seend this link to people already member of the group:</div>
             <div className='flex flex-row flex-no-wrap rounded-full border'>
               <div className='border-r p-2'><img src={LinkIcon} className='inline' width="24" /></div>
               <div className='overflow-x-scroll p-2 whitespace-no-wrap'>{window.location.href}</div>

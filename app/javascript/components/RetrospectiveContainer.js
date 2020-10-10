@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { withRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import appStore from 'stores'
 import classNames from 'classnames'
@@ -54,7 +55,7 @@ const GroupMembersModalWrapper = ({ groupId, retrospectiveId, setDisplayAddParti
   )
 }
 
-const RetrospectiveContainer = ({ id }) => {
+const RetrospectiveContainer = ({ id, history }) => {
   const [store, setStore] = useState()
   const [retrospectiveInfo, setRetrospectiveInfo] = useState()
 
@@ -67,7 +68,7 @@ const RetrospectiveContainer = ({ id }) => {
         setRetrospectiveInfo(retrospective)
         setStore(appStore({ ...initialState, retrospective: retrospective }))
       })
-      .catch(() => history.pushState(null, '', '/'))
+      .catch(() => history.push('/'))
   }, [id])
 
   return (
@@ -102,4 +103,4 @@ RetrospectiveContainer.propTypes = {
   id: PropTypes.string.isRequired
 }
 
-export default RetrospectiveContainer
+export default withRouter(RetrospectiveContainer)

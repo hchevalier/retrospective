@@ -7,7 +7,7 @@ class PasswordResetTest < ActionDispatch::IntegrationTest
     assert_nil account.password_reset_token
 
     visit '/'
-    assert_current_path '/sessions/new'
+    assert_current_path '/sessions/new?return_url=/'
     fill_in 'email', with: account.email
     click_on 'I forgot my password'
 

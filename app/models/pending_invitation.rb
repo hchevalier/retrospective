@@ -16,9 +16,8 @@ class PendingInvitation < ApplicationRecord
   end
 
   def link(host)
-    retrospective ?
-      retrospective_url(id: retrospective_id, invitation_id: id, host: host) :
-      single_page_app_url(path: "groups/#{group.id}", invitation_id: id, host: host)
+    path = retrospective ? "retrospectives/#{retrospective.id}" : "groups/#{group.id}"
+    single_page_app_url(path: path, invitation_id: id, host: host)
   end
 
   def deprecaded?

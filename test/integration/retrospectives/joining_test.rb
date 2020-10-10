@@ -59,9 +59,11 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
 
   test 'joins an existing retrospective by creating an account' do
     retrospective = create(:retrospective)
+    invitation = create_invitation(retrospective, 'other_one@yopmail.com')
 
-    visit retrospective_path(retrospective)
-    assert_text 'Facilitator'
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}", invitation_id: invitation.id)
+    refute_text 'Lobby'
+    assert_text 'Log in'
 
     click_on "Don't have an account yet?"
     fill_in 'username', with: 'Other one'
@@ -70,49 +72,56 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     click_on 'Create account'
 
     assert_text 'Other one'
+    assert_text 'Lobby'
   end
 
   test 'joins an existing retrospective by logging in to an existing account' do
     retrospective = create(:retrospective)
     create(:account, username: 'Other one', email: 'other_one@yopmail.com', password: 'mypasword')
+    invitation = create_invitation(retrospective, 'other_one@yopmail.com')
 
-    visit retrospective_path(retrospective)
-    assert_text 'Facilitator'
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}", invitation_id: invitation.id)
+    refute_text 'Lobby'
+    assert_text 'Log in'
 
-    fill_in 'email', with: 'other_one@yopmail.com'
+    # Weirdly, there is a flaky here sometimes, when email is pre-filled from invitation and we use fill_in
+    # The email ends up appearing twice in the input
     fill_in 'password', with: 'mypassword'
     click_on 'Login'
 
     assert_text 'Other one'
+    assert_text 'Lobby'
   end
 
   test 'joining an existing retrospective and logging in reuses a participant if any' do
     retrospective = create(:retrospective)
     account = create(:account, username: 'Other one', email: 'other_one@yopmail.com', password: 'mypasword')
     participant = create(:participant, retrospective: retrospective, account: account, surname: 'Other one')
+    invitation = create_invitation(retrospective, 'other_one@yopmail.com')
 
     assert_no_difference 'Participant.count' do
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
+      refute_text 'Lobby'
+      assert_text 'Log in'
       fill_in 'email', with: 'other_one@yopmail.com'
       fill_in 'password', with: 'mypassword'
       click_on 'Login'
+      assert_logged_in(participant, with_flags: %i(self))
     end
-
-    assert_logged_in(participant, with_flags: %i(self))
   end
 
   test 'joining an existing retrospective while being logged with an existing account creates a participant' do
     retrospective = create(:retrospective)
     account = create(:account)
     as_user(account)
+    invitation = create_invitation(retrospective, account.email)
 
     assert_difference 'Participant.count' do
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}", invitation_id: invitation.id)
+      assert_text 'Facilitator'
+      refute_field 'email'
+      refute_button 'Login'
     end
-
-    assert_text 'Facilitator'
-    refute_field 'email'
-    refute_button 'Login'
 
     assert account, Participant.last.account
   end
@@ -124,19 +133,18 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     as_user(account)
 
     assert_no_difference 'Participant.count' do
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
+      assert_logged_in(participant, with_flags: %i(self))
+      refute_field 'email'
+      refute_button 'Login'
     end
-
-    assert_logged_in(participant, with_flags: %i(self))
-    refute_field 'email'
-    refute_button 'Login'
   end
 
   test 'can join a retrospective without loging in again' do
     retrospective = create(:retrospective)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_logged_as_facilitator
     refute_button 'Login'
@@ -145,7 +153,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
   test 'cannot join a retrospective when it is done if logged out' do
     retrospective = create(:retrospective, step: :done)
 
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_text 'Log in'
     refute_text 'Lobby'
@@ -156,7 +164,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     other_retrospective = create(:retrospective)
     logged_in_as(other_retrospective.facilitator)
 
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_text 'Dashboard'
   end
@@ -166,28 +174,29 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     other_participant = create(:other_participant, retrospective: retrospective)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
     assert_logged_as_facilitator
     assert_button 'Next'
 
     logged_in_as(other_participant)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
     refute_logged_as_facilitator
     refute_button 'Next'
   end
 
   test 'sees new participant joining' do
     retrospective = create(:retrospective)
+    invitation = create_invitation(retrospective, 'other_one@yopmail.com')
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_logged_as_facilitator
     refute_text 'Other one'
 
     within_window(open_new_window) do
       logged_out
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}", invitation_id: invitation.id)
       click_on "Don't have an account yet?"
       fill_in 'username', with: 'Other one'
       fill_in 'email', with: 'other_one@yopmail.com'
@@ -196,5 +205,11 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     end
 
     assert_text 'Other one'
+  end
+
+  private
+
+  def create_invitation(retrospective, email)
+    create(:pending_invitation, account: retrospective.facilitator.account, email: email, group: retrospective.group)
   end
 end

@@ -5,7 +5,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     retrospective = create(:retrospective)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_logged_as_facilitator
     assert_no_css('#timer')
@@ -15,7 +15,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     retrospective = create(:retrospective, step: 'thinking')
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_equal 'Timer:--:--', find('#timer').text.split("\n").join
   end
@@ -25,7 +25,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     other_participant = create(:other_participant, retrospective: retrospective)
 
     logged_in_as(other_participant)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     refute_logged_as_facilitator
     assert_no_css('#timer')
@@ -36,7 +36,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     other_participant = create(:other_participant, retrospective: retrospective)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     find('#timer .minutes').click
     assert_text 'Set duration'
@@ -52,7 +52,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
 
     within_window(open_new_window) do
       logged_in_as(other_participant)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       within '#timer' do
         assert_text '58'
       end

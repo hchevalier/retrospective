@@ -23,7 +23,7 @@ class Retrospective::ReviewStepTest < ActionDispatch::IntegrationTest
     retrospective = create(:retrospective, group: account.groups.first, facilitator: build(:participant, account: account))
     other_participant = create(:other_participant, retrospective: retrospective)
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_logged_in(retrospective.facilitator, with_flags: %i(self facilitator))
     click_on 'Next'
@@ -33,7 +33,7 @@ class Retrospective::ReviewStepTest < ActionDispatch::IntegrationTest
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       assert_logged_in(other_participant, with_flags: %i(self))
       within ".task[data-id='#{something.id}']" do
         assert_selector 'button[name="todo"].selected'
