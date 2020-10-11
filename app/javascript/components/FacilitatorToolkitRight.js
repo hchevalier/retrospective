@@ -5,11 +5,9 @@ import Button from './Button'
 const FacilitatorToolkitRight = () => {
   const { subscription: channel, step } = useSelector(state => state.orchestrator)
 
-  const nextStep = () => {
-    channel?.send({ intent: 'next' })
-  }
+  const nextStep = () => channel.changeStep()
 
-  if (step === 'done') return null
+  if (step === 'done' || !channel || channel.consumer.connection.disconnected) return null
 
   return (
     <div className='flex flex-row'>

@@ -1,7 +1,9 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
 import { get } from 'lib/httpClient'
+import { historyShape } from 'lib/utils/shapes'
 
-const Dashboard = () => {
+const Dashboard = ({ history }) => {
   const [retrospectives, setRetrospectives] = React.useState([])
   const [tasks, setTasks] = React.useState([])
 
@@ -15,6 +17,8 @@ const Dashboard = () => {
     get({ url: '/api/tasks' })
       .then((data) => setTasks(data))
   }, [])
+
+  const handleRetrospectiveClick = (retrospectiveId) => history.push(`/retrospectives/${retrospectiveId}`)
 
   return (
     <div className='container' style={{ margin: '0 auto'}}>
@@ -33,12 +37,10 @@ const Dashboard = () => {
           <div className='grid grid-cols-1 md:grid-cols-2'>
             {retrospectives && retrospectives.map((retrospective) => {
               return (
-                <a key={retrospective.id} className='block bg-gray-400 rounded-md p-2 m-2' href={`/retrospectives/${retrospective.id}`}>
-                  <div>
-                    {retrospective.group.name} - {retrospective.kind}<br />
-                    {new Date(retrospective.createdAt).toLocaleString()}
-                  </div>
-                </a>
+                <div key={retrospective.id} className='block bg-gray-400 rounded-md p-2 m-2 cursor-pointer' onClick={() => handleRetrospectiveClick(retrospective.id)}>
+                  {retrospective.group.name} - {retrospective.kind}<br />
+                  {new Date(retrospective.createdAt).toLocaleString()}
+                </div>
               )
             })}
           </div>
@@ -66,4 +68,8 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+Dashboard.propTypes = {
+  history: historyShape
+}
+
+export default withRouter(Dashboard)

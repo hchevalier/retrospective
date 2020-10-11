@@ -8,14 +8,14 @@ class Retrospective::InactivityTest < ActionDispatch::IntegrationTest
     facilitator_window = open_new_window
     within_window(facilitator_window) do
       logged_in_as(retrospective.facilitator)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       assert_logged_in(retrospective.facilitator, with_flags: %i(self facilitator))
     end
 
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       assert_logged_in(retrospective.facilitator, with_flags: %i(facilitator))
       assert_logged_in(other_participant, with_flags: %i(self))
     end
@@ -41,7 +41,7 @@ class Retrospective::InactivityTest < ActionDispatch::IntegrationTest
     facilitator_window = open_new_window
     within_window(facilitator_window) do
       logged_in_as(retrospective.facilitator)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       assert_logged_in(retrospective.facilitator, with_flags: %i(self facilitator))
     end
 
@@ -56,14 +56,14 @@ class Retrospective::InactivityTest < ActionDispatch::IntegrationTest
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       assert_inactive(retrospective.facilitator)
       assert_logged_in(other_participant, with_flags: %i(self facilitator))
     end
 
     within_window(open_new_window) do
       logged_in_as(retrospective.facilitator)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       assert_logged_in(retrospective.facilitator, with_flags: %i(self facilitator))
       assert_logged_in(other_participant)
     end

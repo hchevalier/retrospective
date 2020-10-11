@@ -2,15 +2,15 @@ class ReflectionsController < ApplicationController
   before_action :ensure_participant
 
   def create
-    retrospective = current_user.retrospective
+    retrospective = current_participant.retrospective
     zone = Zone.find_by(id: params[:zone_id], retrospective: retrospective)
     return render(json: { status: :not_found }) unless zone
 
-    return render(json: { status: :forbidden }) if current_user.reflections.where(zone: zone).any? && retrospective.zones_typology == :limited
+    return render(json: { status: :forbidden }) if current_participant.reflections.where(zone: zone).any? && retrospective.zones_typology == :limited
 
     reflection = Reflection.transaction do
-      current_user.reflections.where(zone: zone).delete_all if retrospective.zones_typology == :single_choice
-      current_user.reflections.create(reflections_params)
+      current_participant.reflections.where(zone: zone).delete_all if retrospective.zones_typology == :single_choice
+      current_participant.reflections.create(reflections_params)
     end
 
     render json: reflection.readable
@@ -18,7 +18,7 @@ class ReflectionsController < ApplicationController
 
   def update
     reflection = Reflection.find(params[:id])
-    case current_user
+    case current_participant
     when reflection.owner
       reflection.update!(reflections_params)
     when reflection.retrospective.facilitator
@@ -31,7 +31,7 @@ class ReflectionsController < ApplicationController
   end
 
   def destroy
-    current_user.reflections.find(params[:id]).destroy!
+    current_participant.reflections.find(params[:id]).destroy!
 
     render json: :ok
   end

@@ -4,10 +4,10 @@ import { post } from 'lib/httpClient'
 import Input from './Input'
 import Button from './Button'
 
-const AuthenticationForm = ({ defaultEmail, onSignUpOrSignIn, returnUrl }) => {
+const AuthenticationForm = ({ defaultEmail, onLogIn }) => {
   const [mode, setMode] = React.useState('signIn')
   const [username, setUsername] = React.useState('')
-  const [email, setEmail] = React.useState(defaultEmail)
+  const [email, setEmail] = React.useState(defaultEmail || '')
   const [password, setPassword] = React.useState('')
   const [passwordResetToastDisplayed, setPasswordResetToastDisplayed] = React.useState(false)
 
@@ -19,8 +19,8 @@ const AuthenticationForm = ({ defaultEmail, onSignUpOrSignIn, returnUrl }) => {
       url: mode === 'signIn' ? '/sessions' : '/accounts',
       payload: { username, email, password }
     })
-      .then(() => onSignUpOrSignIn(returnUrl))
-      .catch(error => console.warn(error))
+      .then(() => onLogIn())
+      .catch(error => { alert(error)})
   }
 
   const onPasswordReset = () => {
@@ -41,7 +41,7 @@ const AuthenticationForm = ({ defaultEmail, onSignUpOrSignIn, returnUrl }) => {
         payload: { email }
       })
         .then(onPasswordReset)
-        .catch(error => console.warn(error))
+        .catch(error => alert(error))
     }
   }
 
@@ -78,13 +78,7 @@ const AuthenticationForm = ({ defaultEmail, onSignUpOrSignIn, returnUrl }) => {
 
 AuthenticationForm.propTypes = {
   defaultEmail: PropTypes.string,
-  onSignUpOrSignIn: PropTypes.func.isRequired,
-  returnUrl: PropTypes.string
-}
-
-AuthenticationForm.defaultProps = {
-  defaultEmail: '',
-  onSignUpOrSignIn: (returnUrl) => { window.location.pathname = returnUrl || '/' }
+  onLogIn: PropTypes.func.isRequired,
 }
 
 export default AuthenticationForm

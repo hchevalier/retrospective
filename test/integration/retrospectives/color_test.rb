@@ -13,14 +13,14 @@ class Retrospective::ColorTest < ActionDispatch::IntegrationTest
     other_participant = create(:other_participant, retrospective: retrospective, color: other_color)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
     assert_has_color(retrospective.facilitator, color)
     assert_has_color(other_participant, other_color)
 
     other_partipant_window = open_new_window
     within_window(other_partipant_window) do
       logged_in_as(other_participant)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       assert_has_color(retrospective.facilitator, color)
       assert_has_color(other_participant, other_color)
     end
@@ -42,7 +42,7 @@ class Retrospective::ColorTest < ActionDispatch::IntegrationTest
     retrospective.facilitator.update!(color: hex_color)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_retro_started
 
@@ -55,7 +55,7 @@ class Retrospective::ColorTest < ActionDispatch::IntegrationTest
     other_participant = create(:other_participant, retrospective: retrospective, color: other_color)
     within_window(open_new_window) do
       logged_in_as(other_participant)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       assert_retro_started
 
       rgba_color = other_color.scan(/[0-9a-f]{2}/).map { |color| color.to_i(16) }

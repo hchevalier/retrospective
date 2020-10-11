@@ -7,7 +7,7 @@ class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
     reflection = create(:reflection, :glad, owner: retrospective.facilitator)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
     add_reaction(reflection, :star_struck)
     within ".reflection[data-id='#{reflection.id}']" do
       assert_text Reaction::EMOJI_LIST[:star_struck]
@@ -16,7 +16,7 @@ class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       assert_logged_in(other_participant, with_flags: %i(self))
       within ".reflection[data-id='#{reflection.id}']" do
         assert_text Reaction::EMOJI_LIST[:star_struck]
@@ -42,7 +42,7 @@ class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
     reflection = create(:reflection, :glad, owner: retrospective.facilitator)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
     add_reaction(reflection, :star_struck)
     within ".reflection[data-id='#{reflection.id}']" do
       assert_text Reaction::EMOJI_LIST[:star_struck]
@@ -61,7 +61,7 @@ class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
     reflection = create(:reflection, :glad, owner: retrospective.facilitator)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
     add_reaction(reflection, :star_struck)
     within ".reflection[data-id='#{reflection.id}']" do
       assert_text Reaction::EMOJI_LIST[:star_struck]

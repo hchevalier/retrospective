@@ -14,10 +14,6 @@ const GroupsDetails = ({ id }) => {
   const handleAddGroupMembersModalClose = () => setAddMembersModalVisible(false)
   const refreshGroup = () => setGroupRefresh(groupRefresh + 1)
 
-  React.useEffect(() => {
-    window.history.replaceState({}, '', window.location.pathname)
-  }, [])
-
   const handleCancelInvitation = (event) => {
     destroy({
       url: `/api/groups/${group.id}/pending_invitations/${event.currentTarget.dataset.id}`

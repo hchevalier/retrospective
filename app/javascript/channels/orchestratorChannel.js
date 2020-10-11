@@ -8,6 +8,9 @@ export const join = ({ retrospectiveId, onReceivedAction }) => {
     disconnected() {
       console.log('You were disconnected from the orchestrator channel!')
     },
+    changeStep() {
+      this.perform('change_step')
+    },
     startTimer(duration) {
       this.perform('start_timer', { duration: duration })
     },

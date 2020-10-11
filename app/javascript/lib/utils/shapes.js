@@ -21,3 +21,11 @@ export const reflectionShape = PropTypes.shape({
 export const reactionShape = PropTypes.shape({
   targetId: PropTypes.string,
 })
+
+export const historyShape = PropTypes.shape({
+  push: PropTypes.func.isRequired,
+  replace: PropTypes.func.isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired
+  }).isRequired
+})

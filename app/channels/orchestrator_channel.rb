@@ -3,84 +3,80 @@
 class OrchestratorChannel < ApplicationCable::Channel
   def subscribed
     stream_for Retrospective.find(params[:retrospective_id])
-    return unless current_user
+    return unless current_participant
 
-    current_user.reload
+    current_participant.reload
 
-    Rails.logger.debug "#{current_user.surname} (#{current_user.id}) subscribed"
-    current_user.update!(logged_in: true)
-    broadcast_to(current_user.retrospective, action: 'refreshParticipant', parameters: { participant: current_user.profile })
+    Rails.logger.debug "#{current_participant.surname} (#{current_participant.id}) subscribed"
+    current_participant.update!(logged_in: true)
+    broadcast_to(current_participant.retrospective, action: 'refreshParticipant', parameters: { participant: current_participant.profile })
 
-    current_user.retrospective.reset_original_facilitator! if current_user.original_facilitator?
+    current_participant.retrospective.reset_original_facilitator! if current_participant.original_facilitator?
   end
 
   def unsubscribed
-    return unless current_user
+    return unless current_participant
 
-    Rails.logger.debug "#{current_user.surname} (#{current_user.id}) unsubscribed"
-    current_user.update!(logged_in: false)
+    Rails.logger.debug "#{current_participant.surname} (#{current_participant.id}) unsubscribed"
+    current_participant.update!(logged_in: false)
 
-    InactivityJob.set(wait_until: Participant::INACTIVITY_DELAY.seconds.from_now).perform_later(current_user)
+    InactivityJob.set(wait_until: Participant::INACTIVITY_DELAY.seconds.from_now).perform_later(current_participant)
   end
 
   def start_timer(data)
-    return unless current_user.reload.facilitator?
+    return unless current_participant.reload.facilitator?
 
     timer_end_at = Time.zone.now + data['duration'].to_i.seconds
     broadcast_to(
-      current_user.retrospective,
+      current_participant.retrospective,
       action: 'setTimer',
       parameters: { timer_end_at: timer_end_at }
     )
-    current_user.retrospective.update!(timer_end_at: timer_end_at)
+    current_participant.retrospective.update!(timer_end_at: timer_end_at)
   end
 
   def set_revealer(data)
-    return unless current_user.reload.facilitator?
+    return unless current_participant.reload.facilitator?
 
-    retrospective = current_user.retrospective
+    retrospective = current_participant.retrospective
     current_revealer = retrospective.revealer
     new_revealer = retrospective.participants.find(data['uuid'])
     retrospective.update!(revealer: new_revealer)
     if current_revealer
-      broadcast_to(current_user.retrospective, action: 'refreshParticipant', parameters: { participant: current_revealer.reload.profile })
+      broadcast_to(current_participant.retrospective, action: 'refreshParticipant', parameters: { participant: current_revealer.reload.profile })
     end
-    broadcast_to(current_user.retrospective, action: 'refreshParticipant', parameters: { participant: new_revealer.reload.profile })
+    broadcast_to(current_participant.retrospective, action: 'refreshParticipant', parameters: { participant: new_revealer.reload.profile })
   end
 
   def reveal_reflection(data)
-    return unless current_user.reload.revealer?
+    return unless current_participant.reload.revealer?
 
-    retrospective = current_user.retrospective
+    retrospective = current_participant.retrospective
     reflection = retrospective.reflections.find(data['uuid'])
     reflection.update!(revealed: true)
     broadcast_to(retrospective, action: 'revealReflection', parameters: { reflection: reflection.readable })
   end
 
   def drop_revealer_token
-    return unless current_user.reload.revealer?
+    return unless current_participant.reload.revealer?
 
-    retrospective = current_user.retrospective
+    retrospective = current_participant.retrospective
     retrospective.update!(revealer: nil)
-    broadcast_to(retrospective, action: 'refreshParticipant', parameters: { participant: current_user.reload.profile })
+    broadcast_to(retrospective, action: 'refreshParticipant', parameters: { participant: current_participant.reload.profile })
   end
 
   def change_discussed_reflection(data)
-    return unless current_user.reload.facilitator?
+    return unless current_participant.reload.facilitator?
 
-    retrospective = current_user.retrospective
+    retrospective = current_participant.retrospective
     reflection = retrospective.reflections.find(data['uuid'])
     retrospective.update!(discussed_reflection: reflection)
     broadcast_to(retrospective, action: 'setDiscussedReflection', parameters: { reflection: reflection.readable })
   end
 
-  def receive(data)
-    return unless current_user&.facilitator?
+  def change_step
+    return unless current_participant.reload.facilitator?
 
-    retrospective = Retrospective.find(current_user.retrospective_id)
-    case data.fetch('intent')
-    when 'next'
-      retrospective.next_step!
-    end
+    Retrospective.find(current_participant.retrospective_id).next_step!
   end
 end

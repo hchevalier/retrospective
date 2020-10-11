@@ -1,4 +1,4 @@
-class GroupsController < ApplicationController
+class Api::GroupsController < ApplicationController
   def index
     render json: current_account.accessible_groups.map(&:as_short_json)
   end

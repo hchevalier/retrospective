@@ -1,17 +1,17 @@
 class ApplicationController < ActionController::Base
   before_action :ensure_logged_in
 
-  def current_user
-    @current_user ||= begin
-      (user_id = cookies.signed[:user_id]) ?
-      Participant.find(user_id) :
+  def current_participant
+    @current_participant ||= begin
+      (participant_id = cookies.signed[:participant_id]) ?
+      Participant.find(participant_id) :
       nil
     end
   end
 
-  def reload_current_user
-    @current_user = nil
-    current_user
+  def reload_current_participant
+    @current_participant = nil
+    current_participant
   end
 
   def current_account
@@ -22,10 +22,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def current_user_with_relationships_included
-    @current_user ||= begin
-      (user_id = cookies.signed[:user_id]) ?
-      Participant.includes(retrospective: [:participants, :zones]).find(user_id) :
+  def current_participant_with_relationships_included
+    @current_participant ||= begin
+      (participant_id = cookies.signed[:participant_id]) ?
+      Participant.includes(retrospective: [:participants, :zones]).find(participant_id) :
       nil
     end
   end
@@ -35,12 +35,12 @@ class ApplicationController < ActionController::Base
 
     respond_to do |format|
       format.json { render(json: { status: :unauthorized }) }
-      format.html { redirect_to :new_sessions }
+      format.html { redirect_to single_page_app_path(path: 'sessions/new') }
     end
   end
 
   def ensure_participant
-    return if current_user
+    return if current_participant
 
     render json: { status: :unauthorized }
   end

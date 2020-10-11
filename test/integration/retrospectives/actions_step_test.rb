@@ -8,7 +8,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     reflection = create(:reflection, :glad, owner: retrospective.facilitator)
     retrospective.update!(discussed_reflection: reflection)
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     within ".reflection[data-id='#{reflection.id}'] .vote-corner" do
       refute_css '.vote'
@@ -25,7 +25,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     create_list(:vote, 2, target: reflection_b, author: other_participant)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     click_on 'Next'
     within '#discussed-reflection .reflection' do
@@ -35,7 +35,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
       within '#discussed-reflection .reflection' do
         assert_text 'A glad reflection'
@@ -53,7 +53,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     retrospective.update!(discussed_reflection: reflection_a)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     within '.reflection' do
       assert_text 'A glad reflection'
@@ -68,7 +68,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
       within '.reflection' do
         assert_text 'A sad reflection'
@@ -93,7 +93,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     retrospective.update!(discussed_reflection: reflection_a)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     within '.reflection' do
       assert_text 'Most upvoted reflection'
@@ -120,7 +120,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     retrospective.update!(discussed_reflection: reflection)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     fill_in 'content', with: 'my task'
     select retrospective.facilitator.surname, from: 'assignee'
@@ -134,7 +134,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
-      visit retrospective_path(retrospective)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
       within '#tasks-list' do
         assert_text 'Assigned to Facilitator'
@@ -152,7 +152,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     retrospective.update!(discussed_reflection: reflection_a)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     fill_in 'content', with: 'my task'
     select retrospective.facilitator.surname, from: 'assignee'
@@ -188,7 +188,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     retrospective.update!(discussed_reflection: reflection_a)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     fill_in 'content', with: 'my task'
     select retrospective.facilitator.surname, from: 'assignee'
@@ -220,7 +220,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     retrospective.update!(discussed_reflection: reflection)
 
     logged_in_as(retrospective.facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     fill_in 'content', with: 'my task'
     select retrospective.facilitator.surname, from: 'assignee'
@@ -256,7 +256,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     reflection.tasks.create!(author: facilitator, assignee: facilitator, description: 'my task')
 
     logged_in_as(facilitator)
-    visit retrospective_path(retrospective)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     within '#tasks-list' do
       assert_text 'Assigned to Facilitator'

@@ -1,4 +1,4 @@
-class GroupAccessesController < ApplicationController
+class Api::GroupAccessesController < ApplicationController
   def index
     render json: current_account.group_accesses.active.map(&:as_json)
   end

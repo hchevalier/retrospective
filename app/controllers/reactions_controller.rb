@@ -2,7 +2,7 @@ class ReactionsController < ApplicationController
   before_action :ensure_participant
 
   def create
-    retrospective = current_user.retrospective
+    retrospective = current_participant.retrospective
     target =
       if params[:topic_id]
         retrospective.topics.find(params[:topic_id])
@@ -10,7 +10,7 @@ class ReactionsController < ApplicationController
         retrospective.reflections.find(params[:reflection_id])
       end
 
-    reaction = current_user.reactions.create!(reactions_params.merge(target: target, retrospective: current_user.retrospective))
+    reaction = current_participant.reactions.create!(reactions_params.merge(target: target, retrospective: current_participant.retrospective))
     if retrospective.step != 'voting' || reaction.emoji?
       OrchestratorChannel.broadcast_to(retrospective, action: 'newReaction', parameters: { reaction: reaction.readable })
     elsif retrospective.step == 'voting' && reaction.vote?
@@ -21,8 +21,8 @@ class ReactionsController < ApplicationController
   end
 
   def destroy
-    retrospective = current_user.retrospective
-    reaction = current_user.reactions.find(params[:id])
+    retrospective = current_participant.retrospective
+    reaction = current_participant.reactions.find(params[:id])
     return render(json: :forbidden) if reaction.vote? && retrospective.step != 'voting'
 
     reaction.destroy!

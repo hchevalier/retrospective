@@ -29,7 +29,7 @@ class PendingInvitationsTest < ActionDispatch::IntegrationTest
 
     body = email.body.to_s
     link = <<~HTML
-      Click on <a href=\"https://docto-retrospective.herokuapp.com/groups/#{group.id}\?invitation_id=#{invitation.id}\">this link</a> to join
+      Click on <a href=\"https://docto-retrospective.herokuapp.com/groups/#{group.id}\?email=someone.else%40mycompany.com&amp;invitation_id=#{invitation.id}\">this link</a> to join
     HTML
     assert_match "You've been invited by Host to join the retropective group Group A", body
     assert_match link.squish, body
@@ -60,6 +60,7 @@ class PendingInvitationsTest < ActionDispatch::IntegrationTest
     invitation = create(:pending_invitation, email: 'someone@mycompany.com', group: create(:group))
     visit invitation.link(host_and_port)
 
+    assert_text 'Log in'
     assert_equal 'someone@mycompany.com', find('input[name="email"]').value
   end
 
