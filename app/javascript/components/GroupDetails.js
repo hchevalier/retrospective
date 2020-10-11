@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { get, destroy } from 'lib/httpClient'
 import AddGroupMembersModal from './AddGroupMembersModal'
 import Button from './Button'
+import DetailedTask from './DetailedTask'
 
 const GroupsDetails = ({ id }) => {
   const [groupRefresh, setGroupRefresh] = React.useState(1)
@@ -84,20 +85,7 @@ const GroupsDetails = ({ id }) => {
               <h2 className='mt-4 font-bold'>Tasks</h2>
               <div className='flex flex-row flex-wrap'>
                 {group.tasks.length === 0 && <span>No task</span>}
-                {group.tasks.map((task) => {
-                  return (
-                    <div key={task.id} className='block bg-gray-400 rounded-md p-2 m-2 w-64'>
-                      <div className='flex items-stretch'>
-                        <span className='flex-2'>{new Date(task.createdAt).toLocaleString()}</span>
-                        <span className='flex-1 text-right'>{task.status}</span>
-                      </div>
-                      {task.description}
-                      <div className='flex items-stretch'>
-                        <span className='flex-1'>Assigned to {task.assignee.surname}</span>
-                      </div>
-                    </div>
-                  )
-                })}
+                {group.tasks.map((task) => <DetailedTask key={task.id} task={task} showAssignee additionalClassName={'w-64'} />)}
               </div>
             </div>
           </div>
