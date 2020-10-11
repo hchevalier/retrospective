@@ -1,9 +1,5 @@
 class SessionsController < ApplicationController
-  include ApplicationHelper
-
-  skip_before_action :ensure_logged_in, only: %i(new create omniauth)
-
-  def new; end
+  skip_before_action :ensure_logged_in, only: %i(create omniauth)
 
   def create
     account = Account.find_by(email: params[:email])
@@ -12,7 +8,6 @@ class SessionsController < ApplicationController
     return render(json: { status: :unauthorized }, status: :unauthorized) unless account unless account.authenticate(params[:password])
 
     session[:account_id] = account.id
-    consume_invitation(account) if session[:invitation]
 
     return :head
   end
@@ -20,7 +15,7 @@ class SessionsController < ApplicationController
   def destroy
     session[:account_id] = nil
     cookies.signed[:participant_id] = nil
-    redirect_to :new_sessions
+    redirect_to single_page_app_path(path: 'sessions/new')
   end
 
   def omniauth

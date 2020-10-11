@@ -26,7 +26,7 @@ Rails.application.routes.draw do
     resources :retrospectives, only: %i(index show)
   end
 
-  resource :sessions, only: %i(new create)
+  resource :sessions, only: %i(create)
   resources :password_reset, only: %i(create show update)
   resource :accounts, only: %i(create)
 

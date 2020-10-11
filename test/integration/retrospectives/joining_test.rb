@@ -71,8 +71,8 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     fill_in 'password', with: 'mypassword'
     click_on 'Create account'
 
-    assert_text 'Other one'
     assert_text 'Lobby'
+    assert_text 'Other one'
   end
 
   test 'joins an existing retrospective by logging in to an existing account' do
@@ -85,12 +85,12 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     assert_text 'Log in'
 
     # Weirdly, there is a flaky here sometimes, when email is pre-filled from invitation and we use fill_in
-    # The email ends up appearing twice in the input
+    fill_in 'email', with: 'other_one@yopmail.com'
     fill_in 'password', with: 'mypassword'
     click_on 'Login'
 
-    assert_text 'Other one'
     assert_text 'Lobby'
+    assert_text 'Other one'
   end
 
   test 'joining an existing retrospective and logging in reuses a participant if any' do

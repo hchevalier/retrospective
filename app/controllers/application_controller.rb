@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
 
     respond_to do |format|
       format.json { render(json: { status: :unauthorized }) }
-      format.html { redirect_to :new_sessions }
+      format.html { redirect_to single_page_app_path(path: 'sessions/new') }
     end
   end
 

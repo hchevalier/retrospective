@@ -1,11 +1,13 @@
 import React from 'react'
 import { Link, withRouter } from 'react-router-dom'
-import PropTypes from 'prop-types'
 import HomeIcon from 'images/home-icon.svg'
+import { historyShape } from 'lib/utils/shapes'
 
 const Header = ({ history }) => {
   const pathname = history.location.pathname
-  const visible = !pathname.match(/\/retrospectives\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)
+  const visible =
+    !pathname.match(/\/retrospectives\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/) &&
+    !pathname.match(/\/sessions\/new/)
 
   if (!visible) return null
 
@@ -31,13 +33,7 @@ const Header = ({ history }) => {
 }
 
 Header.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-    replace: PropTypes.func.isRequired,
-    location: PropTypes.shape({
-      pathname: PropTypes.string.isRequired
-    }).isRequired
-  })
+  history: historyShape
 }
 
 export default withRouter(Header)

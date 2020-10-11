@@ -1,7 +1,7 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
-import PropTypes from 'prop-types'
 import { get } from 'lib/httpClient'
+import { historyShape } from 'lib/utils/shapes'
 
 const Dashboard = ({ history }) => {
   const [retrospectives, setRetrospectives] = React.useState([])
@@ -69,9 +69,7 @@ const Dashboard = ({ history }) => {
 }
 
 Dashboard.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  })
+  history: historyShape
 }
 
 export default withRouter(Dashboard)
