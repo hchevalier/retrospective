@@ -1,4 +1,4 @@
-class NoticesController < ApplicationController
+class Api::NoticesController < ApplicationController
   before_action :ensure_participant
 
   def create
