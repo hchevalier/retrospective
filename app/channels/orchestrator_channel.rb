@@ -74,13 +74,9 @@ class OrchestratorChannel < ApplicationCable::Channel
     broadcast_to(retrospective, action: 'setDiscussedReflection', parameters: { reflection: reflection.readable })
   end
 
-  def receive(data)
-    return unless current_participant&.facilitator?
+  def change_step
+    return unless current_participant.reload.facilitator?
 
-    retrospective = Retrospective.find(current_participant.retrospective_id)
-    case data.fetch('intent')
-    when 'next'
-      retrospective.next_step!
-    end
+    Retrospective.find(current_participant.retrospective_id).next_step!
   end
 end
