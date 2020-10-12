@@ -2,6 +2,7 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { get } from 'lib/httpClient'
 import { historyShape } from 'lib/utils/shapes'
+import DetailedTask from './DetailedTask'
 
 const Dashboard = ({ history }) => {
   const [retrospectives, setRetrospectives] = React.useState([])
@@ -50,17 +51,7 @@ const Dashboard = ({ history }) => {
           <div className='flex-1 text-xl'>My tasks</div>
 
           <div className='grid grid-cols-1 md:grid-cols-2'>
-            {tasks && tasks.map((task) => {
-              return (
-                <div key={task.id} className='block bg-gray-400 rounded-md p-2 m-2'>
-                  <div className='flex items-stretch'>
-                    <span className='flex-1'>{new Date(task.createdAt).toLocaleString()}</span>
-                    <span className='flex-1 text-right'>{task.status}</span>
-                  </div>
-                  {task.description}
-                </div>
-              )
-            })}
+            {tasks && tasks.map((task) => <DetailedTask key={task.id} task={task} />)}
           </div>
         </div>
       </div>

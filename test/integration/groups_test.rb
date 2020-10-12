@@ -124,14 +124,15 @@ class GroupsTest < ActionDispatch::IntegrationTest
     group.add_member(other_account)
 
     # can see tasks created during this retrospective
-    do_a_retrospective_with_actions(group, 'Retrospective 1 action', @account, other_account)
+    do_a_retrospective_with_actions(group, 'Reflection 1', 'Retrospective 1 action', @account, other_account)
     visit "/groups/#{group.id}"
     assert_text 'Retrospective 1 action', count: 2
+    assert_text 'Reflection 1'
 
     group.group_accesses.where(account: @account, revoked_at: nil).update_all(revoked_at: Time.current)
 
-    retrospective2 = do_a_retrospective_with_actions(group, 'Retrospective 2 action', other_account)
-    retrospective3 = do_a_retrospective_with_actions(group, 'Retrospective 3 action', other_account)
+    retrospective2 = do_a_retrospective_with_actions(group, 'Reflection 2', 'Retrospective 2 action', other_account)
+    retrospective3 = do_a_retrospective_with_actions(group, 'Reflection 3', 'Retrospective 3 action', other_account)
     retrospective3.tasks.update_all(status: :done, updated_at: Time.current)
 
     group.add_member(@account)
@@ -139,21 +140,26 @@ class GroupsTest < ActionDispatch::IntegrationTest
     # cannot see tasks that were created during the third retrospective because they were closed before he had a chance to see them
     visit "/groups/#{group.id}"
     assert_text 'Retrospective 1 action', count: 2
+    assert_text 'Reflection 1'
     assert_text 'Retrospective 2 action'
+    assert_text 'Reflection 2'
     refute_text 'Retrospective 3 action'
+    refute_text 'Reflection 3'
 
     retrospective2.tasks.update_all(status: :done, updated_at: Time.current)
     # @account can see all tasks created during this retrospective as he has any active access at this time, even if he did not participate
-    do_a_retrospective_with_actions(group, 'Retrospective 4 action', other_account)
+    do_a_retrospective_with_actions(group, 'Reflection 4', 'Retrospective 4 action', other_account)
 
     visit "/groups/#{group.id}"
     assert_text 'Retrospective 2 action'
+    assert_text 'Reflection 2'
     assert_text 'Retrospective 4 action'
+    assert_text 'Reflection 4'
   end
 
   private
 
-  def do_a_retrospective_with_actions(group, task_description, *accounts)
+  def do_a_retrospective_with_actions(group, content, task_description, *accounts)
     facilitator_account = accounts.first
     retrospective =
       Retrospective.create!(kind: :glad_sad_mad, group: group, facilitator_attributes: {
@@ -163,7 +169,7 @@ class GroupsTest < ActionDispatch::IntegrationTest
     accounts[1..].each do |account|
       Participant.create!(account: account, retrospective: retrospective, surname: account.username)
     end
-    reflection = create(:reflection, :glad, retrospective: retrospective, owner: facilitator)
+    reflection = create(:reflection, :glad, retrospective: retrospective, owner: facilitator, content: content)
     retrospective.reload.participants.each do |participant|
       create(:task, reflection: reflection, description: task_description, author: facilitator, assignee: participant)
     end
