@@ -12,7 +12,7 @@ const CLASSES_FOR_STATUS = {
 
 const Tag = ({ content }) => (
   <div className={classNames('text-xxs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full', CLASSES_FOR_STATUS[content])}>
-    {content}
+    {content.replace(/_/g, ' ').replace(/wont/, "won't")}
   </div>
 )
 
