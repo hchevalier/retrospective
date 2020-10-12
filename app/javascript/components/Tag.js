@@ -6,7 +6,7 @@ const CLASSES_FOR_STATUS = {
   wont_do: 'bg-red-200 text-red-700',
   done: 'bg-green-200 text-green-700',
   in_progress: 'bg-blue-200 text-blue-700',
-  stuck: 'bg-white text-gray-700',
+  on_hold: 'bg-white text-gray-700',
   todo: 'bg-orange-200 text-orange-700'
 }
 

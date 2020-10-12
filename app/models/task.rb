@@ -6,9 +6,10 @@ class Task < ApplicationRecord
   has_many :reactions, as: :target, inverse_of: :target
 
   enum status: {
+    done: 'done',
+    on_hold: 'on_hold',
     todo: 'todo',
-    stuck: 'stuck',
-    done: 'done'
+    wont_do: 'wont_do'
   }
 
   def as_json

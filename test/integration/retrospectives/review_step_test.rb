@@ -56,13 +56,18 @@ class Retrospective::ReviewStepTest < ActionDispatch::IntegrationTest
 
     within ".task[data-id='#{something_else.id}']" do
       assert_text 'Something else to do'
-      assert_changes -> { something_else.reload.status }, from: 'todo', to: 'stuck' do
+      assert_changes -> { something_else.reload.status }, from: 'todo', to: 'wont_do' do
         click_on "Won't"
-        assert_selector 'button[name="stuck"].selected'
+        assert_selector 'button[name="wont_do"].selected'
       end
 
-      assert_changes -> { something_else.reload.status }, from: 'stuck', to: 'todo' do
-        click_on 'Ask next time'
+      assert_changes -> { something_else.reload.status }, from: 'wont_do', to: 'on_hold' do
+        click_on 'On hold'
+        assert_selector 'button[name="on_hold"].selected'
+      end
+
+      assert_changes -> { something_else.reload.status }, from: 'on_hold', to: 'todo' do
+        click_on 'To do for next time'
         assert_selector 'button[name="todo"].selected'
       end
     end

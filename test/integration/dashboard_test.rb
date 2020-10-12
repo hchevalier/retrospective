@@ -9,7 +9,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
     reflection = create(:reflection, :glad, retrospective: @retrospective, owner: participant)
     create(:task, reflection: reflection, description: 'My simple task')
     create(:task, reflection: reflection, description: 'My finished simple task', status: :done)
-    create(:task, reflection: reflection, description: 'My skipped hard task', status: :stuck)
+    create(:task, reflection: reflection, description: 'My skipped hard task', status: :wont_do)
     as_user(@account)
   end
 
