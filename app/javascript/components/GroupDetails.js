@@ -36,7 +36,7 @@ const GroupsDetails = ({ id }) => {
   }, [id, groupRefresh])
 
   return (
-    <div className='container mx-auto flex flex-col'>
+    <div className='mx-auto flex flex-col p-8 bg-gray-300'>
       <div className='flex flex-row flex-grow justify-between'>
         <Link to='/groups'>
           <Button primary contained>Back</Button>

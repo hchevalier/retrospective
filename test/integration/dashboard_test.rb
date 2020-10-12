@@ -32,7 +32,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
 
   test 'displays retrospective the user took part in' do
     visit '/'
-    assert_text '8357 620UP - glad_sad_mad'
+    assert_text 'glad_sad_mad with 8357 620UP'
   end
 
   test 'does not display retrospective the user did not took part in even if he was part of the group' do
@@ -40,21 +40,61 @@ class DashboardTest < ActionDispatch::IntegrationTest
     new_account = other_retrospective.participants.first.account
 
     visit '/'
-    refute_text '8357 620UP - sailboat'
+    refute_text 'sailboat with 8357 620UP'
 
     as_user(new_account)
 
     visit '/'
-    assert_text '8357 620UP - sailboat'
+    assert_text 'sailboat with 8357 620UP'
   end
 
   test 'does not display retrospective the user took part in if he has no active access to the group' do
     @retrospective.group.group_accesses.update_all(revoked_at: 1.hour.ago)
     visit '/'
-    refute_text '8357 620UP - glad_sad_mad'
+    refute_text 'glad_sad_mad with 8357 620UP'
 
     @retrospective.group.add_member(@account)
     visit '/'
-    assert_text '8357 620UP - glad_sad_mad'
+    assert_text 'glad_sad_mad with 8357 620UP'
+  end
+
+  test 'displays more retrospectives with the SEE ALL button' do
+    retrospective = create(:retrospective, kind: :sailboat, group: @group)
+    create(:participant, retrospective: retrospective, account: @account, surname: 'Participator')
+    retrospective = create(:retrospective, kind: :sailboat, group: @group)
+    create(:participant, retrospective: retrospective, account: @account, surname: 'Participator')
+    retrospective = create(:retrospective, kind: :sailboat, group: @group)
+    create(:participant, retrospective: retrospective, account: @account, surname: 'Participator')
+
+    visit '/'
+    assert_text 'sailboat with 8357 620UP', count: 3
+    refute_text 'glad_sad_mad with 8357 620UP'
+
+    click_on 'SEE ALL'
+    assert_text 'glad_sad_mad with 8357 620UP'
+  end
+
+  test 'displays current retrospective when any' do
+    freeze_time do
+      @retrospective.update!(created_at: 89.minutes.ago)
+
+      visit '/'
+      assert_text 'Current retrospective'
+      assert_text 'A glad_sad_mad retrospective was started with 8357 620UP', normalize_ws: true
+
+      @retrospective.update!(created_at: 90.minutes.ago)
+      visit '/'
+      refute_text 'Current retrospective'
+      refute_text 'A glad_sad_mad retrospective was started with 8357 620UP'
+    end
+  end
+
+  test 'displays the list of scheduled retrospectives' do
+    travel_to Time.zone.local(2020, 12, 24, 12, 00, 00) do
+      @account.accessible_groups.first.update!(next_retrospective: 1.day.from_now)
+
+      visit '/'
+      assert_text "25/12 with 8357 620UP"
+    end
   end
 end

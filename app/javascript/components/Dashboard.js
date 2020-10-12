@@ -2,11 +2,15 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { get } from 'lib/httpClient'
 import { historyShape } from 'lib/utils/shapes'
+import { formatDateWithoutYear } from 'lib/helpers/date'
 import DetailedTask from './DetailedTask'
+import Card from './Card'
 
 const Dashboard = ({ history }) => {
   const [retrospectives, setRetrospectives] = React.useState([])
   const [tasks, setTasks] = React.useState([])
+  const [groups, setGroups] = React.useState([])
+  const [seeAllRetrospectives, setSeeAllRetrospectives] = React.useState(false)
 
   React.useEffect(() => {
     get({ url: '/api/retrospectives' })
@@ -19,40 +23,65 @@ const Dashboard = ({ history }) => {
       .then((data) => setTasks(data))
   }, [])
 
+  React.useEffect(() => {
+    get({ url: '/api/groups' })
+      .then((data) => setGroups(data))
+  }, [])
+
+  const handleStartRetrospective = () => history.push('/retrospectives/new')
+
   const handleRetrospectiveClick = (retrospectiveId) => history.push(`/retrospectives/${retrospectiveId}`)
 
+  const handleMoreRetrospectives = () => { setSeeAllRetrospectives(true) }
+
+  const now = new Date()
+  const currentRetrospective = retrospectives.find((retrospective) => new Date(retrospective.createdAt) > new Date(now - (3600000 * 1.5)))
+  const groupsWithScheduledRetrospectives = groups.filter((group) => group.nextRetrospective)
+
   return (
-    <div className='container' style={{ margin: '0 auto'}}>
-      <div className='mx-auto mt-8'>
-        <div className='flex items-stretch'>
-          <span className='flex-1 text-2xl'>Dashboard</span>
+    <div className='p-8 bg-gray-300'>
+      <div className='flex flex-row'>
+        <div className='flex w-3/4 flex-col'>
+          {currentRetrospective && (
+            <Card title='Current retrospective' actionLabel='JOIN' onAction={() => handleRetrospectiveClick(currentRetrospective.id)}>
+              <span>A {currentRetrospective.kind} retrospective was started</span>
+              &nbsp;with&nbsp;
+              <span>{currentRetrospective.group.name}</span>
+              &nbsp;at&nbsp;
+              <span>{new Date(currentRetrospective.createdAt).toLocaleTimeString().slice(0, 5)}</span>
+            </Card>
+          )}
 
-          <a className='bg-blue-500 hover:bg-blue-700 text-white font-medium py-1 px-2 rounded focus:outline-none focus:shadow-outline' href='/retrospectives/new'>
-            Create a retrospective
-          </a>
+          <Card title='My actions' wrap>
+            {tasks && tasks.map((task) => <DetailedTask key={task.id} task={task} containerClassName='flex-1-50' />)}
+          </Card>
         </div>
+        <div className='flex w-1/4 flex-col'>
+          <Card title='New retrospective' vertical empty actionLabel='START' onAction={handleStartRetrospective} />
 
-        <div className='flex flex-col my-8'>
-          <div className='flex-1 text-xl'>My retrospectives</div>
+          {groupsWithScheduledRetrospectives && (
+            <Card title='Scheduled retrospectives' vertical>
+              {groupsWithScheduledRetrospectives.map((group) => (
+                <div key={group.id}>
+                  <span className='font-medium text-blue-800'>{formatDateWithoutYear(new Date(group.nextRetrospective))}</span>
+                  <span>&nbsp;with {group.name}</span>
+                </div>
+              ))}
+            </Card>
+          )}
 
-          <div className='grid grid-cols-1 md:grid-cols-2'>
-            {retrospectives && retrospectives.map((retrospective) => {
+          <Card title='History' vertical actionLabel='SEE ALL' onAction={handleMoreRetrospectives}>
+            {retrospectives.slice(0, seeAllRetrospectives ? retrospectives.length : 3).map((retrospective) => {
               return (
-                <div key={retrospective.id} className='block bg-gray-400 rounded-md p-2 m-2 cursor-pointer' onClick={() => handleRetrospectiveClick(retrospective.id)}>
-                  {retrospective.group.name} - {retrospective.kind}<br />
-                  {new Date(retrospective.createdAt).toLocaleString()}
+                <div key={retrospective.id} className='cursor-pointer border-b w-full py-2' onClick={() => handleRetrospectiveClick(retrospective.id)}>
+                  <div>
+                    <span className='font-medium text-blue-800'>{formatDateWithoutYear(new Date(retrospective.createdAt))}</span>
+                    <span>&nbsp;{retrospective.kind} with {retrospective.group.name}</span>
+                  </div>
                 </div>
               )
             })}
-          </div>
-        </div>
-
-        <div className='flex flex-col my-8'>
-          <div className='flex-1 text-xl'>My tasks</div>
-
-          <div className='grid grid-cols-1 md:grid-cols-2'>
-            {tasks && tasks.map((task) => <DetailedTask key={task.id} task={task} />)}
-          </div>
+          </Card>
         </div>
       </div>
     </div>

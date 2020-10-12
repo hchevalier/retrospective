@@ -10,8 +10,8 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     as_user(account)
 
     visit '/'
-    assert_text 'Dashboard'
-    click_on 'Create a retrospective'
+    assert_text 'My actions'
+    click_on 'START'
 
     find('input[name="group_name"]').click
     assert_text '8357 620UP'
@@ -41,8 +41,8 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     as_user(account)
 
     visit '/'
-    assert_text 'Dashboard'
-    click_on 'Create a retrospective'
+    assert_text 'My actions'
+    click_on 'START'
 
     find('input[name="group_name"]').click
     refute_text '8357 620UP'
@@ -54,7 +54,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     assert_text 'Lobby 8357 620UP'
     account.reload
     visit '/'
-    assert_text '8357 620UP - glad_sad_mad'
+    assert_text 'glad_sad_mad with 8357 620UP'
   end
 
   test 'joins an existing retrospective by creating an account' do
@@ -166,7 +166,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
 
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
-    assert_text 'Dashboard'
+    assert_text 'My actions'
   end
 
   test 'only facilitator can see the button to start the retrospective' do

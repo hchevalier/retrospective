@@ -1,9 +1,10 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { get, destroy } from 'lib/httpClient'
-import Button from './Button'
+import { historyShape } from 'lib/utils/shapes'
+import Card from './Card'
 
-const GroupsList = () => {
+const GroupsList = ({ history }) => {
   const [groupAccesses, setGroupAccesses] = React.useState([])
   const [loading, setLoading] = React.useState(true)
 
@@ -19,41 +20,47 @@ const GroupsList = () => {
     }
   }
 
-  return (
-    <div className='container mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap'>
-      <div className='flex flex-col my-8'>
-        <Link to='/groups/new'>
-          <Button primary contained>Create a group</Button>
-        </Link>
-        <div className='flex-1 text-xl mt-4'>My groups</div>
-        <div>
-          {groupAccesses && groupAccesses.map((groupAccess) => {
-            const { group } = groupAccess
+  const handleCreateGroup = () => history.push('/groups/new')
 
-            return (
-              <Link key={groupAccess.id} to={`/groups/${group.id}`}>
-                <div className='rounded cursor-pointer bg-gray-400 p-2 mb-4'>
-                  <div className='flex flex-row justify-between'>
-                    <div className='flex flex-col justify-between'>
-                      <div className='font-bold'>
-                        <span>{group.name}</span>
-                        &nbsp;<span>({group.membersCount} members)</span>
+  return (
+    <div className='mx-auto p-8 bg-gray-300 flex w-full'>
+      <div className='flex flex-col w-full'>
+        <Card title='My groups' wrap actionLocation='header' actionLabel='CREATE A GROUP' onAction={handleCreateGroup}>
+          <div>
+            {groupAccesses && groupAccesses.map((groupAccess) => {
+              const { group } = groupAccess
+
+              return (
+                <Link key={groupAccess.id} to={`/groups/${group.id}`}>
+                  <div className='p2'>
+                    <div className='flex flex-col bg-gray-200 rounded-md p-2 m-2'>
+                      <div className='text-sm border-b-2 border-gray-400'>
+                        <span className='text-blue-800'>{group.name}</span>
+                        <span> joined on {new Date(groupAccess.createdAt).toLocaleDateString()}</span>
                       </div>
-                      <div>Joined on {new Date(groupAccess.createdAt).toLocaleString()}</div>
-                    </div>
-                    <div className='flex flex-row border rounded self-start p-1 ml-2 hover:bg-gray-500'>
-                      <div className='leave-link' onClick={(event) => { event.preventDefault(); handleLeaveGroup(groupAccess) }}>Leave group</div>
+                      <div className='mt-1'>{group.membersCount} members</div>
+                      <div className='flex flex-grow items-end self-end'>
+                        <button
+                          className='bg-red-200 text-red-700 text-xxs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full'
+                          onClick={(event) => { event.preventDefault(); handleLeaveGroup(groupAccess) }}>
+                          LEAVE
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            )
-          })}
-          {!loading && !groupAccesses && <span>You did not join nor create any group</span>}
-        </div>
+                </Link>
+              )
+            })}
+            {!loading && !groupAccesses && <span>You did not join nor create any group</span>}
+          </div>
+        </Card>
       </div>
     </div>
   )
 }
 
-export default GroupsList
+GroupsList.propTypes = {
+  history: historyShape
+}
+
+export default withRouter(GroupsList)

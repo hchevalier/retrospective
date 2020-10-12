@@ -12,7 +12,7 @@ const Header = ({ history }) => {
   if (!visible) return null
 
   return (
-    <nav className='bg-gray-900 mb-6 shadow text-white' role='navigation'>
+    <nav className='bg-gray-900 shadow text-white' role='navigation'>
       <div className='container mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap'>
         <Link to='/' className='block flex items-center'>
           <img src={HomeIcon} className='inline' width="24" />
