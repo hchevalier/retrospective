@@ -19,11 +19,15 @@ const StepReview = () => {
   }
 
   const handleWontDoClicked = (event) => {
-    resolveStatus(event, 'stuck')
+    resolveStatus(event, 'wont_do')
+  }
+
+  const handleToDoClicked = (event) => {
+    resolveStatus(event, 'todo')
   }
 
   const handleLaterClicked = (event) => {
-    resolveStatus(event, 'todo')
+    resolveStatus(event, 'on_hold')
   }
 
   return (
@@ -38,8 +42,9 @@ const StepReview = () => {
 
             <div>
               <Button contained primary name={'done'} selected={task.status === 'done'} data-id={task.id} onClick={handleDoneClicked}>Done</Button>
-              <Button contained primary name={'stuck'} selected={task.status === 'stuck'} data-id={task.id} className='ml-4' onClick={handleWontDoClicked}>Won&apos;t do</Button>
-              <Button contained primary name={'todo'} selected={task.status === 'todo'} data-id={task.id} className='ml-4' onClick={handleLaterClicked}>Ask next time</Button>
+              <Button contained primary name={'wont_do'} selected={task.status === 'wont_do'} data-id={task.id} className='ml-4' onClick={handleWontDoClicked}>Won&apos;t do</Button>
+              <Button contained primary name={'on_hold'} selected={task.status === 'on_hold'} data-id={task.id} className='ml-4' onClick={handleLaterClicked}>On hold</Button>
+              <Button contained primary name={'todo'} selected={task.status === 'todo'} data-id={task.id} className='ml-4' onClick={handleToDoClicked}>To do for next time</Button>
             </div>
           </div>
         ))}

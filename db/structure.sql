@@ -79,7 +79,8 @@ CREATE TYPE public.retrospective_steps AS ENUM (
 
 CREATE TYPE public.task_statuses AS ENUM (
     'todo',
-    'stuck',
+    'on_hold',
+    'wont_do',
     'done'
 );
 
@@ -555,6 +556,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200711153629'),
 ('20200725200805'),
 ('20200817225716'),
-('20200828211927');
+('20200828211927'),
+('20201012071357');
 
 
