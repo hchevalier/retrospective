@@ -71,7 +71,7 @@ const Dashboard = ({ history }) => {
           )}
 
           <Card title='History' vertical actionLabel='SEE ALL' onAction={handleMoreRetrospectives}>
-            {retrospectives.slice(seeAllRetrospectives ? 0 : -3).map((retrospective) => {
+            {retrospectives.slice(0, seeAllRetrospectives ? retrospectives.length : 3).map((retrospective) => {
               return (
                 <div key={retrospective.id} className='cursor-pointer border-b w-full py-2' onClick={() => handleRetrospectiveClick(retrospective.id)}>
                   <div>
