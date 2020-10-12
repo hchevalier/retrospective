@@ -8,7 +8,7 @@ class GroupsTest < ActionDispatch::IntegrationTest
 
   test 'creating a group makes account automatically join it' do
     visit '/groups'
-    click_on 'Create a group', match: :first
+    click_on 'CREATE A GROUP', match: :first
 
     fill_in 'group_name', with: '8357 620UP'
     click_on 'Create'
@@ -24,18 +24,18 @@ class GroupsTest < ActionDispatch::IntegrationTest
     group.add_member(@account)
 
     visit '/groups'
-    assert_text '8357 620UP (1 members)'
+    assert_text '1 members'
 
     other_account = create(:account, username: 'Other member')
     group.add_member(other_account)
 
     visit '/groups'
-    assert_text '8357 620UP (2 members)'
+    assert_text '2 members'
 
     group.group_accesses.find_by(account: other_account).update!(revoked_at: Time.current)
 
     visit '/groups'
-    assert_text '8357 620UP (1 members)'
+    assert_text '1 members'
   end
 
   test 'hides groups that have been left' do
@@ -43,10 +43,10 @@ class GroupsTest < ActionDispatch::IntegrationTest
     group.add_member(@account)
 
     visit '/groups'
-    assert_text '8357 620UP (1 members)'
+    assert_text '8357 620UP'
 
     accept_confirm do
-      find('.leave-link').click
+      click_on 'LEAVE'
     end
 
     refute_text '8357 620UP'
@@ -62,20 +62,20 @@ class GroupsTest < ActionDispatch::IntegrationTest
     group.add_member(other_account)
 
     visit '/groups'
-    assert_text '8357 620UP (2 members)'
+    assert_text '8357 620UP'
 
     accept_confirm do
-      find('.leave-link').click
+      click_on 'LEAVE'
     end
     refute_text '8357 620UP'
 
     as_user(other_account)
 
     visit '/groups'
-    assert_text '8357 620UP (1 members)'
+    assert_text '8357 620UP'
 
     accept_confirm do
-      find('.leave-link').click
+      click_on 'LEAVE'
     end
     refute_text '8357 620UP'
 

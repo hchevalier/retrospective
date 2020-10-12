@@ -72,7 +72,7 @@ const RetrospectiveContainer = ({ id, history }) => {
   }, [id])
 
   return (
-    <div id='main-container' className='flex flex-col min-h-screen'>
+    <div id='main-container' className='flex flex-col min-h-screen bg-white'>
       <RetrospectiveHeader
         groupName={retrospectiveInfo?.group?.name}
         kind={retrospectiveInfo?.kind}

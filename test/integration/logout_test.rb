@@ -6,7 +6,7 @@ class LogoutTest < ActionDispatch::IntegrationTest
     as_user(account)
 
     visit '/'
-    assert_text 'Dashboard'
+    assert_text 'My actions'
     click_on 'Log out'
 
     assert_text 'Log in'

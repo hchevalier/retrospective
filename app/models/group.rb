@@ -30,7 +30,8 @@ class Group < ApplicationRecord
     {
       createdAt: created_at,
       id: id,
-      name: name
+      name: name,
+      nextRetrospective: next_retrospective
     }
   end
 

@@ -15,6 +15,9 @@ module.exports = {
       boxShadow: {
         right: '1px 0 rgba(0, 0, 0, 0.1)',
       },
+      flex: {
+        '1-50': '1 1 50%',
+      },
       fontSize: {
         'xxs': '.5rem',
       },

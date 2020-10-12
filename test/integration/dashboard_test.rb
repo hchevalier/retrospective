@@ -32,7 +32,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
 
   test 'displays retrospective the user took part in' do
     visit '/'
-    assert_text '8357 620UP - glad_sad_mad'
+    assert_text 'glad_sad_mad with 8357 620UP'
   end
 
   test 'does not display retrospective the user did not took part in even if he was part of the group' do
@@ -40,21 +40,21 @@ class DashboardTest < ActionDispatch::IntegrationTest
     new_account = other_retrospective.participants.first.account
 
     visit '/'
-    refute_text '8357 620UP - sailboat'
+    refute_text 'sailboat with 8357 620UP'
 
     as_user(new_account)
 
     visit '/'
-    assert_text '8357 620UP - sailboat'
+    assert_text 'sailboat with 8357 620UP'
   end
 
   test 'does not display retrospective the user took part in if he has no active access to the group' do
     @retrospective.group.group_accesses.update_all(revoked_at: 1.hour.ago)
     visit '/'
-    refute_text '8357 620UP - glad_sad_mad'
+    refute_text 'glad_sad_mad with 8357 620UP'
 
     @retrospective.group.add_member(@account)
     visit '/'
-    assert_text '8357 620UP - glad_sad_mad'
+    assert_text 'glad_sad_mad with 8357 620UP'
   end
 end

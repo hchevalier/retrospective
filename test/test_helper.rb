@@ -54,4 +54,9 @@ class ActionDispatch::IntegrationTest
     Capybara.reset_sessions!
     Capybara.use_default_driver
   end
+
+  def visit(path)
+    @account.reload if @account
+    super
+  end
 end

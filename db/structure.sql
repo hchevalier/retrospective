@@ -154,7 +154,8 @@ CREATE TABLE public.groups (
     name character varying NOT NULL,
     deleted_at timestamp without time zone,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    next_retrospective timestamp without time zone
 );
 
 
@@ -557,6 +558,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200725200805'),
 ('20200817225716'),
 ('20200828211927'),
-('20201012071357');
+('20201012071357'),
+('20201012211423');
 
 

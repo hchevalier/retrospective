@@ -38,6 +38,6 @@ class PasswordResetTest < ActionDispatch::IntegrationTest
     fill_in 'password', with: 'my_new_password'
     click_on 'Login'
 
-    assert_text 'Dashboard'
+    assert_text 'My actions'
   end
 end
