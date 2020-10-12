@@ -11,7 +11,7 @@ const DetailedTask = ({ task, showAssignee, additionalClassName }) => {
     <div className={classNames('flex flex-col bg-gray-400 rounded-md p-2 m-2', additionalClassName)}>
       <div className='text-sm  border-b-2 border-gray-500'>
         <span>{showAssignee ? `Assigned to ${task.assignee.surname} on` : 'Since'}</span>
-        <span> {('0' + jsDate.getDay()).slice(-2)}/{('0' + (jsDate.getMonth() + 1)).slice(-2)}</span>
+        <span> {('0' + jsDate.getDate()).slice(-2)}/{('0' + (jsDate.getMonth() + 1)).slice(-2)}</span>
       </div>
       <div className='bg-gray-200 rounded-md p-2 mt-2'>{content}</div>
       <div className='mt-1'>{task.description}</div>
