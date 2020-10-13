@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { get, destroy } from 'lib/httpClient'
 import AddGroupMembersModal from './AddGroupMembersModal'
+import Card from './Card'
 import Button from './Button'
 import DetailedTask from './DetailedTask'
 
@@ -41,60 +42,58 @@ const GroupsDetails = ({ id }) => {
         <Link to='/groups'>
           <Button primary contained>Back</Button>
         </Link>
-        <Button primary contained onClick={handleAddGroupMembersClick}>Add members</Button>
       </div>
 
       {group.members.length > 0 && (
-        <>
-          <div className='flex flex-col my-8'>
-            <div className='flex-1 text-xl font-bold'>Group {group.name}</div>
-            <div>
-              Created on {group.createdAt}
-            </div>
+        <div className='flex flex-row mt-8'>
+          <div className='flex w-3/4 flex-col'>
+            {group.pendingInvitations.length > 0 && (
+              <Card title={`Pending invitations (${group.pendingInvitations.length})`} wrap>
+                <div className='flex flex-col flex-wrap'>
+                  <ul>
+                    {group.pendingInvitations.map((invitation) => {
+                      return (
+                        <li key={invitation.id}>
+                          {invitation.email}&nbsp;
+                          <span className='text-xs'>
+                            (<a data-id={invitation.id} className='cursor-pointer' onClick={handleCancelInvitation}>Cancel invitation</a>)
+                            </span>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+              </Card>
+            )}
 
-            <div>
-              <h2 className='mt-4 font-bold'>Group members: {group.members.length}</h2>
-              <div className='flex flex-col flex-wrap ml-8'>
-                <ul className='list-disc'>
+            <Card title={`Tasks (${group.tasks.length})`} wrap>
+              {group.tasks.length === 0 && <span>No task</span>}
+              {group.tasks.map((task) => <DetailedTask key={task.id} task={task} showAssignee containerClassName={'flex-1-33'} />)}
+            </Card>
+          </div>
+
+          <div className='flex w-1/4 flex-col'>
+            <Card title={group.name} wrap>
+              Created on {new Date(group.createdAt).toLocaleDateString()}
+            </Card>
+
+            <Card title={`Group members (${group.members.length})`} wrap actionLocation='header' actionLabel='ADD' onAction={handleAddGroupMembersClick}>
+              <div className='flex flex-col flex-wrap'>
+                <ul>
                   {group.members.map((account) => {
                     return <li key={account.id}>{account.username}</li>
                   })}
                 </ul>
               </div>
-
-              {group.pendingInvitations.length > 0 && (
-                <>
-                  <h2 className='mt-4 font-bold'>Pending invitations:</h2>
-                  <div className='flex flex-col flex-wrap ml-8'>
-                    <ul className='list-disc'>
-                      {group.pendingInvitations.map((invitation) => {
-                        return (
-                          <li key={invitation.id}>
-                            {invitation.email}&nbsp;
-                            <span className='text-xs'>
-                              (<a data-id={invitation.id} className='cursor-pointer' onClick={handleCancelInvitation}>Cancel invitation</a>)
-                            </span>
-                          </li>
-                        )
-                      })}
-                    </ul>
-                  </div>
-                </>
-              )}
-
-              <h2 className='mt-4 font-bold'>Tasks</h2>
-              <div className='flex flex-row flex-wrap'>
-                {group.tasks.length === 0 && <span>No task</span>}
-                {group.tasks.map((task) => <DetailedTask key={task.id} task={task} showAssignee additionalClassName={'w-64'} />)}
-              </div>
-            </div>
+            </Card>
           </div>
+
           <AddGroupMembersModal
             visible={addMembersModalVisible}
             onInvitationsSent={handleSendInvitation}
             onModalClose={handleAddGroupMembersModalClose}
             group={group} />
-        </>
+        </div>
       )}
     </div>
   )

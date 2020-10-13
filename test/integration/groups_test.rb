@@ -92,8 +92,8 @@ class GroupsTest < ActionDispatch::IntegrationTest
     visit '/groups'
     click_on '8357 620UP'
 
-    assert_text 'Group 8357 620UP'
-    assert_text 'Group members: 2'
+    assert_text '8357 620UP'
+    assert_text 'Group members (2)'
     assert_text 'Groupie'
     assert_text 'Other member'
   end
@@ -107,13 +107,13 @@ class GroupsTest < ActionDispatch::IntegrationTest
     group.group_accesses.find_by(account: other_account).update!(revoked_at: Time.current)
 
     visit "/groups/#{group.id}"
-    assert_text 'Group members: 1'
+    assert_text 'Group members (1)'
     refute_text 'Other member'
 
     group.add_member(other_account)
 
     visit "/groups/#{group.id}"
-    assert_text 'Group members: 2'
+    assert_text 'Group members (2)'
     assert_text 'Other member', count: 1
   end
 

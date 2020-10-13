@@ -16,6 +16,7 @@ module.exports = {
         right: '1px 0 rgba(0, 0, 0, 0.1)',
       },
       flex: {
+        '1-33': '1 1 33.3%',
         '1-50': '1 1 50%',
       },
       fontSize: {

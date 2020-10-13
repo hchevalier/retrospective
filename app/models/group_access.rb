@@ -16,10 +16,10 @@ class GroupAccess < ApplicationRecord
       createdAt: created_at,
       id: id,
       group: {
-        createdAt: group.created_at,
-        id: group.id,
+        **group.as_short_json,
+        allTimeRetrospectivesCount: group.retrospectives.count,
         membersCount: group.accounts_without_revoked.count,
-        name: group.name
+        pendingTasksCount: group.pending_tasks.count
       }
     }
   end

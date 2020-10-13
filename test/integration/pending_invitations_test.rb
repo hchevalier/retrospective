@@ -8,10 +8,10 @@ class PendingInvitationsTest < ActionDispatch::IntegrationTest
     group.add_member(account)
 
     visit "/groups/#{group.id}"
-    assert_text 'Add members'
+    assert_button 'ADD'
     refute_text 'Pending invitations'
 
-    click_on 'Add members'
+    click_on 'ADD'
     fill_in 'email_addresses', with: 'someone@mycompany.com, someone.else@mycompany.com'
     click_on 'Send invitations'
 
