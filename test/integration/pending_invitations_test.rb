@@ -56,6 +56,34 @@ class PendingInvitationsTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'cannot invite people when domain whitelisting is on and email is not authorized' do
+    ApplicationController.stub_const(:AUTHORIZED_DOMAINS, ['@mycompany.com']) do
+      account = create(:account, username: 'Host')
+      as_user(account)
+      group = create(:group, name: 'Group A')
+      group.add_member(account)
+
+      visit "/groups/#{group.id}"
+      assert_button 'ADD'
+      refute_text 'Pending invitations'
+
+      click_on 'ADD'
+      fill_in 'email_addresses', with: 'someone@nocompany.com'
+      click_on 'Send invitations'
+
+      refute_text 'Pending invitations'
+      refute_text 'someone@mycompany.com'
+
+      click_on 'ADD'
+      fill_in 'email_addresses', with: 'someone@mycompany.fr, someone.else@mycompany.com'
+      click_on 'Send invitations'
+
+      assert_text 'Pending invitations'
+      refute_text 'someone@mycompany.com'
+      assert_text 'someone.else@mycompany.com'
+    end
+  end
+
   test 'using an invitation link prefills the email' do
     invitation = create(:pending_invitation, email: 'someone@mycompany.com', group: create(:group))
     visit invitation.link(host_and_port)

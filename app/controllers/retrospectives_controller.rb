@@ -1,5 +1,4 @@
 class RetrospectivesController < ApplicationController
-  before_action :http_authenticate
   before_action :preload_current_participant_and_relationships, only: :show
   skip_before_action :ensure_logged_in, only: :show
 
@@ -26,13 +25,5 @@ class RetrospectivesController < ApplicationController
 
   def preload_current_participant_and_relationships
     current_participant_with_relationships_included
-  end
-
-  def http_authenticate
-    return true unless Rails.env.production?
-
-    authenticate_or_request_with_http_basic do |username, password|
-      username == ENV.fetch('BASIC_AUTH_USERNAME') && password == ENV.fetch('BASIC_AUTH_PASSWORD')
-    end
   end
 end

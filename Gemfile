@@ -32,6 +32,7 @@ end
 
 group :test do
   gem 'capybara', '>= 2.15'
+  gem 'minitest-stub-const'
   gem 'mocha'
   gem 'selenium-webdriver'
   gem 'webdrivers'

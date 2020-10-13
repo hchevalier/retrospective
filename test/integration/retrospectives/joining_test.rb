@@ -75,6 +75,26 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     assert_text 'Other one'
   end
 
+  test 'cannot create an account when domain whitelisting is on and email is not authorized' do
+    ApplicationController.stub_const(:AUTHORIZED_DOMAINS, ['@mycompany.com']) do
+      retrospective = create(:retrospective)
+      invitation = create_invitation(retrospective, 'other_one@yopmail.com')
+
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}", invitation_id: invitation.id)
+      refute_text 'Lobby'
+      assert_text 'Log in'
+
+      click_on "Don't have an account yet?"
+      fill_in 'username', with: 'Other one'
+      fill_in 'email', with: 'other_one@yopmail.com'
+      fill_in 'password', with: 'mypassword'
+
+      dismiss_confirm do
+        click_on 'Create account'
+      end
+    end
+  end
+
   test 'joins an existing retrospective by logging in to an existing account' do
     retrospective = create(:retrospective)
     create(:account, username: 'Other one', email: 'other_one@yopmail.com', password: 'mypasword')

@@ -7,7 +7,7 @@ class PasswordResetController < ApplicationController
     return render(json: { status: :created }) unless account
 
     account.regenerate_password_reset_token
-    AccountMailer.send_password_reset(account: account).deliver_later
+    AccountMailer.send_password_reset(account: account).deliver_later if valid_email?(account.email)
 
     render(json: { status: :created })
   end

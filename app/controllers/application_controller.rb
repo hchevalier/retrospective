@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   before_action :ensure_logged_in
 
+  AUTHORIZED_DOMAINS = ENV.fetch('DOMAINS_WHITELIST', '').split(';').map { |domain| "@#{domain}" }.freeze
+
   def current_participant
     @current_participant ||= begin
       (participant_id = cookies.signed[:participant_id]) ?
@@ -43,5 +45,11 @@ class ApplicationController < ActionController::Base
     return if current_participant
 
     render json: { status: :unauthorized }
+  end
+
+  def valid_email?(email)
+    return true unless AUTHORIZED_DOMAINS.any?
+
+    AUTHORIZED_DOMAINS.any? { |domain| email.ends_with?(domain) }
   end
 end
