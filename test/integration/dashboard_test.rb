@@ -92,11 +92,22 @@ class DashboardTest < ActionDispatch::IntegrationTest
   end
 
   test 'displays the list of scheduled retrospectives' do
-    travel_to DateTime.parse('2020-12-24T12:00:00+0200') do
-      @account.accessible_groups.first.update!(next_retrospective: 1.day.from_now)
+    freeze_time do
+      first_monday = Time.current.beginning_of_month.beginning_of_week
+      visit "/groups/#{@group.id}"
+      find('.react-datetime-picker__calendar-button').click
+      assert_selector '.react-calendar__tile'
+      find('.react-calendar__tile', match: :first).click
+      assert_field 'day', with: first_monday.strftime('%-d')
+      assert_field 'month', with: first_monday.strftime('%-m')
+      assert_field 'year', with: first_monday.strftime('%Y')
+      find_field('hour24').native.clear
+      find_field('hour24').native.send_keys(:numpad1, :numpad2)
+      find_field('minute').native.clear
+      find_field('minute').native.send_keys(:numpad3, :numpad0)
 
       visit '/'
-      assert_text "25/12 at 12:00 with MyGroupName"
+      assert_text "#{first_monday.strftime('%d/%m')} at 12:30 with MyGroupName"
     end
   end
 end

@@ -18,6 +18,8 @@ const FacilitatorToolkitLeft = () => {
     channel.setRevealer(randomRevealer.uuid)
   }
 
+  if (!channel || channel.consumer.connection.disconnected) return null
+
   return (
     <div className='flex flex-col'>
       {step === 'grouping' && revealers.length < participants.length && (
