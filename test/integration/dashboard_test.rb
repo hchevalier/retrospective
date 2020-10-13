@@ -2,7 +2,7 @@ require 'test_helper'
 
 class DashboardTest < ActionDispatch::IntegrationTest
   setup do
-    @group = create(:group, name: '8357 620UP')
+    @group = create(:group, name: 'MyGroupName')
     @retrospective = create(:retrospective, group: @group)
     participant = @retrospective.participants.first
     @account = participant.account
@@ -34,7 +34,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
 
   test 'displays retrospective the user took part in' do
     visit '/'
-    assert_text 'glad_sad_mad with 8357 620UP'
+    assert_text 'glad_sad_mad with MyGroupName'
   end
 
   test 'does not display retrospective the user did not took part in even if he was part of the group' do
@@ -42,22 +42,22 @@ class DashboardTest < ActionDispatch::IntegrationTest
     new_account = other_retrospective.participants.first.account
 
     visit '/'
-    refute_text 'sailboat with 8357 620UP'
+    refute_text 'sailboat with MyGroupName'
 
     as_user(new_account)
 
     visit '/'
-    assert_text 'sailboat with 8357 620UP'
+    assert_text 'sailboat with MyGroupName'
   end
 
   test 'does not display retrospective the user took part in if he has no active access to the group' do
     @retrospective.group.group_accesses.update_all(revoked_at: 1.hour.ago)
     visit '/'
-    refute_text 'glad_sad_mad with 8357 620UP'
+    refute_text 'glad_sad_mad with MyGroupName'
 
     @retrospective.group.add_member(@account)
     visit '/'
-    assert_text 'glad_sad_mad with 8357 620UP'
+    assert_text 'glad_sad_mad with MyGroupName'
   end
 
   test 'displays more retrospectives with the SEE ALL button' do
@@ -69,11 +69,11 @@ class DashboardTest < ActionDispatch::IntegrationTest
     create(:participant, retrospective: retrospective, account: @account, surname: 'Participator')
 
     visit '/'
-    assert_text 'sailboat with 8357 620UP', count: 3
-    refute_text 'glad_sad_mad with 8357 620UP'
+    assert_text 'sailboat with MyGroupName', count: 3
+    refute_text 'glad_sad_mad with MyGroupName'
 
     click_on 'SEE ALL'
-    assert_text 'glad_sad_mad with 8357 620UP'
+    assert_text 'glad_sad_mad with MyGroupName'
   end
 
   test 'displays current retrospective when any' do
@@ -82,12 +82,12 @@ class DashboardTest < ActionDispatch::IntegrationTest
 
       visit '/'
       assert_text 'Current retrospective'
-      assert_text 'A glad_sad_mad retrospective was started with 8357 620UP', normalize_ws: true
+      assert_text 'A glad_sad_mad retrospective was started with MyGroupName', normalize_ws: true
 
       @retrospective.update!(created_at: 90.minutes.ago)
       visit '/'
       refute_text 'Current retrospective'
-      refute_text 'A glad_sad_mad retrospective was started with 8357 620UP'
+      refute_text 'A glad_sad_mad retrospective was started with MyGroupName'
     end
   end
 
@@ -96,7 +96,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
       @account.accessible_groups.first.update!(next_retrospective: 1.day.from_now)
 
       visit '/'
-      assert_text "25/12 with 8357 620UP"
+      assert_text "25/12 with MyGroupName"
     end
   end
 end

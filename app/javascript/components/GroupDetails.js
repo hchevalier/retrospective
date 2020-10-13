@@ -81,12 +81,12 @@ const GroupsDetails = ({ id }) => {
             )}
 
             <Card
-              title={`Tasks (${filteredTasks.length})`}
+              title={`Actions (${filteredTasks.length})`}
               wrap
               actionLabel={displayDoneTasks ? 'HIDE DONE' : 'SEE DONE'}
               actionLocation='header'
               onAction={handleToggleDisplayDoneTasks}>
-              {filteredTasks.length === 0 && <span>No task</span>}
+              {filteredTasks.length === 0 && <span className='text-gray-500'>No action</span>}
               {filteredTasks.map((task) => <DetailedTask key={task.id} task={task} showAssignee containerClassName={'flex-1-33'} />)}
             </Card>
           </div>
@@ -96,7 +96,7 @@ const GroupsDetails = ({ id }) => {
               <div>Created on {new Date(group.createdAt).toLocaleDateString()}</div>
               <div>
                 <div>Next retrospective:</div>
-                <DateTimePicker onChange={handleNextRetrospectiveChanged} closeWidgets disableClock value={nextRetrospective} />
+                <DateTimePicker onChange={handleNextRetrospectiveChanged} closeWidgets showLeadingZeros disableClock value={nextRetrospective} />
               </div>
             </Card>
 
