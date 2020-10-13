@@ -2,9 +2,10 @@ class AccountsController < ApplicationController
   skip_before_action :ensure_logged_in, only: :create
 
   def create
-    account = Account.create(account_params)
+    account = Account.new(account_params)
+    account.save if valid_email?(account.email)
 
-    redirect_to :back unless account
+    return render(json: { status: :forbidden }, status: :forbidden) unless account.persisted?
 
     session[:account_id] = account.id
 
