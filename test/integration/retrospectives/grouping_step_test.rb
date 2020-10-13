@@ -60,7 +60,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     3.times do
       assert_no_one_has_the_revealer_token
-      find('#assign-random-revealer').click
+      click_on 'assign-random-revealer'
       revealer = current_revealer(retrospective.facilitator, participant, other_participant)
       close_modal_on_current_revealer_window(retrospective, revealer)
     end

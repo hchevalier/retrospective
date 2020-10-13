@@ -2,7 +2,7 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { get } from 'lib/httpClient'
 import { historyShape } from 'lib/utils/shapes'
-import { formatDateWithoutYear } from 'lib/helpers/date'
+import { formatTime, formatDateWithoutYear } from 'lib/helpers/date'
 import DetailedTask from './DetailedTask'
 import Card from './Card'
 
@@ -53,22 +53,24 @@ const Dashboard = ({ history }) => {
           )}
 
           <Card title='My actions' wrap>
-            {tasks && tasks.map((task) => <DetailedTask key={task.id} task={task} containerClassName='flex-1-50' />)}
+            {tasks.map((task) => <DetailedTask key={task.id} task={task} containerClassName='flex-1-50' />)}
+            {tasks.length === 0 && <span className='text-gray-500'>No pending action</span>}
           </Card>
         </div>
         <div className='flex w-1/4 flex-col'>
           <Card title='New retrospective' vertical empty actionLabel='START' onAction={handleStartRetrospective} />
 
-          {groupsWithScheduledRetrospectives && (
-            <Card title='Scheduled retrospectives' vertical>
-              {groupsWithScheduledRetrospectives.map((group) => (
-                <div key={group.id}>
-                  <span className='font-medium text-blue-800'>{formatDateWithoutYear(new Date(group.nextRetrospective))}</span>
-                  <span>&nbsp;with {group.name}</span>
-                </div>
-              ))}
-            </Card>
-          )}
+          <Card title='Scheduled retrospectives' vertical>
+            {groupsWithScheduledRetrospectives.map((group) => (
+              <div key={group.id}>
+                <span className='font-medium text-blue-800'>{formatDateWithoutYear(new Date(group.nextRetrospective))}</span>
+                <span>&nbsp;at</span>
+                <span className='font-medium text-blue-800'>&nbsp;{formatTime(new Date(group.nextRetrospective))}</span>
+                <span>&nbsp;with {group.name}</span>
+              </div>
+            ))}
+            {groupsWithScheduledRetrospectives.length === 0 && <span className='text-gray-500'>No scheduled retrospective</span>}
+          </Card>
 
           <Card title='History' vertical actionLabel='SEE ALL' onAction={handleMoreRetrospectives}>
             {retrospectives.slice(0, seeAllRetrospectives ? retrospectives.length : 3).map((retrospective) => {
@@ -81,6 +83,7 @@ const Dashboard = ({ history }) => {
                 </div>
               )
             })}
+            {retrospectives.length === 0 && <span className='text-gray-500'>No past retrospective</span>}
           </Card>
         </div>
       </div>

@@ -6,7 +6,7 @@ import Button from './Button'
 const Card = ({ title, actionLabel, onAction, actionLocation, vertical, wrap, children }) => {
   return (
     <div className='w-full mb-6 px-4 flex flex-col'>
-      <div className='flex-grow flex flex-col bg-white border-t border-b shadow overflow-hidden'>
+      <div className='flex-grow flex flex-col bg-white border-t border-b shadow'>
         <div className='border-b'>
           <div className='flex justify-between px-6 -mb-px'>
             <h3 className='text-blue-800 py-4 font-normal text-lg'>{title}</h3>
