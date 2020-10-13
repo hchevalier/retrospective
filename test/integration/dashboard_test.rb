@@ -92,11 +92,11 @@ class DashboardTest < ActionDispatch::IntegrationTest
   end
 
   test 'displays the list of scheduled retrospectives' do
-    travel_to Time.zone.local(2020, 12, 24, 12, 00, 00) do
+    travel_to DateTime.parse('2020-12-24T12:00:00+0200') do
       @account.accessible_groups.first.update!(next_retrospective: 1.day.from_now)
 
       visit '/'
-      assert_text "25/12 with MyGroupName"
+      assert_text "25/12 at 12:00 with MyGroupName"
     end
   end
 end
