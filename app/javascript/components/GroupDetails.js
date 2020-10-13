@@ -48,7 +48,7 @@ const GroupsDetails = ({ id }) => {
         setGroup(data)
         if (!nextRetrospective && data.nextRetrospective) setNextRetrospective(new Date(data.nextRetrospective))
       })
-  }, [id])
+  }, [id, groupRefresh, nextRetrospective])
 
   return (
     <div className='mx-auto flex flex-col p-8 bg-gray-300'>
