@@ -139,6 +139,8 @@ class GroupsTest < ActionDispatch::IntegrationTest
     # can see pending tasks created during this second retrospective thanks to the active access, even if they change status
     # cannot see tasks that were created during the third retrospective because they were closed before he had a chance to see them
     visit "/groups/#{group.id}"
+    assert_text 'Tasks'
+    click_on 'SEE DONE'
     assert_text 'Retrospective 1 action', count: 2
     assert_text 'Reflection 1'
     assert_text 'Retrospective 2 action'
@@ -151,6 +153,8 @@ class GroupsTest < ActionDispatch::IntegrationTest
     do_a_retrospective_with_actions(group, 'Reflection 4', 'Retrospective 4 action', other_account)
 
     visit "/groups/#{group.id}"
+    assert_text 'Tasks'
+    click_on 'SEE DONE'
     assert_text 'Retrospective 2 action'
     assert_text 'Reflection 2'
     assert_text 'Retrospective 4 action'
