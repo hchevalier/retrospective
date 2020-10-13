@@ -157,6 +157,27 @@ class GroupsTest < ActionDispatch::IntegrationTest
     assert_text 'Reflection 4'
   end
 
+  test 'hides done tasks by default' do
+    group = create(:group, name: '8357 620UP')
+    group.add_member(@account)
+
+    # can see tasks created during this retrospective
+    do_a_retrospective_with_actions(group, 'Reflection 1', 'Retrospective 1 action', @account)
+    visit "/groups/#{group.id}"
+    assert_text 'Retrospective 1 action'
+    refute_text 'No task'
+
+    Task.last.update!(status: :done)
+
+    visit "/groups/#{group.id}"
+    refute_text 'Retrospective 1 action'
+    assert_text 'No task'
+    click_on 'SEE DONE'
+
+    assert_text 'Retrospective 1 action'
+    refute_text 'No task'
+  end
+
   private
 
   def do_a_retrospective_with_actions(group, content, task_description, *accounts)
