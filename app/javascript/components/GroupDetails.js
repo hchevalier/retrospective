@@ -96,7 +96,7 @@ const GroupsDetails = ({ id }) => {
               <div>Created on {new Date(group.createdAt).toLocaleDateString()}</div>
               <div>
                 <div>Next retrospective:</div>
-                <DateTimePicker onChange={handleNextRetrospectiveChanged} closeWidgets showLeadingZeros disableClock value={nextRetrospective} />
+                <DateTimePicker onChange={handleNextRetrospectiveChanged} closeWidgets showLeadingZeros disableClock locale='fr-FR' value={nextRetrospective} />
               </div>
             </Card>
 
