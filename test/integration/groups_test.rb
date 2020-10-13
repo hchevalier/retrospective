@@ -139,6 +139,8 @@ class GroupsTest < ActionDispatch::IntegrationTest
     # can see pending tasks created during this second retrospective thanks to the active access, even if they change status
     # cannot see tasks that were created during the third retrospective because they were closed before he had a chance to see them
     visit "/groups/#{group.id}"
+    assert_text 'Tasks'
+    click_on 'SEE DONE'
     assert_text 'Retrospective 1 action', count: 2
     assert_text 'Reflection 1'
     assert_text 'Retrospective 2 action'
@@ -151,10 +153,33 @@ class GroupsTest < ActionDispatch::IntegrationTest
     do_a_retrospective_with_actions(group, 'Reflection 4', 'Retrospective 4 action', other_account)
 
     visit "/groups/#{group.id}"
+    assert_text 'Tasks'
+    click_on 'SEE DONE'
     assert_text 'Retrospective 2 action'
     assert_text 'Reflection 2'
     assert_text 'Retrospective 4 action'
     assert_text 'Reflection 4'
+  end
+
+  test 'hides done tasks by default' do
+    group = create(:group, name: '8357 620UP')
+    group.add_member(@account)
+
+    # can see tasks created during this retrospective
+    do_a_retrospective_with_actions(group, 'Reflection 1', 'Retrospective 1 action', @account)
+    visit "/groups/#{group.id}"
+    assert_text 'Retrospective 1 action'
+    refute_text 'No task'
+
+    Task.last.update!(status: :done)
+
+    visit "/groups/#{group.id}"
+    refute_text 'Retrospective 1 action'
+    assert_text 'No task'
+    click_on 'SEE DONE'
+
+    assert_text 'Retrospective 1 action'
+    refute_text 'No task'
   end
 
   private

@@ -9,11 +9,13 @@ import DetailedTask from './DetailedTask'
 
 const GroupsDetails = ({ id }) => {
   const [groupRefresh, setGroupRefresh] = React.useState(1)
-  const [group, setGroup] = React.useState({ members: [], pendingInvitations: [] })
+  const [group, setGroup] = React.useState({ members: [], tasks: [], pendingInvitations: [] })
   const [addMembersModalVisible, setAddMembersModalVisible] = React.useState(false)
+  const [displayDoneTasks, setDisplayDoneTasks] = React.useState(false)
 
   const handleAddGroupMembersClick = () => setAddMembersModalVisible(true)
   const handleAddGroupMembersModalClose = () => setAddMembersModalVisible(false)
+  const handleToggleDisplayDoneTasks = () => setDisplayDoneTasks(!displayDoneTasks)
   const refreshGroup = () => setGroupRefresh(groupRefresh + 1)
 
   const handleCancelInvitation = (event) => {
@@ -28,6 +30,8 @@ const GroupsDetails = ({ id }) => {
     setAddMembersModalVisible(false)
     refreshGroup()
   }
+
+  const filteredTasks = group.tasks.filter((task) => displayDoneTasks || ['todo', 'on_hold'].includes(task.status))
 
   React.useEffect(() => {
     if (!id) return
@@ -66,9 +70,14 @@ const GroupsDetails = ({ id }) => {
               </Card>
             )}
 
-            <Card title={`Tasks (${group.tasks.length})`} wrap>
-              {group.tasks.length === 0 && <span>No task</span>}
-              {group.tasks.map((task) => <DetailedTask key={task.id} task={task} showAssignee containerClassName={'flex-1-33'} />)}
+            <Card
+              title={`Tasks (${filteredTasks.length})`}
+              wrap
+              actionLabel={displayDoneTasks ? 'HIDE DONE' : 'SEE DONE'}
+              actionLocation='header'
+              onAction={handleToggleDisplayDoneTasks}>
+              {filteredTasks.length === 0 && <span>No task</span>}
+              {filteredTasks.map((task) => <DetailedTask key={task.id} task={task} showAssignee containerClassName={'flex-1-33'} />)}
             </Card>
           </div>
 
