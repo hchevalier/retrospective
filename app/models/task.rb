@@ -12,6 +12,10 @@ class Task < ApplicationRecord
     wont_do: 'wont_do'
   }
 
+  def pending?
+    todo? || on_hold?
+  end
+
   def as_json
     {
       id: id,

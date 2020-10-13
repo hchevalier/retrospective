@@ -8,6 +8,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
     @account = participant.account
     reflection = create(:reflection, :glad, retrospective: @retrospective, owner: participant)
     create(:task, reflection: reflection, description: 'My simple task')
+    create(:task, reflection: reflection, description: 'My blocked task', status: :on_hold)
     create(:task, reflection: reflection, description: 'My finished simple task', status: :done)
     create(:task, reflection: reflection, description: 'My skipped hard task', status: :wont_do)
     as_user(@account)
@@ -16,6 +17,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
   test 'displays pending tasks assigned to the user' do
     visit '/'
     assert_text 'My simple task'
+    assert_text 'My blocked task'
     refute_text 'My finished simple task'
     refute_text 'My skipped hard task'
   end

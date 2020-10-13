@@ -7,7 +7,7 @@ class TasksController < ApplicationController
     tasks =
       participants
         .flat_map(&:assigned_tasks)
-        .select(&:todo?)
+        .select(&:pending?)
         .map(&:as_json)
         .sort_by { | task | task[:createdAt] }
         .reverse

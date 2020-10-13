@@ -25,7 +25,7 @@ class Account < ApplicationRecord
 
     retrospectives.ids.include?(task.retrospective.id) ||
       accesses_to_group.filter(&:active?).present? && (
-        task.todo? ||
+        task.pending? ||
         accesses_to_group.any? { |access| access.range.cover?(task.created_at) || access.range.cover?(task.updated_at) }
       )
   end

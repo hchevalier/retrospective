@@ -8,7 +8,7 @@ class Retrospective < ApplicationRecord
   has_many :topics
   has_many :reactions
   has_many :tasks, through: :participants, source: :created_tasks
-  has_many :pending_tasks, -> { where(status: :todo) }, through: :participants, class_name: 'Task', source: :created_tasks
+  has_many :pending_tasks, -> { where(status: %i(todo on_hold)) }, through: :participants, class_name: 'Task', source: :created_tasks
 
   belongs_to :group
   belongs_to :facilitator, class_name: 'Participant', inverse_of: :organized_retrospective
