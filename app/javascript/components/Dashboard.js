@@ -2,7 +2,7 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { get } from 'lib/httpClient'
 import { historyShape } from 'lib/utils/shapes'
-import { formatDateWithoutYear } from 'lib/helpers/date'
+import { formatTime, formatDateWithoutYear } from 'lib/helpers/date'
 import DetailedTask from './DetailedTask'
 import Card from './Card'
 
@@ -64,6 +64,8 @@ const Dashboard = ({ history }) => {
               {groupsWithScheduledRetrospectives.map((group) => (
                 <div key={group.id}>
                   <span className='font-medium text-blue-800'>{formatDateWithoutYear(new Date(group.nextRetrospective))}</span>
+                  <span>&nbsp;at</span>
+                  <span className='font-medium text-blue-800'>&nbsp;{formatTime(new Date(group.nextRetrospective))}</span>
                   <span>&nbsp;with {group.name}</span>
                 </div>
               ))}

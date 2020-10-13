@@ -1,7 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { get, destroy } from 'lib/httpClient'
+import { get, put, destroy } from 'lib/httpClient'
+import DateTimePicker from 'react-datetime-picker'
 import AddGroupMembersModal from './AddGroupMembersModal'
 import Card from './Card'
 import Button from './Button'
@@ -12,6 +13,7 @@ const GroupsDetails = ({ id }) => {
   const [group, setGroup] = React.useState({ members: [], tasks: [], pendingInvitations: [] })
   const [addMembersModalVisible, setAddMembersModalVisible] = React.useState(false)
   const [displayDoneTasks, setDisplayDoneTasks] = React.useState(false)
+  const [nextRetrospective, setNextRetrospective] = React.useState()
 
   const handleAddGroupMembersClick = () => setAddMembersModalVisible(true)
   const handleAddGroupMembersModalClose = () => setAddMembersModalVisible(false)
@@ -31,14 +33,22 @@ const GroupsDetails = ({ id }) => {
     refreshGroup()
   }
 
+  const handleNextRetrospectiveChanged = (date) => {
+    setNextRetrospective(date)
+    put({ url: `/api/groups/${id}`, payload: { next_retrospective: date } })
+  }
+
   const filteredTasks = group.tasks.filter((task) => displayDoneTasks || ['todo', 'on_hold'].includes(task.status))
 
   React.useEffect(() => {
     if (!id) return
 
     get({ url: `/api/groups/${id}` })
-      .then((data) => setGroup(data))
-  }, [id, groupRefresh])
+      .then((data) => {
+        setGroup(data)
+        if (!nextRetrospective && data.nextRetrospective) setNextRetrospective(new Date(data.nextRetrospective))
+      })
+  }, [id])
 
   return (
     <div className='mx-auto flex flex-col p-8 bg-gray-300'>
@@ -83,7 +93,11 @@ const GroupsDetails = ({ id }) => {
 
           <div className='flex w-1/4 flex-col'>
             <Card title={group.name} wrap>
-              Created on {new Date(group.createdAt).toLocaleDateString()}
+              <div>Created on {new Date(group.createdAt).toLocaleDateString()}</div>
+              <div>
+                <div>Next retrospective:</div>
+                <DateTimePicker onChange={handleNextRetrospectiveChanged} closeWidgets disableClock value={nextRetrospective} />
+              </div>
             </Card>
 
             <Card title={`Group members (${group.members.length})`} wrap actionLocation='header' actionLabel='ADD' onAction={handleAddGroupMembersClick}>
