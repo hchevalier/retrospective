@@ -20,14 +20,15 @@ class Account < ApplicationRecord
     }
   end
 
-  def sees_task?(task)
-    accesses_to_group = group_accesses.where(group_id: task.retrospective.group_id).to_a
+  def visible_tasks_from_group(group)
+    accesses_to_group = group_accesses.where(group_id: group.id).to_a
 
-    retrospectives.ids.include?(task.retrospective.id) ||
-      accesses_to_group.filter(&:active?).present? && (
-        task.pending? ||
-        accesses_to_group.any? { |access| access.range.cover?(task.created_at) || access.range.cover?(task.updated_at) }
-      )
+    return [] unless accesses_to_group.any?(&:active?)
+
+    group.tasks.select do |task|
+      task.pending? ||
+      accesses_to_group.any? { |access| access.range.cover?(task.created_at) || access.range.cover?(task.updated_at) }
+    end
   end
 
   def self.from_omniauth(auth)

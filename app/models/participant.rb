@@ -33,10 +33,16 @@ class Participant < ApplicationRecord
 
   INACTIVITY_DELAY = 5
 
-  def profile
+  def short_profile
     {
       uuid: id,
-      surname: surname,
+      surname: surname
+    }
+  end
+
+  def profile
+    {
+      **short_profile,
       color: color,
       status: logged_in,
       facilitator: facilitator?,
@@ -49,11 +55,11 @@ class Participant < ApplicationRecord
   end
 
   def facilitator?
-    association(:retrospective).loaded? ? retrospective.facilitator_id == self.id : organized_retrospective.present?
+    retrospective.facilitator_id == self.id
   end
 
   def revealer?
-    association(:retrospective).loaded? ? retrospective.revealer_id == self.id : revealing_retrospective.present?
+    retrospective.revealer_id == self.id
   end
 
   def original_facilitator?

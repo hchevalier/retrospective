@@ -4,6 +4,8 @@ class Group < ApplicationRecord
   has_many :accounts, through: :group_accesses
   has_many :accounts_without_revoked, -> { where(group_accesses: { revoked_at: nil }) }, through: :group_accesses, class_name: 'Account', source: :account
   has_many :retrospectives
+  has_many :tasks, through: :retrospectives
+  has_many :pending_tasks, through: :retrospectives
 
   def accessible_by?(account)
     group_accesses.where(revoked_at: nil, account: account).exists?
@@ -11,19 +13,6 @@ class Group < ApplicationRecord
 
   def add_member(account)
     accounts << account unless accessible_by?(account)
-  end
-
-  def tasks_visible_by(account)
-    retrospectives
-      .includes(tasks: %i(assignee author reflection))
-      .flat_map(&:tasks)
-      .filter { |task| account.sees_task?(task) }
-  end
-
-  def pending_tasks
-    retrospectives
-      .includes(pending_tasks: %i(assignee author reflection))
-      .flat_map(&:pending_tasks)
   end
 
   def as_short_json
@@ -40,7 +29,7 @@ class Group < ApplicationRecord
       **as_short_json,
       members: accounts_without_revoked.as_json,
       pendingInvitations: pending_invitations.as_json,
-      tasks: tasks_visible_by(account).as_json
+      tasks: account.visible_tasks_from_group(self).as_json
     }
   end
 end
