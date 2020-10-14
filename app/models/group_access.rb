@@ -17,9 +17,9 @@ class GroupAccess < ApplicationRecord
       id: id,
       group: {
         **group.as_short_json,
-        allTimeRetrospectivesCount: group.retrospectives.count,
-        membersCount: group.accounts_without_revoked.count,
-        pendingTasksCount: group.pending_tasks.count
+        allTimeRetrospectivesCount: group.retrospectives.size,
+        membersCount: group.accounts_without_revoked.size,
+        pendingTasksCount: group.pending_tasks.size
       }
     }
   end

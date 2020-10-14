@@ -5,6 +5,8 @@ class Task < ApplicationRecord
   has_one :retrospective, through: :reflection
   has_many :reactions, as: :target, inverse_of: :target
 
+  scope :pending, -> { where(status: %i(todo on_hold)) }
+
   enum status: {
     done: 'done',
     on_hold: 'on_hold',
@@ -21,8 +23,8 @@ class Task < ApplicationRecord
       id: id,
       reflection: { id: reflection.id, content: reflection.content, zone: { name: reflection.zone.identifier} },
       retrospective: { zonesTypology: retrospective.zones_typology },
-      author: author.profile,
-      assignee: assignee.profile,
+      author: author.short_profile,
+      assignee: assignee.short_profile,
       description: description,
       status: status,
       createdAt: created_at

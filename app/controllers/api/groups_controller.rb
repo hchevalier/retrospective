@@ -20,7 +20,17 @@ class Api::GroupsController < ApplicationController
   end
 
   def show
-    group = current_account.accessible_groups.find_by(id: params[:id])
+    group =
+      current_account
+        .accessible_groups
+        .includes(
+          :accounts_without_revoked,
+          :pending_invitations,
+          :retrospectives,
+          tasks: [:author, :assignee, :retrospective, reflection: :zone]
+        )
+        .find_by(id: params[:id])
+
     return render(json: { status: :not_found }) unless group
 
     render json: group.as_json(current_account)

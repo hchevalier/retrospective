@@ -1,6 +1,12 @@
 class Api::GroupAccessesController < ApplicationController
   def index
-    render json: current_account.group_accesses.active.map(&:as_json)
+    active_accesses =
+      current_account
+        .group_accesses
+        .active
+        .includes(:account, group: [:accounts_without_revoked, :pending_invitations, :pending_tasks])
+
+    render json: active_accesses.map(&:as_json)
   end
 
   def destroy

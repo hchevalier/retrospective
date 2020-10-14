@@ -3,7 +3,11 @@ class TasksController < ApplicationController
 
   def index
     group_ids = current_account.accessible_groups.ids
-    participants = current_account.participants.joins(:retrospective).where(retrospectives: { group_id: group_ids })
+    participants =
+      current_account
+        .participants
+        .includes(assigned_tasks: [:retrospective, author: :retrospective, assignee: :retrospective, reflection: :zone])
+        .where(retrospectives: { group_id: group_ids })
     tasks =
       participants
         .flat_map(&:assigned_tasks)
@@ -33,7 +37,7 @@ class TasksController < ApplicationController
 
       task.update!(actions_step_update_task_params)
     elsif retrospective.step == 'reviewing'
-      task = retrospective.group.tasks_visible_by(current_account).find { |task| task.id == params[:id] }
+      task = current_account.visible_tasks_from_group(retrospective.group).find { |task| task.id == params[:id] }
       return render(json: { status: :not_found }) unless task
 
       task.update!(reviewing_step_update_task_params)
