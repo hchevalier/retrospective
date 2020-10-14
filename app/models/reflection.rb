@@ -23,7 +23,7 @@ class Reflection < ApplicationRecord
   def readable
     anonymous.merge(
       content: content,
-      owner: owner.profile
+      owner: owner.short_profile
     )
   end
 end

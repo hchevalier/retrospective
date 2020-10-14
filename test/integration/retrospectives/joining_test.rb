@@ -180,9 +180,14 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
   end
 
   test 'cannot join a retrospective when it is done if logged in but not in participants list' do
-    retrospective = create(:retrospective, step: :done)
+    retrospective = create(:retrospective, step: :done, created_at: 2.hours.ago)
     other_retrospective = create(:retrospective)
-    logged_in_as(other_retrospective.facilitator)
+    retrospective.group.add_member(other_retrospective.facilitator.account)
+    ApplicationController
+      .any_instance
+      .expects(:current_account)
+      .at_least_once
+      .returns(other_retrospective.facilitator.account)
 
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 

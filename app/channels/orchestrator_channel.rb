@@ -77,6 +77,12 @@ class OrchestratorChannel < ApplicationCable::Channel
   def change_step
     return unless current_participant.reload.facilitator?
 
-    Retrospective.find(current_participant.retrospective_id).next_step!
+    bare_retrospective = Retrospective.select(:step).find(current_participant.retrospective_id)
+    retrospective =
+      Retrospective
+        .includes(*bare_retrospective.relationships_to_load(bare_retrospective.next_step))
+        .find(current_participant.retrospective_id)
+
+    retrospective.next_step!
   end
 end
