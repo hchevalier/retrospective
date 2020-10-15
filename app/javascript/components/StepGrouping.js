@@ -205,7 +205,7 @@ const StepGrouping = ({ onExpandTopic }) => {
           }
 
           return (
-            <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0 relative min-w-16' key={zone.id}>
+            <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0 relative min-w-12' key={zone.id}>
               <div className='zone-header mb-4'>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</div>
               {['open', 'limited'].includes(zonesTypology) && (
                 <>
