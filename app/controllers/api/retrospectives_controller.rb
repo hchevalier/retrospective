@@ -11,10 +11,11 @@ class Api::RetrospectivesController < ApplicationController
 
   def show
     bare_retrospective = Retrospective.includes(:participants).find(params[:id])
-    exisiting_participant = bare_retrospective.participants.eager_load(:retrospective, :reactions, reflections: [:zone, :topic, :owner]).find { |participant| participant.account == current_account }
+    exisiting_participant =
+      bare_retrospective.participants.find { |participant| participant.account == current_account }
 
     using_participant = current_participant&.id
-    if exisiting_participant && current_participant&.id != exisiting_participant.id
+    if exisiting_participant && using_participant != exisiting_participant.id
       # Change participant for current account to this retrospective's one
       cookies.signed[:participant_id] = using_participant = exisiting_participant.id
     elsif !exisiting_participant
