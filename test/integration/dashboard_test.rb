@@ -38,7 +38,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
   end
 
   test 'does not display retrospective the user did not took part in even if he was part of the group' do
-    other_retrospective = create(:retrospective, kind: :sailboat, group: @group)
+    other_retrospective = create(:retrospective, kind: :sailboat, group: @group, created_at: 2.hours.ago)
     new_account = other_retrospective.participants.first.account
 
     visit '/'

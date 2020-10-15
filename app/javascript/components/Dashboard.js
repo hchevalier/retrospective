@@ -35,7 +35,9 @@ const Dashboard = ({ history }) => {
   const handleMoreRetrospectives = () => { setSeeAllRetrospectives(true) }
 
   const now = new Date()
-  const currentRetrospective = retrospectives.find((retrospective) => new Date(retrospective.createdAt) > new Date(now - (3600000 * 1.5)))
+  const currentRetrospective = retrospectives.find((retrospective) => {
+    return new Date(retrospective.createdAt) > new Date(now - (3600000 * 1.5)) && retrospective.step !== 'done'
+  })
   const groupsWithScheduledRetrospectives = groups.filter((group) => group.nextRetrospective)
 
   return (
