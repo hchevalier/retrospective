@@ -24,6 +24,7 @@ const StepGrouping = ({ onExpandTopic }) => {
 
   const initialReflectionIds = React.useRef(reflections.map((reflection) => reflection.id)).current
   const [, setUpdateCount] = React.useState(0)
+  const [draggingOccurs, setDraggingOccurs] = React.useState({ reflection: null, zone: null })
   const forceUpdate = () => setUpdateCount(currentCount => ++currentCount)
 
   const visibilityObserver = React.useMemo(() => {
@@ -92,6 +93,7 @@ const StepGrouping = ({ onExpandTopic }) => {
   const handleDragStart = (event) => {
     event.dataTransfer.setData('text/plain', event.target.dataset.id)
     event.dataTransfer.dropEffect = 'move'
+    setDraggingOccurs({ reflection: event.target.dataset.id, zone: event.target.dataset.zoneId })
   }
 
   const handleDragOver = (event) => {
@@ -99,8 +101,13 @@ const StepGrouping = ({ onExpandTopic }) => {
     event.dataTransfer.dropEffect = 'move'
   }
 
+  const handleDragEnd = () => {
+    setDraggingOccurs({ reflection: null, zone: null })
+  }
+
   const handleDrop = (event) => {
     event.preventDefault()
+
     const draggedReflectionId = event.dataTransfer.getData('text/plain')
     let targetElement = event.target
     const droppedReflection = document.querySelector(`.reflection[data-id="${draggedReflectionId}"]`)
@@ -161,9 +168,11 @@ const StepGrouping = ({ onExpandTopic }) => {
       stickyNotesRefCallback={setStickyNoteRef}
       stickyNotes={stickyNotesInTopic || []}
       onClick={onExpandTopic}
+      draggingInfo={draggingOccurs}
       draggable
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
+      onDragEnd={handleDragEnd}
       onDrop={handleDrop} />
   }
 
@@ -209,9 +218,11 @@ const StepGrouping = ({ onExpandTopic }) => {
                           showReactions
                           reactions={concernedReactions}
                           glowing={isUnread}
+                          highlighted={draggingOccurs.zone === zone.id.toString() && draggingOccurs.reflection !== reflection.id.toString()}
                           draggable
                           onDragStart={handleDragStart}
                           onDragOver={handleDragOver}
+                          onDragEnd={handleDragEnd}
                           onDrop={handleDrop} />
                       }
                     })}

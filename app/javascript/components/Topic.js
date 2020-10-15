@@ -6,7 +6,7 @@ import StickyNote from './StickyNote'
 import VoteCorner from './VoteCorner'
 import './Topic.scss'
 
-const Topic = ({ onClick, topic, reflections, reactions, stickyNotes, stickyNotesRefCallback, showVotes, ...delegatedAttributes }) => {
+const Topic = ({ onClick, topic, reflections, reactions, draggingInfo, stickyNotes, stickyNotesRefCallback, showVotes, ...delegatedAttributes }) => {
   const step = useSelector(state => state.orchestrator.step)
 
   const [visibleReflectionIndex, setVisibleReflectionIndex] = useState(0)
@@ -40,6 +40,7 @@ const Topic = ({ onClick, topic, reflections, reactions, stickyNotes, stickyNote
           reflection={latestReflectionInTopic}
           reactions={concernedReactions}
           glowing={unreadNotes.length > 0}
+          highlighted={draggingInfo.zone === latestReflectionInTopic.zone.id.toString() && draggingInfo.reflection !== latestReflectionInTopic.id.toString()}
           onStackClick={handleStackClick}
           stackSize={reflections.length}
           {...delegatedAttributes} />
@@ -76,10 +77,15 @@ Topic.propTypes = {
   reactions: PropTypes.arrayOf(Object),
   showVotes: PropTypes.bool,
   glowing: PropTypes.bool,
+  draggingInfo: PropTypes.shape({
+    reflection: PropTypes.string,
+    zone: PropTypes.string
+  }),
   draggable: PropTypes.bool,
   onClick: PropTypes.func,
   onDragStart: PropTypes.func,
   onDragOver: PropTypes.func,
+  onDragEnd: PropTypes.func,
   onDrop: PropTypes.func
 }
 

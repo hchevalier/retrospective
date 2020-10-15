@@ -19,6 +19,10 @@
   &.glowing {
     border-color: goldenrod !important;
   }
+
+  &.highlighted {
+    border: 2px dashed red !important;
+  }
 }
 
 .topic {
