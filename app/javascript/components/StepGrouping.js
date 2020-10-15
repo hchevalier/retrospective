@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { post, put } from 'lib/httpClient'
 import Topic from './Topic'
 import StickyNote from './StickyNote'
+import TooltipToggler from './TooltipToggler'
 import Icon from './Icon'
 import { groupBy } from 'lib/helpers/array'
 import SingleChoice from './SingleChoice'
@@ -176,10 +177,18 @@ const StepGrouping = ({ onExpandTopic }) => {
       onDrop={handleDrop} />
   }
 
+  const tooltipContent = (
+    <>
+      {facilitator && <div>Click on a participant (or the random icon) so that he or she can reveal their reflections</div>}
+      {!facilitator && <div>The facilitator now chooses a participant so that he or she can reveal their reflections</div>}
+      <div>Everyone can drag a reflection and drop it on another one in order to stack them into a group</div>
+    </>
+  )
+
   return (
     <>
-      {facilitator && <div>Click on a participant so that he can reveal his reflections or randomly pick one</div>}
-      {!facilitator && <div>The facilitator now chooses a participant so that he can reveal his reflections</div>}
+      <div className='text-center text-xs text-gray-800'><TooltipToggler content={tooltipContent} /> Hover the question mark to display instructions for this step</div>
+
       <div id="zones-container" className="flex">
         {zones.map((zone) => {
           const reflectionsInZone = reflections.filter((reflection) => reflection.zone.id === zone.id)
