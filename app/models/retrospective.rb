@@ -77,7 +77,7 @@ class Retrospective < ApplicationRecord
       zones: zones.as_json,
       zonesTypology: zones_typology,
       discussedReflection: discussed_reflection&.readable,
-      tasks: tasks.order(:created_at).as_json
+      tasks: tasks.sort_by { |task| task.created_at }.as_json
     }
   end
 
@@ -109,23 +109,23 @@ class Retrospective < ApplicationRecord
       }
     end
     included_relationships << [:zones] if reached_step?('thinking', reference: target_step)
-    included_relationships << { reactions: [:author, :target] } if reached_step?('grouping', reference: target_step)
+    included_relationships << { reactions: [:author, :target], reflections: [:zone, :topic, :owner] } if reached_step?('grouping', reference: target_step)
     included_relationships << { discussed_reflection: [:zone, :topic, :owner] } if reached_step?('voting', reference: target_step)
-    included_relationships << { tasks: :reflection } if reached_step?('actions', reference: target_step)
+    included_relationships << { tasks: [:retrospective, :author, :assignee, reflection: :zone] } if reached_step?('actions', reference: target_step)
 
     included_relationships
   end
 
   def initial_state(current_participant)
     state = {
-      participants: participants.sort { |participant| participant.created_at }.map(&:profile),
+      participants: participants.sort_by { |participant| participant.created_at }.map(&:profile),
       step: step,
-      ownReflections: reached_step?('thinking') ? current_participant.reflections.sort { |reflection| reflection.created_at }.map(&:readable) : [],
+      ownReflections: reached_step?('thinking') ? current_participant.reflections.sort_by { |reflection| reflection.created_at }.map(&:readable) : [],
       ownReactions: reached_step?('thinking') ? current_participant.reactions.map(&:readable) : [],
       discussedReflection: reached_step?('voting') ? discussed_reflection&.readable : nil,
       allColors: Participant::COLORS,
       availableColors: available_colors,
-      tasks: reached_step?('actions') ? tasks.sort { |task| task.created_at }.as_json : [],
+      tasks: reached_step?('actions') ? tasks.sort_by { |task| task.created_at }.as_json : [],
       pendingTasks: step == 'reviewing' ? group.pending_tasks.as_json : [],
       serverTime: Time.zone.now,
       timerEndAt: timer_end_at,
@@ -213,14 +213,13 @@ class Retrospective < ApplicationRecord
   def visible_reflections_for_step(step)
     case step
     when 'grouping', 'voting'
-      reflections.revealed.includes(:owner).order(:created_at).map(&:readable)
+      reflections.select(&:revealed?).sort_by { |reflection| reflection.created_at }.map(&:readable)
     when 'actions'
       reflections
-        .eager_load(:owner, :votes, topic: :votes, zone: :retrospective)
         .reject { |reflection| reflection.votes.none? && (reflection.topic.nil? || reflection.topic.votes.none?) }
         .map(&:readable)
     when 'done'
-      reflections.eager_load(:owner, :votes, topic: :votes, zone: :retrospective).map(&:readable)
+      reflections.map(&:readable)
     else
       []
     end
@@ -240,7 +239,7 @@ class Retrospective < ApplicationRecord
   def reset_original_facilitator!
     return if step == 'done'
 
-    original_facilitator = participants.order(:created_at).first
+    original_facilitator = participants.sort_by { |participant| participant.created_at }.first
     return unless original_facilitator.logged_in
 
     previous_facilitator = facilitator

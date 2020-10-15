@@ -10,12 +10,13 @@ class Api::RetrospectivesController < ApplicationController
   end
 
   def show
-    bare_retrospective = Retrospective.includes(:participants).select(:id, :step, :group_id).find(params[:id])
-    exisiting_participant = bare_retrospective.participants.find { |participant| participant.account == current_account }
+    bare_retrospective = Retrospective.includes(:participants).find(params[:id])
+    exisiting_participant = bare_retrospective.participants.eager_load(:retrospective, :reactions, reflections: [:zone, :topic, :owner]).find { |participant| participant.account == current_account }
 
+    using_participant = current_participant&.id
     if exisiting_participant && current_participant&.id != exisiting_participant.id
       # Change participant for current account to this retrospective's one
-      cookies.signed[:participant_id] = exisiting_participant.id
+      cookies.signed[:participant_id] = using_participant = exisiting_participant.id
     elsif !exisiting_participant
       # User don't have a participant for this retrospective yet
       if bare_retrospective.step == 'done' || !current_account.accessible_groups.find_by(id: bare_retrospective.group_id)
@@ -28,11 +29,16 @@ class Api::RetrospectivesController < ApplicationController
         account_id: current_account.id,
         retrospective: bare_retrospective
       )
-      cookies.signed[:participant_id] = new_participant.id
+      cookies.signed[:participant_id] = using_participant = new_participant.id
     end
     # As participant_id cookie might have changed, we should reset current_participant which is memoized
     # Better refetching it so that we can apply some includes
-    participant = Participant.eager_load(:retrospective, :reactions, reflections: [:zone, :topic, :owner]).find(cookies.signed[:participant_id])
+    participant =
+      bare_retrospective
+        .participants
+        .includes(:retrospective, :reactions, reflections: [:topic, :owner, zone: :retrospective])
+        .find(using_participant)
+
     participant.join unless bare_retrospective.step == 'done'
 
     retrospective = Retrospective.includes(bare_retrospective.relationships_to_load).find(params[:id])

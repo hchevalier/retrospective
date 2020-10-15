@@ -18,7 +18,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
 
   test 'initial discussed reflection is the one with most votes' do
     retrospective = create(:retrospective, step: 'voting')
-    other_participant = create(:other_participant, retrospective: retrospective)
+    other_participant = create(:other_participant, retrospective: retrospective, created_at: 1.second.from_now)
     reflection_a = create(:reflection, :glad, owner: retrospective.facilitator)
     reflection_b = create(:reflection, :sad, owner: other_participant)
     create_list(:vote, 3, target: reflection_a, author: retrospective.facilitator)
