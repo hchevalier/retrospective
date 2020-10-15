@@ -40,7 +40,7 @@ const Topic = ({ onClick, topic, reflections, reactions, draggingInfo, stickyNot
           reflection={latestReflectionInTopic}
           reactions={concernedReactions}
           glowing={unreadNotes.length > 0}
-          highlighted={draggingInfo.zone === latestReflectionInTopic.zone.id.toString() && draggingInfo.reflection !== latestReflectionInTopic.id.toString()}
+          highlighted={draggingInfo?.zone === latestReflectionInTopic.zone.id.toString() && draggingInfo?.reflection !== latestReflectionInTopic.id.toString()}
           onStackClick={handleStackClick}
           stackSize={reflections.length}
           {...delegatedAttributes} />
