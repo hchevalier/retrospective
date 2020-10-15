@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { post, put } from 'lib/httpClient'
 import Topic from './Topic'
 import StickyNote from './StickyNote'
+import TooltipToggler from './TooltipToggler'
 import Icon from './Icon'
 import { groupBy } from 'lib/helpers/array'
 import SingleChoice from './SingleChoice'
@@ -24,6 +25,7 @@ const StepGrouping = ({ onExpandTopic }) => {
 
   const initialReflectionIds = React.useRef(reflections.map((reflection) => reflection.id)).current
   const [, setUpdateCount] = React.useState(0)
+  const [draggingOccurs, setDraggingOccurs] = React.useState({ reflection: null, zone: null })
   const forceUpdate = () => setUpdateCount(currentCount => ++currentCount)
 
   const visibilityObserver = React.useMemo(() => {
@@ -92,6 +94,7 @@ const StepGrouping = ({ onExpandTopic }) => {
   const handleDragStart = (event) => {
     event.dataTransfer.setData('text/plain', event.target.dataset.id)
     event.dataTransfer.dropEffect = 'move'
+    setDraggingOccurs({ reflection: event.target.dataset.id, zone: event.target.dataset.zoneId })
   }
 
   const handleDragOver = (event) => {
@@ -99,8 +102,13 @@ const StepGrouping = ({ onExpandTopic }) => {
     event.dataTransfer.dropEffect = 'move'
   }
 
+  const handleDragEnd = () => {
+    setDraggingOccurs({ reflection: null, zone: null })
+  }
+
   const handleDrop = (event) => {
     event.preventDefault()
+
     const draggedReflectionId = event.dataTransfer.getData('text/plain')
     let targetElement = event.target
     const droppedReflection = document.querySelector(`.reflection[data-id="${draggedReflectionId}"]`)
@@ -161,16 +169,26 @@ const StepGrouping = ({ onExpandTopic }) => {
       stickyNotesRefCallback={setStickyNoteRef}
       stickyNotes={stickyNotesInTopic || []}
       onClick={onExpandTopic}
+      draggingInfo={draggingOccurs}
       draggable
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
+      onDragEnd={handleDragEnd}
       onDrop={handleDrop} />
   }
 
+  const tooltipContent = (
+    <>
+      {facilitator && <div>Click on a participant (or the random icon) so that he or she can reveal their reflections</div>}
+      {!facilitator && <div>The facilitator now chooses a participant so that he or she can reveal their reflections</div>}
+      <div>Everyone can drag a reflection and drop it on another one in order to stack them into a group</div>
+    </>
+  )
+
   return (
     <>
-      {facilitator && <div>Click on a participant so that he can reveal his reflections or randomly pick one</div>}
-      {!facilitator && <div>The facilitator now chooses a participant so that he can reveal his reflections</div>}
+      <div className='text-center text-xs text-gray-800'><TooltipToggler content={tooltipContent} /> Hover the question mark to display instructions for this step</div>
+
       <div id="zones-container" className="flex">
         {zones.map((zone) => {
           const reflectionsInZone = reflections.filter((reflection) => reflection.zone.id === zone.id)
@@ -187,7 +205,7 @@ const StepGrouping = ({ onExpandTopic }) => {
           }
 
           return (
-            <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0 relative' key={zone.id}>
+            <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0 relative min-w-12' key={zone.id}>
               <div className='zone-header mb-4'>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</div>
               {['open', 'limited'].includes(zonesTypology) && (
                 <>
@@ -209,9 +227,11 @@ const StepGrouping = ({ onExpandTopic }) => {
                           showReactions
                           reactions={concernedReactions}
                           glowing={isUnread}
+                          highlighted={draggingOccurs.zone === zone.id.toString() && draggingOccurs.reflection !== reflection.id.toString()}
                           draggable
                           onDragStart={handleDragStart}
                           onDragOver={handleDragOver}
+                          onDragEnd={handleDragEnd}
                           onDrop={handleDrop} />
                       }
                     })}

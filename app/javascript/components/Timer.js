@@ -54,9 +54,9 @@ const Timer = ({ facilitator, show }) => {
 
   return (
     <>
-      {displayTimer && <div id='timer' className='cursor-pointer' onClick={handleTimerClick}>
+      {displayTimer && <div id='timer' className='cursor-pointer ml-4' onClick={handleTimerClick}>
         <span>Timer:</span>
-        <span className='minutes'>{timerEndAt ? `${remainingMinutes}`.padStart(2, '0') : '--'}</span>
+        <span className='minutes ml-1'>{timerEndAt ? `${remainingMinutes}`.padStart(2, '0') : '--'}</span>
         <span className='colon-separator'>:</span>
         <span className='seconds'>{timerEndAt ? `${remainingSeconds}`.padStart(2, '0') : '--'}</span>
       </div>}

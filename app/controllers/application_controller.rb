@@ -8,6 +8,9 @@ class ApplicationController < ActionController::Base
       (participant_id = cookies.signed[:participant_id]) ?
       Participant.find(participant_id) :
       nil
+    rescue ActiveRecord::RecordNotFound
+      cookies.signed[:participant_id] = nil
+      nil
     end
   end
 

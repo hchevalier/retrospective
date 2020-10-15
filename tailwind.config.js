@@ -38,6 +38,7 @@ module.exports = {
       },
       minWidth: {
         '1/2': '50%',
+        '12': '12rem',
         '16': '16rem',
       },
       transitionProperty: {

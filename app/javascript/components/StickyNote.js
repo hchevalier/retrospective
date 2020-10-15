@@ -14,7 +14,10 @@ import EyeIcon from 'images/eye-icon.svg'
 import './StickyNote.scss'
 import './Topic.scss'
 
-const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, readOnly, showVotes, stackSize, glowing, revealable, noShrink, onStackClick, draggable, onDragStart, onDragOver, onDragEnd, onDrop }, ref) => {
+const StickyNote = React.forwardRef(({
+  reflection, showReactions, reactions, readOnly, showVotes, stackSize, glowing, revealable, noShrink, onStackClick,
+  highlighted, draggable, onDragStart, onDragOver, onDragEnd, onDrop
+}, ref) => {
   const dispatch = useDispatch()
   const [hovered, setHovered] = React.useState(false)
   const [editing, setEditing] = React.useState(false)
@@ -93,7 +96,7 @@ const StickyNote = React.forwardRef(({ reflection, showReactions, reactions, rea
       {stackSize > 1 && <div className='reflection stack stack-1 flex flex-col mb-3 mx-auto p-2 rounded-md absolute w-full' style={{ ...colorStyle}} onClick={onStackClick} />}
       <div
         ref={ref}
-        className={classNames('reflection flex flex-col mb-3 mx-auto p-2 rounded-md relative w-full', { glowing, 'flex-shrink-0': noShrink })}
+        className={classNames('reflection flex flex-col mb-3 mx-auto p-2 rounded-md relative w-full', { glowing, 'highlighted': highlighted, 'flex-shrink-0': noShrink })}
         data-id={reflection.id}
         data-owner-uuid={reflection.owner.uuid}
         data-zone-id={reflection.zone.id}
@@ -129,6 +132,7 @@ StickyNote.propTypes = {
   showVotes: PropTypes.bool,
   stackSize: PropTypes.number,
   glowing: PropTypes.bool,
+  highlighted: PropTypes.bool,
   draggable: PropTypes.bool,
   noShrink: PropTypes.bool,
   onDragStart: PropTypes.func,
