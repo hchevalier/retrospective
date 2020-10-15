@@ -5,7 +5,7 @@ require 'test_helper'
 class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
   test 'can trigger the grouping step for other participants' do
     retrospective = create(:retrospective, step: 'thinking')
-    other_participant = create(:other_participant, retrospective: retrospective)
+    other_participant = create(:other_participant, retrospective: retrospective, created_at: 1.second.from_now)
 
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
@@ -22,18 +22,18 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     end
 
     click_on 'Next'
-    assert_grouping_step_for_facilitator
+    assert_grouping_step
     refute_text 'Click here to add a reflection'
 
     within_window(other_participant_window) do
-      assert_grouping_step_for_participant
+      assert_grouping_step
       refute_text 'Click here to add a reflection'
     end
   end
 
   test 'can choose a participant to be the revealer' do
     retrospective = create(:retrospective, step: 'grouping')
-    other_participant = create(:other_participant, retrospective: retrospective)
+    other_participant = create(:other_participant, retrospective: retrospective, created_at: 1.second.from_now)
 
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
@@ -70,7 +70,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
   test 'revealer sees his reflections and looses the revealer token when closing the modal' do
     retrospective = create(:retrospective, step: 'grouping')
-    other_participant = create(:other_participant, retrospective: retrospective)
+    other_participant = create(:other_participant, retrospective: retrospective, created_at: 1.second.from_now)
     create(:reflection, :glad, owner: other_participant, revealed: false)
 
     other_participant_window = open_new_window
@@ -105,7 +105,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
   test 'unread reflections out of viewport are noticed by a banner' do
     retrospective = create(:retrospective, step: 'grouping')
-    other_participant = create(:other_participant, retrospective: retrospective)
+    other_participant = create(:other_participant, retrospective: retrospective, created_at: 1.second.from_now)
     reflections = create_list(:reflection, 2, :glad, :long, owner: other_participant, revealed: false)
     create(:reflection, :mad, owner: other_participant, revealed: false)
 
@@ -149,7 +149,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
   test 'clicking on notice banner scrolls to last unread reflection from column' do
     retrospective = create(:retrospective, step: 'grouping')
-    other_participant = create(:other_participant, retrospective: retrospective)
+    other_participant = create(:other_participant, retrospective: retrospective, created_at: 1.second.from_now)
     reflections = create_list(:reflection, 3, :glad, :long, owner: other_participant, revealed: false)
 
     logged_in_as(retrospective.facilitator)
@@ -182,12 +182,12 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
   test 'can add reactions to a revealed reflection' do
     retrospective = create(:retrospective, step: 'grouping')
-    other_participant = create(:other_participant, retrospective: retrospective)
+    other_participant = create(:other_participant, retrospective: retrospective, created_at: 1.second.from_now)
     reflection = create(:reflection, :glad, owner: retrospective.facilitator)
 
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-    assert_grouping_step_for_facilitator
+    assert_grouping_step
     assert_text 'A glad reflection'
     refute_text Reaction::EMOJI_LIST[:star_struck]
 
@@ -196,7 +196,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       logged_in_as(other_participant)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       assert_logged_in(other_participant, with_flags: %i(self))
-      assert_grouping_step_for_participant
+      assert_grouping_step
       within ".reflection[data-id='#{reflection.id}']" do
         refute_text Reaction::EMOJI_LIST[:star_struck]
       end
@@ -227,7 +227,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-    assert_grouping_step_for_facilitator
+    assert_grouping_step
 
     assert_difference 'Topic.count' do
       sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
@@ -243,7 +243,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-    assert_grouping_step_for_facilitator
+    assert_grouping_step
 
     assert_difference 'Topic.count' do
       sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
@@ -266,7 +266,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-    assert_grouping_step_for_facilitator
+    assert_grouping_step
 
     assert_difference 'Topic.count' do
       sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
@@ -306,7 +306,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-    assert_grouping_step_for_facilitator
+    assert_grouping_step
 
     sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
     assert_text 'Second reflection'
@@ -342,7 +342,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-    assert_grouping_step_for_facilitator
+    assert_grouping_step
 
     assert_text 'Topic'
     refute_text 'First reflection'
@@ -380,7 +380,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-    assert_grouping_step_for_facilitator
+    assert_grouping_step
 
     assert_no_difference 'Topic.count' do
       sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
@@ -403,12 +403,8 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     find('#topic-content-backdrop').click
   end
 
-  def assert_grouping_step_for_facilitator
-    assert_text 'Click on a participant so that he can reveal his reflections'
-  end
-
-  def assert_grouping_step_for_participant
-    assert_text 'The facilitator now chooses a participant so that he can reveal his reflections'
+  def assert_grouping_step
+    assert_text 'Hover the question mark to display instructions for this step'
   end
 
   private
