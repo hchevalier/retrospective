@@ -3,7 +3,7 @@ class Api::RetrospectivesController < ApplicationController
     group_ids = current_account.accessible_groups.ids
     retrospectives = (
       current_account.retrospectives.includes(:group).where(group_id: group_ids) +
-      Retrospective.where(group_id: group_ids).where('created_at > ?', 90.minutes.ago)
+      Retrospective.includes(:group).where(group_id: group_ids).where('created_at > ?', 90.minutes.ago)
     ).uniq
 
     render json: retrospectives.map(&:as_short_json).sort_by { | retrospective | retrospective[:createdAt] }.reverse
