@@ -9,6 +9,10 @@ class Reflection < ApplicationRecord
 
   scope :revealed, -> { where(revealed: true) }
 
+  def content
+    anonymize(super)
+  end
+
   def anonymous
     {
       id: id,

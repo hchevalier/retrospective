@@ -14,6 +14,10 @@ class Task < ApplicationRecord
     wont_do: 'wont_do'
   }
 
+    def description
+      anonymize(super)
+    end
+
   def pending?
     todo? || on_hold?
   end
