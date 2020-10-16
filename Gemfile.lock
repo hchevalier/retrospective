@@ -204,7 +204,7 @@ GEM
       execjs
       railties (>= 3.2)
       tilt
-    redis (4.1.3)
+    redis (4.2.2)
     regexp_parser (1.8.2)
     rexml (3.2.4)
     rubocop (0.82.0)
@@ -303,7 +303,7 @@ DEPENDENCIES
   puma (~> 4.1)
   rails (= 6.0.3.4)
   react-rails
-  redis (~> 4.1)
+  redis (~> 4.2)
   rubocop-rails
   sass-rails (>= 6)
   selenium-webdriver
