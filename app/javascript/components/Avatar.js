@@ -37,7 +37,7 @@ const Avatar = ({ backgroundColor, dataAttributes, loggedIn, surname, self, onCl
   }
 
   return (
-    <div className={classNames('avatar cursor-pointer rounded w-16 h-16 relative mx-1', { self })} style={{ backgroundColor }} onClick={onClick} {...dataAttributes}>
+    <div className={classNames('avatar cursor-pointer rounded w-16 h-16 relative mx-1', { self, clickable: !!onClick })} style={{ backgroundColor }} onClick={onClick} {...dataAttributes}>
       <img className='picture absolute' src={getDefaultContour()} />
       {children}
       <div className='surname w-16 text-xs rounded-b'>{surname}</div>

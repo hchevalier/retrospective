@@ -63,6 +63,8 @@ const ParticipantsList = ({ onAddParticipantsClick }) => {
     return <>{children}</>
   }
 
+  const avatarClickable = channel && !channel.consumer.connection.disconnected
+
   return (
     <div id='participants-list' className='flex flex-row'>
       {participants.map(({ surname, status, facilitator, revealer, uuid, color }, index) => {
@@ -74,7 +76,7 @@ const ParticipantsList = ({ onAddParticipantsClick }) => {
             loggedIn={status}
             surname={surname}
             self={profile?.uuid === uuid}
-            onClick={handleParticipantClick}
+            onClick={avatarClickable ? handleParticipantClick : null}
             flags={{ facilitator, revealer }}>
             {facilitator && <img className='facilitator flex-row absolute left-0' src={MegaphoneIcon} width='16' />}
             {revealer && <img className='revealer flex-row absolute right-0' src={SpeechBubbleIcon} width='16' />}
