@@ -20,7 +20,7 @@ gem 'redis', '~> 4.2'
 gem 'sass-rails', '>= 6'
 gem 'sidekiq'
 gem 'turbolinks', '~> 5'
-gem 'webpacker', '~> 4.0'
+gem 'webpacker', '~> 5.2'
 
 group :development do
   gem 'bullet'
