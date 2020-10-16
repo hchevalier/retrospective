@@ -10,6 +10,6 @@ class ApplicationRecord < ActiveRecord::Base
   def anonymize(attribute)
     return attribute unless requires_anonymization?
 
-    attribute.gsub(/[a-z0-9-_ ]+/mi, '*' * attribute.size)
+    attribute.gsub(/[a-z0-9\-_ ]+/mi, '*' * attribute.size)
   end
 end

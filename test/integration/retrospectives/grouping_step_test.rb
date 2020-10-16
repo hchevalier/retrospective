@@ -40,6 +40,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     assert_logged_as_facilitator
     assert_logged_in(other_participant, with_flags: [])
 
+    assert_selector '.avatar.clickable'
     find(".avatar[data-id='#{other_participant.id}']").click
     assert_logged_in(other_participant, with_flags: %i(revealer))
   end
@@ -86,6 +87,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
     assert_logged_as_facilitator
+    assert_selector '.avatar.clickable'
     find(".avatar[data-id='#{other_participant.id}']").click
     refute_text 'A glad reflection'
 
@@ -111,6 +113,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
+    assert_selector '.avatar.clickable'
     find(".avatar[data-id='#{other_participant.id}']").click
 
     other_participant_window = open_new_window
@@ -154,6 +157,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
+    assert_selector '.avatar.clickable'
     find(".avatar[data-id='#{other_participant.id}']").click
 
     other_participant_window = open_new_window
