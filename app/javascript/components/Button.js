@@ -2,6 +2,7 @@ import React from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import { compact } from 'lib/helpers/array'
+import './Button.scss'
 
 const Button = ({ children, contained, disabled, name, primary, secondary, selected, className, ...rest }) => (
   <button
@@ -12,7 +13,7 @@ const Button = ({ children, contained, disabled, name, primary, secondary, selec
     className={classNames(
       compact(['font-medium rounded focus:outline-none focus:shadow-outline', className]).join(' '),
       {
-        'text-white py-1 px-2': (primary || secondary) && contained,
+        'text-white py-1 px-1': (primary || secondary) && contained,
         'bg-blue-500 hover:bg-blue-700': primary && contained,
         'bg-red-500 hover:bg-red-700': secondary && contained,
         'text-sm text-blue-600': primary && !contained,

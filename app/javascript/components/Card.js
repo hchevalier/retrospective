@@ -44,7 +44,7 @@ const Card = ({ title, actionDisabled, actionLabel, onAction, actionLocation, ve
 
 Card.propTypes = {
   center: PropTypes.bool,
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   actionDisabled: PropTypes.bool,
   actionLabel: PropTypes.string,
   actionLocation: PropTypes.string,

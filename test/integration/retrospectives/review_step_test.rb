@@ -26,7 +26,7 @@ class Retrospective::ReviewStepTest < ActionDispatch::IntegrationTest
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_logged_in(retrospective.facilitator, with_flags: %i(self facilitator))
-    click_on 'Next'
+    next_step
 
     assert_selector '.task'
 

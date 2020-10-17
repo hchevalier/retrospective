@@ -27,7 +27,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
-    click_on 'Next'
+    next_step
     within '#discussed-reflection .reflection' do
       assert_text 'A glad reflection'
     end

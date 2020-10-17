@@ -20,7 +20,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
       refute_text 'My reflections'
     end
 
-    click_on 'Next'
+    next_step
     assert_text 'My reflections'
 
     within_window(new_window) do

@@ -1,0 +1,11 @@
+$progress-duration: 3s;
+
+button.progress {
+  background: linear-gradient(to left, #4299e1 50%, #2b6cb0 50%) right;
+  background-size: 200%;
+  transition: background $progress-duration ease-out
+}
+
+:export {
+  progressDuration: $progress-duration;
+}
