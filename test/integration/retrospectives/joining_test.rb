@@ -27,7 +27,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     fill_in 'group_name', with: 'MyOtherGroup'
     refute_text 'Create group "MyOther"'
 
-    select 'glad_sad_mad', from: 'retrospective_kind'
+    select 'Glad sad mad', from: 'retrospective_kind'
     assert_field 'group_name', with: 'MyGroupName'
     refute_text 'MyOtherGroup'
 
@@ -48,13 +48,13 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     refute_text 'MyGroupName'
     fill_in 'group_name', with: 'MyGroupName'
     find('[name="group_name_dropdown"] div', text: 'Create group "MyGroupName"', match: :first).click
-    select 'glad_sad_mad', from: 'retrospective_kind'
+    select 'Glad sad mad', from: 'retrospective_kind'
     click_on 'Start retrospective'
 
     assert_text 'Lobby MyGroupName'
     account.reload
     visit '/'
-    assert_text 'glad_sad_mad with MyGroupName'
+    assert_text 'Glad sad mad with MyGroupName'
   end
 
   test 'joins an existing retrospective by creating an account' do
@@ -104,7 +104,6 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     refute_text 'Lobby'
     assert_text 'Log in'
 
-    # Weirdly, there is a flaky here sometimes, when email is pre-filled from invitation and we use fill_in
     fill_in 'email', with: 'other_one@yopmail.com'
     fill_in 'password', with: 'mypassword'
     click_on 'Login'
