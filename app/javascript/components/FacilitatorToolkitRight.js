@@ -5,15 +5,17 @@ import Button from './Button'
 import { progressDuration } from './Button.scss'
 
 const FacilitatorToolkitRight = () => {
-  const [confirmNext, setConfirmNext] = React.useState(0)
   const { subscription: channel, step } = useSelector(state => state.orchestrator)
+
+  const [confirmNext, setConfirmNext] = React.useState(0)
 
   const nextStep = () => {
     if (confirmNext === 1) {
       channel.changeStep()
       setConfirmNext(0)
+    } else {
+      setConfirmNext(1)
     }
-    else setConfirmNext(1)
   }
 
   useEffect(() => {
@@ -28,7 +30,7 @@ const FacilitatorToolkitRight = () => {
   if (step === 'done' || !channel || channel.consumer.connection.disconnected) return null
 
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-row'>
       <Button primary contained onClick={nextStep} className={classNames('w-16 h-16 ml-5', { 'text-sm progress': confirmNext })}>
         {confirmNext ? 'Confirm' : 'Next'}
       </Button>
