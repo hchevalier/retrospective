@@ -27,7 +27,7 @@ class Group < ApplicationRecord
   def as_json(account)
     {
       **as_short_json,
-      members: accounts_without_revoked.as_json,
+      members: accounts_without_revoked.map(&:as_public_json),
       pendingInvitations: pending_invitations.as_json,
       tasks: account.visible_tasks_from_group(self).as_json
     }

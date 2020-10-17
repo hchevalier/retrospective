@@ -3,14 +3,11 @@ class TasksController < ApplicationController
 
   def index
     group_ids = current_account.accessible_groups.ids
-    participants =
-      current_account
-        .participants
-        .includes(assigned_tasks: [:retrospective, author: :retrospective, assignee: :retrospective, reflection: :zone])
-        .where(retrospectives: { group_id: group_ids })
     tasks =
-      participants
-        .flat_map(&:assigned_tasks)
+      current_account
+        .assigned_tasks
+        .includes(:retrospective, :assignee, author: :retrospective, reflection: :zone)
+        .where(retrospectives: { group_id: group_ids })
         .select(&:pending?)
         .map(&:as_json)
         .sort_by { | task | task[:createdAt] }
@@ -70,6 +67,6 @@ class TasksController < ApplicationController
   end
 
   def reviewing_step_update_task_params
-    params.permit(:status)
+    params.permit(:assignee_id, :status)
   end
 end

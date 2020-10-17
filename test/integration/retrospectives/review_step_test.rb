@@ -4,20 +4,20 @@ class Retrospective::ReviewStepTest < ActionDispatch::IntegrationTest
   test 'dispays an additional step to change actions statuses when there are pending tasks' do
     previous_retrospective = create(:retrospective)
     assignee = previous_retrospective.facilitator
+    account = assignee.account
     something = create(:task, {
       reflection: create(:reflection, :glad, retrospective: previous_retrospective, owner: assignee),
       description: 'Something to do',
       author: assignee,
-      assignee: assignee
+      assignee: account
     })
     something_else = create(:task, {
       reflection: create(:reflection, :glad, retrospective: previous_retrospective, owner: assignee),
       description: 'Something else to do',
       author: assignee,
-      assignee: assignee
+      assignee: account
     })
 
-    account = assignee.account
     as_user(account)
 
     retrospective = create(:retrospective, group: account.groups.first, facilitator: build(:participant, account: account))
@@ -36,39 +36,39 @@ class Retrospective::ReviewStepTest < ActionDispatch::IntegrationTest
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       assert_logged_in(other_participant, with_flags: %i(self))
       within ".task[data-id='#{something.id}']" do
-        assert_selector 'button[name="todo"].selected'
+        assert_selector 'div.selected', text: 'TODO'
       end
     end
 
     within ".task[data-id='#{something.id}']" do
       assert_text 'Something to do'
       assert_changes -> { something.reload.status }, from: 'todo', to: 'done' do
-        click_on 'Done'
-        assert_selector 'button[name="done"].selected'
+        find('div', exact_text: 'DONE').click
+        assert_selector 'div.selected', text: 'DONE'
       end
     end
 
     within_window(other_participant_window) do
       within ".task[data-id='#{something.id}']" do
-        assert_selector 'button[name="done"].selected'
+        assert_selector 'div.selected', text: 'DONE'
       end
     end
 
     within ".task[data-id='#{something_else.id}']" do
       assert_text 'Something else to do'
       assert_changes -> { something_else.reload.status }, from: 'todo', to: 'wont_do' do
-        click_on "Won't"
-        assert_selector 'button[name="wont_do"].selected'
+        find('div', exact_text: 'WON\'T DO').click
+        assert_selector 'div.selected', exact_text: 'WON\'T DO'
       end
 
       assert_changes -> { something_else.reload.status }, from: 'wont_do', to: 'on_hold' do
-        click_on 'On hold'
-        assert_selector 'button[name="on_hold"].selected'
+        find('div', exact_text: 'ON HOLD').click
+        assert_selector 'div.selected', exact_text: 'ON HOLD'
       end
 
       assert_changes -> { something_else.reload.status }, from: 'on_hold', to: 'todo' do
-        click_on 'To do for next time'
-        assert_selector 'button[name="todo"].selected'
+        find('div', exact_text: 'TODO').click
+        assert_selector 'div.selected', exact_text: 'TODO'
       end
     end
 

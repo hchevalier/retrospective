@@ -62,11 +62,11 @@ class DashboardTest < ActionDispatch::IntegrationTest
 
   test 'displays more retrospectives with the SEE ALL button' do
     retrospective = create(:retrospective, kind: :sailboat, group: @group)
-    create(:participant, retrospective: retrospective, account: @account, surname: 'Participator')
+    create(:participant, retrospective: retrospective, account: @account)
     retrospective = create(:retrospective, kind: :sailboat, group: @group)
-    create(:participant, retrospective: retrospective, account: @account, surname: 'Participator')
+    create(:participant, retrospective: retrospective, account: @account)
     retrospective = create(:retrospective, kind: :sailboat, group: @group)
-    create(:participant, retrospective: retrospective, account: @account, surname: 'Participator')
+    create(:participant, retrospective: retrospective, account: @account)
 
     visit '/'
     assert_text 'Sailboat with MyGroupName', count: 3

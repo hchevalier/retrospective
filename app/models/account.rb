@@ -5,6 +5,7 @@ class Account < ApplicationRecord
   has_many :group_accesses
   has_many :groups, through: :group_accesses
   has_many :accessible_groups, -> { where(group_accesses: { revoked_at: nil }) }, through: :group_accesses, class_name: 'Group', source: :group
+  has_many :assigned_tasks, class_name: 'Task', foreign_key: :assignee_id, primary_key: :public_id, inverse_of: :assignee
 
   has_secure_password
   has_secure_token :password_reset_token
@@ -12,10 +13,19 @@ class Account < ApplicationRecord
   validates :email, uniqueness: true
 
   before_create :clear_password_reset_token
+  before_create :generate_public_id
 
   def as_json
     {
       id: id,
+      publicId: public_id,
+      username: username
+    }
+  end
+
+  def as_public_json
+    {
+      publicId: public_id,
       username: username
     }
   end
@@ -41,5 +51,9 @@ class Account < ApplicationRecord
 
   def clear_password_reset_token
     self.password_reset_token = nil
+  end
+
+  def generate_public_id
+    self.public_id = SecureRandom.uuid
   end
 end

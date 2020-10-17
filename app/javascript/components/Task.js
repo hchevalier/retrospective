@@ -6,7 +6,7 @@ const Task = ({ task, onEdit, onDelete, readOnly }) => {
   return (
     <div id={task.id} className='bg-gray-100 rounded shadow'>
       <div className='px-6 py-4'>
-        <div className='font-bold mb-2'>Assigned to {task.assignee.surname}</div>
+        <div className='font-bold mb-2'>Assigned to {task.assignee.username}</div>
         <div className='description'>
           {task.description}
         </div>
