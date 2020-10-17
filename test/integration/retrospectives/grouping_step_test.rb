@@ -21,7 +21,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       assert_text 'Click here to add a reflection'
     end
 
-    click_on 'Next'
+    next_step
     assert_grouping_step
     refute_text 'Click here to add a reflection'
 

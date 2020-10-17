@@ -55,6 +55,11 @@ class ActionDispatch::IntegrationTest
     Capybara.use_default_driver
   end
 
+  def next_step
+    click_on 'Next'
+    click_on 'Confirm'
+  end
+
   def visit(path)
     @account.reload if @account
     super
