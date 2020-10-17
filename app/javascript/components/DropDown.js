@@ -59,7 +59,7 @@ const DropDown = ({ allowNew, name, options, onItemSelected, onItemAdded, ...res
     <div className='flex flex-col w-64 relative'>
       <input ref={inputRef} className="border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline" {...rest} name={name} value={value} onChange={handleInputChange} onFocus={handleFocus} onBlur={handleBlur}/>
       {optionsDisplayed && (
-        <div className='absolute bg-white bg-opacity-100 border mt-8 w-64 z-1' name={`${name}_dropdown`}>
+        <div className='absolute bg-white bg-opacity-100 border mt-8 w-64 z-1 p-2' name={`${name}_dropdown`}>
           {options.filter((option) => option.label.match(currentFilter)).map((option) => {
             if (option.label === value) {
               exactMatch = true

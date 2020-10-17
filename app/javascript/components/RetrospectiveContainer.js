@@ -5,6 +5,7 @@ import appStore from 'stores'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import { get } from 'lib/httpClient'
+import { humanize } from 'lib/helpers/string'
 import RetrospectivePage from './RetrospectivePage'
 import AddGroupMembersModal from './AddGroupMembersModal'
 import HomeIcon from 'images/home-icon.svg'
@@ -20,7 +21,7 @@ const RetrospectiveHeader = ({ groupName, kind, participantsListVisible, toggleP
           </a>
         </div>
         <div className="mr-4 md:mr-8">
-          Lobby {groupName} - {kind}
+          Lobby {groupName} - {kind ? humanize(kind) : ''}
         </div>
         <div className='flex flex-grow justify-end'>
           <img className={classNames('cursor-pointer duration-200 ease-in-out transition-transform', { 'transform rotate-180': participantsListVisible })} src={ArrowIcon} width="24" onClick={toggleParticipantsList} />
