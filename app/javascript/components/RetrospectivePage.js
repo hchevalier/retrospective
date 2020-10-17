@@ -5,14 +5,11 @@ import PropTypes from 'prop-types'
 import consumer from 'channels/consumer'
 import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
 import RetrospectiveArea from './RetrospectiveArea'
-import ParticipantsList from './ParticipantsList'
 import ReflectionsList from './ReflectionsList'
 import ReflectionsListForActionStep from './ReflectionsListForActionStep'
-import FacilitatorToolkitLeft from './FacilitatorToolkitLeft'
-import FacilitatorToolkitRight from './FacilitatorToolkitRight'
 import './RetrospectivePage.scss'
 
-const RetrospectivePage = ({ id: retrospectiveId, kind, handleOpenAddParticipantsModal, participantsListVisible }) => {
+const RetrospectivePage = ({ id: retrospectiveId, kind }) => {
   const dispatch = useDispatch()
   const [reflectionsListVisible, setReflectionsListVisible] = useState(true)
 
@@ -100,16 +97,7 @@ const RetrospectivePage = ({ id: retrospectiveId, kind, handleOpenAddParticipant
           onDone={handleReflectionsListClose} />
       )}
       <div className='flex flex-col flex-1 overflow-x-hidden'>
-        <div id='toolbar' className={classNames('bg-gray-200 shadow top-14 z-10 text-white duration-200 ease-linear transform transition-height h-24 origin-top overflow-hidden', { '!h-0': !participantsListVisible, 'pushed-left': shouldDisplayReflectionsList && pushedLeft })}>
-          <div className="mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
-            <div className='flex flex-grow justify-end'>
-              {profile?.facilitator && <FacilitatorToolkitLeft />}
-              <ParticipantsList onAddParticipantsClick={handleOpenAddParticipantsModal} />
-              {profile?.facilitator && <FacilitatorToolkitRight />}
-            </div>
-          </div>
-        </div>
-        <div id='right-panel' className={classNames('flex flex-col flex-1 relative', { 'pushed-top': participantsListVisible, 'pushed-left': shouldDisplayReflectionsList && pushedLeft})}>
+        <div id='right-panel' className={classNames('flex flex-col flex-1 relative', { 'pushed-left': shouldDisplayReflectionsList && pushedLeft})}>
           <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />
         </div>
       </div>
@@ -123,9 +111,7 @@ RetrospectivePage.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   }).isRequired,
-  handleOpenAddParticipantsModal: PropTypes.func.isRequired,
-  kind: PropTypes.string.isRequired,
-  participantsListVisible: PropTypes.bool.isRequired
+  kind: PropTypes.string.isRequired
 }
 
 export default RetrospectivePage

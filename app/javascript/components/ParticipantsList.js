@@ -49,13 +49,13 @@ const ParticipantsList = ({ onAddParticipantsClick }) => {
 
     if (step === 'thinking' && profile?.facilitator) {
       if (facilitatorInfo[uuid]?.stepDone)
-        children.push(<img key='check' className='flex-row absolute right-0 check' src={CheckIcon} width='16' />)
+        children.push(<img key='check' className='flex-row absolute right-0 check' src={CheckIcon} width='12' />)
       else
-        children.push(<img key='lightbulb' className='flex-row absolute right-0 light-bulb' src={LightBulbIcon} width='16' />)
+        children.push(<img key='lightbulb' className='flex-row absolute right-0 light-bulb' src={LightBulbIcon} width='12' />)
     }
 
     if (step === 'grouping' && !revealer && revealers.includes(uuid))
-      children.push(<img key='check' className='flex-row absolute right-0 check' src={CheckIcon} width='16' />)
+      children.push(<img key='check' className='flex-row absolute right-0 check' src={CheckIcon} width='12' />)
 
     if (step === 'voting' && facilitatorInfo[uuid])
       children.push(<span key='remaining-votes' className='remaining-votes absolute flex right-0 p-1 text-xs rounded-full bg-black bg-opacity-25'>{facilitatorInfo[uuid].remainingVotes}</span>)
@@ -78,13 +78,13 @@ const ParticipantsList = ({ onAddParticipantsClick }) => {
             self={profile?.uuid === uuid}
             onClick={avatarClickable ? handleParticipantClick : null}
             flags={{ facilitator, revealer }}>
-            {facilitator && <img className='facilitator flex-row absolute left-0' src={MegaphoneIcon} width='16' />}
-            {revealer && <img className='revealer flex-row absolute right-0' src={SpeechBubbleIcon} width='16' />}
+            {facilitator && <img className='facilitator flex-row absolute left-0' src={MegaphoneIcon} width='12' />}
+            {revealer && <img className='revealer flex-row absolute right-0' src={SpeechBubbleIcon} width='12' />}
             {displayFacilitatorInfo(revealer, uuid)}
           </Avatar>
         )
       })}
-      <Button primary contained className='add-new w-16 h-16' onClick={onAddParticipantsClick}>+</Button>
+      <Button primary contained className='add-new w-12 h-12' onClick={onAddParticipantsClick}>+</Button>
     </div>
   )
 }
