@@ -1,6 +1,6 @@
 import React from 'react'
 import Button from './Button'
-import { post, put, destroy } from 'lib/httpClient'
+import { get, post, put, destroy } from 'lib/httpClient'
 import { useSelector, shallowEqual } from 'react-redux'
 import PropTypes from 'prop-types'
 import Task from './Task'
@@ -11,10 +11,16 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
   const [assignee, setAssignee] = React.useState('')
   const [reflectionOnTypeStart, setReflectionOnTypeStart] = React.useState(null)
   const [editedTask, setEditedTask] = React.useState(null)
+  const [members, setMembers] = React.useState([])
 
   const retrospectiveId = useSelector(state => state.retrospective.id)
-  const participants = useSelector(state => state.participants, shallowEqual)
+  const groupId = useSelector(state => state.retrospective.group.id)
   const tasks = useSelector(state => state.tasks, shallowEqual)
+
+  React.useEffect(() => {
+    get({ url: `/api/groups/${groupId}` })
+      .then((data) => setMembers(data.members))
+  }, [groupId])
 
   const onDescriptionChange = event => {
     if (!reflectionOnTypeStart && event.target.value.length > 0) {
@@ -50,7 +56,7 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
 
   const handleEditClick = (task) => {
     setDescription(task.description)
-    setAssignee(task.assignee.uuid)
+    setAssignee(task.assignee.publicId)
     setReflectionOnTypeStart(task.reflection)
     setEditedTask(task.id)
   }
@@ -97,8 +103,8 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
             onChange={(event) => setAssignee(event.target.value)}
             className=" appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-3 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
           >
-            <option>assignee</option>
-            {participants.map((participant, index) => <option key={index} value={participant.uuid}>{participant.surname}</option>)}
+            <option>Choose an assignee</option>
+            {members.map((account, index) => <option key={index} value={account.publicId}>{account.username}</option>)}
           </select>
         </div>
         <div className='mt-1 flex justify-evenly mt-1 w-full'>

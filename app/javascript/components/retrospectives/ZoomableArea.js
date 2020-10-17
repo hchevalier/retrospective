@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import classNames from 'classnames'
-import PropTypes from 'prop-types'
 import './ZoomableArea.scss'
 
 const ZoomableArea = ({ children }) => {
@@ -8,7 +7,7 @@ const ZoomableArea = ({ children }) => {
   const MAX_ZOOM = 20
   const MOUSE_WHEEL_STEP = 2
 
-  const [zoomLevel, setZoomLevel] = useState(0)
+  const [zoomLevel, setZoomLevel] = useState(MIN_ZOOM)
 
   const innerRef = useRef(null)
 

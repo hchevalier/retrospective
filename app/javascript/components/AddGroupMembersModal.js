@@ -47,7 +47,7 @@ const AddGroupMembersModal = ({ group, onInvitationsSent, onModalClose, retrospe
           <>
             <div className='font-bold'>Group members</div>
             <div className='mb-4'>
-              {group.members.map((member) => <div key={member.id}>{member.username}</div>)}
+              {group.members.map((member) => <div key={member.publicId}>{member.username}</div>)}
             </div>
           </>
         )}
