@@ -31,7 +31,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     assert_field 'group_name', with: 'MyGroupName'
     refute_text 'MyOtherGroup'
 
-    click_on 'Start retrospective'
+    click_on 'START RETROSPECTIVE'
 
     assert_text 'Lobby MyGroupName'
   end
@@ -49,7 +49,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     fill_in 'group_name', with: 'MyGroupName'
     find('[name="group_name_dropdown"] div', text: 'Create group "MyGroupName"', match: :first).click
     select 'Glad sad mad', from: 'retrospective_kind'
-    click_on 'Start retrospective'
+    click_on 'START RETROSPECTIVE'
 
     assert_text 'Lobby MyGroupName'
     account.reload

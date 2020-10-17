@@ -42,12 +42,12 @@ class DashboardTest < ActionDispatch::IntegrationTest
     new_account = other_retrospective.participants.first.account
 
     visit '/'
-    refute_text 'sailboat with MyGroupName'
+    refute_text 'Sailboat with MyGroupName'
 
     as_user(new_account)
 
     visit '/'
-    assert_text 'sailboat with MyGroupName'
+    assert_text 'Sailboat with MyGroupName'
   end
 
   test 'does not display retrospective the user took part in if he has no active access to the group' do
@@ -69,7 +69,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
     create(:participant, retrospective: retrospective, account: @account, surname: 'Participator')
 
     visit '/'
-    assert_text 'sailboat with MyGroupName', count: 3
+    assert_text 'Sailboat with MyGroupName', count: 3
     refute_text 'Glad sad mad with MyGroupName'
 
     click_on 'SEE ALL'
