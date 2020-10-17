@@ -1,12 +1,12 @@
 import React, { useState, useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import ColorPicker from './ColorPicker'
 import GladSadMad from './retrospectives/GladSadMad'
 import Starfish from './retrospectives/Starfish'
 import TrafficLights from './retrospectives/TrafficLights'
 import OscarsGerards from './retrospectives/OscarsGerards'
 import RetrospectiveBottomBar from './RetrospectiveBottomBar'
 import Sailboat from './retrospectives/Sailboat'
+import StepGathering from './StepGathering'
 import StepReview from './StepReview'
 import StepGrouping from './StepGrouping'
 import StepVoting from './StepVoting'
@@ -14,7 +14,7 @@ import StepActions from './StepActions'
 import StepDone from './StepDone'
 import TopicExpanded from './TopicExpanded'
 
-const RetrospectiveArea = ({ retrospectiveId, kind }) => {
+const RetrospectiveArea = ({ kind }) => {
   const currentStep = useSelector(state => state.orchestrator.step)
   const zonesTypology = useSelector(state => state.retrospective.zonesTypology)
 
@@ -69,7 +69,7 @@ const RetrospectiveArea = ({ retrospectiveId, kind }) => {
   return (
     <>
       <div id={kind} className='flex flex-col pt-6 flex-1 px-4 overflow-scroll'>
-        {currentStep === 'gathering' && <ColorPicker retrospectiveId={retrospectiveId} />}
+        {currentStep === 'gathering' && <StepGathering />}
         {currentStep === 'reviewing' && <StepReview />}
         {currentStep === 'thinking' && renderRetrospective()}
         {currentStep === 'grouping' && <StepGrouping onExpandTopic={handleExpandTopic} />}

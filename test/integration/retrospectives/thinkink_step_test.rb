@@ -10,21 +10,21 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
     assert_logged_as_facilitator
-    refute_retro_started
+    refute_text 'My reflections'
 
     new_window = open_new_window
     within_window(new_window) do
       logged_in_as(other_participant)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       refute_logged_as_facilitator
-      refute_retro_started
+      refute_text 'My reflections'
     end
 
     click_on 'Next'
-    assert_retro_started
+    assert_text 'My reflections'
 
     within_window(new_window) do
-      assert_retro_started
+      assert_text 'My reflections'
     end
   end
 
@@ -34,7 +34,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
-    assert_retro_started
+    assert_text 'My reflections'
     refute_reflection_in_zone('Glad')
 
     find('.create-icon').click
@@ -52,7 +52,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
-    assert_retro_started
+    assert_text 'My reflections'
 
     page.document.evaluate_script("document.dispatchEvent(new KeyboardEvent('keydown', { key: '+' }))")
     assert_equal '', find('textarea[name="content"]').value
@@ -71,7 +71,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
     logged_in_as(other_participant)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
-    assert_retro_started
+    assert_text 'My reflections'
     refute_reflection_in_zone('Glad')
     within '#reflections-panel' do
       refute_text 'A glad reflection'
@@ -122,7 +122,7 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
       find('.delete-icon').click
     end
 
-    assert_retro_started
+    assert_text 'My reflections'
     refute_reflection_in_zone('Glad')
   end
 

@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { get } from 'lib/httpClient'
 import { historyShape } from 'lib/utils/shapes'
 import { formatTime, formatDateWithoutYear } from 'lib/helpers/date'
+import { humanize } from 'lib/helpers/string'
 import DetailedTask from './DetailedTask'
 import Card from './Card'
 
@@ -46,7 +47,7 @@ const Dashboard = ({ history }) => {
         <div className='flex w-3/4 flex-col'>
           {currentRetrospective && (
             <Card title='Current retrospective' actionLabel='JOIN' onAction={() => handleRetrospectiveClick(currentRetrospective.id)}>
-              <span>A {currentRetrospective.kind} retrospective was started</span>
+              <span>A {humanize(currentRetrospective.kind)} retrospective was started</span>
               &nbsp;with&nbsp;
               <span>{currentRetrospective.group.name}</span>
               &nbsp;at&nbsp;
@@ -80,7 +81,7 @@ const Dashboard = ({ history }) => {
                 <div key={retrospective.id} className='cursor-pointer border-b w-full py-2' onClick={() => handleRetrospectiveClick(retrospective.id)}>
                   <div>
                     <span className='font-medium text-blue-800'>{formatDateWithoutYear(new Date(retrospective.createdAt))}</span>
-                    <span>&nbsp;{retrospective.kind} with {retrospective.group.name}</span>
+                    <span>&nbsp;{humanize(retrospective.kind)} with {retrospective.group.name}</span>
                   </div>
                 </div>
               )

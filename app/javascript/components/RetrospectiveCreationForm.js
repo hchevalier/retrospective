@@ -1,6 +1,7 @@
 import React from 'react'
 import { get, post } from 'lib/httpClient'
-import Button from './Button'
+import { humanize } from 'lib/helpers/string'
+import Card from './Card'
 import DropDown from './DropDown'
 
 const RetrospectiveCreationForm = () => {
@@ -64,27 +65,27 @@ const RetrospectiveCreationForm = () => {
 
   return (
     <div className='container'>
-      <form noValidate autoComplete='off' className='max-w-xl mx-auto mt-4' onSubmit={handleSubmit}>
-        <div className='grid grid-cols-2 gap-4 mb-4'>
-          <div>
-            <label>Group</label>
-            <DropDown name='group_name' options={groupOptions} allowNew onItemSelected={handleSelectedExistingGroup} onItemAdded={handleSelectedNewGroup} />
+      <form noValidate autoComplete='off' className='mt-4' onSubmit={handleSubmit}>
+        <Card className='grid grid-cols-2 gap-4 mb-4' title='Settings' center actionLabel='START RETROSPECTIVE' onAction={handleSubmit} actionDisabled={formInvalid}>
+          <div className='flex flex-row max-w-xl justify-evenly'>
+            <div>
+              <label>Group</label>
+              <DropDown name='group_name' options={groupOptions} allowNew onItemSelected={handleSelectedExistingGroup} onItemAdded={handleSelectedNewGroup} />
+            </div>
+            <div className='ml-8'>
+              <label id='label-kind'>Retrospective kind</label>
+              <select
+                id='label-kind'
+                name='retrospective_kind'
+                value={retrospectiveKind}
+                onChange={(event) => setRetrospectiveKind(event.target.value)}
+                className=" appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-3 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                <option>Select one</option>
+                {retrospectiveKinds.map((kind, index) => <option key={index} value={kind}>{humanize(kind)}</option>)}
+              </select>
+            </div>
           </div>
-          <div>
-            <label id='label-kind'>Retrospective kind</label>
-            <select
-              id='label-kind'
-              name='retrospective_kind'
-              value={retrospectiveKind}
-              onChange={(event) => setRetrospectiveKind(event.target.value)}
-              className=" appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-3 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-              <option>Select one</option>
-              {retrospectiveKinds.map((kind, index) => <option key={index} value={kind}>{kind}</option>)}
-            </select>
-          </div>
-        </div>
-
-        <Button primary contained disabled={formInvalid} onClick={handleSubmit}>Start retrospective</Button>
+        </Card>
       </form>
     </div>
   )

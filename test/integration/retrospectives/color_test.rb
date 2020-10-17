@@ -44,7 +44,7 @@ class Retrospective::ColorTest < ActionDispatch::IntegrationTest
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
-    assert_retro_started
+    assert_text 'My reflections'
 
     rgba_color = hex_color.scan(/[0-9a-f]{2}/).map { |color| color.to_i(16) }
     assert find('.reflection', style: /#{rgba_color.join(', ')}/)
@@ -56,7 +56,7 @@ class Retrospective::ColorTest < ActionDispatch::IntegrationTest
     within_window(open_new_window) do
       logged_in_as(other_participant)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-      assert_retro_started
+      assert_text 'My reflections'
 
       rgba_color = other_color.scan(/[0-9a-f]{2}/).map { |color| color.to_i(16) }
       assert find('.reflection', style: /#{rgba_color.join(', ')}/)

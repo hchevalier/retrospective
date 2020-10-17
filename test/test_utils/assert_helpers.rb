@@ -44,14 +44,6 @@ module AssertHelpers
     end
   end
 
-  def assert_retro_started
-    assert_text 'Glad'
-  end
-
-  def refute_retro_started
-    refute_text 'Glad'
-  end
-
   def assert_reflection_in_zone(zone, count: 1)
     assert_text "Glad (#{count})"
   end

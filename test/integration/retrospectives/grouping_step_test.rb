@@ -10,14 +10,14 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
     assert_logged_as_facilitator
-    assert_retro_started
+    assert_text 'My reflections'
     assert_text 'Click here to add a reflection'
 
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-      assert_retro_started
+      assert_text 'My reflections'
       assert_text 'Click here to add a reflection'
     end
 
