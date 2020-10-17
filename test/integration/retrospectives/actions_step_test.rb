@@ -115,7 +115,8 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
 
   test 'can create a task' do
     retrospective = create(:retrospective, step: 'actions')
-    other_participant = create(:other_participant, retrospective: retrospective)
+    other_account = create(:account, username: 'other')
+    other_participant = create(:other_participant, retrospective: retrospective, account: other_account)
     reflection = create(:reflection, :glad, owner: retrospective.facilitator)
     retrospective.update!(discussed_reflection: reflection)
 
@@ -123,11 +124,11 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     fill_in 'content', with: 'my task'
-    select retrospective.facilitator.surname, from: 'assignee'
+    select retrospective.facilitator.account.username, from: 'assignee'
     click_on 'Take action'
 
     within '#tasks-list' do
-      assert_text 'Assigned to Facilitator'
+      assert_text 'Assigned to account'
       assert_text 'my task'
     end
 
@@ -137,7 +138,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
       within '#tasks-list' do
-        assert_text 'Assigned to Facilitator'
+        assert_text 'Assigned to account'
         assert_text 'my task'
       end
     end
@@ -155,7 +156,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     fill_in 'content', with: 'my task'
-    select retrospective.facilitator.surname, from: 'assignee'
+    select retrospective.facilitator.account.username, from: 'assignee'
 
     all('#reflections-panel .sticky-bookmark').last.click
 
@@ -167,14 +168,14 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     click_on 'Take action'
 
     within '#tasks-list', visible: false do
-      refute_text 'Assigned to Facilitator'
+      refute_text 'Assigned to account'
       refute_text 'my task'
     end
 
     all('#reflections-panel .sticky-bookmark').first.click
 
     within '#tasks-list' do
-      assert_text 'Assigned to Facilitator'
+      assert_text 'Assigned to account'
       assert_text 'my task'
     end
   end
@@ -191,7 +192,7 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     fill_in 'content', with: 'my task'
-    select retrospective.facilitator.surname, from: 'assignee'
+    select retrospective.facilitator.account.username, from: 'assignee'
 
     all('#reflections-panel .sticky-bookmark').last.click
 
@@ -208,14 +209,15 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     click_on 'Take action'
 
     within '#tasks-list' do
-      assert_text 'Assigned to Facilitator'
+      assert_text 'Assigned to account'
       assert_text 'my task'
     end
   end
 
   test 'can update a task' do
     retrospective = create(:retrospective, step: 'actions')
-    other_participant = create(:other_participant, retrospective: retrospective)
+    other_account = create(:account, username: 'other')
+    other_participant = create(:other_participant, retrospective: retrospective, account: other_account)
     reflection = create(:reflection, :glad, owner: retrospective.facilitator)
     retrospective.update!(discussed_reflection: reflection)
 
@@ -223,11 +225,11 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     fill_in 'content', with: 'my task'
-    select retrospective.facilitator.surname, from: 'assignee'
+    select retrospective.facilitator.account.username, from: 'assignee'
     click_on 'Take action'
 
     within '#tasks-list' do
-      assert_text 'Assigned to Facilitator'
+      assert_text 'Assigned to account'
       assert_text 'my task'
       find('.edit-icon').click
     end
@@ -237,13 +239,13 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
       assert_text 'A glad reflection'
       fill_in 'content', with: 'my updated task'
     end
-    select other_participant.surname, from: 'assignee'
+    select other_participant.account.username, from: 'assignee'
     within '#action-editor' do
       click_on 'Update'
     end
 
     within '#tasks-list' do
-      assert_text 'Assigned to Other participant'
+      assert_text 'Assigned to other'
       assert_text 'my updated task'
     end
   end
@@ -253,25 +255,25 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     facilitator = retrospective.facilitator
     reflection = create(:reflection, :glad, owner: retrospective.facilitator)
     retrospective.update!(discussed_reflection: reflection)
-    reflection.tasks.create!(author: facilitator, assignee: facilitator, description: 'my task')
+    reflection.tasks.create!(author: facilitator, assignee: facilitator.account, description: 'my task')
 
     logged_in_as(facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     within '#tasks-list' do
-      assert_text 'Assigned to Facilitator'
+      assert_text 'Assigned to account'
       assert_text 'my task'
 
       dismiss_confirm do
         find('.delete-icon').click
       end
-      assert_text 'Assigned to Facilitator'
+      assert_text 'Assigned to account'
       assert_text 'my task'
 
       accept_confirm do
         find('.delete-icon').click
       end
-      refute_text 'Assigned to Facilitator'
+      refute_text 'Assigned to account'
       refute_text 'my task'
     end
   end

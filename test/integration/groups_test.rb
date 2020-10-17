@@ -225,7 +225,7 @@ class GroupsTest < ActionDispatch::IntegrationTest
     end
     reflection = create(:reflection, :glad, retrospective: retrospective, owner: facilitator, content: content)
     retrospective.reload.participants.each do |participant|
-      create(:task, reflection: reflection, description: task_description, author: facilitator, assignee: participant)
+      create(:task, reflection: reflection, description: task_description, author: facilitator, assignee: participant.account)
     end
 
     retrospective

@@ -27,7 +27,7 @@ const DetailedTask = ({ task, showAssignee, editable, availableAssignees, additi
   const assigneesOptions = (availableAssignees || []).map((account) => ({ label: account.username, value: account.publicId }))
 
   return (
-    <div className={classNames('p2', containerClassName)}>
+    <div className={classNames('p2 task', containerClassName)} data-id={task.id}>
       <div className={classNames('flex flex-col bg-gray-200 rounded-md p-2 m-2', additionalClassName)}>
         <div className='text-sm border-b-2 border-gray-400'>
           {showAssignee && editable && (

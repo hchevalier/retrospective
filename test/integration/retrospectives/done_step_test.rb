@@ -9,7 +9,7 @@ class Retrospective::DoneStepTest < ActionDispatch::IntegrationTest
     reflection = create(:reflection, :glad, owner: retrospective.facilitator)
     retrospective.update!(discussed_reflection: reflection)
     reflection.reactions.create!(kind: :emoji, content: :star_struck, author: facilitator, retrospective: retrospective)
-    reflection.tasks.create!(author: facilitator, assignee: facilitator, description: 'my task')
+    reflection.tasks.create!(author: facilitator, assignee: facilitator.account, description: 'my task')
 
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")

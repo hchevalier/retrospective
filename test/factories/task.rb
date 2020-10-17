@@ -5,6 +5,6 @@ FactoryBot.define do
     status { :todo }
     description { 'One small task' }
     author { reflection.retrospective.participants.first }
-    assignee { author }
+    assignee { author.account }
   end
 end

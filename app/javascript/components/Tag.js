@@ -15,7 +15,7 @@ const Tag = ({ content, selectable, selected, onClick }) => (
     classNames(
       'text-xxs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full ml-2',
       CLASSES_FOR_STATUS[content],
-      { 'cursor-pointer': selectable, 'border-2 font-extrabold': selected }
+      { 'cursor-pointer': selectable, 'border-2 font-extrabold selected': selected }
     )}
     onClick={onClick}>
     {content.replace(/_/g, ' ').replace(/wont/, "won't")}
