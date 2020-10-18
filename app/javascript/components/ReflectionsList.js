@@ -49,7 +49,7 @@ const ReflectionsList = ({ open, retrospectiveKind, onToggle, onDone }) => {
 
   return (
     <>
-      <div id='reflections-panel' className={classNames('bg-transparent relative p-4 flex flex-row', { infinite: currentStep !== 'thinking' })}>
+      <div id='reflections-panel' className={classNames('bg-transparent relative py-4 flex flex-row', { infinite: currentStep !== 'thinking' })}>
         <Card title='My reflections' actionLabel={actionAvailable} actionLocation='header' onAction={handleDone} vertical collapsible={!revealer} onToggleCollapse={onToggle}>
           <div id='reflections-container'>
             {['open', 'limited'].includes(zonesTypology) && zones.map((zone) => {

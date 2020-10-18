@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import Button from './Button'
 import ArrowIcon from 'images/arrow-icon-black.svg'
 
-const Card = ({ title, actionDisabled, actionLabel, onAction, actionLocation, vertical, wrap, center, collapsible, onToggleCollapse, children }) => {
+const Card = ({ title, actionDisabled, actionLabel, className, containerClassName, onAction, actionLocation, vertical, wrap, center, scrollable, collapsible, onToggleCollapse, children }) => {
   const [colapsed, setColapsed] = useState(false)
 
   const toggleColapsed = () => {
@@ -14,8 +14,8 @@ const Card = ({ title, actionDisabled, actionLabel, onAction, actionLocation, ve
 
   const footer = actionLabel && actionLocation !== 'header'
   return (
-    <div className='w-full mb-6 px-4 flex flex-col'>
-      <div className='flex-grow flex flex-col bg-white border-t border-b shadow'>
+    <div className={classNames('w-full px-4 flex flex-col', containerClassName)}>
+      <div className={classNames('flex-grow flex flex-col bg-white border-t border-b shadow', { 'overflow-scroll': scrollable })}>
         {(title || actionLabel) && (
           <div className='border-b'>
             <div className='flex justify-between px-6 -mb-px'>
@@ -45,6 +45,7 @@ const Card = ({ title, actionDisabled, actionLabel, onAction, actionLocation, ve
             className={
               classNames(
                 'flex px-6 text-gray-800 items-center -mx-4',
+                className,
                 {
                   'flex-wrap': wrap, 'justify-center': center, 'justify-between': wrap, 'flex-col': vertical, 'border-b': footer,
                   'transition-height transition-flex duration-500 ease-in-out flex-none flex-grow-0 h-0 overflow-y-scroll py-0': collapsible,
@@ -72,11 +73,14 @@ Card.propTypes = {
   center: PropTypes.bool,
   children: PropTypes.node,
   collapsible: PropTypes.bool,
+  className: PropTypes.string,
+  containerClassName: PropTypes.string,
   actionDisabled: PropTypes.bool,
   actionLabel: PropTypes.string,
   actionLocation: PropTypes.string,
   onAction: PropTypes.func,
   onToggleCollapse: PropTypes.func,
+  scrollable: PropTypes.bool,
   title: PropTypes.string,
   vertical: PropTypes.bool,
   wrap: PropTypes.bool

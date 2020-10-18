@@ -1,13 +1,11 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import consumer from 'channels/consumer'
 import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
 import RetrospectiveArea from './RetrospectiveArea'
 import ReflectionsList from './ReflectionsList'
 import ReflectionsListForActionStep from './ReflectionsListForActionStep'
-import './RetrospectivePage.scss'
 
 const RetrospectivePage = ({ id: retrospectiveId, kind }) => {
   const dispatch = useDispatch()
@@ -95,7 +93,7 @@ const RetrospectivePage = ({ id: retrospectiveId, kind }) => {
           onDone={handleReflectionsListClose} />
       )}
       <div className='flex flex-col flex-1 overflow-x-hidden'>
-        <div id='right-panel' className='flex flex-col flex-1 relative ml-4'>
+        <div id='right-panel' className='flex flex-col flex-1 relative my-4'>
           <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />
         </div>
       </div>

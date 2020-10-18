@@ -32,11 +32,11 @@ const BlankStickyNote = ({ ownerProfile, onReflectionReady, onReflectionPending,
     editTextArea.style.height = (editTextArea.scrollHeight) + 'px'
   }
 
-  const handleFocus = () => {
+  const handleFocus = React.useCallback(() => {
     setEditing(true)
     setReady(false)
     onReflectionPending()
-  }
+  }, [onReflectionPending])
 
   const handleBlur = (event) => {
     if (event.currentTarget.value.length > 0) {

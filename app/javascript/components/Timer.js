@@ -56,14 +56,12 @@ const Timer = ({ facilitator, show }) => {
   return (
     <>
       {displayTimer && (
-        <Card>
-          <div id='timer' className='cursor-pointer min-w-16' onClick={handleTimerClick}>
-            <span className='font-medium text-blue-800'>Timer:</span>
-            <span className='minutes ml-1'>{timerEndAt ? `${remainingMinutes}`.padStart(2, '0') : '--'}</span>
-            <span className='colon-separator'>:</span>
-            <span className='seconds'>{timerEndAt ? `${remainingSeconds}`.padStart(2, '0') : '--'}</span>
-          </div>
-        </Card>
+        <div id='timer' className='cursor-pointer min-w-16' onClick={handleTimerClick}>
+          <span className='font-medium text-blue-800'>Timer:</span>
+          <span className='minutes ml-1 text-xl'>{timerEndAt ? `${remainingMinutes}`.padStart(2, '0') : '--'}</span>
+          <span className='colon-separator text-xl'>:</span>
+          <span className='seconds text-xl'>{timerEndAt ? `${remainingSeconds}`.padStart(2, '0') : '--'}</span>
+        </div>
       )}
       <Modal onClose={handleClose} open={displayDurationDialog}>
         <p className='text-xl'>Set duration</p>
