@@ -15,7 +15,7 @@ const Card = ({ title, actionDisabled, actionLabel, className, containerClassNam
   const footer = actionLabel && actionLocation !== 'header'
   return (
     <div className={classNames('w-full px-4 flex flex-col', containerClassName)}>
-      <div className={classNames('flex-grow flex flex-col bg-white border-t border-b shadow', { 'overflow-scroll': scrollable })}>
+      <div className={classNames('flex-grow flex flex-col bg-white border-t border-b shadow', { 'overflow-auto': scrollable })}>
         {(title || actionLabel) && (
           <div className='border-b'>
             <div className='flex justify-between px-6 -mb-px'>

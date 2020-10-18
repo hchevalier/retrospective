@@ -69,7 +69,7 @@ const RetrospectiveArea = ({ kind }) => {
 
   return (
     <div id={kind} className='h-full'>
-      <Card vertical className='pb-0' wrap={currentStep === 'thinking'} scrollable={currentStep === 'thinking'} containerClassName='flex-1 px-4 overflow-scroll h-full'>
+      <Card vertical className='pb-0' wrap={currentStep === 'thinking'} scrollable={currentStep === 'thinking'} containerClassName='flex-1 px-4 h-full'>
         {currentStep === 'gathering' && <StepGathering />}
         {currentStep === 'reviewing' && <StepReview />}
         {currentStep === 'thinking' && renderRetrospective()}
