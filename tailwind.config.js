@@ -42,6 +42,7 @@ module.exports = {
         '16': '16rem',
       },
       transitionProperty: {
+        'flex': 'flex',
         'height': 'height',
         'width': 'width',
       },

@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import Modal from './Modal'
+import Card from './Card'
 import './Timer.scss'
 
 const computeRemainingTime = endTime => {
@@ -54,12 +55,16 @@ const Timer = ({ facilitator, show }) => {
 
   return (
     <>
-      {displayTimer && <div id='timer' className='cursor-pointer ml-4' onClick={handleTimerClick}>
-        <span>Timer:</span>
-        <span className='minutes ml-1'>{timerEndAt ? `${remainingMinutes}`.padStart(2, '0') : '--'}</span>
-        <span className='colon-separator'>:</span>
-        <span className='seconds'>{timerEndAt ? `${remainingSeconds}`.padStart(2, '0') : '--'}</span>
-      </div>}
+      {displayTimer && (
+        <Card>
+          <div id='timer' className='cursor-pointer min-w-16' onClick={handleTimerClick}>
+            <span className='font-medium text-blue-800'>Timer:</span>
+            <span className='minutes ml-1'>{timerEndAt ? `${remainingMinutes}`.padStart(2, '0') : '--'}</span>
+            <span className='colon-separator'>:</span>
+            <span className='seconds'>{timerEndAt ? `${remainingSeconds}`.padStart(2, '0') : '--'}</span>
+          </div>
+        </Card>
+      )}
       <Modal onClose={handleClose} open={displayDurationDialog}>
         <p className='text-xl'>Set duration</p>
         {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map((minutes) => (

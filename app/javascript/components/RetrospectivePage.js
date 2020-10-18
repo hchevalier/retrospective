@@ -82,8 +82,6 @@ const RetrospectivePage = ({ id: retrospectiveId, kind }) => {
     setReflectionsListVisible(false)
   }, [channel, revealer])
 
-  const pushedLeft = reflectionsListVisible || revealer || (profile?.facilitator && currentStep === 'actions')
-
   return (
     <div className='flex flex-row flex-1 w-full relative'>
       {shouldDisplayReflectionsList && (currentStep === 'actions' ?
@@ -97,7 +95,7 @@ const RetrospectivePage = ({ id: retrospectiveId, kind }) => {
           onDone={handleReflectionsListClose} />
       )}
       <div className='flex flex-col flex-1 overflow-x-hidden'>
-        <div id='right-panel' className={classNames('flex flex-col flex-1 relative', { 'pushed-left': shouldDisplayReflectionsList && pushedLeft})}>
+        <div id='right-panel' className='flex flex-col flex-1 relative ml-4'>
           <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />
         </div>
       </div>
