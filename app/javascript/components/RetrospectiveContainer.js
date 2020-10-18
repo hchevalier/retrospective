@@ -16,23 +16,25 @@ const RetrospectiveHeader = ({ groupName, kind, handleOpenAddParticipantsModal }
   const profile = useSelector(state => state.profile)
 
   return (
-    <nav className="bg-gray-900 shadow text-white h-14 sticky w-full z-10 top-0" role="navigation">
-      <div className="container mx-auto px-4 py-1 flex flex-wrap items-center md:flex-no-wrap">
-        <div className="mr-4 md:mr-8">
-          <a href='/'>
-            <img src={HomeIcon} width="24" />
-          </a>
-        </div>
-        <div className="mr-4 md:mr-8">
-          Lobby {groupName} - {kind ? humanize(kind) : ''}
-        </div>
-        <div className='flex flex-grow justify-end'>
-          {profile?.facilitator && <FacilitatorToolkitLeft />}
-          <ParticipantsList onAddParticipantsClick={handleOpenAddParticipantsModal} />
-          {profile?.facilitator && <FacilitatorToolkitRight />}
+    <div className='block bg-white border-b border-gray-400 sticky z-10 top-0'>
+      <div className='container mx-auto px-4'>
+        <div className='flex'>
+          <div className='flex -mb-px mr-8 items-center opacity-50 text-grey-700 border-transparent hover:opacity-75 hover:border-grey-700'>
+            <a href='/'>
+              <img src={HomeIcon} width="24" />
+            </a>
+          </div>
+          <div className='flex -mb-px mr-8 items-center no-underline flex items-center py-4 border-b text-blue-700 border-blue-700'>
+            Lobby {groupName} - {kind ? humanize(kind) : ''}
+          </div>
+          <div className='flex -mb-px flex-grow justify-end text-right items-center'>
+            {profile?.facilitator && <FacilitatorToolkitLeft />}
+            <ParticipantsList onAddParticipantsClick={handleOpenAddParticipantsModal} />
+            {profile?.facilitator && <FacilitatorToolkitRight />}
+          </div>
         </div>
       </div>
-    </nav >
+    </div>
   )
 }
 
@@ -76,7 +78,7 @@ const RetrospectiveContainer = ({ id, history }) => {
   }, [id])
 
   return (
-    <div id='main-container' className='flex flex-col min-h-screen bg-white'>
+    <div id='main-container' className='flex flex-col min-h-screen bg-gray-300'>
       {retrospectiveInfo && store && (
         <Provider store={store}>
           <RetrospectiveHeader

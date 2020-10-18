@@ -1,15 +1,15 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import Card from './Card'
 import ColorPicker from './ColorPicker'
 
 const StepGathering = () => {
   const retrospectiveId = useSelector(state => state.retrospective.id)
 
   return (
-    <>
-      <div className='text-blue-800 text-xs text-center'>Choose a color for your sticky notes</div>
+    <Card title='Choose a color for your sticky notes' center>
       <ColorPicker retrospectiveId={retrospectiveId} />
-    </>
+    </Card>
   )
 }
 

@@ -31,8 +31,8 @@ const FacilitatorToolkitRight = () => {
 
   return (
     <div className='flex flex-row'>
-      <Button primary contained onClick={nextStep} className={classNames('w-12 h-12 ml-5', { 'progress text-xxs': confirmNext, 'text-sm': !confirmNext })}>
-        {confirmNext ? 'Confirm' : 'Next'}
+      <Button primary contained onClick={nextStep} className={classNames('w-24 h-12 ml-5 text-sm', { 'progress': confirmNext })}>
+        {confirmNext ? 'Confirm' : 'Next step'}
       </Button>
     </div>
   )

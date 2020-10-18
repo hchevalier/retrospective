@@ -56,7 +56,7 @@ class ActionDispatch::IntegrationTest
   end
 
   def next_step
-    click_on 'Next'
+    click_on 'Next step'
     click_on 'Confirm'
   end
 
