@@ -2,10 +2,10 @@ import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import classNames from 'classnames'
 import StickyBookmark from './StickyBookmark'
+import Card from './Card'
 import VoteCorner from './VoteCorner'
 import InlineTopic from './InlineTopic'
 import TrafficLightResult from './retrospectives/traffic_lights/TrafficLightResult'
-import ArrowIcon from 'images/arrow-icon-black.svg'
 import './ReflectionsList.scss'
 
 const ReflectionsListForActionStep = ({ open, onToggle }) => {
@@ -34,39 +34,37 @@ const ReflectionsListForActionStep = ({ open, onToggle }) => {
 
   return (
     <>
-      <div id='reflections-panel' className='bg-gray-200 relative p-4 shadow-right flex flex-row'>
-        <div className='justify-start items-start px-2 w-10'>
-          {!facilitator && <img className={classNames('cursor-pointer duration-200 ease-in-out transition-transform transform rotate-90', { '-rotate-90': open })} src={ArrowIcon} width="24" onClick={onToggle} />}
-        </div>
-        <div id='reflections-container' className={classNames('transition-width duration-500 ease-in-out w-0 overflow-x-hidden', { 'w-64': open })}>
-          <div className='font-bold'>Voted topics</div>
-          {['open', 'limited'].includes(zonesTypology) && reflectionsWithVotes.map(([reflection, votes]) => {
-            if (reflection.topic?.id && !topics[reflection.topic.id]) {
-              topics[reflection.topic.id] = reflection.topic
-              return <InlineTopic
-                key={reflection.topic.id}
-                reflection={reflection}
-                allReflections={visibleReflections}
-                reactions={visibleReactions}
-                selectedReflection={currentReflection}
-                onItemClick={handleStickyBookmarkClicked} />
-            } else if (!reflection.topic?.id) {
-              let selected = reflection.id == currentReflection.id ? 'shadow-md' : 'mx-2'
+      <div id='reflections-panel' className='bg-gray-300 relative py-4 flex flex-row'>
+        <Card title='Voted topics' vertical>
+          <div id='reflections-container' className={classNames('transition-width duration-500 ease-in-out w-0 overflow-x-hidden', { 'w-64': open })}>
+            {['open', 'limited'].includes(zonesTypology) && reflectionsWithVotes.map(([reflection, votes]) => {
+              if (reflection.topic?.id && !topics[reflection.topic.id]) {
+                topics[reflection.topic.id] = reflection.topic
+                return <InlineTopic
+                  key={reflection.topic.id}
+                  reflection={reflection}
+                  allReflections={visibleReflections}
+                  reactions={visibleReactions}
+                  selectedReflection={currentReflection}
+                  onItemClick={handleStickyBookmarkClicked} />
+              } else if (!reflection.topic?.id) {
+                let selected = reflection.id == currentReflection.id ? 'shadow-md' : 'mx-2'
+                return (
+                  <StickyBookmark key={reflection.id} color={reflection.color} otherClassNames={selected} onClick={() => handleStickyBookmarkClicked(reflection)}>
+                    <VoteCorner target={reflection} targetType={'reflection'} votes={votes} inline noStandOut /> <span>{reflection.content}</span>
+                  </StickyBookmark>
+                )
+              }
+            })}
+            {zonesTypology === 'single_choice' && reflectionsWithVotes.map(([reflection]) => {
               return (
-                <StickyBookmark key={reflection.id} color={reflection.color} otherClassNames={selected} onClick={() => handleStickyBookmarkClicked(reflection)}>
-                  <VoteCorner target={reflection} targetType={'reflection'} votes={votes} inline noStandOut /> <span>{reflection.content}</span>
-                </StickyBookmark>
+                <div id={kind} key={reflection.id} onClick={() => handleStickyBookmarkClicked(reflection)}>
+                  <TrafficLightResult reflection={reflection} />
+                </div>
               )
-            }
-          })}
-          {zonesTypology === 'single_choice' && reflectionsWithVotes.map(([reflection]) => {
-            return (
-              <div id={kind} key={reflection.id} onClick={() => handleStickyBookmarkClicked(reflection)}>
-                <TrafficLightResult reflection={reflection} />
-              </div>
-            )
-          })}
-        </div>
+            })}
+          </div>
+        </Card>
       </div>
     </>
   )
