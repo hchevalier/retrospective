@@ -58,7 +58,7 @@ const ParticipantsList = ({ onAddParticipantsClick }) => {
       children.push(<img key='check' className='flex-row absolute right-0 check' src={CheckIcon} width='12' />)
 
     if (step === 'voting' && facilitatorInfo[uuid])
-      children.push(<span key='remaining-votes' className='remaining-votes absolute flex right-0 p-1 text-xs rounded-full bg-black bg-opacity-25'>{facilitatorInfo[uuid].remainingVotes}</span>)
+      children.push(<span key='remaining-votes' className='remaining-votes absolute flex right-0 text-xs pr-1'>{facilitatorInfo[uuid].remainingVotes}</span>)
 
     return <>{children}</>
   }

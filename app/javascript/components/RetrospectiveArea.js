@@ -77,7 +77,7 @@ const RetrospectiveArea = ({ kind, onToggleFullScreen, fullScreen }) => {
         wrap={currentStep === 'thinking'}
         scrollable={currentStep === 'thinking'}
         containerClassName='flex-1 px-4 h-full'>
-        {['thinking', 'grouping'].includes(currentStep) && (
+        {['thinking', 'grouping'].includes(currentStep) && zonesTypology === 'open' && (
           <img
             className='cursor-pointer absolute top-2 left-6'
             src={fullScreen ? ExitFullScreenIcon : FullScreenIcon}
