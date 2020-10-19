@@ -81,19 +81,28 @@ const RetrospectivePage = ({ id: retrospectiveId, kind }) => {
     setReflectionsListVisible(false)
   }, [channel, revealer])
 
+  const isFullScreen = () => {
+    if (!shouldDisplayReflectionsList) return true
+
+    if (currentStep === 'actions')
+      return !reflectionsListVisible && !revealer && !profile?.facilitator
+
+    return !reflectionsListVisible && !revealer
+  }
+
   return (
     <div className='flex flex-row flex-1 w-full relative'>
       {shouldDisplayReflectionsList && (currentStep === 'actions' ?
-        <div className={classNames('transition-margin duration-500 ease-in-out', { '-ml-76': !reflectionsListVisible && !revealer && !profile?.facilitator })}>
-          <ReflectionsListForActionStep open={reflectionsListVisible || revealer || profile?.facilitator} />
+        <div className={classNames('transition-margin duration-500 ease-in-out', { '-ml-76': isFullScreen() })}>
+          <ReflectionsListForActionStep />
         </div> :
-        <div className={classNames('transition-margin duration-500 ease-in-out', { '-ml-76': !reflectionsListVisible && !revealer })}>
+        <div className={classNames('transition-margin duration-500 ease-in-out', { '-ml-76': isFullScreen() })}>
           <ReflectionsList retrospectiveKind={kind} onDone={handleReflectionsListClose} />
         </div>
       )}
       <div className='flex flex-col flex-1 overflow-x-hidden'>
         <div id='right-panel' className='flex flex-col flex-1 relative my-4'>
-          <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} onToggleFullScreen={handleReflectionsListToggle} />
+          <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} onToggleFullScreen={handleReflectionsListToggle} fullScreen={isFullScreen()} />
         </div>
       </div>
     </div>

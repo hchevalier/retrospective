@@ -14,9 +14,10 @@ import StepActions from './StepActions'
 import StepDone from './StepDone'
 import Card from './Card'
 import TopicExpanded from './TopicExpanded'
-import BurgerIcon from 'images/burger-icon'
+import FullScreenIcon from 'images/fullscreen-icon'
+import ExitFullScreenIcon from 'images/exit-fullscreen-icon'
 
-const RetrospectiveArea = ({ kind, onToggleFullScreen }) => {
+const RetrospectiveArea = ({ kind, onToggleFullScreen, fullScreen }) => {
   const currentStep = useSelector(state => state.orchestrator.step)
   const zonesTypology = useSelector(state => state.retrospective.zonesTypology)
 
@@ -79,7 +80,7 @@ const RetrospectiveArea = ({ kind, onToggleFullScreen }) => {
         {['thinking', 'grouping'].includes(currentStep) && (
           <img
             className='cursor-pointer absolute top-2 left-6'
-            src={BurgerIcon}
+            src={fullScreen ? ExitFullScreenIcon : FullScreenIcon}
             onClick={onToggleFullScreen}
             width="24" />
         )}

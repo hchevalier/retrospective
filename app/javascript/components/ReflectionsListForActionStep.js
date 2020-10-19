@@ -1,6 +1,5 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
-import classNames from 'classnames'
 import StickyBookmark from './StickyBookmark'
 import Card from './Card'
 import VoteCorner from './VoteCorner'
@@ -8,7 +7,7 @@ import InlineTopic from './InlineTopic'
 import TrafficLightResult from './retrospectives/traffic_lights/TrafficLightResult'
 import './ReflectionsList.scss'
 
-const ReflectionsListForActionStep = ({ open }) => {
+const ReflectionsListForActionStep = () => {
   const { facilitator } = useSelector(state => state.profile)
   const visibleReflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
   const currentReflection = useSelector(state => state.reflections.discussedReflection)
@@ -36,7 +35,7 @@ const ReflectionsListForActionStep = ({ open }) => {
     <>
       <div id='reflections-panel' className='bg-gray-300 relative py-4 flex flex-row'>
         <Card title='Voted topics' vertical>
-          <div id='reflections-container' className={classNames('transition-width duration-500 ease-in-out w-0 overflow-x-hidden', { 'w-64': open })}>
+          <div id='reflections-container' className='transition-width duration-500 ease-in-out w-0 overflow-x-hidden w-64'>
             {['open', 'limited'].includes(zonesTypology) && reflectionsWithVotes.map(([reflection, votes]) => {
               if (reflection.topic?.id && !topics[reflection.topic.id]) {
                 topics[reflection.topic.id] = reflection.topic
