@@ -10,7 +10,7 @@ import Icon from './Icon'
 import EyeIcon from 'images/eye-icon.svg'
 import './ReflectionsList.scss'
 
-const ReflectionsList = ({ open, retrospectiveKind, onToggle, onDone }) => {
+const ReflectionsList = ({ retrospectiveKind, onDone }) => {
   const { revealer, stepDone } = useSelector(state => state.profile)
   const channel = useSelector(state => state.orchestrator.subscription)
   const currentStep = useSelector(state => state.orchestrator.step)
@@ -49,13 +49,13 @@ const ReflectionsList = ({ open, retrospectiveKind, onToggle, onDone }) => {
 
   return (
     <>
-      <div id='reflections-panel' className={classNames('bg-transparent relative py-4 flex flex-row', { infinite: currentStep !== 'thinking' })}>
-        <Card title='My reflections' actionLabel={actionAvailable} actionLocation='header' onAction={handleDone} vertical collapsible={!revealer} onToggleCollapse={onToggle}>
+      <div id='reflections-panel' className={classNames('bg-transparent relative py-4 flex flex-row h-full', { infinite: currentStep !== 'thinking' })}>
+        <Card title='My reflections' actionLabel={actionAvailable} actionLocation='header' onAction={handleDone} vertical wrapperClassName='limited'>
           <div id='reflections-container'>
-            {['open', 'limited'].includes(zonesTypology) && zones.map((zone) => {
+            {['open', 'limited'].includes(zonesTypology) && zones.map((zone, index) => {
               const reflectionsInZone = reflectionsByZone[zone.id] || []
               return (
-                <div key={zone.id} className='p-2 border-t min-w-16'>
+                <div key={zone.id} className={classNames('p-2 min-w-16', { 'border-t': index > 0 })}>
                   <div className='mb-2'>
                     <Icon retrospectiveKind={retrospectiveKind} zone={zone.name} /> {zone.name}
                   </div>
@@ -65,12 +65,12 @@ const ReflectionsList = ({ open, retrospectiveKind, onToggle, onDone }) => {
                 </div>
               )
             })}
-            {zonesTypology === 'single_choice' && zones.map((zone) => {
+            {zonesTypology === 'single_choice' && zones.map((zone, index) => {
               const reflectionsInZone = reflectionsByZone[zone.id] || []
               const unrevealedReflection = reflectionsInZone.filter((reflection) => !reflection.revealed)[0]
 
               return (
-                <div key={zone.id} className='p-2 border-t min-w-16'>
+                <div key={zone.id} className={classNames('p-2 min-w-16', { 'border-t': index > 0 })}>
                   <div className='mb-2 font-semibold'>{zone.name}</div>
                   <div className='text-xs'>{zone.hint}</div>
                   {unrevealedReflection && (

@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 import consumer from 'channels/consumer'
 import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
+import classNames from 'classnames'
 import RetrospectiveArea from './RetrospectiveArea'
 import ReflectionsList from './ReflectionsList'
 import ReflectionsListForActionStep from './ReflectionsListForActionStep'
@@ -67,7 +68,7 @@ const RetrospectivePage = ({ id: retrospectiveId, kind }) => {
   const shouldDisplayReflectionsList = (currentStep === 'thinking' && zonesTypology === 'open') || currentStep === 'grouping' || currentStep === 'actions'
 
   const handleReflectionsListToggle = () => {
-    if (!reflectionsListVisible || !revealer) {
+    if (!revealer || !reflectionsListVisible) {
       setReflectionsListVisible(!reflectionsListVisible)
     }
   }
@@ -83,18 +84,16 @@ const RetrospectivePage = ({ id: retrospectiveId, kind }) => {
   return (
     <div className='flex flex-row flex-1 w-full relative'>
       {shouldDisplayReflectionsList && (currentStep === 'actions' ?
-        <ReflectionsListForActionStep
-          open={reflectionsListVisible || revealer || profile?.facilitator}
-          onToggle={handleReflectionsListToggle} /> :
-        <ReflectionsList
-          open={reflectionsListVisible || revealer}
-          retrospectiveKind={kind}
-          onToggle={handleReflectionsListToggle}
-          onDone={handleReflectionsListClose} />
+        <div className={classNames('transition-margin duration-500 ease-in-out', { '-ml-76': !reflectionsListVisible && !revealer && !profile?.facilitator })}>
+          <ReflectionsListForActionStep open={reflectionsListVisible || revealer || profile?.facilitator} />
+        </div> :
+        <div className={classNames('transition-margin duration-500 ease-in-out', { '-ml-76': !reflectionsListVisible && !revealer })}>
+          <ReflectionsList retrospectiveKind={kind} onDone={handleReflectionsListClose} />
+        </div>
       )}
       <div className='flex flex-col flex-1 overflow-x-hidden'>
         <div id='right-panel' className='flex flex-col flex-1 relative my-4'>
-          <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />
+          <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} onToggleFullScreen={handleReflectionsListToggle} />
         </div>
       </div>
     </div>

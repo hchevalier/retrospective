@@ -30,8 +30,12 @@ module.exports = {
         '-8': '-2rem',
         '-2': '-0.5rem',
         '2': '0.5rem',
+        '6': '1.5rem',
         '8': '2rem',
         '14': '3.5rem',
+      },
+      margin: {
+        '-76': '-19rem',
       },
       minHeight: {
         '8': '2rem',

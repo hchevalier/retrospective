@@ -1,10 +1,9 @@
 #reflections-panel {
   z-index: 11;
-  max-height: calc(100vh - 3.5rem);
   overflow-y: scroll;
 
-  .expanded {
-    height: calc(100vh - 16rem);
+  .limited {
+    max-height: calc(100vh - 5.5rem);
   }
 }
 

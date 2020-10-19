@@ -14,8 +14,9 @@ import StepActions from './StepActions'
 import StepDone from './StepDone'
 import Card from './Card'
 import TopicExpanded from './TopicExpanded'
+import BurgerIcon from 'images/burger-icon'
 
-const RetrospectiveArea = ({ kind }) => {
+const RetrospectiveArea = ({ kind, onToggleFullScreen }) => {
   const currentStep = useSelector(state => state.orchestrator.step)
   const zonesTypology = useSelector(state => state.retrospective.zonesTypology)
 
@@ -69,7 +70,19 @@ const RetrospectiveArea = ({ kind }) => {
 
   return (
     <div id={kind} className='h-full'>
-      <Card vertical className='pb-0' wrap={currentStep === 'thinking'} scrollable={currentStep === 'thinking'} containerClassName='flex-1 px-4 h-full'>
+      <Card
+        vertical
+        className='pb-0 h-full'
+        wrap={currentStep === 'thinking'}
+        scrollable={currentStep === 'thinking'}
+        containerClassName='flex-1 px-4 h-full'>
+        {['thinking', 'grouping'].includes(currentStep) && (
+          <img
+            className='cursor-pointer absolute top-2 left-6'
+            src={BurgerIcon}
+            onClick={onToggleFullScreen}
+            width="24" />
+        )}
         {currentStep === 'gathering' && <StepGathering />}
         {currentStep === 'reviewing' && <StepReview />}
         {currentStep === 'thinking' && renderRetrospective()}

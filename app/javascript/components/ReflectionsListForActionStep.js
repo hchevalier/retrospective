@@ -8,7 +8,7 @@ import InlineTopic from './InlineTopic'
 import TrafficLightResult from './retrospectives/traffic_lights/TrafficLightResult'
 import './ReflectionsList.scss'
 
-const ReflectionsListForActionStep = ({ open, onToggle }) => {
+const ReflectionsListForActionStep = ({ open }) => {
   const { facilitator } = useSelector(state => state.profile)
   const visibleReflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
   const currentReflection = useSelector(state => state.reflections.discussedReflection)
