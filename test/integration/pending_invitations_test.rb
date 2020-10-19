@@ -143,6 +143,8 @@ class PendingInvitationsTest < ActionDispatch::IntegrationTest
     as_user(account)
 
     visit invitation.link(host_and_port)
+    assert_participants_count(2)
+    hover_participant('New joiner')
     assert_text 'New joiner'
     assert_logged_in(account.participants.first, with_flags: %i(self))
     assert_current_path "/retrospectives/#{retrospective.id}"
@@ -159,6 +161,8 @@ class PendingInvitationsTest < ActionDispatch::IntegrationTest
     fill_in 'username', with: 'New joiner'
     click_on 'Create'
 
+    assert_participants_count(2)
+    hover_participant('New joiner')
     assert_text 'New joiner'
     account = Account.find_by(email: 'newjoiner@mycompany.com')
     assert_logged_in(account.participants.first, with_flags: %i(self))
@@ -175,6 +179,8 @@ class PendingInvitationsTest < ActionDispatch::IntegrationTest
     fill_in 'password', with: 'myStr0ngPassword!'
     click_on 'Login'
 
+    assert_participants_count(2)
+    hover_participant('New joiner')
     assert_text 'New joiner'
     assert_logged_in(account.participants.first, with_flags: %i(self))
     assert_current_path "/retrospectives/#{retrospective.id}"

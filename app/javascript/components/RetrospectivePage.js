@@ -93,10 +93,10 @@ const RetrospectivePage = ({ id: retrospectiveId, kind }) => {
   return (
     <div className='flex flex-row flex-1 w-full relative'>
       {shouldDisplayReflectionsList && (currentStep === 'actions' ?
-        <div className={classNames('transition-margin duration-500 ease-in-out', { '-ml-76': isFullScreen() })}>
+        <div className={classNames('transition-margin duration-500 ease-in-out', { '-ml-72': isFullScreen() })}>
           <ReflectionsListForActionStep />
         </div> :
-        <div className={classNames('transition-margin duration-500 ease-in-out', { '-ml-76': isFullScreen() })}>
+        <div className={classNames('transition-margin duration-500 ease-in-out', { '-ml-72': isFullScreen() })}>
           <ReflectionsList retrospectiveKind={kind} onDone={handleReflectionsListClose} />
         </div>
       )}

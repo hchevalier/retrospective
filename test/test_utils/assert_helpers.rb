@@ -23,6 +23,20 @@ module AssertHelpers
     assert_selector(".avatar[data-id='#{participant.id}'].self") if with_flags.include?(:self)
   end
 
+  def assert_participants_count(count)
+    assert_selector '#participants-list .avatar', count: count
+  end
+
+  def hover_participant(name)
+    find_all('#participants-list .avatar').each do |avatar|
+      avatar.hover
+      within avatar do
+        return if find('div', exact_text: name, wait: 0.1)
+      rescue Capybara::ElementNotFound
+      end
+    end
+  end
+
   def assert_inactive(participant, with_flags: nil)
     within ".avatar[data-id='#{participant.id}']" do
       assert_css '.status-indicator'

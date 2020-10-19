@@ -34,7 +34,7 @@ const ReflectionsListForActionStep = () => {
   return (
     <>
       <div id='reflections-panel' className='bg-gray-300 relative py-4 flex flex-row'>
-        <Card title='Voted topics' vertical>
+        <Card title='Voted topics' vertical wrapperClassName='limited fixed top-18'>
           <div id='reflections-container' className='transition-width duration-500 ease-in-out w-0 overflow-x-hidden w-64'>
             {['open', 'limited'].includes(zonesTypology) && reflectionsWithVotes.map(([reflection, votes]) => {
               if (reflection.topic?.id && !topics[reflection.topic.id]) {

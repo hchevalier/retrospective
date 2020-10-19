@@ -56,7 +56,7 @@ const Timer = ({ facilitator, show }) => {
   return (
     <>
       {displayTimer && (
-        <div id='timer' className='cursor-pointer min-w-16' onClick={handleTimerClick}>
+        <div id='timer' className='cursor-pointer w-64' onClick={handleTimerClick}>
           <span className='font-medium text-blue-800'>Timer:</span>
           <span className='minutes ml-1 text-xl'>{timerEndAt ? `${remainingMinutes}`.padStart(2, '0') : '--'}</span>
           <span className='colon-separator text-xl'>:</span>

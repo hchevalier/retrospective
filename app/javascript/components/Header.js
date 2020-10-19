@@ -50,7 +50,9 @@ const Header = ({ history }) => {
           </div>
           <div className='flex -mb-px flex-grow'>
             <div className='justify-end ml-auto'>
-              <MenuItem label='Log out' target='/logout' />
+              <a href='/logout' className='no-underline flex items-center py-4 border-b opacity-50 text-grey-700 border-transparent hover:opacity-75 hover:border-grey-700'>
+                Log out
+              </a>
             </div>
           </div>
         </div>

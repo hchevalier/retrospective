@@ -50,12 +50,12 @@ const ReflectionsList = ({ retrospectiveKind, onDone }) => {
   return (
     <>
       <div id='reflections-panel' className={classNames('bg-transparent relative py-4 flex flex-row h-full', { infinite: currentStep !== 'thinking' })}>
-        <Card title='My reflections' actionLabel={actionAvailable} actionLocation='header' onAction={handleDone} vertical wrapperClassName='limited'>
+        <Card title='My reflections' actionLabel={actionAvailable} actionLocation='header' onAction={handleDone} vertical wrapperClassName='limited fixed top-18'>
           <div id='reflections-container'>
             {['open', 'limited'].includes(zonesTypology) && zones.map((zone, index) => {
               const reflectionsInZone = reflectionsByZone[zone.id] || []
               return (
-                <div key={zone.id} className={classNames('p-2 min-w-16', { 'border-t': index > 0 })}>
+                <div key={zone.id} className={classNames('p-2 w-64', { 'border-t': index > 0 })}>
                   <div className='mb-2'>
                     <Icon retrospectiveKind={retrospectiveKind} zone={zone.name} /> {zone.name}
                   </div>
@@ -70,7 +70,7 @@ const ReflectionsList = ({ retrospectiveKind, onDone }) => {
               const unrevealedReflection = reflectionsInZone.filter((reflection) => !reflection.revealed)[0]
 
               return (
-                <div key={zone.id} className={classNames('p-2 min-w-16', { 'border-t': index > 0 })}>
+                <div key={zone.id} className={classNames('p-2 w-64', { 'border-t': index > 0 })}>
                   <div className='mb-2 font-semibold'>{zone.name}</div>
                   <div className='text-xs'>{zone.hint}</div>
                   {unrevealedReflection && (

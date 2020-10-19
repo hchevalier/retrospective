@@ -72,6 +72,8 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     click_on 'Create account'
 
     assert_text 'Lobby'
+    assert_participants_count(2)
+    hover_participant('Other one')
     assert_text 'Other one'
   end
 
@@ -109,6 +111,8 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     click_on 'Login'
 
     assert_text 'Lobby'
+    assert_participants_count(2)
+    hover_participant('Other one')
     assert_text 'Other one'
   end
 
@@ -137,7 +141,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
 
     assert_difference 'Participant.count' do
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}", invitation_id: invitation.id)
-      assert_text 'Facilitator'
+      assert_text 'Lobby'
       refute_field 'email'
       refute_button 'Login'
     end
@@ -216,6 +220,8 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_logged_as_facilitator
+    assert_participants_count(1)
+    hover_participant('Other one')
     refute_text 'Other one'
 
     within_window(open_new_window) do
@@ -226,8 +232,13 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
       fill_in 'email', with: 'other_one@yopmail.com'
       fill_in 'password', with: 'mypassword'
       click_on 'Create account'
+      assert_participants_count(2)
+      hover_participant('Other one')
+      assert_text 'Other one'
     end
 
+    assert_participants_count(2)
+    hover_participant('Other one')
     assert_text 'Other one'
   end
 
