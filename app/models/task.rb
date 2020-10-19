@@ -27,7 +27,7 @@ class Task < ApplicationRecord
       id: id,
       reflection: { id: reflection.id, content: reflection.content, zone: { name: reflection.zone.identifier} },
       retrospective: { zonesTypology: retrospective.zones_typology },
-      author: author.short_profile,
+      author: author.minimal_profile,
       assignee: assignee&.as_public_json,
       description: description,
       status: status,

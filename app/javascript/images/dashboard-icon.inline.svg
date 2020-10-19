@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" x="0px" y="0px">
+  <g data-name="Layer 13">
+    <path d="M22,3H4A1,1,0,0,0,3,4V17a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V4A1,1,0,0,0,22,3ZM21,16H5V5H21Z" stroke="currentColor" />
+    <path d="M22,20H4a1,1,0,0,0-1,1V44a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V21A1,1,0,0,0,22,20ZM21,43H5V22H21Z" stroke="currentColor" />
+    <path d="M44,30H26a1,1,0,0,0-1,1V44a1,1,0,0,0,1,1H44a1,1,0,0,0,1-1V31A1,1,0,0,0,44,30ZM43,43H27V32H43Z" stroke="currentColor" />
+    <path d="M44,3H26a1,1,0,0,0-1,1V27a1,1,0,0,0,1,1H44a1,1,0,0,0,1-1V4A1,1,0,0,0,44,3ZM43,26H27V5H43Z" stroke="currentColor" />
+  </g>
+</svg>

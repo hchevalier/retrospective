@@ -32,6 +32,13 @@ class Participant < ApplicationRecord
 
   INACTIVITY_DELAY = 5
 
+  def minimal_profile
+    {
+      uuid: id,
+      surname: surname
+    }
+  end
+
   def short_profile
     {
       uuid: id,
