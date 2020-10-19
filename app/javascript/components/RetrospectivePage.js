@@ -1,18 +1,14 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import consumer from 'channels/consumer'
 import { join as joinOrchestratorChannel } from 'channels/orchestratorChannel'
+import classNames from 'classnames'
 import RetrospectiveArea from './RetrospectiveArea'
-import ParticipantsList from './ParticipantsList'
 import ReflectionsList from './ReflectionsList'
 import ReflectionsListForActionStep from './ReflectionsListForActionStep'
-import FacilitatorToolkitLeft from './FacilitatorToolkitLeft'
-import FacilitatorToolkitRight from './FacilitatorToolkitRight'
-import './RetrospectivePage.scss'
 
-const RetrospectivePage = ({ id: retrospectiveId, kind, handleOpenAddParticipantsModal, participantsListVisible }) => {
+const RetrospectivePage = ({ id: retrospectiveId, kind }) => {
   const dispatch = useDispatch()
   const [reflectionsListVisible, setReflectionsListVisible] = useState(true)
 
@@ -72,7 +68,7 @@ const RetrospectivePage = ({ id: retrospectiveId, kind, handleOpenAddParticipant
   const shouldDisplayReflectionsList = (currentStep === 'thinking' && zonesTypology === 'open') || currentStep === 'grouping' || currentStep === 'actions'
 
   const handleReflectionsListToggle = () => {
-    if (!reflectionsListVisible || !revealer) {
+    if (!revealer || !reflectionsListVisible) {
       setReflectionsListVisible(!reflectionsListVisible)
     }
   }
@@ -85,32 +81,28 @@ const RetrospectivePage = ({ id: retrospectiveId, kind, handleOpenAddParticipant
     setReflectionsListVisible(false)
   }, [channel, revealer])
 
-  const pushedLeft = reflectionsListVisible || revealer || (profile?.facilitator && currentStep === 'actions')
+  const isFullScreen = () => {
+    if (!shouldDisplayReflectionsList) return true
+
+    if (currentStep === 'actions')
+      return !reflectionsListVisible && !revealer && !profile?.facilitator
+
+    return !reflectionsListVisible && !revealer
+  }
 
   return (
     <div className='flex flex-row flex-1 w-full relative'>
       {shouldDisplayReflectionsList && (currentStep === 'actions' ?
-        <ReflectionsListForActionStep
-          open={reflectionsListVisible || revealer || profile?.facilitator}
-          onToggle={handleReflectionsListToggle} /> :
-        <ReflectionsList
-          open={reflectionsListVisible || revealer}
-          retrospectiveKind={kind}
-          onToggle={handleReflectionsListToggle}
-          onDone={handleReflectionsListClose} />
+        <div className={classNames('transition-margin duration-500 ease-in-out', { '-ml-72': isFullScreen() })}>
+          <ReflectionsListForActionStep />
+        </div> :
+        <div className={classNames('transition-margin duration-500 ease-in-out', { '-ml-72': isFullScreen() })}>
+          <ReflectionsList retrospectiveKind={kind} onDone={handleReflectionsListClose} />
+        </div>
       )}
       <div className='flex flex-col flex-1 overflow-x-hidden'>
-        <div id='toolbar' className={classNames('bg-gray-200 shadow top-14 z-10 text-white duration-200 ease-linear transform transition-height h-24 origin-top overflow-hidden', { '!h-0': !participantsListVisible, 'pushed-left': shouldDisplayReflectionsList && pushedLeft })}>
-          <div className="mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
-            <div className='flex flex-grow justify-end'>
-              {profile?.facilitator && <FacilitatorToolkitLeft />}
-              <ParticipantsList onAddParticipantsClick={handleOpenAddParticipantsModal} />
-              {profile?.facilitator && <FacilitatorToolkitRight />}
-            </div>
-          </div>
-        </div>
-        <div id='right-panel' className={classNames('flex flex-col flex-1 relative', { 'pushed-top': participantsListVisible, 'pushed-left': shouldDisplayReflectionsList && pushedLeft})}>
-          <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} />
+        <div id='right-panel' className='flex flex-col flex-1 relative my-4'>
+          <RetrospectiveArea retrospectiveId={retrospectiveId} kind={kind} onToggleFullScreen={handleReflectionsListToggle} fullScreen={isFullScreen()} />
         </div>
       </div>
     </div>
@@ -123,9 +115,7 @@ RetrospectivePage.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   }).isRequired,
-  handleOpenAddParticipantsModal: PropTypes.func.isRequired,
-  kind: PropTypes.string.isRequired,
-  participantsListVisible: PropTypes.bool.isRequired
+  kind: PropTypes.string.isRequired
 }
 
 export default RetrospectivePage

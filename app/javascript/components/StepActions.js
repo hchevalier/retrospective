@@ -24,7 +24,7 @@ const StepActions = () => {
       [currentReflection]
 
   return (
-    <div id='actions-zone'>
+    <div id='actions-zone' className='w-full flex flex-row'>
       <div id='discussed-reflections-panel'>
         <div id='discussed-reflection' className='flex flex-col'>
           {['open', 'limited'].includes(zonesTypology) && displayedReflections.map((reflection) => {

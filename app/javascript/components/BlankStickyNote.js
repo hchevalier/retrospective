@@ -32,11 +32,11 @@ const BlankStickyNote = ({ ownerProfile, onReflectionReady, onReflectionPending,
     editTextArea.style.height = (editTextArea.scrollHeight) + 'px'
   }
 
-  const handleFocus = () => {
+  const handleFocus = React.useCallback(() => {
     setEditing(true)
     setReady(false)
     onReflectionPending()
-  }
+  }, [onReflectionPending])
 
   const handleBlur = (event) => {
     if (event.currentTarget.value.length > 0) {
@@ -103,7 +103,6 @@ const BlankStickyNote = ({ ownerProfile, onReflectionReady, onReflectionPending,
         className={classNames('reflection flex flex-col p-2 rounded-md absolute w-64 min-h-8 right-2 bottom-0', { 'mb-4': editing, 'rounded-b-none': !editing, 'cursor-pointer': !editing })}
         style={colorStyle}
         onClick={() => !editing && handleStartEditing()}>
-        {ready && <div className='absolute -top-8'>Now click on a zone above</div>}
         <div className='reflection-content-container'>
           {!editing && <div className='font-bold mb-2'>Click here to add a reflection</div>}
           {editing && (
@@ -114,7 +113,6 @@ const BlankStickyNote = ({ ownerProfile, onReflectionReady, onReflectionPending,
           )}
         </div>
         <div className='absolute right-0 mr-2'>
-          {!editing && <img src={PlusIcon} className='create-icon inline cursor-pointer mr-2 w-2' onClick={handleFocus} />}
           {editing && ready && <img src={EditIcon} className='edit-icon inline cursor-pointer mr-2' onClick={handleFocus} />}
         </div>
       </div>

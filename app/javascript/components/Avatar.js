@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import Man1 from 'images/avatars/men/1.svg'
@@ -21,6 +21,8 @@ const DEFAULT_AVATARS = {
 }
 
 const Avatar = ({ backgroundColor, dataAttributes, loggedIn, surname, self, onClick, children }) => {
+  const [surnameVisible, setSurnameVisible] = useState(false)
+
   const getDefaultContour = () => {
     let firstLetterValue = surname[0].toUpperCase().charCodeAt(0) - 65
     if (firstLetterValue < 0 || firstLetterValue > 25) firstLetterValue = 25
@@ -36,12 +38,27 @@ const Avatar = ({ backgroundColor, dataAttributes, loggedIn, surname, self, onCl
     return DEFAULT_AVATARS.men[avatarIndex]
   }
 
+  const handleMouseEnter = () => setSurnameVisible(true)
+  const handleMouseLeave = () => setSurnameVisible(false)
+
   return (
-    <div className={classNames('avatar cursor-pointer rounded w-16 h-16 relative mx-1', { self, clickable: !!onClick })} style={{ backgroundColor }} onClick={onClick} {...dataAttributes}>
-      <img className='picture absolute' src={getDefaultContour()} />
-      {children}
-      <div className='surname w-16 text-xs rounded-b'>{surname}</div>
-      <div className={classNames('status-indicator', { 'logged-in': loggedIn })} />
+    <div className='relative flex flex-row justify-center'>
+      <div
+        className={classNames('avatar cursor-pointer rounded w-12 h-12 relative mx-1', { self, clickable: !!onClick })}
+        style={{ backgroundColor }}
+        onClick={onClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        {...dataAttributes}>
+        <img className='picture absolute' src={getDefaultContour()} />
+        {children}
+        <div className={classNames('status-indicator', { 'logged-in': loggedIn })} />
+      </div>
+      {surnameVisible && (
+        <div className='bg-gray-800 text-white text-xs p-1 rounded-md absolute whitespace-no-wrap -bottom-8'>
+          {surname}
+        </div>
+      )}
     </div>
   )
 }

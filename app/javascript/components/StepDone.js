@@ -36,7 +36,7 @@ const StepDone = () => {
   const topics = {}
 
   return (
-    <div id='actions-zone'>
+    <div id='actions-zone' className='flex flex-row w-full'>
       <div id='discussed-reflections-panel'>
         <div id='discussed-reflection'>
           {['open', 'limited'].includes(zonesTypology) ?

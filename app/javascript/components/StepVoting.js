@@ -36,7 +36,7 @@ const StepVoting = ({ onExpandTopic }) => {
   return (
     <>
       <div>Remaining votes: {constants.maxVotes - votes.length}</div>
-      <div id='zones-container' className="flex">
+      <div id='zones-container' className="flex w-full h-full overflow-x-scroll">
         {zones.map((zone) => (
           <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0 relative min-w-12' key={zone.id}>
             <div className='zone-header mb-4'>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</div>

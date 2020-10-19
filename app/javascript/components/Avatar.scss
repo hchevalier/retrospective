@@ -14,14 +14,14 @@
 
   .status-indicator {
     position: absolute;
-    bottom: -5px;
-    right: -5px;
+    bottom: -3px;
+    right: -3px;
     width: 10px;
     min-width: 10px;
     height: 10px;
     border-radius: 15px;
     background-color: rgb(171, 8, 8);
-    border: 2px solid #e2e8f0;
+    border: 2px solid #FFF;
 
     &.logged-in {
       background-color: rgb(8, 171, 41);

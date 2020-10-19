@@ -77,7 +77,8 @@ class Retrospective < ApplicationRecord
       zones: zones.as_json,
       zonesTypology: zones_typology,
       discussedReflection: discussed_reflection&.readable,
-      tasks: tasks.sort_by { |task| task.created_at }.as_json
+      tasks: tasks.sort_by { |task| task.created_at }.as_json,
+      step: step
     }
   end
 
@@ -90,7 +91,8 @@ class Retrospective < ApplicationRecord
       },
       kind: kind,
       zonesTypology: zones_typology,
-      createdAt: created_at
+      createdAt: created_at,
+      step: step
     }
   end
 

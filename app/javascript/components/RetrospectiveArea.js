@@ -12,9 +12,12 @@ import StepGrouping from './StepGrouping'
 import StepVoting from './StepVoting'
 import StepActions from './StepActions'
 import StepDone from './StepDone'
+import Card from './Card'
 import TopicExpanded from './TopicExpanded'
+import FullScreenIcon from 'images/fullscreen-icon'
+import ExitFullScreenIcon from 'images/exit-fullscreen-icon'
 
-const RetrospectiveArea = ({ kind }) => {
+const RetrospectiveArea = ({ kind, onToggleFullScreen, fullScreen }) => {
   const currentStep = useSelector(state => state.orchestrator.step)
   const zonesTypology = useSelector(state => state.retrospective.zonesTypology)
 
@@ -67,8 +70,20 @@ const RetrospectiveArea = ({ kind }) => {
   }
 
   return (
-    <>
-      <div id={kind} className='flex flex-col pt-6 flex-1 px-4 overflow-scroll'>
+    <div id={kind} className='h-full'>
+      <Card
+        vertical
+        className='pb-0 h-full'
+        wrap={currentStep === 'thinking'}
+        scrollable={currentStep === 'thinking'}
+        containerClassName='flex-1 px-4 h-full'>
+        {['thinking', 'grouping'].includes(currentStep) && zonesTypology === 'open' && (
+          <img
+            className='cursor-pointer absolute top-2 left-6'
+            src={fullScreen ? ExitFullScreenIcon : FullScreenIcon}
+            onClick={onToggleFullScreen}
+            width="24" />
+        )}
         {currentStep === 'gathering' && <StepGathering />}
         {currentStep === 'reviewing' && <StepReview />}
         {currentStep === 'thinking' && renderRetrospective()}
@@ -76,10 +91,10 @@ const RetrospectiveArea = ({ kind }) => {
         {currentStep === 'voting' && <StepVoting onExpandTopic={handleExpandTopic} />}
         {currentStep === 'actions' && <StepActions />}
         {currentStep === 'done' && <StepDone />}
-      </div>
-      <RetrospectiveBottomBar onReflectionReady={handleReflectionReady} onReflectionPending={handleReflectionPending} selectedZone={selectedZone} />
+        <RetrospectiveBottomBar onReflectionReady={handleReflectionReady} onReflectionPending={handleReflectionPending} selectedZone={selectedZone} />
+      </Card>
       {expandedTopic && <TopicExpanded topic={expandedTopic} editable={currentStep === 'grouping'} forceTopicEditing={forceTopicEditing} onCollapseTopic={handleCollapseTopic} onTopicChange={handleExpandTopic} />}
-    </>
+    </div>
   )
 }
 

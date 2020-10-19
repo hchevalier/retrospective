@@ -25,6 +25,7 @@ const StepGrouping = ({ onExpandTopic }) => {
 
   const initialReflectionIds = React.useRef(reflections.map((reflection) => reflection.id)).current
   const [, setUpdateCount] = React.useState(0)
+  const [columnWidth, setColumnWidth] = React.useState('auto')
   const [draggingOccurs, setDraggingOccurs] = React.useState({ reflection: null, zone: null })
   const forceUpdate = () => setUpdateCount(currentCount => ++currentCount)
 
@@ -61,6 +62,11 @@ const StepGrouping = ({ onExpandTopic }) => {
     }, options)
   }, [])
 
+  const sizeObserver = new ResizeObserver((entries) => entries.some((entry) => {
+    setColumnWidth(entry.target.closest('.zone-column')?.offsetWidth || 'auto')
+    return true
+  }))
+
   const reflectionRefs = React.useRef(reflections.reduce((map, reflection) => {
     map[reflection.id] = React.createRef()
     return map
@@ -83,6 +89,7 @@ const StepGrouping = ({ onExpandTopic }) => {
     ref.current = stickyNote
     reflectionRefs[stickyNote.dataset.id] = ref
     visibilityObserver.observe(stickyNote)
+    sizeObserver.observe(stickyNote)
   }
 
   const justRevealedOwnReflection = (stickyNote) => {
@@ -189,7 +196,7 @@ const StepGrouping = ({ onExpandTopic }) => {
     <>
       <div className='text-center text-xs text-gray-800'><TooltipToggler content={tooltipContent} /> Hover the question mark to display instructions for this step</div>
 
-      <div id="zones-container" className="flex">
+      <div id="zones-container" className="flex w-full h-full overflow-x-scroll">
         {zones.map((zone) => {
           const reflectionsInZone = reflections.filter((reflection) => reflection.zone.id === zone.id)
           const stickyNotesInZone = Object.entries(reflectionRefs).map(([, stickyNoteRef]) => {
@@ -209,7 +216,7 @@ const StepGrouping = ({ onExpandTopic }) => {
               <div className='zone-header mb-4'>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</div>
               {['open', 'limited'].includes(zonesTypology) && (
                 <>
-                  {!!unreadReflectionAbove && <div className='unread-notice above' onClick={() => scrollToStickyNote(unreadReflectionAbove)}>⬆︎ Unread reflection ⬆︎</div>}
+                  {!!unreadReflectionAbove && <div className='unread-notice above' style={{ width: columnWidth }} onClick={() => scrollToStickyNote(unreadReflectionAbove)}>⬆︎ Unread reflection ⬆︎</div>}
                   <div className='scrolling-zone flex flex-col'>
                     {reflectionsInZone.map((reflection) => {
                       if (reflection.topic?.id && !topics[reflection.topic?.id]) {
@@ -236,7 +243,7 @@ const StepGrouping = ({ onExpandTopic }) => {
                       }
                     })}
                   </div>
-                  {!!unreadReflectionBelow && <div className='unread-notice below' onClick={() => scrollToStickyNote(unreadReflectionBelow)}>⬇︎ Unread reflection ⬇︎</div>}
+                  {!!unreadReflectionBelow && <div className='unread-notice below' style={{ width: columnWidth }} onClick={() => scrollToStickyNote(unreadReflectionBelow)}>⬇︎ Unread reflection ⬇︎</div>}
                 </>
               )}
               {zonesTypology === 'single_choice' && (

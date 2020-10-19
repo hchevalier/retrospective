@@ -1,9 +1,12 @@
 #reflections-panel {
-  min-height: calc(100vh - 3.5rem);
-  position: fixed;
   z-index: 11;
-  max-height: calc(100vh - 3.5rem);
   overflow-y: scroll;
+  width: 18rem;
+  max-width: 18rem;
+
+  .limited {
+    max-height: calc(100vh - 5.5rem);
+  }
 }
 
 #reflections-container::-webkit-scrollbar {

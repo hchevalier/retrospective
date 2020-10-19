@@ -62,7 +62,7 @@ const GroupsDetails = ({ id }) => {
         <div className='flex flex-row mt-8'>
           <div className='flex w-3/4 flex-col'>
             {group.pendingInvitations.length > 0 && (
-              <Card title={`Pending invitations (${group.pendingInvitations.length})`} wrap>
+              <Card title={`Pending invitations (${group.pendingInvitations.length})`} wrap containerClassName='mb-6'>
                 <div className='flex flex-col flex-wrap'>
                   <ul>
                     {group.pendingInvitations.map((invitation) => {
@@ -92,7 +92,7 @@ const GroupsDetails = ({ id }) => {
           </div>
 
           <div className='flex w-1/4 flex-col'>
-            <Card title={group.name} wrap>
+            <Card title={group.name} wrap containerClassName='mb-6'>
               <div>Created on {new Date(group.createdAt).toLocaleDateString()}</div>
               <div>
                 <div>Next retrospective:</div>

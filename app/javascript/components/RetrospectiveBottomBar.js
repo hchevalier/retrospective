@@ -17,11 +17,11 @@ const RetrospectiveBottomBar = (delegatedProps) => {
   }
 
   return (
-    <div className='flex items-end justify-between sticky'>
-      <div className='w-2/12'>
-        <Timer show={currentStep === 'thinking'} facilitator={facilitator} />
-      </div>
-      {canCreateReflection() && <BlankStickyNote ownerProfile={profile} {...delegatedProps} />}
+    <div className='flex flex-row self-end justify-between w-full absolute pl-12 bottom-0'>
+      <Timer show={currentStep === 'thinking'} facilitator={facilitator} />
+      {canCreateReflection() && (
+        <BlankStickyNote ownerProfile={profile} {...delegatedProps} />
+      )}
     </div>
   )
 }

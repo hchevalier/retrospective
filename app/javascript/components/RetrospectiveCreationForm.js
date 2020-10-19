@@ -64,9 +64,9 @@ const RetrospectiveCreationForm = () => {
   const groupOptions = React.useMemo(() => existingGroups.map((group) => ({ label: group.name, value: group.id })), [existingGroups])
 
   return (
-    <div className='container'>
+    <div className='container mx-auto'>
       <form noValidate autoComplete='off' className='mt-4' onSubmit={handleSubmit}>
-        <Card className='grid grid-cols-2 gap-4 mb-4' title='Settings' center actionLabel='START RETROSPECTIVE' onAction={handleSubmit} actionDisabled={formInvalid}>
+        <Card className='gap-4 mb-4' title='Settings' center actionLabel='START RETROSPECTIVE' onAction={handleSubmit} actionDisabled={formInvalid}>
           <div className='flex flex-row max-w-xl justify-evenly'>
             <div>
               <label>Group</label>

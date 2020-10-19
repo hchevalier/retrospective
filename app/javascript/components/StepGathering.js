@@ -7,7 +7,7 @@ const StepGathering = () => {
 
   return (
     <>
-      <div className='text-blue-800 text-xs text-center'>Choose a color for your sticky notes</div>
+      <span className='center text-xs'>Choose a color for your sticky notes</span>
       <ColorPicker retrospectiveId={retrospectiveId} />
     </>
   )

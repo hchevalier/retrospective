@@ -1,33 +1,40 @@
 import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
-import { Provider } from 'react-redux'
+import { Provider, useSelector } from 'react-redux'
 import appStore from 'stores'
-import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import { get } from 'lib/httpClient'
 import { humanize } from 'lib/helpers/string'
 import RetrospectivePage from './RetrospectivePage'
 import AddGroupMembersModal from './AddGroupMembersModal'
 import HomeIcon from 'images/home-icon.svg'
-import ArrowIcon from 'images/arrow-icon.svg'
+import ParticipantsList from './ParticipantsList'
+import FacilitatorToolkitLeft from './FacilitatorToolkitLeft'
+import FacilitatorToolkitRight from './FacilitatorToolkitRight'
 
-const RetrospectiveHeader = ({ groupName, kind, participantsListVisible, toggleParticipantsList }) => {
+const RetrospectiveHeader = ({ groupName, kind, handleOpenAddParticipantsModal }) => {
+  const profile = useSelector(state => state.profile)
+
   return (
-    <nav className="bg-gray-900 shadow text-white h-14 sticky w-full z-10 top-0" role="navigation">
-      <div className="container mx-auto p-4 flex flex-wrap items-center md:flex-no-wrap">
-        <div className="mr-4 md:mr-8">
-          <a href='/'>
-            <img src={HomeIcon} width="24" />
-          </a>
-        </div>
-        <div className="mr-4 md:mr-8">
-          Lobby {groupName} - {kind ? humanize(kind) : ''}
-        </div>
-        <div className='flex flex-grow justify-end'>
-          <img className={classNames('cursor-pointer duration-200 ease-in-out transition-transform', { 'transform rotate-180': participantsListVisible })} src={ArrowIcon} width="24" onClick={toggleParticipantsList} />
+    <div className='block bg-white border-b border-gray-400 sticky z-10 top-0'>
+      <div className='container mx-auto px-4'>
+        <div className='flex'>
+          <div className='flex -mb-px mr-8 items-center opacity-50 text-grey-700 border-transparent hover:opacity-75 hover:border-grey-700'>
+            <a href='/'>
+              <img src={HomeIcon} width="24" />
+            </a>
+          </div>
+          <div className='flex -mb-px mr-8 items-center no-underline flex items-center py-4 border-b text-blue-700 border-blue-700'>
+            Lobby {groupName} - {kind ? humanize(kind) : ''}
+          </div>
+          <div className='flex -mb-px flex-grow justify-end text-right items-center'>
+            {profile?.facilitator && <FacilitatorToolkitLeft />}
+            <ParticipantsList onAddParticipantsClick={handleOpenAddParticipantsModal} />
+            {profile?.facilitator && <FacilitatorToolkitRight />}
+          </div>
         </div>
       </div>
-    </nav >
+    </div>
   )
 }
 
@@ -59,8 +66,6 @@ const GroupMembersModalWrapper = ({ groupId, retrospectiveId, setDisplayAddParti
 const RetrospectiveContainer = ({ id, history }) => {
   const [store, setStore] = useState()
   const [retrospectiveInfo, setRetrospectiveInfo] = useState()
-
-  const [participantsListVisible, setParticipantsListVisible] = useState(true)
   const [displayAddParticipantsModal, setDisplayAddParticipantsModal] = useState(false)
 
   useEffect(() => {
@@ -73,28 +78,22 @@ const RetrospectiveContainer = ({ id, history }) => {
   }, [id])
 
   return (
-    <div id='main-container' className='flex flex-col min-h-screen bg-white'>
-      <RetrospectiveHeader
-        groupName={retrospectiveInfo?.group?.name}
-        kind={retrospectiveInfo?.kind}
-        participantsListVisible={participantsListVisible}
-        toggleParticipantsList={() => setParticipantsListVisible(!participantsListVisible)} />
-      {retrospectiveInfo && (
-        <>
-          {store && (
-            <Provider store={store}>
-              <RetrospectivePage
-                {...retrospectiveInfo}
-                participantsListVisible={participantsListVisible}
-                handleOpenAddParticipantsModal={() => setDisplayAddParticipantsModal(true)} />
-            </Provider>
-          )}
+    <div id='main-container' className='flex flex-col min-h-screen bg-gray-300'>
+      {retrospectiveInfo && store && (
+        <Provider store={store}>
+          <RetrospectiveHeader
+            groupName={retrospectiveInfo.group.name}
+            kind={retrospectiveInfo.kind}
+            handleOpenAddParticipantsModal={() => setDisplayAddParticipantsModal(true)} />
+
+          <RetrospectivePage {...retrospectiveInfo} />
+
           <GroupMembersModalWrapper
             groupId={retrospectiveInfo.group.id}
             retrospectiveId={id}
             setDisplayAddParticipantsModal={setDisplayAddParticipantsModal}
             visible={displayAddParticipantsModal} />
-        </>
+        </Provider>
       )}
     </div>
   )

@@ -53,7 +53,7 @@ const ZoomableArea = ({ children }) => {
 
   return (
     <>
-      <div className='absolute top-0 right-0 mr-2 mt-2 z-10'>
+      <div className='absolute top-0 right-0 mr-6 mt-2 z-10'>
         <div className={classNames('rounded-t-lg bg-gray-200 px-2 border cursor-pointer select-none', { 'cursor-not-allowed text-gray-700': !canZoomOut} )} onClick={handleZoomOut}>-</div>
         <div className={classNames('rounded-b-lg bg-gray-200 px-2 border cursor-pointer select-none', { 'cursor-not-allowed text-gray-700': !canZoomIn} )} onClick={handleZoomIn}>+</div>
       </div>

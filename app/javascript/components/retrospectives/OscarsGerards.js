@@ -35,7 +35,7 @@ const OscarsGerards = ({ highlightZones, onZoneClicked }) => {
 
   return (
     <>
-      <div className='grid grid-cols-5 h-48'>
+      <div className='flex flex-1 w-full'>
         <Zone
           reference={bestTicket}
           hideCount
@@ -82,7 +82,7 @@ const OscarsGerards = ({ highlightZones, onZoneClicked }) => {
           {reflectionInGreatestExpectation && <StickyNote key={reflectionInGreatestExpectation.id} reflection={reflectionInGreatestExpectation} readOnly={currentStep !== 'thinking'} />}
         </Zone>
       </div>
-      <div className='grid grid-cols-5 h-48'>
+      <div className='flex flex-1 w-full pb-12'>
         <Zone
           reference={worstTicket}
           hideCount

@@ -7,21 +7,15 @@
       margin: 0 -17px;
       cursor: pointer;
       z-index: 2;
-      width: calc(100% + 34px);
+      position: fixed;
 
       &.above {
-        position: sticky;
         top: 70px;
       }
 
       &.below {
-        position: sticky;
         bottom: 20px;
       }
     }
   }
-}
-
-#right-panel.pushed-top #zones-container .zone-column .unread-notice.above {
-  top: 170px;
 }

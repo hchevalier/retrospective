@@ -46,7 +46,7 @@ const Dashboard = ({ history }) => {
       <div className='flex flex-row'>
         <div className='flex w-3/4 flex-col'>
           {currentRetrospective && (
-            <Card title='Current retrospective' actionLabel='JOIN' onAction={() => handleRetrospectiveClick(currentRetrospective.id)}>
+            <Card title='Current retrospective' actionLabel='JOIN' containerClassName='mb-6' onAction={() => handleRetrospectiveClick(currentRetrospective.id)}>
               <span>A {humanize(currentRetrospective.kind)} retrospective was started</span>
               &nbsp;with&nbsp;
               <span>{currentRetrospective.group.name}</span>
@@ -61,9 +61,9 @@ const Dashboard = ({ history }) => {
           </Card>
         </div>
         <div className='flex w-1/4 flex-col'>
-          <Card title='New retrospective' vertical empty actionLabel='START' onAction={handleStartRetrospective} />
+          <Card title='New retrospective' vertical empty actionLabel='START' onAction={handleStartRetrospective} containerClassName='mb-6' />
 
-          <Card title='Scheduled retrospectives' vertical>
+          <Card title='Scheduled retrospectives' vertical containerClassName='mb-6'>
             {groupsWithScheduledRetrospectives.map((group) => (
               <div key={group.id}>
                 <span className='font-medium text-blue-800'>{formatDateWithoutYear(new Date(group.nextRetrospective))}</span>

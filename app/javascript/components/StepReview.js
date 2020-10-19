@@ -17,13 +17,16 @@ const StepReview = () => {
   }, [groupId])
 
   return (
-    <Card className='task border flex-1 p-4 rounded my-2' wrap>
-      {tasks.map((task) => (
-        <div key={task.id} className='flex flex-col flex-1-50'>
-          <DetailedTask task={task} showAssignee editable availableAssignees={members} />
-        </div>
-      ))}
-    </Card>
+    <>
+      <h3 className='font-bold text-blue-800'>Review actions from previous retrospectives</h3>
+      <div className='task flex-1 p-4 rounded my-2 flex flex-wrap'>
+        {tasks.map((task) => (
+          <div key={task.id} className='flex flex-col flex-1-50'>
+            <DetailedTask task={task} showAssignee editable availableAssignees={members} />
+          </div>
+        ))}
+      </div>
+    </>
   )
 }
 

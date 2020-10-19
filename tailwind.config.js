@@ -30,8 +30,13 @@ module.exports = {
         '-8': '-2rem',
         '-2': '-0.5rem',
         '2': '0.5rem',
+        '6': '1.5rem',
         '8': '2rem',
         '14': '3.5rem',
+        '18': '4.5rem',
+      },
+      margin: {
+        '-72': '-18rem',
       },
       minHeight: {
         '8': '2rem',
@@ -39,9 +44,9 @@ module.exports = {
       minWidth: {
         '1/2': '50%',
         '12': '12rem',
-        '16': '16rem',
       },
       transitionProperty: {
+        'flex': 'flex',
         'height': 'height',
         'width': 'width',
       },
