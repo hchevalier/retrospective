@@ -10,7 +10,7 @@ const InlineTopic = ({ reflection, allReflections, reactions, selectedReflection
   const votesInTopic = reactions.filter((reaction) => {
     return reflectionIds.includes(reaction.targetId.split(/-(.+)?/, 2)[1]) || reaction.targetId === `Topic-${reflection.topic.id}`
   }).filter((reaction) => reaction.kind === 'vote')
-  let selected = reflectionIds.includes(selectedReflection.id) ? 'shadow-md' : 'mx-2'
+  let selected = reflectionIds.includes(selectedReflection?.id) ? 'shadow-md' : 'mx-2'
 
   return (
     <div key={reflection.topic.id}>

@@ -48,7 +48,7 @@ const ReflectionsListForActionStep = ({ open }) => {
                   selectedReflection={currentReflection}
                   onItemClick={handleStickyBookmarkClicked} />
               } else if (!reflection.topic?.id) {
-                let selected = reflection.id == currentReflection.id ? 'shadow-md' : 'mx-2'
+                let selected = reflection.id == currentReflection?.id ? 'shadow-md' : 'mx-2'
                 return (
                   <StickyBookmark key={reflection.id} color={reflection.color} otherClassNames={selected} onClick={() => handleStickyBookmarkClicked(reflection)}>
                     <VoteCorner target={reflection} targetType={'reflection'} votes={votes} inline noStandOut /> <span>{reflection.content}</span>
