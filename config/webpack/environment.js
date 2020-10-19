@@ -1,12 +1,5 @@
 const { environment } = require('@rails/webpacker')
 
-// const svgr = {
-//   test: /\.svg$/,
-//   use: ['babel-loader', '@svgr/webpack'],
-// }
-//environment.loaders.insert('svgr', svgr, { before: 'file' })
-
-
 const babelLoader = environment.loaders.get('babel')
 
 environment.loaders.insert('svg', {
