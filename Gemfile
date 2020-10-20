@@ -10,7 +10,7 @@ gem 'rails', '6.0.3.4'
 gem 'bcrypt'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'figaro'
-gem 'jbuilder', '~> 2.7'
+gem 'jbuilder', '~> 2.10'
 gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'pg'
