@@ -40,22 +40,28 @@ rails s
 
 A retrospective is composed of 6 steps.
 
-1. Gathering
+### 1. Gathering
 Group members gather in the lobby and can change their sticky notes' color.
 
-2. Review of pending actions
+![Gathering step](docs/gathering.png?raw=true "Gathering step")
+
+### 2. Review of pending actions
 This steps only triggers if at least one action from a previous retrospective from that group remains in "Todo" or "On hold" state.
 
 In this case, this step allows to discuss these actions, re-assign them to another group member or change their state.
 
-3. Thinking
+![Review of pending actions](docs/review.png?raw=true "Review of pending actions")
+
+### 3. Thinking
 During this step, group members are presented several zones.
 
 They write reflections on sticky notes and chose in which zone they'll reveal each of them.
 
 The facilator has control over the timer.
 
-4. Revealing
+![Thinking step](docs/thinking.png?raw=true "Thinking step")
+
+### 4. Revealing
 In the revealing step, the facilitator gives a revealing token to group member in turn.
 
 The revealer reveals his or her reflections one after the other in preferred order.
@@ -66,17 +72,23 @@ When all reflections have been revealed, the revealer drops his or her token. Th
 
 When everyone revealed their reflections, the facilitator proceeds to the last step
 
-5. Voting
+![Revealing step](docs/revealing.png?raw=true "Revealing step")
+
+### 5. Voting
 Each team member receives 5 votes and can choose which reflection to spend his or her votes on.
 
 The facilitator can see remaining votes for each participant in the participants list.
 
-6. Actions
+![Voting step](docs/voting.png?raw=true "Voting step")
+
+### 6. Actions
 In this last step, the facilitator can see all reflections (or topics) that received at least one vote, with most voted one on top.
 
 He or she selects the reflections in turn so that every group member can see which one is currently discussed.
 
 Anyone can write an action for the currently discussed reflection.
+
+![Actions step](docs/actions.png?raw=true "Actions step")
 
 ## Retrospective formats
 
@@ -104,7 +116,20 @@ The following exotic ones are strongly considered:
 
 ## Dashboard
 
+The dashboard displays all schedule retrospectives for your different groups, as well as any pending actions you are assigned to
+![Dashboard](docs/dashboard.png?raw=true "Dashboard")
+
 ## Groups
+
+You can create or join has many groups as you want
+
+![Groups list](docs/groups.png?raw=true "Groups list")
+
+When clicking on group, you can see its members list, pending invitations and actions.
+
+Any group member can schedule the next retrospective or invite new group members
+
+![Group view](docs/group.png?raw=true "Group view")
 
 ## Contributing
 
