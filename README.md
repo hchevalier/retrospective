@@ -13,8 +13,8 @@ The reason behind its existence was to solve pain points my team and I came acro
 
 - [Install](#install)
 - [Usage](#usage)
-- [Retrospective flow](#retrospective_flow)
-- [Retrospective formats](#retrospective_formats)
+- [Retrospective flow](#retrospective-flow)
+- [Retrospective formats](#retrospective-formats)
 - [Dashboard](#dashboard)
 - [Groups](#groups)
 - [Contributing](#contributing)
