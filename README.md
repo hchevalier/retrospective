@@ -32,7 +32,7 @@ rails db:setup
 ## Usage
 
 ```sh
-bundle exec sidekiq -d
+bundle exec sidekiq
 rails s
 ```
 
