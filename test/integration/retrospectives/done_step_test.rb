@@ -4,7 +4,7 @@ require 'test_helper'
 
 class Retrospective::DoneStepTest < ActionDispatch::IntegrationTest
   test 'ensure screen is read-only are closed' do
-    retrospective = create(:retrospective, step: 'done')
+    retrospective = create(:retrospective, step: 'actions')
     facilitator = retrospective.facilitator
     reflection = create(:reflection, :glad, owner: retrospective.facilitator)
     retrospective.update!(discussed_reflection: reflection)
@@ -15,7 +15,8 @@ class Retrospective::DoneStepTest < ActionDispatch::IntegrationTest
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
     assert_text 'Lobby'
-    refute_text 'Next'
+    click_on 'Finish'
+    click_on 'Confirm'
 
     within ".reflection[data-id='#{reflection.id}']" do
       refute_css '.reactions-bar'

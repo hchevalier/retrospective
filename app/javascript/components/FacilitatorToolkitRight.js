@@ -29,10 +29,12 @@ const FacilitatorToolkitRight = () => {
 
   if (step === 'done' || !channel || channel.consumer.connection.disconnected) return null
 
+  const wordingForNextStep = () => step === 'actions' ? 'Finish' : 'Next step'
+
   return (
     <div className='flex flex-row'>
       <Button primary contained onClick={nextStep} className={classNames('w-24 h-12 ml-5 text-sm', { 'progress': confirmNext })}>
-        {confirmNext ? 'Confirm' : 'Next step'}
+        {confirmNext ? 'Confirm' : wordingForNextStep()}
       </Button>
     </div>
   )
