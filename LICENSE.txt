@@ -3,10 +3,10 @@ This package contains software licensed under different
 licenses, please refer to the NOTICE.txt file for further
 information and LICENSES.txt for full license texts.
 
-WorkAdventure Enterprise edition can be licensed independently from
+Retrospective can be licensed independently from
 the source under separate commercial terms.
 
-The software ("Software") is developed and owned by TheCodingMachine
+The software ("Software") is developed and owned by Hugo Chevalaier
 and is subject to the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
 Version 3, with the Commons Clause as follows:
 

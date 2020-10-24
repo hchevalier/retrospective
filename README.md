@@ -1,89 +1,147 @@
-# README
+# Retrospective
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Retrospective allows to run remote agile retrospectives.
 
-Things you may want to cover:
+The reason behind its existence was to solve pain points my team and I came across while using other online retrospective services:
 
-* Ruby version
+* Lack of exotic retrospective formats
+* No one-by-one reflections revealing
+* Lack of clear ownership of reflections once revealed
+* No dedicated step for the team to gather around pending actions from previous sprints
 
-* System dependencies
+## Table of Contents
 
-* Configuration
+- [Install](#install)
+- [Usage](#usage)
+- [Retrospective flow](#retrospective_flow)
+- [Retrospective formats](#retrospective_formats)
+- [Dashboard](#dashboard)
+- [Groups](#groups)
+- [Contributing](#contributing)
+- [License](#license)
 
-* Database creation
+## Install
 
-* Database initialization
+Clone the repository, then execute the following commands in the project folder:
+```sh
+bundle install
+yarn install
+rails db:setup
+```
 
-* How to run the test suite
+## Usage
 
-* Services (job queues, cache servers, search engines, etc.)
+```sh
+bundle exec sidekiq -d
+rails s
+```
 
-* Deployment instructions
+## Retrospective flow
 
-* KDS (Keep Drop Start)
+A retrospective is composed of 6 steps.
 
-* KALM (Keep Add Less More)
+1. Gathering
+Group members gather in the lobby and can change their sticky notes' color.
 
-* DAKI (Drop Add Keep Improve)
+2. Review of pending actions
+This steps only triggers if at least one action from a previous retrospective from that group remains in "Todo" or "On hold" state.
 
-* Starfish (Keep Start Stop Less More)
+In this case, this step allows to discuss these actions, re-assign them to another group member or change their state.
 
-* PMI (Plus Minus Idea)
+3. Thinking
+During this step, group members are presented several zones.
 
+They write reflections on sticky notes and chose in which zone they'll reveal each of them.
+
+The facilator has control over the timer.
+
+4. Revealing
+In the revealing step, the facilitator gives a revealing token to group member in turn.
+
+The revealer reveals his or her reflections one after the other in preferred order.
+
+Reflections can be grouped into topics by anyone through a drag & drop action.
+
+When all reflections have been revealed, the revealer drops his or her token. The facilitator gives it to the next group member.
+
+When everyone revealed their reflections, the facilitator proceeds to the last step
+
+5. Voting
+Each team member receives 5 votes and can choose which reflection to spend his or her votes on.
+
+The facilitator can see remaining votes for each participant in the participants list.
+
+6. Actions
+In this last step, the facilitator can see all reflections (or topics) that received at least one vote, with most voted one on top.
+
+He or she selects the reflections in turn so that every group member can see which one is currently discussed.
+
+Anyone can write an action for the currently discussed reflection.
+
+## Retrospective formats
+
+This tool currently implements the following formats:
 * Glad Sad Mad
-
-* 4L (Liked Learned Lacked Longed for)
-
+* Starfish
 * Sailboat
+* Traffic lights healthcheck
+* Oscars and Gerards
 
+The following ones will be added as soon as possible:
+* Plus Minus Idea (PMI)
+* Keep Add Less More (KALM)
+* Drop Add Keep Improve (DAKI)
+* Liked, Learned, Lacked, Longed for (4L)
 * 2 truths and a lie
 
+The following exotic ones are strongly considered:
+* Postcard
+* Dixit
+* Timeline with emotion curve
+* Day-Z
 * Twitter
-
-* Timeline & mood curve
-
-* Traffic lights
-
-* Oscar et Gérard
-
 * Star Wars
 
-* Day-Z
+## Dashboard
 
-* Dixit
+## Groups
 
-* Postcard
+## Contributing
 
-# Install and run the app
+See [the contributing file](CONTRIBUTING.md)
 
-Clone the repository
+Teams run retrospectives their own way, there are chances the retrospective flow of this tool does not totally suit yours.
 
-    git clone https://github.com/hchevalier/retrospective.git
+As long as they don't unnecessarily complexify the codebase and are optional, changes to the retrospective flow can be suggested.
 
-Then
+## License
 
-    cd retrospective
+[AGPL V3 with the Commons Clause](LICENSE.txt)
 
-## Install gems
+## Credit
 
-    bundle install
+I'd like to thank my team at Doctolib for two reasons:
+* they accepted to use this tool as early adopters, even though it was perfectible in many ways
+* they contributed to it, either by coding features themselves or through their regular suggestions
 
-## Install webpacker and dependencies
+Thank you a lot:
+- Moustapha Sall
+- Valentin Dewolf
+- Jade Vandal
+- Coralie Collignon
+- Quentin Baudet
+- Solène Brodu
+- Clément Pinon
 
-    yarn install
-
-## Database initialization
-
-    rails db:create
-    rails db:setup
-
-## Running
-
-Execute the following commands:
-
-    rails s
-
-And for InactivityJob:
-
-    bundle exec sidekiq
+Also, I want to thank following SVG creators from the Noun Project:
+- Ian Mawle for "Light Bulb"
+- Alice Design for "chat" and "Megaphone"
+- monkik for "avatar"
+- Setyo Ari Wibowo for "random"
+- Three Six Five for "Check"
+- Bohdan Burmich for "Eye"
+- ermankutlu for "link"
+- Deemak Daksina for "Fullscreen"
+- by Deemak Daksina for "Exit"
+- Rakesh for "group"
+- Hai Studio for "dashboard"
