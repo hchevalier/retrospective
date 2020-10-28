@@ -12,10 +12,21 @@ const StepActions = () => {
   const visibleReactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
   const zonesTypology = useSelector(state => state.retrospective.zonesTypology)
   const facilitator = useSelector(state => state.profile.facilitator)
+  const channel = useSelector(state => state.orchestrator.subscription)
 
   const reactionsForReflection = (reflection) => visibleReactions.filter((reaction) => {
     return reaction.targetId === `Reflection-${reflection.id}` ||  reaction.targetId === `Topic-${reflection.topic?.id}`
   })
+
+  const eligibleNavigation = (targetReflection) => !targetReflection.topic || targetReflection.topic.id !== currentReflection.topic?.id
+
+  const reflectionsWithVotes = visibleReflections.map((reflection) => {
+    const reactions = visibleReactions.filter((reaction) => {
+      return reaction.targetId === `Reflection-${reflection.id}` || reaction.targetId === `Topic-${reflection.topic?.id}`
+    })
+    const votes = reactions.filter((reaction) => reaction.kind === 'vote')
+    return [reflection, votes]
+  }).sort((a, b) => b[1].length - a[1].length)
 
   if (!currentReflection) return null
 
@@ -23,6 +34,18 @@ const StepActions = () => {
     currentReflection.topic ?
       visibleReflections.filter((reflection) => reflection.topic?.id == currentReflection.topic.id) :
       [currentReflection]
+
+  const currentReflectionIndex = reflectionsWithVotes.findIndex(([reflection]) => reflection.id === currentReflection.id)
+  const nextReflection = reflectionsWithVotes.find(([reflection], index) => index > currentReflectionIndex && eligibleNavigation(reflection))
+  const previousReflection = reflectionsWithVotes.filter(([reflection], index) => index < currentReflectionIndex && eligibleNavigation(reflection)).pop()
+
+  const handleNavigateToPreviousReflection = () => {
+    if (previousReflection) channel.changeDiscussedReflection(previousReflection[0].id)
+  }
+
+  const handleNavigateToNextReflection = () => {
+    if (nextReflection) channel.changeDiscussedReflection(nextReflection[0].id)
+  }
 
   const tooltipContent = (
     <>
@@ -38,7 +61,12 @@ const StepActions = () => {
           <div className='text-center text-xs text-gray-800'>
             <TooltipToggler content={tooltipContent} /> Hover the question mark to display instructions for this step
           </div>
-          <div id='discussed-reflections-panel' className='p-4 w-full flex flex-row justify-evenly'>
+          <div id='discussed-reflections-panel' className='p-4 w-full flex flex-row justify-between'>
+            {facilitator && channel && (
+              <div className='bg-gray-300 p-4 flex flex-col justify-center' onClick={handleNavigateToPreviousReflection}>
+                <span>&lt;-</span>
+              </div>
+            )}
             <div id='discussed-reflection' className='flex flex-col'>
               {['open', 'limited'].includes(zonesTypology) && displayedReflections.map((reflection) => {
                 return <StickyNote key={reflection.id} reflection={reflection} showReactions showVotes reactions={reactionsForReflection(reflection)} />
@@ -47,6 +75,11 @@ const StepActions = () => {
                 return <TrafficLightResult key={reflection.id} reflection={reflection} />
               })}
             </div>
+            {facilitator && channel && (
+              <div className='bg-gray-300 p-4 flex flex-col justify-center' onClick={handleNavigateToNextReflection}>
+                <span>-&gt;</span>
+              </div>
+            )}
           </div>
         </Card>
       </div>
