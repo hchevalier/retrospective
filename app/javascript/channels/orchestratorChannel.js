@@ -31,6 +31,9 @@ export const join = ({ retrospectiveId, onReceivedAction }) => {
         onReceivedAction(data.action, data.parameters)
       }
     },
+    ready() {
+      return !consumer.connection.disconnected
+    }
   })
 
   return orchestratorChannel

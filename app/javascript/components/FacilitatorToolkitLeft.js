@@ -18,7 +18,7 @@ const FacilitatorToolkitLeft = () => {
     channel.setRevealer(randomRevealer.uuid)
   }
 
-  if (!channel || channel.consumer.connection.disconnected) return null
+  if (!channel || !channel.ready()) return null
 
   return (
     <div className='flex flex-col'>

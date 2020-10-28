@@ -63,7 +63,7 @@ const ParticipantsList = ({ onAddParticipantsClick }) => {
     return <>{children}</>
   }
 
-  const avatarClickable = channel && !channel.consumer.connection.disconnected
+  const avatarClickable = channel?.ready()
 
   return (
     <div id='participants-list' className='flex flex-row'>

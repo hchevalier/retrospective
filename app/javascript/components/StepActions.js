@@ -64,8 +64,8 @@ const StepActions = () => {
             <TooltipToggler content={tooltipContent} /> Hover the question mark to display instructions for this step
           </div>
           <div id='discussed-reflections-panel' className='p-4 w-full flex flex-row justify-between'>
-            {facilitator && channel && (
-              <Button contained primary className='px-4' onClick={handleNavigateToPreviousReflection} disabled={!previousReflection}>
+            {facilitator && channel?.ready() && (
+              <Button name='previous_topic' contained primary className='px-4' onClick={handleNavigateToPreviousReflection} disabled={!previousReflection}>
                 <IconArrow className='w-6 h-6 transform rotate-180' />
               </Button>
             )}
@@ -77,8 +77,8 @@ const StepActions = () => {
                 return <TrafficLightResult key={reflection.id} reflection={reflection} />
               })}
             </div>
-            {facilitator && channel && (
-              <Button contained primary className='px-4' onClick={handleNavigateToNextReflection} disabled={!nextReflection}>
+            {facilitator && channel?.ready() && (
+              <Button name='next_topic' contained primary className='px-4' onClick={handleNavigateToNextReflection} disabled={!nextReflection}>
                 <IconArrow className='w-6 h-6' />
               </Button>
             )}
