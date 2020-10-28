@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useSelector } from 'react'
+import React, { useState, useCallback } from 'react'
+import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import Card from './Card'
 import GladSadMad from './retrospectives/GladSadMad'

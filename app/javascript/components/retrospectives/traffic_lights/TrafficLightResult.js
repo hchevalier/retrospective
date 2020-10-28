@@ -7,7 +7,7 @@ const TrafficLightResult = ({ reflection, onClick }) => {
   const { details, hint, name } = reflection.zone
 
   return (
-    <div id={`zone-${name}`} className='zone' onClick={onClick} >
+    <div id={`zone-${name}`} className='zone mt-2' onClick={onClick} >
       <div>{name}</div>
       <div className='hint'>{hint}</div>
       <div className='flex justify-center'>

@@ -59,7 +59,7 @@ const StepActions = () => {
   return (
     <div className='flex flex-row h-full'>
       <div className='flex w-2/3 flex-col'>
-        <Card vertical title='Discussed topic' containerClassName='h-full'>
+        <Card vertical title='Discussed topic' containerClassName='h-full screen-limited'>
           <div className='text-center text-xs text-gray-800'>
             <TooltipToggler content={tooltipContent} /> Hover the question mark to display instructions for this step
           </div>
@@ -69,7 +69,7 @@ const StepActions = () => {
                 <IconArrow className='w-6 h-6 transform rotate-180' />
               </Button>
             )}
-            <div id='discussed-reflection' className='flex flex-col'>
+            <div id='discussed-reflection' className='flex flex-col w-64'>
               {['open', 'limited'].includes(zonesTypology) && displayedReflections.map((reflection) => {
                 return <StickyNote key={reflection.id} reflection={reflection} showReactions showVotes reactions={reactionsForReflection(reflection)} />
               })}
