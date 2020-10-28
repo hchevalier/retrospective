@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 import { post } from 'lib/httpClient'
 import classNames from 'classnames'
 import EditIcon from 'images/edit-icon.svg'
-import PlusIcon from 'images/plus-icon.svg'
 import './StickyNote.scss'
 
 const BlankStickyNote = ({ ownerProfile, onReflectionReady, onReflectionPending, selectedZone }) => {

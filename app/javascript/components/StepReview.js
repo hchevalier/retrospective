@@ -17,7 +17,10 @@ const StepReview = () => {
   }, [groupId])
 
   return (
-    <>
+    <Card
+      vertical
+      className='pb-0 h-full'
+      containerClassName='flex-1 px-4 h-full'>
       <h3 className='font-bold text-blue-800'>Review actions from previous retrospectives</h3>
       <div className='task flex-1 p-4 rounded my-2 flex flex-wrap'>
         {tasks.map((task) => (
@@ -26,7 +29,7 @@ const StepReview = () => {
           </div>
         ))}
       </div>
-    </>
+    </Card>
   )
 }
 

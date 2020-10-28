@@ -2,19 +2,22 @@ import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import PropTypes from 'prop-types'
 import { post, put } from 'lib/httpClient'
+import { groupBy } from 'lib/helpers/array'
+import Card from './Card'
 import Topic from './Topic'
 import StickyNote from './StickyNote'
 import TooltipToggler from './TooltipToggler'
 import Icon from './Icon'
-import { groupBy } from 'lib/helpers/array'
 import SingleChoice from './SingleChoice'
+import FullScreenIcon from 'images/fullscreen-icon'
+import ExitFullScreenIcon from 'images/exit-fullscreen-icon'
 import './StepGrouping.scss'
 
 const inScreen = (target) => target.dataset.timeoutId && target.dataset.timeoutId !== 'null'
 const noteAboveViewport = (stickyNote) => stickyNote.dataset.read !== 'true' && stickyNote.getBoundingClientRect().top < stickyNote.dataset.rootTop && !inScreen(stickyNote)
 const noteBelowViewport = (stickyNote) => stickyNote.dataset.read !== 'true' && stickyNote.getBoundingClientRect().top > stickyNote.dataset.rootTop && !inScreen(stickyNote)
 
-const StepGrouping = ({ onExpandTopic }) => {
+const StepGrouping = ({ fullScreen, onExpandTopic, onToggleFullScreen }) => {
   const { id: retrospectiveId, kind } = useSelector(state => state.retrospective)
   const { uuid: profileUuid } = useSelector(state => state.profile)
   const reflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
@@ -193,7 +196,17 @@ const StepGrouping = ({ onExpandTopic }) => {
   )
 
   return (
-    <>
+    <Card
+      vertical
+      className='pb-0 h-full'
+      containerClassName='flex-1 px-4 h-full'>
+      {zonesTypology === 'open' && (
+        <img
+          className='cursor-pointer absolute top-2 left-6'
+          src={fullScreen ? ExitFullScreenIcon : FullScreenIcon}
+          onClick={onToggleFullScreen}
+          width="24" />
+      )}
       <div className='text-center text-xs text-gray-800'><TooltipToggler content={tooltipContent} /> Hover the question mark to display instructions for this step</div>
 
       <div id="zones-container" className="flex w-full h-full overflow-x-scroll">
@@ -255,12 +268,14 @@ const StepGrouping = ({ onExpandTopic }) => {
           )
         })}
       </div>
-    </>
+    </Card>
   )
 }
 
 StepGrouping.propTypes = {
-  onExpandTopic: PropTypes.func
+  fullScreen: PropTypes.bool,
+  onExpandTopic: PropTypes.func,
+  onToggleFullScreen: PropTypes.func
 }
 
 export default StepGrouping

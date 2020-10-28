@@ -4,7 +4,7 @@ import StickyNote from './StickyNote'
 import ActionEditor from './ActionEditor'
 import TooltipToggler from './TooltipToggler'
 import TrafficLightResult from './retrospectives/traffic_lights/TrafficLightResult'
-import './StepActions.scss'
+import Card from './Card'
 
 const StepActions = () => {
   const currentReflection = useSelector(state => state.reflections.discussedReflection)
@@ -32,24 +32,28 @@ const StepActions = () => {
   )
 
   return (
-    <>
-      < div className='text-center text-xs text-gray-800' > <TooltipToggler content={tooltipContent} /> Hover the question mark to display instructions for this step</div >
-      <div id='actions-zone' className='w-full flex flex-row'>
-        <div id='discussed-reflections-panel'>
-          <div id='discussed-reflection' className='flex flex-col'>
-            {['open', 'limited'].includes(zonesTypology) && displayedReflections.map((reflection) => {
-              return <StickyNote key={reflection.id} reflection={reflection} showReactions showVotes reactions={reactionsForReflection(reflection)} />
-            })}
-            {zonesTypology === 'single_choice' && displayedReflections.map((reflection) => {
-              return <TrafficLightResult key={reflection.id} reflection={reflection} />
-            })}
+    <div className='flex flex-row'>
+      <div className='flex w-2/3 flex-col'>
+        <Card vertical title='Discussed topic'>
+          <div className='text-center text-xs text-gray-800'>
+            <TooltipToggler content={tooltipContent} /> Hover the question mark to display instructions for this step
           </div>
-        </div>
-        <div id='action-editor-container' className='items-start'>
-          <ActionEditor reflectionId={currentReflection.id} reflectionContent={currentReflection.content} />
-        </div>
+          <div id='discussed-reflections-panel' className='p-4 w-full flex flex-row justify-evenly'>
+            <div id='discussed-reflection' className='flex flex-col'>
+              {['open', 'limited'].includes(zonesTypology) && displayedReflections.map((reflection) => {
+                return <StickyNote key={reflection.id} reflection={reflection} showReactions showVotes reactions={reactionsForReflection(reflection)} />
+              })}
+              {zonesTypology === 'single_choice' && displayedReflections.map((reflection) => {
+                return <TrafficLightResult key={reflection.id} reflection={reflection} />
+              })}
+            </div>
+          </div>
+        </Card>
       </div>
-    </>
+      <div className='flex w-1/3 flex-col screen-limited overflow-y-scroll'>
+        <ActionEditor reflectionId={currentReflection.id} reflectionContent={currentReflection.content} />
+      </div>
+    </div>
   )
 }
 

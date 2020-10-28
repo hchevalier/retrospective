@@ -6,7 +6,6 @@ import VoteCorner from './VoteCorner'
 import Task from './Task'
 import InlineTopic from './InlineTopic'
 import TrafficLightResult from './retrospectives/traffic_lights/TrafficLightResult'
-import './StepActions.scss'
 
 const StepDone = () => {
   const zonesTypology = useSelector(state => state.retrospective.zonesTypology)

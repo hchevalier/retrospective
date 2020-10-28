@@ -50,7 +50,7 @@ const ReflectionsList = ({ retrospectiveKind, onDone }) => {
   return (
     <>
       <div id='reflections-panel' className={classNames('bg-transparent relative py-4 flex flex-row h-full', { infinite: currentStep !== 'thinking' })}>
-        <Card title='My reflections' actionLabel={actionAvailable} actionLocation='header' onAction={handleDone} vertical wrapperClassName='limited fixed top-18'>
+        <Card title='My reflections' actionLabel={actionAvailable} actionLocation='header' onAction={handleDone} vertical wrapperClassName='screen-limited fixed top-18'>
           <div id='reflections-container'>
             {['open', 'limited'].includes(zonesTypology) && zones.map((zone, index) => {
               const reflectionsInZone = reflectionsByZone[zone.id] || []

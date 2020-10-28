@@ -3,6 +3,7 @@ import Button from './Button'
 import { get, post, put, destroy } from 'lib/httpClient'
 import { useSelector, shallowEqual } from 'react-redux'
 import PropTypes from 'prop-types'
+import Card from './Card'
 import Task from './Task'
 import './ActionEditor.scss'
 
@@ -77,48 +78,52 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
 
   return (
     <>
-      <div id='action-editor'>
-        {reflectionOnTypeStart && (
-          <>
-            {!editedTask && reflectionId !== reflectionOnTypeStart.id && <>
-              <div>You are writing an action for a reflection that is not the one currently displayed</div>
-              <div>({reflectionOnTypeStart.content})</div>
-              <Button
-                secondary
-                onClick={resetReflectionOnTypeStart}>
-                Change to currently displayed reflection
-              </Button>
-            </>}
+      <Card vertical>
+        <div id='action-editor'>
+          {reflectionOnTypeStart && (
+            <>
+              {!editedTask && reflectionId !== reflectionOnTypeStart.id && <>
+                <div>You are writing an action for a reflection that is not the one currently displayed</div>
+                <div>({reflectionOnTypeStart.content})</div>
+                <Button
+                  secondary
+                  onClick={resetReflectionOnTypeStart}>
+                  Change to currently displayed reflection
+                </Button>
+              </>}
+              {editedTask && <>
+                <div>You are editing an action for the following reflection:</div>
+                <div>{reflectionOnTypeStart.content}</div>
+              </>}
+            </>
+          )}
+          <textarea placeholder='You can take actions here' name='content' className='w-full mb-1 border py-1 px-2 rounded' value={description} multiline='true' rows={8} onChange={onDescriptionChange} />
+          <div id='assignee-select'>
+            <select
+              name='assignee'
+              value={assignee}
+              onChange={(event) => setAssignee(event.target.value)}
+              className=" appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-3 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            >
+              <option>Choose an assignee</option>
+              {members.map((account, index) => <option key={index} value={account.publicId}>{account.username}</option>)}
+            </select>
+          </div>
+          <div className='mt-1 flex justify-evenly mt-1 w-full'>
             {editedTask && <>
-              <div>You are editing an action for the following reflection:</div>
-              <div>{reflectionOnTypeStart.content}</div>
+              <Button contained primary onClick={onTakeActionClick}>Update</Button>
+              <Button contained primary onClick={handleCancelEditing}>Cancel</Button>
             </>}
-          </>
-        )}
-        <textarea placeholder='You can take actions here' name='content' className='w-full mb-1 border py-1 px-2 rounded' value={description} multiline='true' rows={8} onChange={onDescriptionChange} />
-        <div id='assignee-select'>
-          <select
-            name='assignee'
-            value={assignee}
-            onChange={(event) => setAssignee(event.target.value)}
-            className=" appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-3 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-          >
-            <option>Choose an assignee</option>
-            {members.map((account, index) => <option key={index} value={account.publicId}>{account.username}</option>)}
-          </select>
+            {!editedTask && <Button contained primary onClick={onTakeActionClick}>Take action</Button>}
+          </div>
         </div>
-        <div className='mt-1 flex justify-evenly mt-1 w-full'>
-          {editedTask && <>
-            <Button contained primary onClick={onTakeActionClick}>Update</Button>
-            <Button contained primary onClick={handleCancelEditing}>Cancel</Button>
-          </>}
-          {!editedTask && <Button contained primary onClick={onTakeActionClick}>Take action</Button>}
-        </div>
-      </div>
+      </Card>
 
-      <div id='tasks-list'>
-        {tasks.filter((task) => task.reflection.id === reflectionId).map((task, index) => <Task key={index} task={task} onEdit={handleEditClick} onDelete={handleDeleteClick} />)}
-      </div>
+      <Card vertical title='Actions' containerClassName='mt-4'>
+        <div id='tasks-list'>
+          {tasks.filter((task) => task.reflection.id === reflectionId).map((task, index) => <Task key={index} task={task} onEdit={handleEditClick} onDelete={handleDeleteClick} />)}
+        </div>
+      </Card>
     </>
   )
 }
