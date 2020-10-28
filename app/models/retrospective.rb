@@ -170,15 +170,16 @@ class Retrospective < ApplicationRecord
   def next_step!
     return if step == 'done'
 
-    next_step = Retrospective.steps.keys[step_index + 1]
-    next_step = Retrospective.steps.keys[step_index + 2] if next_step == 'reviewing' && group.pending_tasks.none?
+    new_step = Retrospective.steps.keys[step_index + 1]
+    new_step = Retrospective.steps.keys[step_index + 2] if new_step == 'reviewing' && group.pending_tasks.none?
 
-    if next_step == 'voting' && zones_typology == :single_choice
+    if new_step == 'voting' && zones_typology == :single_choice
       builder.autovote!(self)
-      next_step = Retrospective.steps.keys[step_index + 2]
+      new_step = Retrospective.steps.keys[step_index + 2]
+      reload
     end
 
-    if next_step == 'actions'
+    if new_step == 'actions'
       most_upvoted_target =
         reactions
         .select(&:vote?)
@@ -191,13 +192,13 @@ class Retrospective < ApplicationRecord
       most_upvoted_target = most_upvoted_target.reflections.first if most_upvoted_target&.is_a?(Topic)
     end
 
-    update!(step: next_step, discussed_reflection: most_upvoted_target || discussed_reflection)
+    update!(step: new_step, discussed_reflection: most_upvoted_target || discussed_reflection)
 
-    params = { next_step: next_step }
-    params[:visibleReflections] = visible_reflections_for_step(next_step)
+    params = { next_step: new_step }
+    params[:visibleReflections] = visible_reflections_for_step(new_step)
 
     params[:visibleReactions] =
-      case next_step
+      case new_step
       when 'grouping', 'voting'
         reactions.emoji.map(&:readable)
       when 'actions', 'done'
@@ -206,8 +207,8 @@ class Retrospective < ApplicationRecord
         []
       end
 
-    params[:pendingTasks] = group.pending_tasks.as_json if step == 'reviewing'
-    params[:discussedReflection] = discussed_reflection&.readable if %w(actions done).include?(step)
+    params[:pendingTasks] = group.pending_tasks.as_json if new_step == 'reviewing'
+    params[:discussedReflection] = discussed_reflection&.readable if %w(actions done).include?(new_step)
 
     broadcast_order(:next, **params)
   end
