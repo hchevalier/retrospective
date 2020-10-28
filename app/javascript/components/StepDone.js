@@ -76,7 +76,7 @@ const StepDone = () => {
         <Card vertical title='Selected topic' containerClassName='h-full'>
           <div id='discussed-reflection' className='w-64'>
             {['open', 'limited'].includes(zonesTypology) && displayedReflections.map((reflection) => {
-              return <StickyNote key={reflection.id} reflection={reflection} showReactions showVotes reactions={reactionsForReflection(reflection)} />
+              return <StickyNote key={reflection.id} reflection={reflection} showVotes reactions={reactionsForReflection(reflection)} />
             })}
             {zonesTypology === 'single_choice' && displayedReflections.map((reflection) => {
               return <TrafficLightResult key={reflection.id} reflection={reflection} />
