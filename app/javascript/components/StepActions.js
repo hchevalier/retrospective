@@ -5,6 +5,8 @@ import ActionEditor from './ActionEditor'
 import TooltipToggler from './TooltipToggler'
 import TrafficLightResult from './retrospectives/traffic_lights/TrafficLightResult'
 import Card from './Card'
+import Button from './Button'
+import IconArrow from 'images/arrow-right-icon.inline.svg'
 
 const StepActions = () => {
   const currentReflection = useSelector(state => state.reflections.discussedReflection)
@@ -49,23 +51,23 @@ const StepActions = () => {
 
   const tooltipContent = (
     <>
-      {facilitator && <div>Click on a reflection on the left to select it as the new discussed reflection</div>}
+      {facilitator && <div>Click on a reflection in the left panel to select it as the new discussed reflection<br />or navigate using the arrow buttons</div>}
       {!facilitator && <div>You can discuss the reflections your facilitator selects</div>}
     </>
   )
 
   return (
-    <div className='flex flex-row'>
+    <div className='flex flex-row h-full'>
       <div className='flex w-2/3 flex-col'>
-        <Card vertical title='Discussed topic'>
+        <Card vertical title='Discussed topic' containerClassName='h-full'>
           <div className='text-center text-xs text-gray-800'>
             <TooltipToggler content={tooltipContent} /> Hover the question mark to display instructions for this step
           </div>
           <div id='discussed-reflections-panel' className='p-4 w-full flex flex-row justify-between'>
             {facilitator && channel && (
-              <div className='bg-gray-300 p-4 flex flex-col justify-center' onClick={handleNavigateToPreviousReflection}>
-                <span>&lt;-</span>
-              </div>
+              <Button contained primary className='px-4' onClick={handleNavigateToPreviousReflection} disabled={!previousReflection}>
+                <IconArrow className='w-6 h-6 transform rotate-180' />
+              </Button>
             )}
             <div id='discussed-reflection' className='flex flex-col'>
               {['open', 'limited'].includes(zonesTypology) && displayedReflections.map((reflection) => {
@@ -76,9 +78,9 @@ const StepActions = () => {
               })}
             </div>
             {facilitator && channel && (
-              <div className='bg-gray-300 p-4 flex flex-col justify-center' onClick={handleNavigateToNextReflection}>
-                <span>-&gt;</span>
-              </div>
+              <Button contained primary className='px-4' onClick={handleNavigateToNextReflection} disabled={!nextReflection}>
+                <IconArrow className='w-6 h-6' />
+              </Button>
             )}
           </div>
         </Card>

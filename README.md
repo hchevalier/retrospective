@@ -170,3 +170,4 @@ Also, I want to thank following SVG creators from the Noun Project:
 - by Deemak Daksina for "Exit"
 - Rakesh for "group"
 - Hai Studio for "dashboard"
+- Rainbow Designs for "Arrow"
