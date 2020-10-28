@@ -64,7 +64,8 @@ Card.propTypes = {
   scrollable: PropTypes.bool,
   title: PropTypes.string,
   vertical: PropTypes.bool,
-  wrap: PropTypes.bool
+  wrap: PropTypes.bool,
+  wrapperClassName: PropTypes.string
 }
 
 export default Card

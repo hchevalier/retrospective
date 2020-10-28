@@ -26,7 +26,7 @@ const MenuItem = ({ label, icon, active, target }) => {
 
 MenuItem.propTypes = {
   label: PropTypes.string.isRequired,
-  icon: PropTypes.node,
+  icon: PropTypes.elementType,
   active: PropTypes.bool,
   target: PropTypes.string
 }

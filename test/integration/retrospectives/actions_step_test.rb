@@ -82,6 +82,48 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'facilitator can use arrows to change the discussed reflection' do
+    retrospective = create(:retrospective, step: 'actions')
+    other_participant = create(:other_participant, retrospective: retrospective)
+    reflection_a = create(:reflection, :glad, owner: retrospective.facilitator)
+    reflection_b = create(:reflection, :sad, owner: other_participant)
+    create(:vote, target: reflection_a, author: retrospective.facilitator)
+    create(:vote, target: reflection_b, author: retrospective.facilitator)
+    retrospective.update!(discussed_reflection: reflection_a)
+
+    logged_in_as(retrospective.facilitator)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
+
+    within '.reflection' do
+      assert_text 'A glad reflection'
+    end
+
+    click_on 'next_topic'
+
+    within '.reflection' do
+      assert_text 'A sad reflection'
+    end
+
+    other_participant_window = open_new_window
+    within_window(other_participant_window) do
+      logged_in_as(other_participant)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
+
+      within '.reflection' do
+        assert_text 'A sad reflection'
+      end
+
+      refute_button 'next_topic'
+      refute_button 'previous_topic'
+    end
+
+    click_on 'previous_topic'
+
+    within '.reflection' do
+      assert_text 'A glad reflection'
+    end
+  end
+
   test 'changing the discussed reflection to a topic displays all reflections from this topic' do
     retrospective = create(:retrospective, step: 'actions')
     reflection_a = create(:reflection, :glad, owner: retrospective.facilitator, content: 'Most upvoted reflection')

@@ -1,8 +1,10 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
+import PropTypes from 'prop-types'
+import constants from 'lib/utils/constants'
+import Card from './Card'
 import StickyNote from './StickyNote'
 import Topic from './Topic'
-import constants from 'lib/utils/constants'
 import Icon from './Icon'
 
 const StepVoting = ({ onExpandTopic }) => {
@@ -34,7 +36,10 @@ const StepVoting = ({ onExpandTopic }) => {
   }
 
   return (
-    <>
+    <Card
+      vertical
+      className='pb-0 h-full'
+      containerClassName='flex-1 px-4 h-full'>
       <div>Remaining votes: {constants.maxVotes - votes.length}</div>
       <div id='zones-container' className="flex w-full h-full overflow-x-scroll">
         {zones.map((zone) => (
@@ -58,8 +63,12 @@ const StepVoting = ({ onExpandTopic }) => {
           </div>
         ))}
       </div>
-    </>
+    </Card>
   )
+}
+
+StepVoting.propTypes = {
+  onExpandTopic: PropTypes.func
 }
 
 export default StepVoting

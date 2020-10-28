@@ -27,7 +27,7 @@ const FacilitatorToolkitRight = () => {
     }
   }, [confirmNext])
 
-  if (step === 'done' || !channel || channel.consumer.connection.disconnected) return null
+  if (step === 'done' || !channel || !channel.ready()) return null
 
   const wordingForNextStep = () => step === 'actions' ? 'Finish' : 'Next step'
 
