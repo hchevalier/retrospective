@@ -84,7 +84,7 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
             <>
               {!editedTask && reflectionId !== reflectionOnTypeStart.id && <>
                 <div>You are writing an action for a reflection that is not the one currently displayed</div>
-                <div>{zonesTypology === 'single_choice' ? reflectionOnTypeStart.zone.name : reflectionOnTypeStart.content}</div>
+                <div>({zonesTypology === 'single_choice' ? reflectionOnTypeStart.zone.name : reflectionOnTypeStart.content})</div>
                 <Button
                   secondary
                   onClick={resetReflectionOnTypeStart}>
