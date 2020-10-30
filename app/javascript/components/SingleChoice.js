@@ -13,7 +13,7 @@ const SingleChoice = ({ badge, collapsed, onClick, selected, value, zone }) => {
           key={i}
           data-id={`zone-${zone}`}
           data-value={value}
-          className={classNames('choice', { [value]: true, selected: selected })}
+          className={classNames('m-1 choice text-center border border-gray-500', { [value]: true, selected: selected })}
           onClick={onClick}>
             {collapsed && badge}
         </div>
