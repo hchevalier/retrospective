@@ -57,7 +57,7 @@ const ReflectionsListForActionStep = () => {
             })}
             {zonesTypology === 'single_choice' && reflectionsWithVotes.map(([reflection]) => {
               return (
-                <div id={kind} key={reflection.id} onClick={() => handleStickyBookmarkClicked(reflection)}>
+                <div id={reflection.zone.id} key={reflection.id} onClick={() => handleStickyBookmarkClicked(reflection)}>
                   <TrafficLightResult reflection={reflection} />
                 </div>
               )

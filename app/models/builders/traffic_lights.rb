@@ -36,18 +36,22 @@ class Builders::TrafficLights
           .map(&:first)
 
       count = reflections.count
+      votes = []
+      now = Time.current
       reflections.each do |reflection|
         count.times do
-          # TODO: do a single commit
-          reflection.votes.create!(
+          votes << reflection.votes.new(
             author: retrospective.facilitator,
             target: reflection,
             content: Reaction::VOTE_EMOJI,
-            retrospective: retrospective
+            retrospective: retrospective,
+            created_at: now,
+            updated_at: now
           )
         end
         count -= 1
       end
+      Reaction.insert_all!(votes.map(&:attributes).map(&:compact))
     end
   end
 end

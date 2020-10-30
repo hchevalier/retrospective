@@ -14,7 +14,7 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
   const [editedTask, setEditedTask] = React.useState(null)
   const [members, setMembers] = React.useState([])
 
-  const retrospectiveId = useSelector(state => state.retrospective.id)
+  const { id: retrospectiveId, zonesTypology } = useSelector(state => state.retrospective)
   const groupId = useSelector(state => state.retrospective.group.id)
   const tasks = useSelector(state => state.tasks, shallowEqual)
 
@@ -84,7 +84,7 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
             <>
               {!editedTask && reflectionId !== reflectionOnTypeStart.id && <>
                 <div>You are writing an action for a reflection that is not the one currently displayed</div>
-                <div>({reflectionOnTypeStart.content})</div>
+                <div>({zonesTypology === 'single_choice' ? reflectionOnTypeStart.zone.name : reflectionOnTypeStart.content})</div>
                 <Button
                   secondary
                   onClick={resetReflectionOnTypeStart}>
@@ -93,7 +93,7 @@ const ActionEditor = ({ reflectionId, reflectionContent }) => {
               </>}
               {editedTask && <>
                 <div>You are editing an action for the following reflection:</div>
-                <div>{reflectionOnTypeStart.content}</div>
+                <div>{zonesTypology === 'single_choice' ? reflectionOnTypeStart.zone.name : reflectionOnTypeStart.content}</div>
               </>}
             </>
           )}

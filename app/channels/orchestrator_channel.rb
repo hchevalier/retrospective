@@ -69,7 +69,7 @@ class OrchestratorChannel < ApplicationCable::Channel
     return unless current_participant.reload.facilitator?
 
     retrospective = current_participant.retrospective
-    reflection = retrospective.reflections.find(data['uuid'])
+    reflection = retrospective.reflections.includes(:topic, :owner, zone: :retrospective).find(data['uuid'])
     retrospective.update!(discussed_reflection: reflection)
     broadcast_to(retrospective, action: 'setDiscussedReflection', parameters: { reflection: reflection.readable })
   end
