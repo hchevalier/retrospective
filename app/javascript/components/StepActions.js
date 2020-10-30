@@ -65,7 +65,7 @@ const StepActions = () => {
           </div>
           <div id='discussed-reflections-panel' className='p-4 w-full flex flex-row justify-between'>
             {facilitator && channel?.ready() && (
-              <Button name='previous_topic' contained primary className='px-4' onClick={handleNavigateToPreviousReflection} disabled={!previousReflection}>
+              <Button name='previous_topic' contained primary className='px-4 max-h-16' onClick={handleNavigateToPreviousReflection} disabled={!previousReflection}>
                 <IconArrow className='w-6 h-6 transform rotate-180' />
               </Button>
             )}
@@ -78,7 +78,7 @@ const StepActions = () => {
               })}
             </div>
             {facilitator && channel?.ready() && (
-              <Button name='next_topic' contained primary className='px-4' onClick={handleNavigateToNextReflection} disabled={!nextReflection}>
+              <Button name='next_topic' contained primary className='px-4 max-h-16' onClick={handleNavigateToNextReflection} disabled={!nextReflection}>
                 <IconArrow className='w-6 h-6' />
               </Button>
             )}

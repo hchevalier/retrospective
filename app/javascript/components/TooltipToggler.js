@@ -37,7 +37,7 @@ const TooltipToggler = ({ content, position = 'top' }) => {
 
 
 TooltipToggler.propTypes = {
-  content: PropTypes.string.isRequired,
+  content: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
   position: PropTypes.string
 }
 
