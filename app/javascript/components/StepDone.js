@@ -44,8 +44,8 @@ const StepDone = () => {
 
   return (
     <div className='flex flex-row h-full'>
-      <div className='flex w-1/3 flex-col screen-limited overflow-y-scroll'>
-        <Card vertical title='All topics' containerClassName='h-full'>
+      <div className='flex w-1/3 flex-col screen-limited overflow-y-hidden'>
+        <Card vertical title='All topics' containerClassName='h-full' className='screen-limited'>
           <div id='reflections-list' className='w-full'>
             {['open', 'limited'].includes(zonesTypology) && reflectionsWithVotes.map(([reflection, votes], index) => {
               if (reflection.topic?.id && !topics[reflection.topic.id]) {
@@ -72,8 +72,8 @@ const StepDone = () => {
           </div>
         </Card>
       </div>
-      <div className='flex w-1/3 flex-col screen-limited overflow-y-scroll'>
-        <Card vertical title='Selected topic' containerClassName='h-full'>
+      <div className='flex w-1/3 flex-col screen-limited overflow-y-hidden'>
+        <Card vertical title='Selected topic' containerClassName='h-full' className='screen-limited'>
           <div id='discussed-reflection' className='w-64'>
             {['open', 'limited'].includes(zonesTypology) && displayedReflections.map((reflection) => {
               return <StickyNote key={reflection.id} reflection={reflection} showVotes reactions={reactionsForReflection(reflection)} />
@@ -84,8 +84,8 @@ const StepDone = () => {
           </div>
         </Card>
       </div>
-      <div className='flex w-1/3 flex-col screen-limited overflow-y-scroll'>
-        <Card vertical title='Actions' containerClassName='h-full'>
+      <div className='flex w-1/3 flex-col screen-limited overflow-y-hidden'>
+        <Card vertical title='Actions' containerClassName='h-full' className='screen-limited'>
           <div id='tasks-list'>
             <input id='all-tasks' type='checkbox' name='all_tasks' onChange={handleDisplayTasksChange} />
             <label htmlFor='all-tasks'>Only display tasks for current reflection</label>

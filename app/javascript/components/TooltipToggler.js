@@ -52,8 +52,8 @@ const TooltipToggler = ({ content, position = 'top', fixed }) => {
   if (currentQuestionMark) {
     const { top, left } = currentQuestionMark.getBoundingClientRect()
     if (
-      (top + (window.pageYOffset || window.scrollY)) !== offsetTop ||
-      (left + (window.pageXOffset || window.scrollX)) !== offsetLeft
+      top + (window.pageYOffset || window.scrollY) !== offsetTop ||
+      left + (window.pageXOffset || window.scrollX) !== offsetLeft
     ) handleScroll()
   }
 
