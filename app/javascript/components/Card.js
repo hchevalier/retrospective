@@ -29,7 +29,7 @@ const Card = ({ title, actionDisabled, actionLabel, className, containerClassNam
           <div
             className={
               classNames(
-                'flex px-6 py-6 text-gray-800 items-center -mx-4',
+                'flex px-2 py-6 text-gray-800 items-center',
                 className,
                 {
                   'flex-wrap': wrap, 'justify-center': center, 'justify-between': wrap, 'flex-col': vertical, 'border-b': footer,

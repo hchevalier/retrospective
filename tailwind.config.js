@@ -24,6 +24,7 @@ module.exports = {
       },
       height: {
         '14': '3.5rem',
+        '18px': '18px',
       },
       inset: {
         '-32': '-8rem',
@@ -52,6 +53,9 @@ module.exports = {
         'flex': 'flex',
         'height': 'height',
         'width': 'width',
+      },
+      width: {
+        '16px': '16px',
       },
       zIndex: {
         '1': 1,

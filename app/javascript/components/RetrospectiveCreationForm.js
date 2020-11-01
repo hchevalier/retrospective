@@ -1,6 +1,6 @@
 import React from 'react'
 import { get, post } from 'lib/httpClient'
-import { humanize } from 'lib/helpers/string'
+import { RETROSPECTIVE_NAMES } from 'lib/utils/displayNames'
 import Card from './Card'
 import DropDown from './DropDown'
 
@@ -81,7 +81,7 @@ const RetrospectiveCreationForm = () => {
                 onChange={(event) => setRetrospectiveKind(event.target.value)}
                 className=" appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-3 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                 <option>Select one</option>
-                {retrospectiveKinds.map((kind, index) => <option key={index} value={kind}>{humanize(kind)}</option>)}
+                {retrospectiveKinds.map((kind, index) => <option key={index} value={kind}>{RETROSPECTIVE_NAMES[kind]}</option>)}
               </select>
             </div>
           </div>

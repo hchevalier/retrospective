@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import Card from './Card'
 import GladSadMad from './retrospectives/GladSadMad'
+import PlusMinusInteresting from './retrospectives/PlusMinusInteresting'
 import Starfish from './retrospectives/Starfish'
 import TrafficLights from './retrospectives/TrafficLights'
 import OscarsGerards from './retrospectives/OscarsGerards'
@@ -10,6 +11,15 @@ import RetrospectiveBottomBar from './RetrospectiveBottomBar'
 import Sailboat from './retrospectives/Sailboat'
 import FullScreenIcon from 'images/fullscreen-icon'
 import ExitFullScreenIcon from 'images/exit-fullscreen-icon'
+
+const RETROSPECTIVE_KINDS = {
+  'glad_sad_mad': GladSadMad,
+  'pmi': PlusMinusInteresting,
+  'sailboat': Sailboat,
+  'starfish': Starfish,
+  'traffic_lights': TrafficLights,
+  'oscars_gerards': OscarsGerards,
+}
 
 const StepThinking = ({ kind, fullScreen, onToggleFullScreen }) => {
   const [selectedZone, setSelectedZone] = useState(null)
@@ -34,18 +44,10 @@ const StepThinking = ({ kind, fullScreen, onToggleFullScreen }) => {
     setHighlightZones(true)
   }, [])
 
-  let retrospective = <div>Unknown retrospective {kind}</div>
-  if (kind === 'glad_sad_mad') {
-    retrospective = <GladSadMad highlightZones={highlightZones} onZoneClicked={handleZoneClicked} selectedZone={selectedZone} />
-  } else if (kind === 'sailboat') {
-    retrospective = <Sailboat highlightZones={highlightZones} onZoneClicked={handleZoneClicked} selectedZone={selectedZone} />
-  } else if (kind === 'starfish') {
-    retrospective = <Starfish highlightZones={highlightZones} onZoneClicked={handleZoneClicked} selectedZone={selectedZone} />
-  } else if (kind === 'traffic_lights') {
-    retrospective = <TrafficLights highlightZones={highlightZones} onZoneClicked={handleZoneClicked} selectedZone={selectedZone} />
-  } else if (kind === 'oscars_gerards') {
-    retrospective = <OscarsGerards highlightZones={highlightZones} onZoneClicked={handleZoneClicked} selectedZone={selectedZone} />
-  }
+  const RetrospectiveComponent = RETROSPECTIVE_KINDS[kind]
+  const retrospective = RetrospectiveComponent ?
+    <RetrospectiveComponent highlightZones={highlightZones} onZoneClicked={handleZoneClicked} selectedZone={selectedZone} /> :
+    <div>Unknown retrospective {kind}</div>
 
   return (
     <Card

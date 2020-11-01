@@ -3,6 +3,9 @@ import PropTypes from 'prop-types'
 import Glad from 'images/glad.png'
 import Sad from 'images/sad.png'
 import Mad from 'images/mad.png'
+import Plus from 'images/plus.png'
+import Minus from 'images/minus.png'
+import Interesting from 'images/interesting.png'
 import Keep from 'images/keep.png'
 import Start from 'images/start.png'
 import Stop from 'images/stop.png'
@@ -22,6 +25,12 @@ const iconFor = (retrospectiveKind, zone) => {
       return Sad
     case 'glad_sad_mad-Mad':
       return Mad
+    case 'pmi-Plus':
+      return Plus
+    case 'pmi-Minus':
+      return Minus
+    case 'pmi-Interesting':
+      return Interesting
     case 'starfish-Keep':
       return Keep
     case 'starfish-Start':
