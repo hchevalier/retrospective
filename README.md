@@ -94,13 +94,13 @@ Anyone can write an action for the currently discussed reflection.
 
 This tool currently implements the following formats:
 * Glad Sad Mad
+* Plus Minus Interesting (PMI)
 * Starfish
 * Sailboat
 * Traffic lights healthcheck
 * Oscars and Gerards
 
 The following ones will be added as soon as possible:
-* Plus Minus Idea (PMI)
 * Keep Add Less More (KALM)
 * Drop Add Keep Improve (DAKI)
 * Liked, Learned, Lacked, Longed for (4L)
@@ -170,3 +170,5 @@ Also, I want to thank following SVG creators from the Noun Project:
 - Rakesh for "group"
 - Hai Studio for "dashboard"
 - Rainbow Designs for "Arrow"
+- Adrien Coquet for "thumb up"
+- VM Design for "Star"

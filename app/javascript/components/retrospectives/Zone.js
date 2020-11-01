@@ -13,12 +13,12 @@ const Zone = ({ background, hideCount, height, highlight, icon, onClick, referen
     backgroundImage: `url(${background})`, backgroundSize: 'cover', backgroundPosition: 'center', width, height
   }
 
-  const hint = reference.hint ? <TooltipToggler content={reference.hint} /> : null
+  const hint = reference.hint ? <TooltipToggler content={reference.hint} fixed /> : null
 
   return (
     <div id={`zone-${name}`} data-id={id} onClick={onClick} className={classNames('zone', { highlight })} style={inlineStyle}>
       <div className={classNames('zone-label', { 'absolute-zone-label': !icon})} data-id={id}>
-        {icon ? icon : null} {name} {hint} {displayedReflectionsCount}
+        {icon ? icon : null} {name} {displayedReflectionsCount} {hint}
       </div>
       {children}
     </div>

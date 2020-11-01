@@ -27,7 +27,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     fill_in 'group_name', with: 'MyOtherGroup'
     refute_text 'Create group "MyOther"'
 
-    select 'Glad sad mad', from: 'retrospective_kind'
+    select 'Glad Sad Mad', from: 'retrospective_kind'
     assert_field 'group_name', with: 'MyGroupName'
     refute_text 'MyOtherGroup'
 
@@ -48,13 +48,13 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     refute_text 'MyGroupName'
     fill_in 'group_name', with: 'MyGroupName'
     find('[name="group_name_dropdown"] div', text: 'Create group "MyGroupName"', match: :first).click
-    select 'Glad sad mad', from: 'retrospective_kind'
+    select 'Glad Sad Mad', from: 'retrospective_kind'
     click_on 'START RETROSPECTIVE'
 
     assert_text 'Lobby MyGroupName'
     account.reload
     visit '/'
-    assert_text 'Glad sad mad with MyGroupName'
+    assert_text 'Glad Sad Mad with MyGroupName'
   end
 
   test 'joins an existing retrospective by creating an account' do

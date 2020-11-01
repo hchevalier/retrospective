@@ -4,7 +4,7 @@ import { Provider, useSelector } from 'react-redux'
 import appStore from 'stores'
 import PropTypes from 'prop-types'
 import { get } from 'lib/httpClient'
-import { humanize } from 'lib/helpers/string'
+import { RETROSPECTIVE_NAMES } from 'lib/utils/displayNames'
 import RetrospectivePage from './RetrospectivePage'
 import AddGroupMembersModal from './AddGroupMembersModal'
 import HomeIcon from 'images/home-icon.svg'
@@ -16,7 +16,7 @@ const RetrospectiveHeader = ({ groupName, kind, handleOpenAddParticipantsModal }
   const profile = useSelector(state => state.profile)
 
   return (
-    <div className='block bg-white border-b border-gray-400 sticky z-10 top-0'>
+    <div className='block bg-white border-b border-gray-400 sticky z-50 top-0'>
       <div className='container mx-auto px-4'>
         <div className='flex'>
           <div className='flex -mb-px mr-8 items-center opacity-50 text-grey-700 border-transparent hover:opacity-75 hover:border-grey-700'>
@@ -25,7 +25,7 @@ const RetrospectiveHeader = ({ groupName, kind, handleOpenAddParticipantsModal }
             </a>
           </div>
           <div className='flex -mb-px mr-8 items-center no-underline flex items-center py-4 border-b text-blue-700 border-blue-700'>
-            Lobby {groupName} - {kind ? humanize(kind) : ''}
+            Lobby {groupName} - {kind ? RETROSPECTIVE_NAMES[kind] : ''}
           </div>
           <div className='flex -mb-px flex-grow justify-end text-right items-center'>
             {profile?.facilitator && <FacilitatorToolkitLeft />}

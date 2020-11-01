@@ -52,6 +52,7 @@ class Retrospective < ApplicationRecord
 
   BUILDERS = {
     kinds[:glad_sad_mad] => 'Builders::GladSadMad',
+    kinds[:pmi] => 'Builders::PlusMinusInteresting',
     kinds[:sailboat] => 'Builders::Sailboat',
     kinds[:starfish] => 'Builders::Starfish',
     kinds[:traffic_lights] => 'Builders::TrafficLights',
@@ -59,7 +60,14 @@ class Retrospective < ApplicationRecord
   }.freeze
 
   def self.available_kinds
-    [kinds[:glad_sad_mad], kinds[:sailboat], kinds[:starfish], kinds[:traffic_lights], kinds[:oscars_gerards]]
+    [
+      kinds[:glad_sad_mad],
+      kinds[:pmi],
+      kinds[:sailboat],
+      kinds[:starfish],
+      kinds[:traffic_lights],
+      kinds[:oscars_gerards],
+    ]
   end
 
   def zones_typology

@@ -1,4 +1,4 @@
-#starfish {
+#pmi {
   .circle-outer {
     position: relative;
     border: 1px solid black;
@@ -47,50 +47,29 @@
     width: 200px;
   }
 
-  .zone#zone-Keep {
+  .zone#zone-Plus {
+    right: 50%;
+    top: 40%;
+  }
+  .zone#zone-Minus {
+    bottom: 55%;
+    left: 50%;
+  }
+  .zone#zone-Interesting {
     left: 33%;
     top: 70%;
   }
-  .zone#zone-Start {
-    right: 45%;
-    top: 30%;
-  }
-  .zone#zone-Stop {
-    bottom: 65%;
-    left: 50%;
-  }
-  .zone#zone-More {
-    bottom: 40%;
-    left: 15%;
-  }
-  .zone#zone-Less {
-    bottom: 40%;
-    left: 55%;
-  }
 
   li:first-child .background {
-    // Less
-    transform: rotate(72deg) skewY(-18deg);
-    background: #f5d3ab;
+    transform: rotate(120deg) skewY(30deg);
+    background: #FFEDCB;
   }
   li:nth-child(2) .background {
-    // Keep
-    transform: rotate(144deg) skewY(-18deg);
-    background: #adc2ff;
+    transform: rotate(240deg) skewY(30deg);
+    background: #D9EDDF;
   }
   li:nth-child(3) .background {
-    // More
-    transform: rotate(216deg) skewY(-18deg);
-    background: #D8F1F6;
-  }
-  li:nth-child(4) .background {
-    // Start
-    transform: rotate(288deg) skewY(-18deg);
-    background: #bbf39d;
-  }
-  li:nth-child(5) .background {
-    // Stop
-    transform: rotate(0deg) skewY(-18deg);
-    background: #f5a08d;
+    transform: rotate(0deg) skewY(30deg);
+    background: #FFBAB1;
   }
 }

@@ -11,7 +11,7 @@ const TrafficLightResult = ({ reflection, onClick }) => {
     <div id={`zone-${name}`} className='mt-2 bg-gray-200 p-2 rounded-md' onClick={onClick} >
       <div className='flex flex-row justify-between'>
         <span className='font-medium'>{name}</span>
-        <TooltipToggler content={hint} position='left' />
+        <TooltipToggler content={hint} fixed />
       </div>
       <div className='flex justify-center'>
         <SingleChoice value='red' selected collapsed badge={details.red} />
