@@ -19,6 +19,14 @@ const PlusMinusInteresting = ({ highlightZones, onZoneClicked }) => {
       <ul className='circle'>
         <li>
           <Zone
+            reference={interesting}
+            icon={<Icon retrospectiveKind='pmi' zone='Interesting' dataAttributes={{ 'data-id': interesting.id }} onClick={onZoneClicked} />}
+            reflections={reflections.filter((reflection) => reflection.zone.id === interesting.id)}
+            onClick={onZoneClicked} />
+          <div className={classNames('background', { 'highlight': highlightZones })} data-id={interesting.id} onClick={onZoneClicked}></div>
+        </li>
+        <li>
+          <Zone
             reference={plus}
             icon={<Icon retrospectiveKind='pmi' zone='Plus' dataAttributes={{ 'data-id': plus.id }} onClick={onZoneClicked} />}
             reflections={reflections.filter((reflection) => reflection.zone.id === plus.id)}
@@ -32,14 +40,6 @@ const PlusMinusInteresting = ({ highlightZones, onZoneClicked }) => {
             reflections={reflections.filter((reflection) => reflection.zone.id === minus.id)}
             onClick={onZoneClicked} />
           <div className={classNames('background', { 'highlight': highlightZones })} data-id={minus.id} onClick={onZoneClicked}></div>
-        </li>
-        <li>
-          <Zone
-            reference={interesting}
-            icon={<Icon retrospectiveKind='pmi' zone='Interesting' dataAttributes={{ 'data-id': interesting.id }} onClick={onZoneClicked} />}
-            reflections={reflections.filter((reflection) => reflection.zone.id === interesting.id)}
-            onClick={onZoneClicked} />
-          <div className={classNames('background', { 'highlight': highlightZones })} data-id={interesting.id} onClick={onZoneClicked}></div>
         </li>
       </ul>
     </div>

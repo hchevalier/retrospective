@@ -48,28 +48,28 @@
   }
 
   .zone#zone-Plus {
-    left: 33%;
-    top: 70%;
-  }
-  .zone#zone-Minus {
     right: 50%;
     top: 40%;
   }
-  .zone#zone-Interesting {
+  .zone#zone-Minus {
     bottom: 55%;
     left: 50%;
+  }
+  .zone#zone-Interesting {
+    left: 33%;
+    top: 70%;
   }
 
   li:first-child .background {
     transform: rotate(120deg) skewY(30deg);
-    background: #D8F1F6;
+    background: #FFEDCB;
   }
   li:nth-child(2) .background {
     transform: rotate(240deg) skewY(30deg);
-    background: #FFCDB6;
+    background: #D9EDDF;
   }
   li:nth-child(3) .background {
     transform: rotate(0deg) skewY(30deg);
-    background: #FFEAC5;
+    background: #FFBAB1;
   }
 }
