@@ -212,7 +212,7 @@ const PieceWrapper = ({ pieceType, value, pieceData, onItemSelect }) => {
   const pieceSize = ['clothe-color', 'hair-color', 'facial-hair-color'].includes(pieceType) ? '50' : '100'
 
   return (
-    <div className={classNames('border cursor-pointer', { 'max-h-16': pieceSize === '50' })} onClick={() => onItemSelect(TYPE_MAPPING[pieceType], value)} style={additionalStyle}>
+    <div id={`${pieceType}-${value}`} className={classNames('border cursor-pointer', { 'max-h-16': pieceSize === '50' })} onClick={() => onItemSelect(TYPE_MAPPING[pieceType], value)} style={additionalStyle}>
       <Piece pieceType={pieceType} pieceSize={pieceSize} {...pieceData} />
     </div>
   )
@@ -427,7 +427,7 @@ const AccessoriesTab = ({ onItemSelect }) => (
 )
 
 const TabEntry = ({ name, label, disabled, selected, onClick }) => (
-  <span
+  <button
     className={
       classNames('px-2', {
         'cursor-pointer': !disabled,
@@ -438,7 +438,7 @@ const TabEntry = ({ name, label, disabled, selected, onClick }) => (
     }
     onClick={() => onClick(name)}>
       {label}
-  </span>
+  </button>
 )
 
 const AvatarEditor = ({ backgroundColor, settings, retrospectiveId }) => {
@@ -449,7 +449,7 @@ const AvatarEditor = ({ backgroundColor, settings, retrospectiveId }) => {
   return (
     <div className='flex flex-row flex-grow w-full mt-2 p-2'>
       <div className='flex flex-col border'>
-        <div style={{ backgroundColor }}>
+        <div id='editor-avatar-container' style={{ backgroundColor }}>
           <Avatar
             style={{ width: '96px', height: '96px' }}
             avatarStyle='Transparent'
