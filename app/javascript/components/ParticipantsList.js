@@ -67,7 +67,7 @@ const ParticipantsList = ({ onAddParticipantsClick }) => {
 
   return (
     <div id='participants-list' className='flex flex-row'>
-      {participants.map(({ surname, status, facilitator, revealer, uuid, color }, index) => {
+      {participants.map(({ surname, avatar, status, facilitator, revealer, uuid, color }, index) => {
         return (
           <Avatar
             key={index}
@@ -75,6 +75,7 @@ const ParticipantsList = ({ onAddParticipantsClick }) => {
             backgroundColor={color}
             loggedIn={status}
             surname={surname}
+            settings={avatar}
             self={profile?.uuid === uuid}
             onClick={avatarClickable ? handleParticipantClick : null}
             flags={{ facilitator, revealer }}>
