@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import AvatarEditor from './AvatarEditor'
 import ColorPicker from './ColorPicker'
 import Card from './Card'
 
@@ -13,6 +14,8 @@ const StepGathering = () => {
       containerClassName='flex-1 px-4 h-full'>
       <span className='center text-xs'>Choose a color for your sticky notes</span>
       <ColorPicker retrospectiveId={retrospectiveId} />
+
+      <AvatarEditor />
     </Card>
   )
 }
