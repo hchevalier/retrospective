@@ -66,6 +66,7 @@ class Retrospective::GatheringStepTest < ActionDispatch::IntegrationTest
   test 'participant can compose an avatar' do
     retrospective = create(:retrospective)
     retrospective.facilitator.update!(color: Participant::ALL_COLORS.first)
+    other_participant = create(:other_participant, retrospective: retrospective)
 
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
@@ -89,16 +90,24 @@ class Retrospective::GatheringStepTest < ActionDispatch::IntegrationTest
     choose_tab_and_piece 'Shirt logo', '#graphics-Bear'
     choose_tab_and_piece 'Accessories', '#accessories-Prescription02'
 
-    assert_selector '#editor-avatar-container'
-    avatar_content_in_editor = find('#editor-avatar-container svg')['innerHTML']
-    avatar_content_in_editor.gsub!(/react-(path|mask)-\d+/, '')
-    assert_equal '771ce20141257c845045c5d3b7a06b696d1afa8c', Digest::SHA1.hexdigest(avatar_content_in_editor)
-    avatar_content_in_participant_list = find('#participants-list .picture svg')['innerHTML']
-    avatar_content_in_participant_list.gsub!(/\#react-(path|mask)-\d+/, '')
-    assert_equal '93c85dda039c40c67181ec68ac7f9095116cfe98', Digest::SHA1.hexdigest(avatar_content_in_participant_list)
+    assert_selector '#editor-avatar-container svg g#Top\/_Resources\/Prescription-02'
+
+    assert_correct_svg(find('#editor-avatar-container svg'))
+    assert_correct_svg(find('#participants-list .picture', match: :first).find('svg'))
+
+    within_window(open_new_window) do
+      logged_in_as(other_participant)
+      visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
+      assert_correct_svg(find('#participants-list .picture', match: :first).find('svg'))
+    end
   end
 
   private
+
+  def assert_correct_svg(selector)
+    content = selector['innerHTML'].gsub(/react-(path|mask|filter)-\d+/, '')
+    assert_equal '4451e912f35a50290bf29e4016ff0b35b985ec37', Digest::SHA1.hexdigest(content)
+  end
 
   def choose_tab_and_piece(tab, piece)
     click_on tab
