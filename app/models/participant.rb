@@ -43,6 +43,7 @@ class Participant < ApplicationRecord
     {
       uuid: id,
       publicAccountId: account.public_id,
+      avatar: account.json_avatar,
       surname: surname
     }
   end

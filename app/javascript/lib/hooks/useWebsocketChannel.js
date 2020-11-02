@@ -20,6 +20,8 @@ const useWebsocketChannel = () => {
       dispatch({ type: 'start-timer', timerEndAt: data.timer_end_at })
     } else if (action === 'changeColor') {
       dispatch({ type: 'change-color', participant: data.participant, availableColors: data.availableColors })
+    } else if (action === 'changeAvatar') {
+      dispatch({ type: 'change-avatar', participant: data.participant })
     } else if (action === 'revealReflection') {
       dispatch({ type: 'reveal-reflection', reflection: data.reflection })
     } else if (action === 'newReaction') {

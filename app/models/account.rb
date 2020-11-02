@@ -10,6 +10,10 @@ class Account < ApplicationRecord
   has_secure_password
   has_secure_token :password_reset_token
 
+  store :avatar, accessors: [
+    :skin, :graphics, :hair_color, :facial_hair, :facial_hair_color, :eyes, :eyebrows, :mouth, :top, :clothe, :clothe_color, :accessories
+  ], coder: JSON, prefix: true
+
   validates :email, uniqueness: true
 
   before_create :clear_password_reset_token
@@ -23,10 +27,28 @@ class Account < ApplicationRecord
     }
   end
 
+  def json_avatar
+    {
+      topType: avatar_top || 'LongHairMiaWallace',
+      accessoriesType: avatar_accessories || 'Blank',
+      hairColor: avatar_hair_color || 'BrownDark',
+      facialHairType: avatar_facial_hair || 'Blank',
+      facialHairColor: avatar_facial_hair_color || 'Auburn',
+      clotheType: avatar_clothe || 'GraphicShirt',
+      clotheColor: avatar_clothe_color || 'PastelBlue',
+      graphicType: avatar_graphics || 'Diamond',
+      eyeType: avatar_eyes || 'Happy',
+      eyebrowType: avatar_eyebrows || 'Default',
+      mouthType: avatar_mouth || 'Smile',
+      skinColor: avatar_skin || 'Light'
+    }
+  end
+
   def as_public_json
     {
       publicId: public_id,
-      username: username
+      username: username,
+      avatar: json_avatar
     }
   end
 
