@@ -1,0 +1,10 @@
+.remove-button {
+  display: none;
+}
+
+.member-group:hover {
+  .remove-button {
+    display: block;
+    float: right;
+  }
+}

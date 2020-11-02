@@ -7,6 +7,7 @@ import AddGroupMembersModal from './AddGroupMembersModal'
 import Card from './Card'
 import Button from './Button'
 import DetailedTask from './DetailedTask'
+import './GroupDetails.scss'
 
 const GroupsDetails = ({ id }) => {
   const [groupRefresh, setGroupRefresh] = React.useState(1)
@@ -37,6 +38,23 @@ const GroupsDetails = ({ id }) => {
     setNextRetrospective(date)
     put({ url: `/api/groups/${id}`, payload: { next_retrospective: date } })
   }
+
+	const removeMemberFromGroup = (group, accountPublicId) => {
+		if (
+      confirm(
+        `Are you sure you want to remove this user from the group ${group.name}?`
+      )
+    ) {
+      put({
+        url: `/api/account/${accountPublicId}/group_accesses/${group.id}`,
+      }).then(() => {
+				refreshGroup();
+        if (group.members.length === 1) {
+          window.location.href = "/groups";
+      	};
+			})
+		}
+	};
 
   const filteredTasks = group.tasks.filter((task) => displayDoneTasks || ['todo', 'on_hold'].includes(task.status))
 
@@ -101,10 +119,28 @@ const GroupsDetails = ({ id }) => {
             </Card>
 
             <Card title={`Group members (${group.members.length})`} wrap actionLocation='header' actionLabel='ADD' onAction={handleAddGroupMembersClick}>
-              <div className='flex flex-col flex-wrap'>
+              <div className='flex flex-col flex-wrap w-full p-2'>
                 <ul>
                   {group.members.map((account) => {
-                    return <li key={account.id}>{account.username}</li>
+                    return (
+											<ul>
+												<li key={account.publicId} className="member-group">
+													{account.username}
+													<span className="remove-button">
+														<Button
+															secondary
+															name={account.publicId}
+															onClick={(event) => {
+																event.preventDefault();
+																removeMemberFromGroup(group, account.publicId);
+															}}
+														>
+															REMOVE
+														</Button>
+													</span>
+												</li>
+											</ul>
+                    );
                   })}
                 </ul>
               </div>
