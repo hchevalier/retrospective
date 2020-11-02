@@ -32,6 +32,7 @@ class Api::AccountsController < ApplicationController
     'facialHairColor' => :avatar_facial_hair_color,
     'clotheType' => :avatar_clothe,
     'clotheColor' => :avatar_clothe_color,
+    'graphicType' => :avatar_graphics,
     'eyeType' => :avatar_eyes,
     'eyebrowType' => :avatar_eyebrows,
     'mouthType' => :avatar_mouth,

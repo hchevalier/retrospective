@@ -326,11 +326,11 @@ const TopTab = ({ onItemSelect, currentColor }) => {
     <div className='flex flex-row'>
       <div className='flex flex-col w-3/4'>
         <div className='flex flex-row'>
-          <TabEntry name='long' label='Long hair' onClick={setTab} />
+          <TabEntry name='long' selected={tab === 'long'} label='Long hair' onClick={setTab} />
           <div className='mx-2' />
-          <TabEntry name='short' label='Short hair' onClick={setTab} />
+          <TabEntry name='short' selected={tab === 'short'} label='Short hair' onClick={setTab} />
           <div className='mx-2' />
-          <TabEntry name='hats' label='Hats' onClick={setTab} />
+          <TabEntry name='hats' selected={tab === 'hats'} label='Hats' onClick={setTab} />
         </div>
         <div className='flex flex-row'>
           <div className='flex flex-row flex-wrap'>
@@ -426,9 +426,16 @@ const AccessoriesTab = ({ onItemSelect }) => (
   </div>
 )
 
-const TabEntry = ({ name, label, disabled, onClick }) => (
+const TabEntry = ({ name, label, disabled, selected, onClick }) => (
   <span
-    className={classNames('px-2', { 'cursor-pointer': !disabled, 'text-gray-400 cursor-not-allowed' : disabled })}
+    className={
+      classNames('px-2', {
+        'cursor-pointer': !disabled,
+        'text-gray-400 cursor-not-allowed': disabled,
+        'bg-gray-200 font-medium': selected,
+        'hover:bg-gray-100': !selected
+      })
+    }
     onClick={() => onClick(name)}>
       {label}
   </span>
@@ -440,7 +447,7 @@ const AvatarEditor = ({ backgroundColor, settings, retrospectiveId }) => {
   const handleChangePiece = (itemType, value) => put({ url: `/api/account`, payload: { [itemType]: value, retrospective_id: retrospectiveId } })
 
   return (
-    <div className='flex flex-row w-1/2 mt-2'>
+    <div className='flex flex-row flex-grow w-full mt-2 p-2'>
       <div className='flex flex-col border'>
         <div style={{ backgroundColor }}>
           <Avatar
@@ -448,17 +455,17 @@ const AvatarEditor = ({ backgroundColor, settings, retrospectiveId }) => {
             avatarStyle='Transparent'
             {...settings} />
         </div>
-        <TabEntry name='skin' label='Skin color' onClick={setCurrentTab} />
-        <TabEntry name='top' label='Hair/Hat' onClick={setCurrentTab} />
-        <TabEntry name='facial-hair' label='Facial hair' onClick={setCurrentTab} />
-        <TabEntry name='eyes' label='Eyes' onClick={setCurrentTab} />
-        <TabEntry name='eyebrows' label='Eyebrows' onClick={setCurrentTab} />
-        <TabEntry name='mouth' label='Mouth' onClick={setCurrentTab} />
-        <TabEntry name='clothes' label='Clothes' onClick={setCurrentTab} />
-        <TabEntry name='graphics' label='Shirt logo' disabled={settings.clotheType !== 'GraphicShirt'} onClick={setCurrentTab} />
-        <TabEntry name='accessories' label='Accessories' onClick={setCurrentTab} />
+        <TabEntry name='skin' selected={currentTab === 'skin' } label='Skin color' onClick={setCurrentTab} />
+        <TabEntry name='top' selected={currentTab === 'top' } label='Hair/Hat' onClick={setCurrentTab} />
+        <TabEntry name='facial-hair' selected={currentTab === 'facial-hair' } label='Facial hair' onClick={setCurrentTab} />
+        <TabEntry name='eyes' selected={currentTab === 'eyes' } label='Eyes' onClick={setCurrentTab} />
+        <TabEntry name='eyebrows' selected={currentTab === 'eyebrows' } label='Eyebrows' onClick={setCurrentTab} />
+        <TabEntry name='mouth' selected={currentTab === 'mouth' } label='Mouth' onClick={setCurrentTab} />
+        <TabEntry name='clothes' selected={currentTab === 'clothes' } label='Clothes' onClick={setCurrentTab} />
+        <TabEntry name='graphics' selected={currentTab === 'graphics' } label='Shirt logo' disabled={settings.clotheType !== 'GraphicShirt'} onClick={setCurrentTab} />
+        <TabEntry name='accessories' selected={currentTab === 'accessories' } label='Accessories' onClick={setCurrentTab} />
       </div>
-      <div className='flex flex-col flex-grow border'>
+      <div className='flex flex-col flex-grow ml-2'>
         {currentTab === 'skin' && <SkinTab onItemSelect={handleChangePiece} />}
         {currentTab === 'top' && <TopTab onItemSelect={handleChangePiece} currentColor={settings.hairColor} />}
         {currentTab === 'facial-hair' && <FacialHairTab onItemSelect={handleChangePiece} currentColor={settings.facialHairColor} />}
