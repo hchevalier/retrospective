@@ -10,6 +10,7 @@ const participants = (state = initialState, action) => {
       return uniqBy([...state, action.newParticipant], 'uuid')
     case 'refresh-participant':
     case 'change-color':
+    case 'change-avatar':
       return updateArray(state, action.participant, 'uuid')
     default:
       return state

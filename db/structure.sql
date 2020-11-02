@@ -97,7 +97,8 @@ CREATE TABLE public.accounts (
     email character varying NOT NULL,
     password_digest character varying NOT NULL,
     password_reset_token character varying,
-    public_id uuid NOT NULL
+    public_id uuid NOT NULL,
+    avatar jsonb
 );
 
 
@@ -561,6 +562,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200828211927'),
 ('20201012071357'),
 ('20201012211423'),
-('20201017145314');
+('20201017145314'),
+('20201102163916');
 
 
