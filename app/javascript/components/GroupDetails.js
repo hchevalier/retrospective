@@ -39,22 +39,18 @@ const GroupsDetails = ({ id, history }) => {
     put({ url: `/api/groups/${id}`, payload: { next_retrospective: date } })
   }
 
-	const removeMemberFromGroup = (group, account) => {
-		if (
-      confirm(
-        `Are you sure you want to remove ${account.username} from the group ${group.name}?`
-      )
-    ) {
+  const removeMemberFromGroup = (group, account) => {
+    if (confirm(`Are you sure you want to remove ${account.username} from the group ${group.name}?`)) {
       put({
         url: `/api/account/${account.publicId}/group_accesses/${group.id}`,
       }).then(() => {
-				refreshGroup()
+        refreshGroup()
         if (group.members.length === 1) {
-					history.push('/groups')
-      	}
-			})
-		}
-	}
+          history.push('/groups')
+        }
+      })
+    }
+  }
 
   const filteredTasks = group.tasks.filter((task) => displayDoneTasks || ['todo', 'on_hold'].includes(task.status))
 
@@ -123,23 +119,23 @@ const GroupsDetails = ({ id, history }) => {
                 <ul>
                   {group.members.map((account) => {
                     return (
-											<ul>
-												<li key={account.publicId} className="member-group">
-													{account.username}
-													<span className="remove-button">
-														<Button
-															secondary
-															name={account.publicId}
-															onClick={(event) => {
-																event.preventDefault()
-																removeMemberFromGroup(group, account)
-															}}
-														>
-															REMOVE
-														</Button>
-													</span>
-												</li>
-											</ul>
+                      <ul>
+                        <li key={account.publicId} className='member-group'>
+                          {account.username}
+                          <span className='remove-button'>
+                            <Button
+                              secondary
+                              name={account.publicId}
+                              onClick={(event) => {
+                                event.preventDefault()
+                                removeMemberFromGroup(group, account)
+                              }}
+                            >
+                              REMOVE
+                            </Button>
+                          </span>
+                        </li>
+                      </ul>
                     )
                   })}
                 </ul>
