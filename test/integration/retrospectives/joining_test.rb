@@ -101,7 +101,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
 
   test 'joins an existing retrospective by logging in to an existing account' do
     retrospective = create(:retrospective)
-    create(:account, username: 'Other one', email: 'other_one@yopmail.com', password: 'mypasword')
+    create(:account, username: 'Other one', email: 'other_one@yopmail.com', password: 'mypassword')
     invitation = create_invitation(retrospective, 'other_one@yopmail.com')
 
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}", invitation_id: invitation.id)
