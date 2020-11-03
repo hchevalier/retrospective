@@ -48,13 +48,13 @@ const GroupsDetails = ({ id, history }) => {
       put({
         url: `/api/account/${account.publicId}/group_accesses/${group.id}`,
       }).then(() => {
-        refreshGroup()
+				refreshGroup()
         if (group.members.length === 1) {
-					history.push('/groups')
-        }
-      });
-    }
-  };
+          window.location.href = "/groups"
+      	}
+			})
+		}
+	}
 
   const filteredTasks = group.tasks.filter((task) => displayDoneTasks || ['todo', 'on_hold'].includes(task.status))
 
