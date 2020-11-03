@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 require 'rails/test_help'
@@ -31,7 +33,7 @@ class ActionDispatch::IntegrationTest
   include CableHelpers
 
   def headless?
-    Capybara.current_driver.match? /headless/
+    Capybara.current_driver.match?(/headless/)
   end
 
   Capybara.register_driver :selenium_chrome_headless do |app|
@@ -61,7 +63,7 @@ class ActionDispatch::IntegrationTest
   end
 
   def visit(path)
-    @account.reload if @account
+    @account&.reload
     super
   end
 end

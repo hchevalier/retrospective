@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CookiesHelpers
   def as_user(account)
     ApplicationController

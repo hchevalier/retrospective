@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 class Zone < ApplicationRecord
-  has_many :reflections, inverse_of: :zone
+  has_many :reflections, inverse_of: :zone, dependent: :destroy
   belongs_to :retrospective, inverse_of: :zones
 
   def as_json
     zone = {
       id: id,
       hint: hint,
-      name: identifier,
+      name: identifier
     }
 
     if retrospective.step.in?(%w[actions done])

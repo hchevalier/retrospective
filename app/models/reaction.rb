@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Reaction < ApplicationRecord
   belongs_to :retrospective
   belongs_to :target, polymorphic: true
@@ -10,7 +12,7 @@ class Reaction < ApplicationRecord
 
   enum kind: {
     vote: 'vote',
-    emoji: 'emoji',
+    emoji: 'emoji'
   }
 
   VOTE_EMOJI = '👍'
@@ -20,7 +22,7 @@ class Reaction < ApplicationRecord
   EMOJI_LIST = {
     joy: '😂',
     sweat_smile: '😅',
-    star_struck:'🤩',
+    star_struck: '🤩',
     love: '❤️',
     hugging_face: '🤗',
     grimacing: '😬',
@@ -38,7 +40,7 @@ class Reaction < ApplicationRecord
     rocket: '🚀',
     fire: '🔥',
     tada: '🎉'
-  }
+  }.freeze
 
   def readable
     {

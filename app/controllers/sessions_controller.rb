@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class SessionsController < ApplicationController
-  skip_before_action :ensure_logged_in, only: %i(create omniauth)
+  skip_before_action :ensure_logged_in, only: %i[create omniauth]
 
   def create
     account = Account.find_by(email: params[:email])
@@ -9,7 +11,7 @@ class SessionsController < ApplicationController
 
     session[:account_id] = account.id
 
-    return :head
+    :head
   end
 
   def destroy

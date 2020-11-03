@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveEmailFromParticipants < ActiveRecord::Migration[6.0]
   def up
     remove_column :participants, :email

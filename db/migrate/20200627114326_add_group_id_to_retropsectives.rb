@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddGroupIdToRetropsectives < ActiveRecord::Migration[6.0]
   def up
     add_column :retrospectives, :group_id, :uuid, null: true

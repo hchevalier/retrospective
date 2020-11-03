@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddEncryptionKeyToParticipants < ActiveRecord::Migration[6.0]
   def up
     add_column :participants, :encryption_key, :string, null: true

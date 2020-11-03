@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ReflectionsController < ApplicationController
   before_action :ensure_participant
 

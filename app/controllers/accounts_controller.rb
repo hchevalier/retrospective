@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AccountsController < ApplicationController
   skip_before_action :ensure_logged_in, only: :create
 

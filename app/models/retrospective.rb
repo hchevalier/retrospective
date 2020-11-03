@@ -3,12 +3,12 @@
 class Retrospective < ApplicationRecord
   has_many :participants, inverse_of: :retrospective
   has_many :pending_invitations
-  has_many :zones, inverse_of: :retrospective
+  has_many :zones, inverse_of: :retrospective, dependent: :destroy
   has_many :reflections, through: :zones
-  has_many :topics
-  has_many :reactions
+  has_many :topics, dependent: :destroy
+  has_many :reactions, dependent: :destroy
   has_many :tasks, through: :participants, source: :created_tasks
-  has_many :pending_tasks, -> { where(status: %i(todo on_hold)) }, through: :participants, class_name: 'Task', source: :created_tasks
+  has_many :pending_tasks, -> { where(status: %i[todo on_hold]) }, through: :participants, class_name: 'Task', source: :created_tasks
 
   belongs_to :group
   belongs_to :facilitator, class_name: 'Participant', inverse_of: :organized_retrospective
@@ -56,7 +56,7 @@ class Retrospective < ApplicationRecord
     kinds[:sailboat] => 'Builders::Sailboat',
     kinds[:starfish] => 'Builders::Starfish',
     kinds[:traffic_lights] => 'Builders::TrafficLights',
-    kinds[:oscars_gerards] => 'Builders::OscarsGerards',
+    kinds[:oscars_gerards] => 'Builders::OscarsGerards'
   }.freeze
 
   def self.available_kinds
@@ -85,7 +85,7 @@ class Retrospective < ApplicationRecord
       zones: zones.as_json,
       zonesTypology: zones_typology,
       discussedReflection: discussed_reflection&.readable,
-      tasks: tasks.sort_by { |task| task.created_at }.as_json,
+      tasks: tasks.sort_by(&:created_at).as_json,
       step: step
     }
   end
@@ -115,12 +115,12 @@ class Retrospective < ApplicationRecord
     included_relationships = [participants: :reactions]
     if target_step == 'reviewing'
       included_relationships << {
-        group: { pending_tasks: [:assignee, :author,  :retrospective, reflection: [:zone, :topic, :owner]] }
+        group: { pending_tasks: [:assignee, :author, :retrospective, reflection: %i[zone topic owner]] }
       }
     end
     included_relationships << [:zones] if reached_step?('thinking', reference: target_step)
-    included_relationships << { reactions: [:author, :target], reflections: [:zone, :topic, :owner] } if reached_step?('grouping', reference: target_step)
-    included_relationships << { discussed_reflection: [:zone, :topic, :owner] } if reached_step?('voting', reference: target_step)
+    included_relationships << { reactions: %i[author target], reflections: %i[zone topic owner] } if reached_step?('grouping', reference: target_step)
+    included_relationships << { discussed_reflection: %i[zone topic owner] } if reached_step?('voting', reference: target_step)
     included_relationships << { tasks: [:retrospective, :author, :assignee, reflection: :zone] } if reached_step?('actions', reference: target_step)
 
     included_relationships
@@ -128,14 +128,14 @@ class Retrospective < ApplicationRecord
 
   def initial_state(current_participant)
     state = {
-      participants: participants.sort_by { |participant| participant.created_at }.map(&:profile),
+      participants: participants.sort_by(&:created_at).map(&:profile),
       step: step,
-      ownReflections: reached_step?('thinking') ? current_participant.reflections.sort_by { |reflection| reflection.created_at }.map(&:readable) : [],
+      ownReflections: reached_step?('thinking') ? current_participant.reflections.sort_by(&:created_at).map(&:readable) : [],
       ownReactions: reached_step?('thinking') ? current_participant.reactions.map(&:readable) : [],
       discussedReflection: reached_step?('voting') ? discussed_reflection&.readable : nil,
       allColors: Participant::COLORS,
       availableColors: available_colors,
-      tasks: reached_step?('actions') ? tasks.sort_by { |task| task.created_at }.as_json : [],
+      tasks: reached_step?('actions') ? tasks.sort_by(&:created_at).as_json : [],
       pendingTasks: step == 'reviewing' ? group.pending_tasks.as_json : [],
       serverTime: Time.zone.now,
       timerEndAt: timer_end_at,
@@ -190,14 +190,14 @@ class Retrospective < ApplicationRecord
     if new_step == 'actions'
       most_upvoted_target =
         reactions
-        .select(&:vote?)
-        .group_by(&:target)
-        .transform_values(&:count)
-        .sort_by { |_, v| -v }
-        .map(&:first)
-        .first
+          .select(&:vote?)
+          .group_by(&:target)
+          .transform_values(&:count)
+          .sort_by { |_, v| -v }
+          .map(&:first)
+          .first
 
-      most_upvoted_target = most_upvoted_target.reflections.first if most_upvoted_target&.is_a?(Topic)
+      most_upvoted_target = most_upvoted_target.reflections.first if most_upvoted_target.is_a?(Topic)
     end
 
     update!(step: new_step, discussed_reflection: most_upvoted_target || discussed_reflection)
@@ -224,7 +224,7 @@ class Retrospective < ApplicationRecord
   def visible_reflections_for_step(step)
     case step
     when 'grouping', 'voting'
-      reflections.select(&:revealed?).sort_by { |reflection| reflection.created_at }.map(&:readable)
+      reflections.select(&:revealed?).sort_by(&:created_at).map(&:readable)
     when 'actions'
       reflections
         .reject { |reflection| reflection.votes.none? && (reflection.topic.nil? || reflection.topic.votes.none?) }
@@ -237,7 +237,7 @@ class Retrospective < ApplicationRecord
   end
 
   def change_facilitator!
-    other_participant = participants.logged_in.order(:created_at).reject { |participant| participant === facilitator }.first
+    other_participant = participants.logged_in.order(:created_at).reject { |participant| participant == facilitator }.first
     return unless other_participant
 
     current_facilitator = facilitator
@@ -250,7 +250,7 @@ class Retrospective < ApplicationRecord
   def reset_original_facilitator!
     return if step == 'done'
 
-    original_facilitator = participants.sort_by { |participant| participant.created_at }.first
+    original_facilitator = participants.min_by { |participant| participant.created_at }
     return unless original_facilitator.logged_in
 
     previous_facilitator = facilitator

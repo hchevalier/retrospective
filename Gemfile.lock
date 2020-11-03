@@ -303,6 +303,7 @@ DEPENDENCIES
   rails (= 6.0.3.4)
   react-rails
   redis (~> 4.2)
+  rubocop
   rubocop-rails
   sass-rails (>= 6)
   selenium-webdriver

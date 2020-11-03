@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::AccountsController < ApplicationController
   def show
     render json: current_account.as_json and return if current_account

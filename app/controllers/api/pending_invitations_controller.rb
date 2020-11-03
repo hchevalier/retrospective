@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::PendingInvitationsController < ApplicationController
   def index
     render json: current_group.pending_invitations.map(&:as_json)
