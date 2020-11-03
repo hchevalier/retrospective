@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TasksController < ApplicationController
   before_action :ensure_participant, except: :index
 
@@ -10,7 +12,7 @@ class TasksController < ApplicationController
         .where(retrospectives: { group_id: group_ids })
         .select(&:pending?)
         .map(&:as_json)
-        .sort_by { | task | task[:createdAt] }
+        .sort_by { |task| task[:createdAt] }
         .reverse
 
     render json: tasks
@@ -28,12 +30,13 @@ class TasksController < ApplicationController
 
   def update
     retrospective = current_participant.retrospective
-    if retrospective.step == 'actions'
+    case retrospective.step
+    when 'actions'
       task = retrospective.tasks.find_by(id: params[:id])
       return render(json: { status: :not_found }) unless task
 
       task.update!(actions_step_update_task_params)
-    elsif retrospective.step == 'reviewing'
+    when 'reviewing'
       task = current_account.visible_tasks_from_group(retrospective.group).find { |task| task.id == params[:id] }
       return render(json: { status: :not_found }) unless task
 

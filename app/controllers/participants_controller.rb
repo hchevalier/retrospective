@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class ParticipantsController < ApplicationController
   def create
     retrospective = Retrospective.find(params[:retrospective_id])
 
-    participant = retrospective.participants.find { |participant| participant.account_id == current_account.id }
+    participant = retrospective.participants.find { |existing| existing.account_id == current_account.id }
     participant ||= Participant.create!(
       surname: current_account.username,
       account_id: current_account.id,

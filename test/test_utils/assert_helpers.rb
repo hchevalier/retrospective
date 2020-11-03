@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AssertHelpers
   def assert_logged_in(participant, with_flags: nil)
     within ".avatar[data-id='#{participant.id}']" do

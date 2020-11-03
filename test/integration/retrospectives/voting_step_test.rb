@@ -156,7 +156,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
       logged_in_as(retrospective.facilitator)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
-      assert_logged_in(retrospective.facilitator, with_flags: %i(self facilitator))
+      assert_logged_in(retrospective.facilitator, with_flags: %i[self facilitator])
       assert_remaining_votes_for(retrospective.facilitator, 5)
       vote_for_reflection(reflection_a, times: 2)
     end
@@ -167,7 +167,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
 
     logged_in_as(other_participant)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-    assert_logged_in(other_participant, with_flags: %i(self facilitator))
+    assert_logged_in(other_participant, with_flags: %i[self facilitator])
     assert_votes_count(reflection_a, count: 0)
     assert_remaining_votes_for(retrospective.facilitator, 3)
   end
@@ -217,7 +217,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
 
   def vote_for_topic(topic, times: 1)
     within find(".topic[data-id='#{topic.id}']").ancestor('.topic-container') do
-      within ".vote-corner" do
+      within '.vote-corner' do
         times.times do
           vote_count = find('.vote-count').text.to_i
           find('.vote').click
@@ -229,7 +229,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
 
   def unvote_for_topic(topic, times: 1)
     within find(".topic[data-id='#{topic.id}']").ancestor('.topic-container') do
-      within ".vote-corner" do
+      within '.vote-corner' do
         times.times do
           vote_count = find('.vote-count').text.to_i
           find('.unvote').click
@@ -247,7 +247,7 @@ class Retrospective::VotingStepTest < ActionDispatch::IntegrationTest
 
   def assert_topic_votes_count(topic, count:)
     within find(".topic[data-id='#{topic.id}']").ancestor('.topic-container') do
-      within ".vote-corner" do
+      within '.vote-corner' do
         assert_equal count, find('.vote-count').text.to_i
       end
     end

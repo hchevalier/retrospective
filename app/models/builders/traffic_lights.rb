@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Builders::TrafficLights
   class << self
     def zones_typology

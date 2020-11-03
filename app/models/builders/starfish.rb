@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Builders::Starfish
   class << self
     def zones_typology

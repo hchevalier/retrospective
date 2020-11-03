@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PasswordResetController < ApplicationController
   skip_before_action :ensure_logged_in
 

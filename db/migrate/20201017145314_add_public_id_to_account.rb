@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddPublicIdToAccount < ActiveRecord::Migration[6.0]
   def up
     add_column :accounts, :public_id, :uuid

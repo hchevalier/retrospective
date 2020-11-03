@@ -42,7 +42,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
 
     assert_selector '.avatar.clickable'
     find(".avatar[data-id='#{other_participant.id}']").click
-    assert_logged_in(other_participant, with_flags: %i(revealer))
+    assert_logged_in(other_participant, with_flags: %i[revealer])
   end
 
   test 'can randomly pick a participant to be the revealer among those who did not reveal any reflection yet' do
@@ -78,7 +78,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-      assert_logged_in(other_participant, with_flags: %i(self))
+      assert_logged_in(other_participant, with_flags: %i[self])
       within '#zones-container' do
         refute_text 'A glad reflection'
       end
@@ -92,12 +92,12 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     refute_text 'A glad reflection'
 
     within_window(other_participant_window) do
-      assert_logged_in(other_participant, with_flags: %i(self revealer))
+      assert_logged_in(other_participant, with_flags: %i[self revealer])
       assert_text 'My reflections'
       assert_text 'A glad reflection'
       find('.eye-icon').click
       refute_text 'My reflections'
-      assert_logged_in(other_participant, with_flags: %i(self))
+      assert_logged_in(other_participant, with_flags: %i[self])
     end
 
     within '#zones-container' do
@@ -121,7 +121,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       logged_in_as(other_participant)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
-      assert_logged_in(other_participant, with_flags: %i(self revealer))
+      assert_logged_in(other_participant, with_flags: %i[self revealer])
       assert_text 'My reflections'
 
       reflections.each do |reflection|
@@ -165,7 +165,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
       logged_in_as(other_participant)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
-      assert_logged_in(other_participant, with_flags: %i(self revealer))
+      assert_logged_in(other_participant, with_flags: %i[self revealer])
       assert_text 'My reflections'
 
       reflections.each do |reflection|
@@ -199,7 +199,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-      assert_logged_in(other_participant, with_flags: %i(self))
+      assert_logged_in(other_participant, with_flags: %i[self])
       assert_grouping_step
       within ".reflection[data-id='#{reflection.id}']" do
         refute_text Reaction::EMOJI_LIST[:star_struck]
@@ -321,7 +321,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-      assert_logged_in(other_participant, with_flags: %i(self))
+      assert_logged_in(other_participant, with_flags: %i[self])
       assert_text 'First'
     end
 
@@ -356,7 +356,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-      assert_logged_in(other_participant, with_flags: %i(self))
+      assert_logged_in(other_participant, with_flags: %i[self])
 
       assert_text 'Topic'
       refute_text 'First reflection'

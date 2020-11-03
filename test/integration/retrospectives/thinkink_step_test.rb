@@ -132,13 +132,13 @@ class Retrospective::ThinkingStepTest < ActionDispatch::IntegrationTest
 
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-    assert_logged_in(retrospective.facilitator, with_flags: %i(self facilitator))
+    assert_logged_in(retrospective.facilitator, with_flags: %i[self facilitator])
 
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-      assert_logged_in(other_participant, with_flags: %i(self))
+      assert_logged_in(other_participant, with_flags: %i[self])
 
       refute_status_visibility(retrospective.facilitator)
       refute_status_visibility(other_participant)

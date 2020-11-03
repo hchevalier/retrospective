@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::Base
   before_action :ensure_logged_in
 
@@ -30,7 +32,7 @@ class ApplicationController < ActionController::Base
   def current_participant_with_relationships_included
     @current_participant ||= begin
       (participant_id = cookies.signed[:participant_id]) ?
-      Participant.includes(retrospective: [:participants, :zones]).find(participant_id) :
+      Participant.includes(retrospective: %i[participants zones]).find(participant_id) :
       nil
     end
   end

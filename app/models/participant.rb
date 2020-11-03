@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 class Participant < ApplicationRecord
   belongs_to :account
   belongs_to :retrospective, optional: true
   has_one :organized_retrospective, class_name: 'Retrospective', foreign_key: :facilitator_id, inverse_of: :facilitator
   has_one :revealing_retrospective, class_name: 'Retrospective', foreign_key: :revealer_id, inverse_of: :revealer
-  has_many :reflections, foreign_key: :owner_id, inverse_of: :owner
-  has_many :reactions, foreign_key: :author_id, inverse_of: :author
-  has_many :created_tasks, class_name: 'Task', foreign_key: :author_id, inverse_of: :author
+  has_many :reflections, foreign_key: :owner_id, inverse_of: :owner, dependent: :destroy
+  has_many :reactions, foreign_key: :author_id, inverse_of: :author, dependent: :destroy
+  has_many :created_tasks, class_name: 'Task', foreign_key: :author_id, inverse_of: :author, dependent: :destroy
 
   before_create :set_default_color
   before_create :set_encryption_key
@@ -63,11 +65,11 @@ class Participant < ApplicationRecord
   end
 
   def facilitator?
-    retrospective.facilitator_id == self.id
+    retrospective.facilitator_id == id
   end
 
   def revealer?
-    retrospective.revealer_id == self.id
+    retrospective.revealer_id == id
   end
 
   def original_facilitator?
