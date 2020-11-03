@@ -7,9 +7,9 @@ class ApplicationController < ActionController::Base
 
   def current_participant
     @current_participant ||= begin
-      (participant_id = cookies.signed[:participant_id]) ?
-      Participant.find(participant_id) :
-      nil
+      if (participant_id = cookies.signed[:participant_id])
+        Participant.find(participant_id)
+      end
     rescue ActiveRecord::RecordNotFound
       cookies.signed[:participant_id] = nil
       nil
@@ -23,17 +23,17 @@ class ApplicationController < ActionController::Base
 
   def current_account
     @current_account ||= begin
-      (account_id = session[:account_id]) ?
-      Account.includes(:groups).find(account_id) :
-      nil
+      if (account_id = session[:account_id])
+        Account.includes(:groups).find(account_id)
+      end
     end
   end
 
   def current_participant_with_relationships_included
     @current_participant ||= begin
-      (participant_id = cookies.signed[:participant_id]) ?
-      Participant.includes(retrospective: %i[participants zones]).find(participant_id) :
-      nil
+      if (participant_id = cookies.signed[:participant_id])
+        Participant.includes(retrospective: %i[participants zones]).find(participant_id)
+      end
     end
   end
 

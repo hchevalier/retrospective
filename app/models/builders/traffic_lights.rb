@@ -26,7 +26,7 @@ class Builders::TrafficLights
           .revealed
           .to_a
           .group_by(&:zone_id)
-          .sort_by do |zone, reflections|
+          .sort_by do |_zone, reflections|
             [
               -reflections.count { |r| r.content == 'red' },
               -reflections.count { |r| r.content == 'orange' },

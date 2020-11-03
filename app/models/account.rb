@@ -61,7 +61,7 @@ class Account < ApplicationRecord
 
     group.tasks.select do |task|
       task.pending? ||
-      accesses_to_group.any? { |access| access.range.cover?(task.created_at) || access.range.cover?(task.updated_at) }
+        accesses_to_group.any? { |access| access.range.cover?(task.created_at) || access.range.cover?(task.updated_at) }
     end
   end
 

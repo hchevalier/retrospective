@@ -8,7 +8,9 @@ class ReflectionsController < ApplicationController
     zone = Zone.find_by(id: params[:zone_id], retrospective: retrospective)
     return render(json: { status: :not_found }) unless zone
 
-    return render(json: { status: :forbidden }) if current_participant.reflections.where(zone: zone).any? && retrospective.zones_typology == :limited
+    if current_participant.reflections.where(zone: zone).any? && retrospective.zones_typology == :limited
+      return render(json: { status: :forbidden })
+    end
 
     reflection = Reflection.transaction do
       current_participant.reflections.where(zone: zone).delete_all if retrospective.zones_typology == :single_choice
