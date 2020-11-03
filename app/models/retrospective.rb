@@ -66,13 +66,11 @@ class Retrospective < ApplicationRecord
       kinds[:sailboat],
       kinds[:starfish],
       kinds[:traffic_lights],
-      kinds[:oscars_gerards],
+      kinds[:oscars_gerards]
     ]
   end
 
-  def zones_typology
-    builder.zones_typology
-  end
+  delegate :zones_typology, to: :builder
 
   def as_json
     {
@@ -119,9 +117,15 @@ class Retrospective < ApplicationRecord
       }
     end
     included_relationships << [:zones] if reached_step?('thinking', reference: target_step)
-    included_relationships << { reactions: %i[author target], reflections: %i[zone topic owner] } if reached_step?('grouping', reference: target_step)
-    included_relationships << { discussed_reflection: %i[zone topic owner] } if reached_step?('voting', reference: target_step)
-    included_relationships << { tasks: [:retrospective, :author, :assignee, reflection: :zone] } if reached_step?('actions', reference: target_step)
+    if reached_step?('grouping', reference: target_step)
+      included_relationships << { reactions: %i[author target], reflections: %i[zone topic owner] }
+    end
+    if reached_step?('voting', reference: target_step)
+      included_relationships << { discussed_reflection: %i[zone topic owner] }
+    end
+    if reached_step?('actions', reference: target_step)
+      included_relationships << { tasks: [:retrospective, :author, :assignee, reflection: :zone] }
+    end
 
     included_relationships
   end
@@ -142,7 +146,9 @@ class Retrospective < ApplicationRecord
       facilitatorInfo: facilitator_info
     }
 
-    state.merge!(visibleReflections: visible_reflections_for_step(step)) unless step.in?(%w[gathering reviewing thinking])
+    unless step.in?(%w[gathering reviewing thinking])
+      state.merge!(visibleReflections: visible_reflections_for_step(step))
+    end
 
     if step.in?(%w[grouping voting])
       state.merge!(visibleReactions: reactions.select(&:emoji?).map(&:readable))
@@ -156,14 +162,12 @@ class Retrospective < ApplicationRecord
   def facilitator_info
     participants_relationship = participants.loaded? ? participants : participants.includes(:reactions)
     clear_info =
-      participants_relationship.reduce({}) do |memo, participant|
+      participants_relationship.each_with_object({}) do |participant, memo|
         memo[participant.id] = {
           remainingVotes: Reaction::MAX_VOTES - participant.reactions.select(&:vote?).count
         }
 
         memo[participant.id].merge!(stepDone: participant.step_done) if step == 'thinking'
-
-        memo
       end
 
     cipher = OpenSSL::Cipher.new('AES-256-CBC')
@@ -216,7 +220,7 @@ class Retrospective < ApplicationRecord
       end
 
     params[:pendingTasks] = group.pending_tasks.as_json if new_step == 'reviewing'
-    params[:discussedReflection] = discussed_reflection&.readable if %w(actions done).include?(new_step)
+    params[:discussedReflection] = discussed_reflection&.readable if %w[actions done].include?(new_step)
 
     broadcast_order(:next, **params)
   end

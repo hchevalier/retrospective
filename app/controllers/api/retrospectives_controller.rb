@@ -23,7 +23,7 @@ class Api::RetrospectivesController < ApplicationController
       if bare_retrospective.step == 'done' || !current_account.accessible_groups.find_by(id: bare_retrospective.group_id)
         # retrospective is already done or no active access to the group
         cookies.signed[:participant_id] = nil if using_participant
-        return render(json: { status: :forbidden}, status: :forbidden)
+        return render(json: { status: :forbidden }, status: :forbidden)
       end
 
       new_participant = Participant.create!(

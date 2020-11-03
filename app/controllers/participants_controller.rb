@@ -23,7 +23,9 @@ class ParticipantsController < ApplicationController
   def update
     retrospective = current_participant.retrospective
     participant = Participant.find(params[:id])
-    return render(json: { status: :forbidden }) if current_participant != participant || retrospective != participant.retrospective
+    if current_participant != participant || retrospective != participant.retrospective
+      return render(json: { status: :forbidden })
+    end
 
     if current_participant.update!(update_participants_params)
       OrchestratorChannel.broadcast_to(
