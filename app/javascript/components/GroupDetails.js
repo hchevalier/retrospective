@@ -120,7 +120,7 @@ const GroupsDetails = ({ id, history }) => {
                   {group.members.map((account) => {
                     return (
                       <ul>
-                        <li key={account.publicId} className='member-group'>
+                        <li key={account.publicId} className='member-group flex justify-between'>
                           {account.username}
                           <span className='remove-button'>
                             <Button
