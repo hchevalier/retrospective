@@ -60,7 +60,7 @@ const App = withRouter(({ history }) => {
 
   const GroupShow = () => {
     let params = useParams()
-    return <GroupDetails id={params.groupId} history={history}/>
+    return <GroupDetails id={params.groupId}/>
   }
 
   const RetrospectiveShow = () => {

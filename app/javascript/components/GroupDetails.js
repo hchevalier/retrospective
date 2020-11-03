@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { get, put, destroy } from 'lib/httpClient'
 import DateTimePicker from 'react-datetime-picker'
@@ -162,4 +162,4 @@ GroupsDetails.propTypes = {
   id: PropTypes.string.isRequired
 }
 
-export default GroupsDetails
+export default withRouter(GroupsDetails)
