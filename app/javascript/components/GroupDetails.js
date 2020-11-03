@@ -50,7 +50,7 @@ const GroupsDetails = ({ id, history }) => {
       }).then(() => {
 				refreshGroup()
         if (group.members.length === 1) {
-          window.location.href = "/groups"
+					history.push('/groups')
       	}
 			})
 		}
