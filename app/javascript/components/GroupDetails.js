@@ -39,9 +39,9 @@ const GroupsDetails = ({ id, history }) => {
     put({ url: `/api/groups/${id}`, payload: { next_retrospective: date } })
   }
 
-  const removeMemberFromGroup = (group, account) => {
+	const removeMemberFromGroup = (account) => {
     if (confirm(`Are you sure you want to remove ${account.username} from the group ${group.name}?`)) {
-      put({
+      destroy({
         url: `/api/account/${account.publicId}/group_accesses/${group.id}`,
       }).then(() => {
         refreshGroup()
@@ -128,7 +128,7 @@ const GroupsDetails = ({ id, history }) => {
                               name={account.publicId}
                               onClick={(event) => {
                                 event.preventDefault()
-                                removeMemberFromGroup(group, account)
+                                removeMemberFromGroup(account)
                               }}
                             >
                               REMOVE

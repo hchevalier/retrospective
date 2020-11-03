@@ -9,15 +9,12 @@ class Api::GroupAccessesController < ApplicationController
     render json: active_accesses.map(&:as_json)
   end
 
-  def update
-    account = Account.find_by(public_id: params[:account_id])
-    group_access = GroupAccess.find_by(group_id: params[:id], account_id: account.id)
-
-    revoke_access(group_access)
-  end
-
   def destroy
-    group_access = current_account.group_accesses.find(params[:id])
+    account_to_revoke_access = current_account
+    account_public_id = params[:account_id]
+
+    account_to_revoke_access = Account.find_by(public_id: account_public_id) if other_account?(account_public_id)
+    group_access = account_to_revoke_access.group_accesses.find_by(group_id: params[:id])
 
     revoke_access(group_access)
   end
@@ -27,5 +24,9 @@ class Api::GroupAccessesController < ApplicationController
   def revoke_access(group_access)
     group_access.update!(revoked_at: Time.current)
     group_access.group.update!(deleted_at: Time.current) if group_access.group.accounts_without_revoked.count.zero?
+  end
+
+  def other_account?(account_public_id)
+    current_account.public_id != account_public_id
   end
 end
