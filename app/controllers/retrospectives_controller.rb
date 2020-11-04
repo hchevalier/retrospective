@@ -21,8 +21,4 @@ class RetrospectivesController < ApplicationController
   def facilitator_attributes
     { surname: current_account.username, account_id: current_account.id }
   end
-
-  def preload_current_participant_and_relationships
-    current_participant_with_relationships_included
-  end
 end

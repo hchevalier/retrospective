@@ -29,14 +29,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def current_participant_with_relationships_included
-    @current_participant ||= begin
-      if (participant_id = cookies.signed[:participant_id])
-        Participant.includes(retrospective: %i[participants zones]).find(participant_id)
-      end
-    end
-  end
-
   def ensure_logged_in
     return if current_account
 

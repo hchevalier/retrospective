@@ -12,7 +12,7 @@ class TopicsController < ApplicationController
 
     current_participant.retrospective.topics.create(reflections: reflections)
     reflections.each do |reflection|
-      OrchestratorChannel.broadcast_to(current_participant.retrospective, action: 'changeTopic', parameters: { reflection: reflection.readable })
+      broadcast_change_topic(current_participant.retrospective, { reflection: reflection.readable })
     end
 
     clean_orphans(previous_topic) if previous_topic
@@ -33,12 +33,11 @@ class TopicsController < ApplicationController
         topic.reflections << reflection
       end
 
-      OrchestratorChannel.broadcast_to(current_participant.retrospective, action: 'changeTopic', parameters: { reflection: reflection.reload.readable })
-
+      broadcast_change_topic(current_participant.retrospective, { reflection: reflection.reload.readable })
       clean_orphans(previous_topic) if previous_topic
     else
       topic.update(topic_params)
-      OrchestratorChannel.broadcast_to(current_participant.retrospective, action: 'changeTopic', parameters: { topic: topic.as_json })
+      broadcast_change_topic(current_participant.retrospective, { topic: topic.as_json })
     end
 
     render json: topic.as_json
@@ -59,7 +58,10 @@ class TopicsController < ApplicationController
     return unless lone_reflection
 
     lone_reflection.update(topic_id: nil)
+    broadcast_change_topic(current_participant.retrospective, { reflection: lone_reflection.reload.readable })
+  end
 
-    OrchestratorChannel.broadcast_to(current_participant.retrospective, action: 'changeTopic', parameters: { reflection: lone_reflection.reload.readable })
+  def broadcast_change_topic(retrospective, parameters)
+    retrospective.broadcast_order('changeTopic', parameters)
   end
 end

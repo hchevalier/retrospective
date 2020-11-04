@@ -12,11 +12,13 @@ class ReactionsController < ApplicationController
         retrospective.reflections.find(params[:reflection_id])
       end
 
-    reaction = current_participant.reactions.create!(reactions_params.merge(target: target, retrospective: current_participant.retrospective))
+    reaction = current_participant.reactions.create!(
+      reactions_params.merge(target: target, retrospective: current_participant.retrospective)
+    )
     if retrospective.step != 'voting' || reaction.emoji?
-      OrchestratorChannel.broadcast_to(retrospective, action: 'newReaction', parameters: { reaction: reaction.readable })
+      retrospective.broadcast_order('newReaction',{ reaction: reaction.readable })
     elsif retrospective.step == 'voting' && reaction.vote?
-      OrchestratorChannel.broadcast_to(retrospective, action: 'updateFacilitatorInfo', parameters: { facilitatorInfo: retrospective.facilitator_info })
+      broadcast_facilitator_info(retrospective)
     end
 
     render json: reaction.readable
@@ -28,10 +30,8 @@ class ReactionsController < ApplicationController
     return render(json: :forbidden) if reaction.vote? && retrospective.step != 'voting'
 
     reaction.destroy!
-    OrchestratorChannel.broadcast_to(retrospective, action: 'dropReaction', parameters: { reactionId: params[:id] })
-    if retrospective.step == 'voting' && reaction.vote?
-      OrchestratorChannel.broadcast_to(retrospective, action: 'updateFacilitatorInfo', parameters: { facilitatorInfo: retrospective.facilitator_info })
-    end
+    retrospective.broadcast_order('dropReaction', { reactionId: params[:id] })
+    broadcast_facilitator_info(retrospective) if retrospective.step == 'voting' && reaction.vote?
 
     render json: :ok
   end
@@ -40,5 +40,9 @@ class ReactionsController < ApplicationController
 
   def reactions_params
     params.permit(:kind, :content)
+  end
+
+  def broadcast_facilitator_info(retrospective)
+    retrospective.broadcast_order('updateFacilitatorInfo', { facilitatorInfo: retrospective.facilitator_info })
   end
 end

@@ -14,11 +14,7 @@ class Api::AccountsController < ApplicationController
       retrospective = current_account.retrospectives.find(params[:retrospective_id])
       participant = retrospective.participants.find_by(account: current_account)
 
-      OrchestratorChannel.broadcast_to(
-        retrospective,
-        action: 'changeAvatar',
-        parameters: { participant: participant.profile }
-      )
+      retrospective.broadcast_order('changeAvatar', { participant: participant.profile })
     end
 
     render json: :ok
