@@ -5,18 +5,15 @@ class ReactionsController < ApplicationController
 
   def create
     retrospective = current_participant.retrospective
-    target =
-      if params[:topic_id]
-        retrospective.topics.find(params[:topic_id])
-      elsif params[:reflection_id]
-        retrospective.reflections.find(params[:reflection_id])
-      end
 
     reaction = current_participant.reactions.create!(
-      reactions_params.merge(target: target, retrospective: current_participant.retrospective)
+      reactions_params.merge(
+        target: target_reflection_or_topic(retrospective),
+        retrospective: current_participant.retrospective
+      )
     )
     if retrospective.step != 'voting' || reaction.emoji?
-      retrospective.broadcast_order('newReaction',{ reaction: reaction.readable })
+      retrospective.broadcast_order('newReaction', { reaction: reaction.readable })
     elsif retrospective.step == 'voting' && reaction.vote?
       broadcast_facilitator_info(retrospective)
     end
@@ -37,6 +34,14 @@ class ReactionsController < ApplicationController
   end
 
   private
+
+  def target_reflection_or_topic(retrospective)
+    if params[:topic_id]
+      retrospective.topics.find(params[:topic_id])
+    elsif params[:reflection_id]
+      retrospective.reflections.find(params[:reflection_id])
+    end
+  end
 
   def reactions_params
     params.permit(:kind, :content)

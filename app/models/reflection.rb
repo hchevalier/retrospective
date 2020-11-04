@@ -6,7 +6,7 @@ class Reflection < ApplicationRecord
   belongs_to :owner, class_name: 'Participant', inverse_of: :reflections
   has_one :retrospective, through: :zone
   has_many :reactions, as: :target, inverse_of: :target, dependent: :destroy
-  has_many :votes, -> { vote }, class_name: 'Reaction', foreign_key: :target_id
+  has_many :votes, -> { vote }, class_name: 'Reaction', foreign_key: :target_id # rubocop:disable Rails/InverseOf
   has_many :tasks, dependent: :destroy
 
   scope :revealed, -> { where(revealed: true) }
