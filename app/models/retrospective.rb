@@ -1,18 +1,15 @@
 # frozen_string_literal: true
 
 class Retrospective < ApplicationRecord
-  has_many :participants, inverse_of: :retrospective
-  has_many :pending_invitations
+  has_many :participants, inverse_of: :retrospective, dependent: :destroy
+  has_many :pending_invitations, dependent: :destroy
   has_many :zones, inverse_of: :retrospective, dependent: :destroy
   has_many :reflections, through: :zones
   has_many :topics, dependent: :destroy
   has_many :reactions, dependent: :destroy
   has_many :tasks, through: :participants, source: :created_tasks
-  has_many :pending_tasks,
-    -> { where(status: %i[todo on_hold]) },
-    through: :participants,
-    class_name: 'Task',
-    source: :created_tasks
+  has_many :pending_tasks, -> { where(status: %i[todo on_hold]) },
+           { through: :participants, class_name: 'Task', source: :created_tasks }
 
   belongs_to :group
   belongs_to :facilitator, class_name: 'Participant', inverse_of: :organized_retrospective
@@ -135,11 +132,9 @@ class Retrospective < ApplicationRecord
   end
 
   def initial_state(current_participant)
-    state = {
+    {
       participants: participants.sort_by(&:created_at).map(&:profile),
       step: step,
-      ownReflections: reached_step?('thinking') ? current_participant.reflections.sort_by(&:created_at).map(&:readable) : [],
-      ownReactions: reached_step?('thinking') ? current_participant.reactions.map(&:readable) : [],
       discussedReflection: reached_step?('voting') ? discussed_reflection&.readable : nil,
       allColors: Participant::COLORS,
       availableColors: available_colors,
@@ -147,8 +142,14 @@ class Retrospective < ApplicationRecord
       pendingTasks: step == 'reviewing' ? group.pending_tasks.as_json : [],
       serverTime: Time.zone.now,
       timerEndAt: timer_end_at,
-      facilitatorInfo: facilitator_info
+      facilitatorInfo: facilitator_info,
+      **visible_reflections_and_reactions,
+      **participant_related_state(current_participant)
     }
+  end
+
+  def visible_reflections_and_reactions
+    state = {}
 
     unless step.in?(%w[gathering reviewing thinking])
       state.merge!(visibleReflections: visible_reflections_for_step(step))
@@ -163,6 +164,16 @@ class Retrospective < ApplicationRecord
     state
   end
 
+  def participant_related_state(participant)
+    reached_thinking = reached_step?('thinking')
+
+    {
+      ownReflections: reached_thinking ? participant.reflections.sort_by(&:created_at).map(&:readable) : [],
+      ownReactions: reached_thinking ? participant.reactions.map(&:readable) : []
+    }
+  end
+
+  # rubocop:todo Metrics/AbcSize
   def facilitator_info
     participants_relationship = participants.loaded? ? participants : participants.includes(:reactions)
     clear_info =
@@ -182,51 +193,23 @@ class Retrospective < ApplicationRecord
 
     Base64.strict_encode64(encrypted_data).chomp
   end
+  # rubocop:enable Metrics/AbcSize
 
   def next_step!
     return if step == 'done'
 
     new_step = Retrospective.steps.keys[step_index + 1]
     new_step = Retrospective.steps.keys[step_index + 2] if new_step == 'reviewing' && group.pending_tasks.none?
-
-    if new_step == 'voting' && zones_typology == :single_choice
-      builder.autovote!(self)
-      new_step = Retrospective.steps.keys[step_index + 2]
-      reload
-    end
+    new_step = skip_vote! if new_step == 'voting' && zones_typology == :single_choice
 
     if new_step == 'actions'
-      most_upvoted_target =
-        reactions
-          .select(&:vote?)
-          .group_by(&:target)
-          .transform_values(&:count)
-          .sort_by { |_, v| -v }
-          .map(&:first)
-          .first
-
+      most_upvoted_target = most_upvoted_topic_or_reflection
       most_upvoted_target = most_upvoted_target.reflections.first if most_upvoted_target.is_a?(Topic)
     end
 
     update!(step: new_step, discussed_reflection: most_upvoted_target || discussed_reflection)
 
-    params = { next_step: new_step }
-    params[:visibleReflections] = visible_reflections_for_step(new_step)
-
-    params[:visibleReactions] =
-      case new_step
-      when 'grouping', 'voting'
-        reactions.emoji.map(&:readable)
-      when 'actions', 'done'
-        reactions.map(&:readable)
-      else
-        []
-      end
-
-    params[:pendingTasks] = group.pending_tasks.as_json if new_step == 'reviewing'
-    params[:discussedReflection] = discussed_reflection&.readable if %w[actions done].include?(new_step)
-
-    broadcast_order(:next, **params)
+    broadcast_order(:next, **state_for_step(new_step))
   end
 
   def visible_reflections_for_step(step)
@@ -234,9 +217,7 @@ class Retrospective < ApplicationRecord
     when 'grouping', 'voting'
       reflections.select(&:revealed?).sort_by(&:created_at).map(&:readable)
     when 'actions'
-      reflections
-        .reject { |reflection| reflection.votes.none? && (reflection.topic.nil? || reflection.topic.votes.none?) }
-        .map(&:readable)
+      visible_reflections_for_action_step
     when 'done'
       reflections.map(&:readable)
     else
@@ -285,7 +266,65 @@ class Retrospective < ApplicationRecord
     OrchestratorChannel.broadcast_to(self, action: action, parameters: parameters)
   end
 
+  def find_participant_with_relationships(participant_id)
+    participants
+      .includes(:retrospective, :reactions, reflections: [:topic, :owner, zone: :retrospective])
+      .find(participant_id)
+  end
+
+  def participant_for_account(account)
+    participants.find { |participant| participant.account == account }
+  end
+
+  def add_participant_for_account(account)
+    participants.create!(surname: account.username, account_id: account.id)
+  end
+
   private
+
+  def state_for_step(target_step)
+    params = { next_step: target_step }
+    params[:visibleReflections] = visible_reflections_for_step(target_step)
+
+    params[:visibleReactions] =
+      case target_step
+      when 'grouping', 'voting'
+        reactions.emoji.map(&:readable)
+      when 'actions', 'done'
+        reactions.map(&:readable)
+      else
+        []
+      end
+
+    params[:pendingTasks] = group.pending_tasks.as_json if target_step == 'reviewing'
+    params[:discussedReflection] = discussed_reflection&.readable if %w[actions done].include?(target_step)
+
+    params
+  end
+
+  def skip_vote!
+    builder.autovote!(self)
+    new_step = Retrospective.steps.keys[step_index + 2]
+    reload
+
+    new_step
+  end
+
+  def most_upvoted_topic_or_reflection
+    reactions
+      .select(&:vote?)
+      .group_by(&:target)
+      .transform_values(&:count)
+      .sort_by { |_, v| -v }
+      .map(&:first)
+      .first
+  end
+
+  def visible_reflections_for_action_step
+    reflections
+      .reject { |reflection| reflection.votes.none? && (reflection.topic.nil? || reflection.topic.votes.none?) }
+      .map(&:readable)
+  end
 
   def builder
     BUILDERS[kind].constantize

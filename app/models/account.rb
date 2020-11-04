@@ -6,8 +6,11 @@ class Account < ApplicationRecord
   has_many :retrospectives, through: :participants
   has_many :group_accesses, dependent: :destroy
   has_many :groups, through: :group_accesses
-  has_many :accessible_groups, -> { where(group_accesses: { revoked_at: nil }) }, through: :group_accesses, class_name: 'Group', source: :group
-  has_many :assigned_tasks, class_name: 'Task', foreign_key: :assignee_id, primary_key: :public_id, inverse_of: :assignee, dependent: :destroy
+  has_many :accessible_groups, -> { where(group_accesses: { revoked_at: nil }) },
+           { through: :group_accesses, class_name: 'Group', source: :group }
+  has_many :assigned_tasks, {
+    class_name: 'Task', foreign_key: :assignee_id, primary_key: :public_id, inverse_of: :assignee, dependent: :destroy
+  }
 
   has_secure_password
   has_secure_token :password_reset_token

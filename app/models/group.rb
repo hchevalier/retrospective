@@ -4,11 +4,8 @@ class Group < ApplicationRecord
   has_many :group_accesses, dependent: :destroy
   has_many :pending_invitations, dependent: :destroy
   has_many :accounts, through: :group_accesses
-  has_many :accounts_without_revoked,
-    -> { where(group_accesses: { revoked_at: nil }) },
-    through: :group_accesses,
-    class_name: 'Account',
-    source: :account
+  has_many :accounts_without_revoked, -> { where(group_accesses: { revoked_at: nil }) },
+           { through: :group_accesses, class_name: 'Account', source: :account }
   has_many :retrospectives, dependent: :destroy
   has_many :tasks, through: :retrospectives
   has_many :pending_tasks, through: :retrospectives

@@ -20,6 +20,7 @@ class TopicsController < ApplicationController
     render json: :created
   end
 
+  # rubocop:todo Metrics/AbcSize
   def update
     topic = current_participant.retrospective.topics.find(params[:id])
 
@@ -42,6 +43,7 @@ class TopicsController < ApplicationController
 
     render json: topic.as_json
   end
+  # rubocop:enable Metrics/AbcSize
 
   private
 

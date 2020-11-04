@@ -22,10 +22,10 @@ class Builders::TrafficLights
         hint: 'We get stuff done without useless waiting or delays. Releasing is simple, safe and painless'
       )
       retrospective.add_zone('Fun', hint: 'We love going to work and have great fun working together')
-      retrospective.add_zone(
-        'Influence',
-        hint: 'We are in control of our roadmap, we can intervene in decision process regarding what to build and how to build it'
-      )
+      retrospective.add_zone('Influence', hint: <<~TEXT.squish)
+        We are in control of our roadmap, we can intervene in decision process regarding what
+        to build and how to build it
+      TEXT
     end
 
     def autovote!(retrospective)
