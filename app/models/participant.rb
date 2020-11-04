@@ -78,7 +78,7 @@ class Participant < ApplicationRecord
 
   def join
     Rails.logger.debug "Broacasting that #{surname} (#{id}) joined"
-    OrchestratorChannel.broadcast_to(retrospective, action: 'newParticipant', parameters: { profile: profile })
+    retrospective.broadcast_order('newParticipant', { profile: profile })
   end
 
   private

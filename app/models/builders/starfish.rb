@@ -7,11 +7,11 @@ class Builders::Starfish
     end
 
     def build(retrospective)
-      retrospective.zones.build(identifier: 'Keep')
-      retrospective.zones.build(identifier: 'Start')
-      retrospective.zones.build(identifier: 'Stop')
-      retrospective.zones.build(identifier: 'More')
-      retrospective.zones.build(identifier: 'Less')
+      retrospective.add_zone('Keep')
+      retrospective.add_zone('Start')
+      retrospective.add_zone('Stop')
+      retrospective.add_zone('More')
+      retrospective.add_zone('Less')
     end
   end
 end

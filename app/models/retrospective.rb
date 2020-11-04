@@ -8,7 +8,11 @@ class Retrospective < ApplicationRecord
   has_many :topics, dependent: :destroy
   has_many :reactions, dependent: :destroy
   has_many :tasks, through: :participants, source: :created_tasks
-  has_many :pending_tasks, -> { where(status: %i[todo on_hold]) }, through: :participants, class_name: 'Task', source: :created_tasks
+  has_many :pending_tasks,
+    -> { where(status: %i[todo on_hold]) },
+    through: :participants,
+    class_name: 'Task',
+    source: :created_tasks
 
   belongs_to :group
   belongs_to :facilitator, class_name: 'Participant', inverse_of: :organized_retrospective
@@ -241,7 +245,8 @@ class Retrospective < ApplicationRecord
   end
 
   def change_facilitator!
-    other_participant = participants.logged_in.order(:created_at).reject { |participant| participant == facilitator }.first
+    other_participant =
+      participants.logged_in.order(:created_at).reject { |participant| participant == facilitator }.first
     return unless other_participant
 
     current_facilitator = facilitator
@@ -254,7 +259,7 @@ class Retrospective < ApplicationRecord
   def reset_original_facilitator!
     return if step == 'done'
 
-    original_facilitator = participants.min_by { |participant| participant.created_at }
+    original_facilitator = participants.min_by(&:created_at)
     return unless original_facilitator.logged_in
 
     previous_facilitator = facilitator
@@ -270,6 +275,14 @@ class Retrospective < ApplicationRecord
 
   def next_step
     Retrospective.steps.keys[Retrospective.steps.keys.index(step) + 1]
+  end
+
+  def add_zone(identifier, hint: nil)
+    zones.build(identifier: identifier, hint: hint)
+  end
+
+  def broadcast_order(action, **parameters)
+    OrchestratorChannel.broadcast_to(self, action: action, parameters: parameters)
   end
 
   private
@@ -288,9 +301,5 @@ class Retrospective < ApplicationRecord
 
   def step_index
     Retrospective.steps.keys.index(step)
-  end
-
-  def broadcast_order(action, **parameters)
-    OrchestratorChannel.broadcast_to(self, action: action, parameters: parameters)
   end
 end

@@ -11,10 +11,6 @@ class InactivityJob < ApplicationJob
       participant.reload
     end
 
-    OrchestratorChannel.broadcast_to(
-      participant.retrospective,
-      action: 'refreshParticipant',
-      parameters: { participant: participant.profile }
-    )
+    participant.retrospective.broadcast_order('refreshParticipant', { participant: participant.profile })
   end
 end

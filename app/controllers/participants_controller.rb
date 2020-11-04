@@ -28,14 +28,7 @@ class ParticipantsController < ApplicationController
     end
 
     if current_participant.update!(update_participants_params)
-      OrchestratorChannel.broadcast_to(
-        retrospective,
-        action: 'changeColor',
-        parameters: {
-          participant: current_participant.profile,
-          availableColors: retrospective.available_colors
-        }
-      )
+      broadcast_change_color(retrospective, current_participant.profile)
 
       render json: { status: :ok }
     else
@@ -47,5 +40,13 @@ class ParticipantsController < ApplicationController
 
   def update_participants_params
     params.permit(:color)
+  end
+
+  def broadcast_change_color(retrospective, profile)
+    parameters = {
+      participant: profile,
+      availableColors: retrospective.available_colors
+    }
+    retrospective.broadcast_order('changeColor', parameters)
   end
 end

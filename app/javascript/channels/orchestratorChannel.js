@@ -15,7 +15,7 @@ export const join = ({ retrospectiveId, onReceivedAction }) => {
       this.perform('start_timer', { duration: duration })
     },
     setRevealer(uuid) {
-      this.perform('set_revealer', { uuid: uuid })
+      this.perform('elect_revealer', { uuid: uuid })
     },
     reveal(reflectionUuid) {
       this.perform('reveal_reflection', { uuid: reflectionUuid })

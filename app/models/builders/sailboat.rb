@@ -7,10 +7,10 @@ class Builders::Sailboat
     end
 
     def build(retrospective)
-      retrospective.zones.build(identifier: 'Wind')
-      retrospective.zones.build(identifier: 'Anchor')
-      retrospective.zones.build(identifier: 'Rocks')
-      retrospective.zones.build(identifier: 'Island')
+      retrospective.add_zone('Wind')
+      retrospective.add_zone('Anchor')
+      retrospective.add_zone('Rocks')
+      retrospective.add_zone('Island')
     end
   end
 end

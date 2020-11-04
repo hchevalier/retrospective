@@ -31,18 +31,18 @@ class Account < ApplicationRecord
 
   def json_avatar
     {
-      topType: avatar_top || 'LongHairMiaWallace',
-      accessoriesType: avatar_accessories || 'Blank',
-      hairColor: avatar_hair_color || 'BrownDark',
-      facialHairType: avatar_facial_hair || 'Blank',
-      facialHairColor: avatar_facial_hair_color || 'Auburn',
-      clotheType: avatar_clothe || 'GraphicShirt',
-      clotheColor: avatar_clothe_color || 'PastelBlue',
-      graphicType: avatar_graphics || 'Diamond',
-      eyeType: avatar_eyes || 'Happy',
-      eyebrowType: avatar_eyebrows || 'Default',
-      mouthType: avatar_mouth || 'Smile',
-      skinColor: avatar_skin || 'Light'
+      topType: avatar_top,
+      accessoriesType: avatar_accessories,
+      hairColor: avatar_hair_color,
+      facialHairType: avatar_facial_hair,
+      facialHairColor: avatar_facial_hair_color,
+      clotheType: avatar_clothe,
+      clotheColor: avatar_clothe_color,
+      graphicType: avatar_graphics,
+      eyeType: avatar_eyes,
+      eyebrowType: avatar_eyebrows,
+      mouthType: avatar_mouth,
+      skinColor: avatar_skin
     }
   end
 
