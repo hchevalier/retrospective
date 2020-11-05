@@ -8,6 +8,7 @@ AllCops:
     - db/migrate/* # TODO: Clear all offenses from this folder
     - bin/*
     - node_modules/**/*
+    - vendor/**/*
   NewCops: enable
 
 Layout/LineLength:
