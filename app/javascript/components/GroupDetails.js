@@ -7,7 +7,6 @@ import AddGroupMembersModal from './AddGroupMembersModal'
 import Card from './Card'
 import Button from './Button'
 import DetailedTask from './DetailedTask'
-import './GroupDetails.scss'
 
 const GroupsDetails = ({ id, history }) => {
   const [groupRefresh, setGroupRefresh] = React.useState(1)
@@ -15,6 +14,7 @@ const GroupsDetails = ({ id, history }) => {
   const [addMembersModalVisible, setAddMembersModalVisible] = React.useState(false)
   const [displayDoneTasks, setDisplayDoneTasks] = React.useState(false)
   const [nextRetrospective, setNextRetrospective] = React.useState()
+  const [currentAccount, setCurrentAccount] = React.useState()
 
   const handleAddGroupMembersClick = () => setAddMembersModalVisible(true)
   const handleAddGroupMembersModalClose = () => setAddMembersModalVisible(false)
@@ -63,6 +63,10 @@ const GroupsDetails = ({ id, history }) => {
         if (!nextRetrospective && data.nextRetrospective) setNextRetrospective(new Date(data.nextRetrospective))
       })
   }, [id, groupRefresh, nextRetrospective])
+
+  React.useEffect(() => {
+    get({ url: '/api/account' }).then((account) => setCurrentAccount(account))
+  }, [])
 
   return (
     <div className='mx-auto flex flex-col p-8 bg-gray-300'>
@@ -122,7 +126,7 @@ const GroupsDetails = ({ id, history }) => {
                       <ul>
                         <li key={account.publicId} className='member-group flex justify-between'>
                           {account.username}
-                          <span className='remove-button'>
+                          {currentAccount.publicId !== account.publicId ? (
                             <Button
                               secondary
                               name={account.publicId}
@@ -133,7 +137,7 @@ const GroupsDetails = ({ id, history }) => {
                             >
                               REMOVE
                             </Button>
-                          </span>
+                          ) : null}
                         </li>
                       </ul>
                     )
