@@ -98,34 +98,6 @@ class GroupsTest < ActionDispatch::IntegrationTest
     assert_text 'Other member'
   end
 
-  test 'revokes group access from a member and removes the group if there is no user anymore' do
-    group = create(:group, name: 'MyGroupName')
-    group.add_member(@account)
-
-    other_account = create(:account, username: 'Other member')
-    group.add_member(other_account)
-
-    visit '/groups'
-    click_on 'MyGroupName'
-
-    assert_text 'Group members (2)'
-
-    find('.member-group', match: :first).hover
-    accept_confirm do
-      click_on 'REMOVE'
-    end
-
-    assert_text 'Group members (1)'
-
-    find('.member-group').hover
-    accept_confirm do
-      click_on 'REMOVE'
-    end
-
-    assert_text 'My groups'
-    refute_text 'MyGroupName'
-  end
-
   test 'do not show old members unless they have a new active access' do
     group = create(:group, name: 'MyGroupName')
     group.add_member(@account)
