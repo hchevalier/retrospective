@@ -1,10 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { post } from 'lib/httpClient'
+import Card from './Card'
 import Input from './Input'
 import Button from './Button'
+import GoogleButton from 'images/btn_google_signin_light_normal_web@2x.png'
 
-const AuthenticationForm = ({ defaultEmail, onLogIn }) => {
+const AuthenticationForm = ({ defaultEmail, onLogIn, returnUrl }) => {
   const [mode, setMode] = React.useState('signIn')
   const [username, setUsername] = React.useState('')
   const [email, setEmail] = React.useState(defaultEmail || '')
@@ -47,31 +49,39 @@ const AuthenticationForm = ({ defaultEmail, onLogIn }) => {
 
   return (
     <div className='max-w-xl min-w-1/2 mx-auto mt-4'>
-      <form noValidate autoComplete='off' onSubmit={handleSubmit}>
-        <p className='mb-3'>{mode === 'signUp' ? 'Create an account' : 'Log in'}</p>
-        <div>
-          <div className='mb-4'>
-            <Input placeholder='E-mail' name='email' value={email} onChange={(event) => setEmail(event.target.value)} />
-          </div>
-          <div className='mb-4'>
-            <Input placeholder='Password' name='password' value={password} type='password' onChange={(event) => setPassword(event.target.value)} />
-          </div>
-          {mode === 'signUp' && (
+      <Card title={mode === 'signUp' ? 'Create an account' : 'Log in'} center>
+        <form noValidate autoComplete='off' onSubmit={handleSubmit} className='w-full'>
+          <div>
             <div className='mb-4'>
-              <Input placeholder='Username' name='username' value={username} onChange={(event) => setUsername(event.target.value)} />
+              <Input placeholder='E-mail' name='email' value={email} onChange={(event) => setEmail(event.target.value)} />
             </div>
-          )}
-          {mode === 'signIn' && !passwordResetToastDisplayed && <div className='mb-4'><Button primary onClick={resetPassword}>I forgot my password</Button></div>}
-          {mode === 'signIn' && passwordResetToastDisplayed && <div className='mb-4'>An email has been sent</div>}
-        </div>
+            <div className='mb-4'>
+              <Input placeholder='Password' name='password' value={password} type='password' onChange={(event) => setPassword(event.target.value)} />
+            </div>
+            {mode === 'signUp' && (
+              <div className='mb-4'>
+                <Input placeholder='Username' name='username' value={username} onChange={(event) => setUsername(event.target.value)} />
+              </div>
+            )}
+            {mode === 'signIn' && !passwordResetToastDisplayed && <div className='mb-4'><Button primary onClick={resetPassword}>I forgot my password</Button></div>}
+            {mode === 'signIn' && passwordResetToastDisplayed && <div className='mb-4'>An email has been sent</div>}
+          </div>
 
-        <div className='flex items-center justify-between'>
-          <Button contained primary type='submit'>{mode === 'signUp' ? 'Create account' : 'Login'}</Button>
-          <Button primary onClick={toggleMode}>
-            {mode === 'signIn' ? "Don't have an account yet?" : 'Already have an account?'}
-          </Button>
-        </div>
-      </form>
+          <div className='flex items-center justify-between'>
+            <Button contained primary type='submit'>{mode === 'signUp' ? 'Create account' : 'Login'}</Button>
+            <Button primary onClick={toggleMode}>
+              {mode === 'signIn' ? "Don't have an account yet?" : 'Already have an account?'}
+            </Button>
+          </div>
+        </form>
+      </Card>
+
+      <div className='text-center mt-4 flex justify-center'>
+        <a href={`/auth/google_oauth2?return_to=${returnUrl ? returnUrl : '/dashboard'}`}>
+          <span>or</span>
+          <img src={GoogleButton} width='200' />
+        </a>
+      </div>
     </div>
   )
 }
@@ -79,6 +89,7 @@ const AuthenticationForm = ({ defaultEmail, onLogIn }) => {
 AuthenticationForm.propTypes = {
   defaultEmail: PropTypes.string,
   onLogIn: PropTypes.func.isRequired,
+  returnUrl: PropTypes.string
 }
 
 export default AuthenticationForm

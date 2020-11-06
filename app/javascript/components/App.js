@@ -78,8 +78,8 @@ const App = withRouter(({ history }) => {
         <Route path='/sessions/new'>
           <AuthenticationForm
             defaultEmail={initialEmail}
+            returnUrl={returnUrl}
             onLogIn={() => {
-              console.log('Logged in, redirecting to', returnUrl ? returnUrl : '/')
               setLoggedIn(true)
               history.replace(returnUrl ? returnUrl : '/')
              }} />
