@@ -7,14 +7,14 @@ import Card from './Card'
 const GroupsList = ({ history }) => {
   const [groupAccesses, setGroupAccesses] = React.useState([])
   const [loading, setLoading] = React.useState(true)
-	const [currentAccount, setCurrentAccount] = React.useState()
+  const [currentAccount, setCurrentAccount] = React.useState()
 
   React.useEffect(() => {
     get({ url: '/api/group_accesses' })
       .then((data) => { setGroupAccesses(data); setLoading(false)})
-	}, [])
+  }, [])
 
-	React.useEffect(() => {
+  React.useEffect(() => {
     get({ url: '/api/account' })
       .then((account) => setCurrentAccount(account))
   }, [])
@@ -26,8 +26,8 @@ const GroupsList = ({ history }) => {
         payload: {
           account: currentAccount.publicId
         },
-			})
-			.then(() => setGroupAccesses(groupAccesses.filter((groupAccess) => groupAccess.id !== groupAccessToRevoke.id)))
+      })
+      .then(() => setGroupAccesses(groupAccesses.filter((groupAccess) => groupAccess.id !== groupAccessToRevoke.id)))
     }
   }
 

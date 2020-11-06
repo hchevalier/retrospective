@@ -39,7 +39,7 @@ const GroupsDetails = ({ id }) => {
     put({ url: `/api/groups/${id}`, payload: { next_retrospective: date } })
   }
 
-	const revokeAccessFromGroup = (account) => {
+  const revokeAccessFromGroup = (account) => {
     if (confirm(`Are you sure you want to remove ${account.username} from the group ${group.name}?`)) {
       destroy({
         url: `/api/group_accesses/${group.id}`,
