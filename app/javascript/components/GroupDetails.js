@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, withRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { get, put, destroy } from 'lib/httpClient'
 import DateTimePicker from 'react-datetime-picker'
@@ -8,7 +8,7 @@ import Card from './Card'
 import Button from './Button'
 import DetailedTask from './DetailedTask'
 
-const GroupsDetails = ({ id, history }) => {
+const GroupsDetails = ({ id }) => {
   const [groupRefresh, setGroupRefresh] = React.useState(1)
   const [group, setGroup] = React.useState({ members: [], tasks: [], pendingInvitations: [] })
   const [addMembersModalVisible, setAddMembersModalVisible] = React.useState(false)
@@ -48,9 +48,6 @@ const GroupsDetails = ({ id, history }) => {
         },
       }).then(() => {
         refreshGroup()
-        if (group.members.length === 1) {
-          history.push('/groups')
-        }
       })
     }
   }
@@ -165,4 +162,4 @@ GroupsDetails.propTypes = {
   id: PropTypes.string.isRequired
 }
 
-export default withRouter(GroupsDetails)
+export default GroupsDetails
