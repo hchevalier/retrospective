@@ -23,7 +23,7 @@ export const put = async ({ url, payload = {}, headers = {} }) => {
 }
 
 export const destroy = async ({ url, payload = {}, headers = {} }) => {
-  const response = await httpClient.delete(url, payload, headers)
+  const response = await httpClient.delete(url, { headers: headers, data: payload })
   return response.data
 }
 
