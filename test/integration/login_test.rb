@@ -29,4 +29,44 @@ class LoginTest < ActionDispatch::IntegrationTest
     refute_text 'My actions'
     assert_text 'Log in'
   end
+
+  test 'can create a new account with Google' do
+    visit '/'
+    assert_text 'Log in'
+
+    ApplicationController.stub_const(:AUTHORIZED_DOMAINS, ['@notmycompany.com']) do
+      find('#google-authentication').click
+
+      refute_text 'My actions'
+      assert_text 'Log in'
+    end
+
+    ApplicationController.stub_const(:AUTHORIZED_DOMAINS, ['@company.com']) do
+      find('#google-authentication').click
+
+      assert_text 'My actions'
+      assert_equal 'myemail@company.com', Account.last.email
+      assert_equal 'account', Account.last.username
+    end
+  end
+
+  test 'can authenticate to an existing account with Google' do
+    account = create(:account, email: 'myemail@company.com', password: 'mypassword')
+
+    visit '/'
+    assert_text 'Log in'
+
+    ApplicationController.stub_const(:AUTHORIZED_DOMAINS, ['@notmycompany.com']) do
+      find('#google-authentication').click
+
+      refute_text 'My actions'
+      assert_text 'Log in'
+    end
+
+    ApplicationController.stub_const(:AUTHORIZED_DOMAINS, ['@company.com']) do
+      find('#google-authentication').click
+
+      assert_text 'My actions'
+    end
+  end
 end
