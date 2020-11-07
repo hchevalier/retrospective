@@ -44,3 +44,9 @@ jobs:
 
     - name: Run tests
       run: HEADLESS=true bundle exec rake
+
+    - name: Run Rubocop
+      run: rubocop --cache false --config .rubocop.yml
+
+    - name: Run ESLint
+      run: yarn run eslint app/javascript/**/*.js
