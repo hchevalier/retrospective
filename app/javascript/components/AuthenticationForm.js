@@ -76,7 +76,7 @@ const AuthenticationForm = ({ defaultEmail, onLogIn, returnUrl }) => {
         </form>
       </Card>
 
-      {window.constants.googleAuthenticationEnabled && (
+      {window.constants.googleAuthenticationEnabled === 'true' && (
         <div className='text-center mt-4 flex justify-center'>
           <a href={`/auth/google_oauth2?return_to=${returnUrl ? returnUrl : '/dashboard'}`}>
             <span>or</span>
