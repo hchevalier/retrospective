@@ -51,6 +51,12 @@ class ActionDispatch::IntegrationTest
   Capybara.default_driver = ENV.fetch('HEADLESS', false) == 'true' ? :selenium_chrome_headless : :selenium_chrome
   Capybara.default_max_wait_time = 5.seconds
 
+  OmniAuth.config.test_mode = true
+  OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new(
+    provider: :google_oauth2,
+    info: { email: 'myemail@company.com', name: 'account' }
+  )
+
   # Reset sessions and driver between tests
   teardown do
     Capybara.reset_sessions!
