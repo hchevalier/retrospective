@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import Avataaar from 'avataaars'
+import { avatarShape } from 'lib/utils/shapes'
 import './Avatar.scss'
 
 const Avatar = ({ backgroundColor, dataAttributes, loggedIn, surname, settings, self, onClick, children }) => {
@@ -43,6 +44,7 @@ Avatar.propTypes = {
   loggedIn: PropTypes.bool,
   surname: PropTypes.string.isRequired,
   self: PropTypes.bool,
+  settings: avatarShape,
   onClick: PropTypes.func,
   children: PropTypes.node
 }

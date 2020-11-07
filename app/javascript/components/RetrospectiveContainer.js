@@ -11,6 +11,7 @@ import HomeIcon from 'images/home-icon.svg'
 import ParticipantsList from './ParticipantsList'
 import FacilitatorToolkitLeft from './FacilitatorToolkitLeft'
 import FacilitatorToolkitRight from './FacilitatorToolkitRight'
+import { historyShape } from '../lib/utils/shapes'
 
 const RetrospectiveHeader = ({ groupName, kind, handleOpenAddParticipantsModal }) => {
   const profile = useSelector(state => state.profile)
@@ -38,6 +39,12 @@ const RetrospectiveHeader = ({ groupName, kind, handleOpenAddParticipantsModal }
   )
 }
 
+RetrospectiveHeader.propTypes = {
+  groupName: PropTypes.string.isRequired,
+  handleOpenAddParticipantsModal: PropTypes.func.isRequired,
+  kind: PropTypes.string.isRequired
+}
+
 const GroupMembersModalWrapper = ({ groupId, retrospectiveId, setDisplayAddParticipantsModal, visible }) => {
   const [groupInfo, setGroupInfo] = useState(null)
   const handleAddParticipantsModalClose = () => setDisplayAddParticipantsModal(false)
@@ -63,6 +70,13 @@ const GroupMembersModalWrapper = ({ groupId, retrospectiveId, setDisplayAddParti
   )
 }
 
+GroupMembersModalWrapper.propTypes = {
+  groupId: PropTypes.string.isRequired,
+  retrospectiveId: PropTypes.string.isRequired,
+  setDisplayAddParticipantsModal: PropTypes.func.isRequired,
+  visible: PropTypes.bool
+}
+
 const RetrospectiveContainer = ({ id, history }) => {
   const [store, setStore] = useState()
   const [retrospectiveInfo, setRetrospectiveInfo] = useState()
@@ -75,7 +89,7 @@ const RetrospectiveContainer = ({ id, history }) => {
         setStore(appStore({ ...initialState, retrospective: retrospective }))
       })
       .catch(() => history.push('/'))
-  }, [id])
+  }, [id, history])
 
   return (
     <div id='main-container' className='flex flex-col min-h-screen bg-gray-300'>
@@ -100,6 +114,7 @@ const RetrospectiveContainer = ({ id, history }) => {
 }
 
 RetrospectiveContainer.propTypes = {
+  history: historyShape,
   id: PropTypes.string.isRequired
 }
 
