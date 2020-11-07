@@ -3,11 +3,13 @@ import Avatar, { Piece } from 'avataaars'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import { put } from 'lib/httpClient'
+import CONSTANTS from 'lib/utils/constants'
 import { avatarShape } from 'lib/utils/shapes'
-import {
+
+const {
   TYPE_MAPPING, SKIN_COLORS, TOPS_HAT, TOPS_LONG, TOPS_SHORT, TOPS_COLORS, CLOTHES, CLOTHES_COLORS, GRAPHICS,
   FACIAL_HAIR, FACIAL_HAIR_COLORS, ACCESSORIES, EYES, EYEBROWS, MOUTHS
-} from 'utils/constants/avatar'
+} = CONSTANTS
 
 const PieceWrapper = ({ pieceType, value, pieceData, onItemSelect }) => {
   const additionalStyle = {}
