@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import PropTypes from 'prop-types'
 import Modal from './Modal'
-import Card from './Card'
 import './Timer.scss'
 
 const computeRemainingTime = endTime => {
@@ -73,6 +73,11 @@ const Timer = ({ facilitator, show }) => {
       </Modal>
     </>
   )
+}
+
+Timer.propTypes = {
+  facilitator: PropTypes.bool,
+  show: PropTypes.bool
 }
 
 export default Timer

@@ -1,209 +1,15 @@
 import React from 'react'
 import Avatar, { Piece } from 'avataaars'
 import classNames from 'classnames'
+import PropTypes from 'prop-types'
 import { put } from 'lib/httpClient'
+import CONSTANTS from 'lib/utils/constants'
+import { avatarShape } from 'lib/utils/shapes'
 
-const TYPE_MAPPING = {
-  skin: 'skinColor',
-  graphics: 'graphicType',
-  'hair-color': 'hairColor',
-  facialHair: 'facialHairType',
-  'facial-hair-color': 'facialHairColor',
-  eyes: 'eyeType',
-  eyebrows: 'eyebrowType',
-  mouth: 'mouthType',
-  top: 'topType',
-  clothe: 'clotheType',
-  'clothe-color': 'clotheColor',
-  accessories: 'accessoriesType'
-}
-
-const SKIN_COLORS = {
-  'Tanned': '#FD9841',
-  'Yellow': '#F8D25C',
-  'Pale': '#FFDBB4',
-  'Light': '#EDB98A',
-  'Brown': '#D08B5B',
-  'DarkBrown': '#AE5D29',
-  'Black': '#614335'
-}
-
-const TOPS_HAT = [
-  'NoHair',
-  'Eyepatch',
-  'Hat',
-  'Hijab',
-  'Turban',
-  'WinterHat1',
-  'WinterHat2',
-  'WinterHat3',
-  'WinterHat4'
-]
-
-const TOPS_LONG = [
-  'NoHair',
-  'LongHairBigHair',
-  'LongHairBob',
-  'LongHairBun',
-  'LongHairCurly',
-  'LongHairCurvy',
-  'LongHairDreads',
-  'LongHairFrida',
-  'LongHairFro',
-  'LongHairFroBand',
-  'LongHairNotTooLong',
-  'LongHairShavedSides',
-  'LongHairMiaWallace',
-  'LongHairStraight',
-  'LongHairStraight2',
-  'LongHairStraightStrand'
-]
-
-const TOPS_SHORT = [
-  'NoHair',
-  'ShortHairDreads01',
-  'ShortHairDreads02',
-  'ShortHairFrizzle',
-  'ShortHairShaggyMullet',
-  'ShortHairShortCurly',
-  'ShortHairShortFlat',
-  'ShortHairShortRound',
-  'ShortHairShortWaved',
-  'ShortHairSides',
-  'ShortHairTheCaesar',
-  'ShortHairTheCaesarSidePart'
-]
-
-const TOPS_COLORS = {
-  'Auburn': '#A55728',
-  'Black': '#2C1B18',
-  'Blonde': '#B58143',
-  'BlondeGolden': '#D6B370',
-  'Brown': '#724133',
-  'BrownDark': '#4A312C',
-  'PastelPink': '#F59797',
-  'Platinum': '#ECDCBF',
-  'Red': '#C93305',
-  'SilverGray': '#E8E1E1'
-}
-
-const CLOTHES = [
-  'BlazerShirt',
-  'BlazerSweater',
-  'CollarSweater',
-  'GraphicShirt',
-  'Hoodie',
-  'Overall',
-  'ShirtCrewNeck',
-  'ShirtScoopNeck',
-  'ShirtVNeck'
-]
-
-const CLOTHES_COLORS = {
-  'Black': '#262E33',
-  'Blue01': '#65C9FF',
-  'Blue02': '#5199E4',
-  'Blue03': '#25557C',
-  'Gray01': '#E6E6E6',
-  'Gray02': '#929598',
-  'Heather': '#3C4F5C',
-  'PastelBlue': '#B1E2FF',
-  'PastelGreen': '#A7FFC4',
-  'PastelOrange': '#FFDEB5',
-  'PastelRed': '#FFAFB9',
-  'PastelYellow': '#FFFFB1',
-  'Pink': '#FF488E',
-  'Red': '#FF5C5C',
-  'White': '#FFFFFF'
-}
-
-const GRAPHICS = [
-  'Bat',
-  'Cumbia',
-  'Deer',
-  'Diamond',
-  'Hola',
-  'Pizza',
-  'Resist',
-  'Selena',
-  'Bear',
-  'SkullOutline',
-  'Skull'
-]
-
-const FACIAL_HAIR = [
-  'Blank',
-  'BeardMedium',
-  'BeardLight',
-  'BeardMajestic',
-  'MoustacheFancy',
-  'MoustacheMagnum'
-]
-const FACIAL_HAIR_COLORS = {
-  'Auburn': '#A55728',
-  'Black': '#2C1B18',
-  'Blonde': '#B58143',
-  'BlondeGolden': '#D6B370',
-  'Brown': '#724133',
-  'BrownDark': '#4A312C',
-  'Platinum': '#ECDCBF',
-  'Red': '#C93305'
-}
-
-const ACCESSORIES = [
-  'Blank',
-  'Kurt',
-  'Prescription01',
-  'Prescription02',
-  'Round',
-  'Sunglasses',
-  'Wayfarers'
-]
-
-const EYES = [
-  'Close',
-  'Cry',
-  'Default',
-  'Dizzy',
-  'EyeRoll',
-  'Happy',
-  'Hearts',
-  'Side',
-  'Squint',
-  'Surprised',
-  'Wink',
-  'WinkWacky'
-]
-
-const EYEBROWS = [
-  'Angry',
-  'AngryNatural',
-  'Default',
-  'DefaultNatural',
-  'FlatNatural',
-  'RaisedExcited',
-  'RaisedExcitedNatural',
-  'SadConcerned',
-  'SadConcernedNatural',
-  'UnibrowNatural',
-  'UpDown',
-  'UpDownNatural'
-]
-
-const MOUTHS = [
-  'Concerned',
-  'Default',
-  'Disbelief',
-  'Eating',
-  'Grimace',
-  'Sad',
-  'ScreamOpen',
-  'Serious',
-  'Smile',
-  'Tongue',
-  'Twinkle',
-  'Vomit'
-]
+const {
+  TYPE_MAPPING, SKIN_COLORS, TOPS_HAT, TOPS_LONG, TOPS_SHORT, TOPS_COLORS, CLOTHES, CLOTHES_COLORS, GRAPHICS,
+  FACIAL_HAIR, FACIAL_HAIR_COLORS, ACCESSORIES, EYES, EYEBROWS, MOUTHS
+} = CONSTANTS.avatar
 
 const PieceWrapper = ({ pieceType, value, pieceData, onItemSelect }) => {
   const additionalStyle = {}
@@ -216,6 +22,15 @@ const PieceWrapper = ({ pieceType, value, pieceData, onItemSelect }) => {
       <Piece pieceType={pieceType} pieceSize={pieceSize} {...pieceData} />
     </div>
   )
+}
+
+PieceWrapper.propTypes = {
+  pieceType: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  pieceData: PropTypes.shape({
+    background: PropTypes.string
+  }),
+  onItemSelect: PropTypes.func.isRequired
 }
 
 const SkinTab = ({ onItemSelect }) => (
@@ -234,6 +49,10 @@ const SkinTab = ({ onItemSelect }) => (
     </div>
   </div>
 )
+
+SkinTab.propTypes = {
+  onItemSelect: PropTypes.func.isRequired
+}
 
 const FacialHairTab = ({ onItemSelect, currentColor }) => (
   <div className='flex flex-row'>
@@ -264,6 +83,11 @@ const FacialHairTab = ({ onItemSelect, currentColor }) => (
   </div>
 )
 
+FacialHairTab.propTypes = {
+  onItemSelect: PropTypes.func.isRequired,
+  currentColor: PropTypes.string
+}
+
 const EyesTab = ({ onItemSelect }) => (
   <div className='flex flex-row'>
     <div className='flex flex-row flex-wrap'>
@@ -280,6 +104,10 @@ const EyesTab = ({ onItemSelect }) => (
     </div>
   </div>
 )
+
+EyesTab.propTypes = {
+  onItemSelect: PropTypes.func.isRequired
+}
 
 const EyebrowsTab = ({ onItemSelect }) => (
   <div className='flex flex-row'>
@@ -298,6 +126,10 @@ const EyebrowsTab = ({ onItemSelect }) => (
   </div>
 )
 
+EyebrowsTab.propTypes = {
+  onItemSelect: PropTypes.func.isRequired
+}
+
 const MouthTab = ({ onItemSelect }) => (
   <div className='flex flex-row'>
     <div className='flex flex-row flex-wrap'>
@@ -314,6 +146,10 @@ const MouthTab = ({ onItemSelect }) => (
     </div>
   </div>
 )
+
+MouthTab.propTypes = {
+  onItemSelect: PropTypes.func.isRequired
+}
 
 const TopTab = ({ onItemSelect, currentColor }) => {
   const [tab, setTab] = React.useState('long')
@@ -363,6 +199,11 @@ const TopTab = ({ onItemSelect, currentColor }) => {
   )
 }
 
+TopTab.propTypes = {
+  onItemSelect: PropTypes.func.isRequired,
+  currentColor: PropTypes.string
+}
+
 const ClothesTab = ({ onItemSelect, currentColor }) => (
   <div className='flex flex-row'>
     <div className='flex flex-row flex-wrap'>
@@ -392,6 +233,11 @@ const ClothesTab = ({ onItemSelect, currentColor }) => (
   </div>
 )
 
+ClothesTab.propTypes = {
+  onItemSelect: PropTypes.func.isRequired,
+  currentColor: PropTypes.string
+}
+
 const ClothGraphicsTab = ({ onItemSelect, shirtColor }) => (
   <div className='flex flex-row'>
     <div className='flex flex-row flex-wrap'>
@@ -408,6 +254,11 @@ const ClothGraphicsTab = ({ onItemSelect, shirtColor }) => (
     </div>
   </div>
 )
+
+ClothGraphicsTab.propTypes = {
+  onItemSelect: PropTypes.func.isRequired,
+  shirtColor: PropTypes.string
+}
 
 const AccessoriesTab = ({ onItemSelect }) => (
   <div className='flex flex-row'>
@@ -426,6 +277,10 @@ const AccessoriesTab = ({ onItemSelect }) => (
   </div>
 )
 
+AccessoriesTab.propTypes = {
+  onItemSelect: PropTypes.func.isRequired
+}
+
 const TabEntry = ({ name, label, disabled, selected, onClick }) => (
   <button
     className={
@@ -440,6 +295,14 @@ const TabEntry = ({ name, label, disabled, selected, onClick }) => (
       {label}
   </button>
 )
+
+TabEntry.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  disabled: PropTypes.bool,
+  selected: PropTypes.bool,
+  onClick: PropTypes.func.isRequired
+}
 
 const AvatarEditor = ({ backgroundColor, settings, retrospectiveId }) => {
   const [currentTab, setCurrentTab] = React.useState('skin')
@@ -478,6 +341,12 @@ const AvatarEditor = ({ backgroundColor, settings, retrospectiveId }) => {
       </div>
     </div>
   )
+}
+
+AvatarEditor.propTypes = {
+  backgroundColor: PropTypes.string.isRequired,
+  settings: avatarShape.isRequired,
+  retrospectiveId: PropTypes.string.isRequired
 }
 
 export default AvatarEditor

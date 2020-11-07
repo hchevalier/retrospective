@@ -1,5 +1,20 @@
 import PropTypes from 'prop-types'
 
+export const avatarShape = PropTypes.shape({
+  topType: PropTypes.string,
+  accessoriesType: PropTypes.string,
+  hairColor: PropTypes.string,
+  facialHairType: PropTypes.string,
+  facialHairColor: PropTypes.string,
+  clotheType: PropTypes.string,
+  clotheColor: PropTypes.string,
+  graphicType: PropTypes.string,
+  eyeType: PropTypes.string,
+  eyebrowType: PropTypes.string,
+  mouthType: PropTypes.string,
+  skinColor: PropTypes.string
+})
+
 const topicShape = PropTypes.shape({
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired
