@@ -2,6 +2,7 @@ import React from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import constants from 'lib/utils/constants'
+import { reactionShape } from 'lib/utils/shapes'
 import './Emoji.scss'
 
 const Vote = ({ badge, own, selected, disabled, onAdd, onRemove }) => {
@@ -43,7 +44,7 @@ Vote.propTypes = {
   onAdd: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
   own: PropTypes.bool,
-  selected: PropTypes.bool
+  selected: reactionShape
 }
 
 export default Vote

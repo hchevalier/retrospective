@@ -9,7 +9,7 @@ import { avatarShape } from 'lib/utils/shapes'
 const {
   TYPE_MAPPING, SKIN_COLORS, TOPS_HAT, TOPS_LONG, TOPS_SHORT, TOPS_COLORS, CLOTHES, CLOTHES_COLORS, GRAPHICS,
   FACIAL_HAIR, FACIAL_HAIR_COLORS, ACCESSORIES, EYES, EYEBROWS, MOUTHS
-} = CONSTANTS
+} = CONSTANTS.avatar
 
 const PieceWrapper = ({ pieceType, value, pieceData, onItemSelect }) => {
   const additionalStyle = {}
@@ -346,7 +346,7 @@ const AvatarEditor = ({ backgroundColor, settings, retrospectiveId }) => {
 AvatarEditor.propTypes = {
   backgroundColor: PropTypes.string.isRequired,
   settings: avatarShape.isRequired,
-  retrospectiveId: PropTypes.number.isRequired
+  retrospectiveId: PropTypes.string.isRequired
 }
 
 export default AvatarEditor
