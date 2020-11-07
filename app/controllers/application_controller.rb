@@ -49,4 +49,9 @@ class ApplicationController < ActionController::Base
 
     AUTHORIZED_DOMAINS.any? { |domain| email.ends_with?(domain) }
   end
+
+  def google_authentication_enabled?
+    ENV['GOOGLE_CLIENT_ID'].present?
+  end
+  helper_method :google_authentication_enabled?
 end

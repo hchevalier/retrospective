@@ -3,6 +3,10 @@
 require 'test_helper'
 
 class LoginTest < ActionDispatch::IntegrationTest
+  setup do
+    ApplicationController.any_instance.stubs(:google_authentication_enabled?).returns(true)
+  end
+
   test 'logs in successfully' do
     account = create(:account, email: 'myemail@company.com', password: 'mypassword')
 

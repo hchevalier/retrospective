@@ -12,7 +12,7 @@
         voteEmoji: '<%= Reaction::VOTE_EMOJI %>',
         unvoteEmoji: '<%= Reaction::UNVOTE_EMOJI %>',
         maxVotes: <%= Reaction::MAX_VOTES %>,
-        googleAuthenticationEnabled: "<%= ENV['GOOGLE_CLIENT_ID'].present? %>"
+        googleAuthenticationEnabled: "<%= google_authentication_enabled? %>"
       }
     </script>
 
