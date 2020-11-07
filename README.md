@@ -41,7 +41,7 @@ rails s
 A retrospective is composed of 6 steps.
 
 ### 1. Gathering
-Group members gather in the lobby and can change their sticky notes' color.
+Group members gather in the lobby and can change their sticky notes' color or customize their avatar.
 
 ![Gathering step](docs/gathering.png?raw=true "Gathering step")
 
@@ -161,7 +161,6 @@ Thank you a lot:
 Also, I want to thank following SVG creators from the Noun Project:
 - Ian Mawle for "Light Bulb"
 - Alice Design for "chat" and "Megaphone"
-- monkik for "avatar"
 - Setyo Ari Wibowo for "random"
 - Three Six Five for "Check"
 - Bohdan Burmich for "Eye"
