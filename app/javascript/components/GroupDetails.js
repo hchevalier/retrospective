@@ -120,10 +120,10 @@ const GroupsDetails = ({ id }) => {
 
             <Card title={`Group members (${group.members.length})`} wrap actionLocation='header' actionLabel='ADD' onAction={handleAddGroupMembersClick}>
               <div className='flex flex-col flex-wrap w-full p-2'>
-                <ul>
-                  {group.members.map((account) => {
-                    return (
-                      <ul>
+                {currentAccount && (
+                  <ul>
+                    {group.members.map((account) => {
+                      return (
                         <li key={account.publicId} className='member-group flex justify-between'>
                           {account.username}
                           {currentAccount.publicId !== account.publicId ? (
@@ -139,10 +139,10 @@ const GroupsDetails = ({ id }) => {
                             </Button>
                           ) : null}
                         </li>
-                      </ul>
-                    )
-                  })}
-                </ul>
+                      )
+                    })}
+                  </ul>
+                )}
               </div>
             </Card>
           </div>
