@@ -10,39 +10,18 @@ class Api::GroupAccessesController < ApplicationController
   end
 
   def destroy
-    byebug
-    # return if params[:id].blank? || params[:account].blank?
+    group = current_account.groups.find(params[:group_id])
+    account = group.accounts.find_by(public_id: params[:id])
+    return render(json: { status: :not_found }) unless account
 
-    # if leave?
-    #   group_access = account_group_access
-    # elsif account_group_access && revoke?
-    #     account = Account.find_by(public_id: params[:account])
-    #     group_access = account.group_accesses.find(params[:id])
-    # end
+    group_access = group.group_accesses.find_by(account_id: account.id)
+    return render(json: { status: :not_found }) unless group_access
 
-    account = Account.find_by(public_id: params[:account])
-
-    group_access = account.group_accesses.find(params[:id])
-    revoke_access(group_access)
-  end
-
-  private
-
-  def account_group_access
-    group_access = current_account.group_accesses.find(params[:id])
-    raise if group_access.nil?
-  end
-
-  def leave?
-    current_account.publicId == params[:account]
-  end
-
-  def revoke?
-    current_account.publicId != params[:account]
-  end
-
-  def revoke_access(group_access)
     group_access.update!(revoked_at: Time.current)
     group_access.group.update!(deleted_at: Time.current) if group_access.group.accounts_without_revoked.count.zero?
+    render json: current_account.accessible_groups.map(&:as_short_json)
+
+  rescue ActiveRecord::RecordNotFound
+    return render json: 'record not found for delete', status: :not_found
   end
 end

@@ -16,8 +16,9 @@ Rails.application.routes.draw do
 
   namespace :api do
     resource :account, only: %i(show)
-    resources :group_accesses, only: %i(index destroy)
+    resources :group_accesses, only: %i(index)
     resources :groups, only: %i(index create update show) do
+      resources :accounts, only: %i(destroy), controller: 'group_accesses'
       resources :pending_invitations, only: %i(index create destroy)
     end
     resources :notices, only: :create
