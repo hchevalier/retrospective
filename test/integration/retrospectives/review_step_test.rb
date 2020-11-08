@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Retrospective::ReviewStepTest < ActionDispatch::IntegrationTest
@@ -25,7 +27,7 @@ class Retrospective::ReviewStepTest < ActionDispatch::IntegrationTest
     logged_in_as(retrospective.facilitator)
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
 
-    assert_logged_in(retrospective.facilitator, with_flags: %i(self facilitator))
+    assert_logged_in(retrospective.facilitator, with_flags: %i[self facilitator])
     next_step
 
     assert_selector '.task'
@@ -34,7 +36,7 @@ class Retrospective::ReviewStepTest < ActionDispatch::IntegrationTest
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-      assert_logged_in(other_participant, with_flags: %i(self))
+      assert_logged_in(other_participant, with_flags: %i[self])
       within ".task[data-id='#{something.id}']" do
         assert_selector 'div.selected', text: 'TODO'
       end

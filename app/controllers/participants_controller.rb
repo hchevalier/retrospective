@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class ParticipantsController < ApplicationController
   def create
     retrospective = Retrospective.find(params[:retrospective_id])
 
-    participant = retrospective.participants.find { |participant| participant.account_id == current_account.id }
+    participant = retrospective.participants.find { |existing| existing.account_id == current_account.id }
     participant ||= Participant.create!(
       surname: current_account.username,
       account_id: current_account.id,
@@ -21,17 +23,12 @@ class ParticipantsController < ApplicationController
   def update
     retrospective = current_participant.retrospective
     participant = Participant.find(params[:id])
-    return render(json: { status: :forbidden }) if current_participant != participant || retrospective != participant.retrospective
+    if current_participant != participant || retrospective != participant.retrospective
+      return render(json: { status: :forbidden })
+    end
 
     if current_participant.update!(update_participants_params)
-      OrchestratorChannel.broadcast_to(
-        retrospective,
-        action: 'changeColor',
-        parameters: {
-          participant: current_participant.profile,
-          availableColors: retrospective.available_colors
-        }
-      )
+      broadcast_change_color(retrospective, current_participant.profile)
 
       render json: { status: :ok }
     else
@@ -43,5 +40,13 @@ class ParticipantsController < ApplicationController
 
   def update_participants_params
     params.permit(:color)
+  end
+
+  def broadcast_change_color(retrospective, profile)
+    parameters = {
+      participant: profile,
+      availableColors: retrospective.available_colors
+    }
+    retrospective.broadcast_order('changeColor', parameters)
   end
 end

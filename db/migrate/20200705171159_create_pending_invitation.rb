@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreatePendingInvitation < ActiveRecord::Migration[6.0]
   def change
     create_table :pending_invitations, id: :uuid do |t|

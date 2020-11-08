@@ -1,6 +1,8 @@
 import React from 'react'
 import classNames from 'classnames'
+import PropTypes from 'prop-types'
 import constants from 'lib/utils/constants'
+import { reactionShape } from 'lib/utils/shapes'
 import './Emoji.scss'
 
 const Vote = ({ badge, own, selected, disabled, onAdd, onRemove }) => {
@@ -17,7 +19,7 @@ const Vote = ({ badge, own, selected, disabled, onAdd, onRemove }) => {
 
     touchReaction()
     onAdd({ kind: 'vote', name: 'vote' })
-  }, [recentlyTouchedReaction])
+  }, [recentlyTouchedReaction, onAdd])
 
   const handleClickRemove = React.useCallback((event) => {
     event.stopPropagation()
@@ -25,7 +27,7 @@ const Vote = ({ badge, own, selected, disabled, onAdd, onRemove }) => {
 
     touchReaction()
     onRemove(selected)
-  }, [badge, selected, recentlyTouchedReaction])
+  }, [badge, selected, recentlyTouchedReaction, onRemove])
 
   return (
     <div className={classNames('emoji-chip', { 'selected': !!selected, 'own': own })}>
@@ -34,6 +36,15 @@ const Vote = ({ badge, own, selected, disabled, onAdd, onRemove }) => {
       {onAdd && <span onClick={handleClickAdd} className={classNames('vote', { 'disabled': disabled })}>{constants.voteEmoji}</span>}
     </div>
   )
+}
+
+Vote.propTypes = {
+  badge: PropTypes.number,
+  disabled: PropTypes.bool,
+  onAdd: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
+  own: PropTypes.bool,
+  selected: reactionShape
 }
 
 export default Vote

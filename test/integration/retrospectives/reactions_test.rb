@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
@@ -17,7 +19,7 @@ class Retrospective::ReactionsTest < ActionDispatch::IntegrationTest
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-      assert_logged_in(other_participant, with_flags: %i(self))
+      assert_logged_in(other_participant, with_flags: %i[self])
       within ".reflection[data-id='#{reflection.id}']" do
         assert_text Reaction::EMOJI_LIST[:star_struck]
         assert_css '.emoji-chip.star-struck.selected'

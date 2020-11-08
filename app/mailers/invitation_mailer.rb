@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class InvitationMailer < ApplicationMailer
   def send_invitation(invitation: nil)
     @invitation = invitation || params&.fetch(:invitation, nil)

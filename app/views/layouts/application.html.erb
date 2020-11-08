@@ -11,7 +11,8 @@
         emojiList: JSON.parse('<%= Reaction::EMOJI_LIST.to_json.html_safe %>'),
         voteEmoji: '<%= Reaction::VOTE_EMOJI %>',
         unvoteEmoji: '<%= Reaction::UNVOTE_EMOJI %>',
-        maxVotes: <%= Reaction::MAX_VOTES %>
+        maxVotes: <%= Reaction::MAX_VOTES %>,
+        googleAuthenticationEnabled: "<%= google_authentication_enabled? %>"
       }
     </script>
 

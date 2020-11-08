@@ -9,6 +9,7 @@ import RetrospectiveCreationForm from './RetrospectiveCreationForm'
 import RetrospectiveContainer from './RetrospectiveContainer'
 import { get, put } from '../lib/httpClient'
 import { historyShape } from 'lib/utils/shapes'
+import useSingleTimeEffect from 'lib/hooks/useSingleTimeEffect'
 import AuthenticationForm from './AuthenticationForm'
 
 const App = withRouter(({ history }) => {
@@ -19,7 +20,7 @@ const App = withRouter(({ history }) => {
   const [returnUrl, setReturnUrl] = useState()
   const onLoginPage = history.location.pathname.match(/\/sessions\/new/)
 
-  React.useEffect(() => {
+  useSingleTimeEffect(() => {
     // Clean query parameters
     const params = new URLSearchParams(window.location.search)
     if (params.get('email') || params.get('invitation_id')) {
@@ -27,15 +28,16 @@ const App = withRouter(({ history }) => {
       params.delete('invitation_id')
       const newUrl = `${window.location.pathname}${params.toString().length > 0 ? '?' : ''}${params.toString()}`
       history.replace(newUrl)
+      return true
     }
-  }, [])
+  })
 
-  React.useEffect(() => {
+  useSingleTimeEffect(() => {
     // Get login state
     get({ url: '/api/account' })
       .then(() => setLoggedIn(true))
       .catch(() => setLoggedIn(false))
-  }, [])
+  })
 
   React.useEffect(() => {
     if (loggedIn && pendingInvitation) {
@@ -78,8 +80,8 @@ const App = withRouter(({ history }) => {
         <Route path='/sessions/new'>
           <AuthenticationForm
             defaultEmail={initialEmail}
+            returnUrl={returnUrl}
             onLogIn={() => {
-              console.log('Logged in, redirecting to', returnUrl ? returnUrl : '/')
               setLoggedIn(true)
               history.replace(returnUrl ? returnUrl : '/')
              }} />

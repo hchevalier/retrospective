@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddAccountIdToParticipants < ActiveRecord::Migration[6.0]
   def up
     add_column :participants, :account_id, :uuid, null: true

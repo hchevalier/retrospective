@@ -1,11 +1,12 @@
 import React from 'react'
 import { useSelector, shallowEqual, useDispatch } from 'react-redux'
 import classNames from 'classnames'
+import PropTypes from 'prop-types'
 import { post, destroy } from 'lib/httpClient'
+import constants from 'lib/utils/constants'
+import { reactionShape } from 'lib/utils/shapes'
 import Vote from './Vote'
 import './VoteCorner.scss'
-import constants from 'lib/utils/constants'
-import PropTypes from 'prop-types'
 
 const VoteCorner = ({ canVote, target, targetType, votes, noStandOut = false, inline = false }) => {
   const dispatch = useDispatch()
@@ -50,7 +51,7 @@ VoteCorner.propTypes = {
   canVote: PropTypes.bool,
   target: PropTypes.object,
   targetType: PropTypes.string.isRequired,
-  votes: PropTypes.array,
+  votes: PropTypes.arrayOf(reactionShape),
   noStandOut: PropTypes.bool,
   inline: PropTypes.bool
 }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
@@ -99,7 +101,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
 
   test 'joins an existing retrospective by logging in to an existing account' do
     retrospective = create(:retrospective)
-    create(:account, username: 'Other one', email: 'other_one@yopmail.com', password: 'mypasword')
+    create(:account, username: 'Other one', email: 'other_one@yopmail.com', password: 'mypassword')
     invitation = create_invitation(retrospective, 'other_one@yopmail.com')
 
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}", invitation_id: invitation.id)
@@ -118,7 +120,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
 
   test 'joining an existing retrospective and logging in reuses a participant if any' do
     retrospective = create(:retrospective)
-    account = create(:account, username: 'Other one', email: 'other_one@yopmail.com', password: 'mypasword')
+    account = create(:account, username: 'Other one', email: 'other_one@yopmail.com', password: 'mypassword')
     participant = create(:participant, retrospective: retrospective, account: account, surname: 'Other one')
     invitation = create_invitation(retrospective, 'other_one@yopmail.com')
 
@@ -129,7 +131,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
       fill_in 'email', with: 'other_one@yopmail.com'
       fill_in 'password', with: 'mypassword'
       click_on 'Login'
-      assert_logged_in(participant, with_flags: %i(self))
+      assert_logged_in(participant, with_flags: %i[self])
     end
   end
 
@@ -157,7 +159,7 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
 
     assert_no_difference 'Participant.count' do
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-      assert_logged_in(participant, with_flags: %i(self))
+      assert_logged_in(participant, with_flags: %i[self])
       refute_field 'email'
       refute_button 'Login'
     end

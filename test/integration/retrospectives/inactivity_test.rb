@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Retrospective::InactivityTest < ActionDispatch::IntegrationTest
@@ -9,15 +11,15 @@ class Retrospective::InactivityTest < ActionDispatch::IntegrationTest
     within_window(facilitator_window) do
       logged_in_as(retrospective.facilitator)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-      assert_logged_in(retrospective.facilitator, with_flags: %i(self facilitator))
+      assert_logged_in(retrospective.facilitator, with_flags: %i[self facilitator])
     end
 
     other_participant_window = open_new_window
     within_window(other_participant_window) do
       logged_in_as(other_participant)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-      assert_logged_in(retrospective.facilitator, with_flags: %i(facilitator))
-      assert_logged_in(other_participant, with_flags: %i(self))
+      assert_logged_in(retrospective.facilitator, with_flags: %i[facilitator])
+      assert_logged_in(other_participant, with_flags: %i[self])
     end
 
     freeze_time do
@@ -30,7 +32,7 @@ class Retrospective::InactivityTest < ActionDispatch::IntegrationTest
 
     within_window(other_participant_window) do
       assert_inactive(retrospective.facilitator)
-      assert_logged_in(other_participant, with_flags: %i(self facilitator))
+      assert_logged_in(other_participant, with_flags: %i[self facilitator])
     end
   end
 
@@ -42,7 +44,7 @@ class Retrospective::InactivityTest < ActionDispatch::IntegrationTest
     within_window(facilitator_window) do
       logged_in_as(retrospective.facilitator)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-      assert_logged_in(retrospective.facilitator, with_flags: %i(self facilitator))
+      assert_logged_in(retrospective.facilitator, with_flags: %i[self facilitator])
     end
 
     freeze_time do
@@ -58,19 +60,19 @@ class Retrospective::InactivityTest < ActionDispatch::IntegrationTest
       logged_in_as(other_participant)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
       assert_inactive(retrospective.facilitator)
-      assert_logged_in(other_participant, with_flags: %i(self facilitator))
+      assert_logged_in(other_participant, with_flags: %i[self facilitator])
     end
 
     within_window(open_new_window) do
       logged_in_as(retrospective.facilitator)
       visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
-      assert_logged_in(retrospective.facilitator, with_flags: %i(self facilitator))
+      assert_logged_in(retrospective.facilitator, with_flags: %i[self facilitator])
       assert_logged_in(other_participant)
     end
 
     within_window(other_participant_window) do
-      assert_logged_in(retrospective.facilitator, with_flags: %i(facilitator))
-      assert_logged_in(other_participant, with_flags: %i(self))
+      assert_logged_in(retrospective.facilitator, with_flags: %i[facilitator])
+      assert_logged_in(other_participant, with_flags: %i[self])
     end
   end
 end

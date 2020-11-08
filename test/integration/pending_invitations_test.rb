@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class PendingInvitationsTest < ActionDispatch::IntegrationTest
@@ -146,7 +148,7 @@ class PendingInvitationsTest < ActionDispatch::IntegrationTest
     assert_participants_count(2)
     hover_participant('New joiner')
     assert_text 'New joiner'
-    assert_logged_in(account.participants.first, with_flags: %i(self))
+    assert_logged_in(account.participants.first, with_flags: %i[self])
     assert_current_path "/retrospectives/#{retrospective.id}"
   end
 
@@ -165,7 +167,7 @@ class PendingInvitationsTest < ActionDispatch::IntegrationTest
     hover_participant('New joiner')
     assert_text 'New joiner'
     account = Account.find_by(email: 'newjoiner@mycompany.com')
-    assert_logged_in(account.participants.first, with_flags: %i(self))
+    assert_logged_in(account.participants.first, with_flags: %i[self])
     assert_current_path "/retrospectives/#{retrospective.id}"
   end
 
@@ -182,7 +184,7 @@ class PendingInvitationsTest < ActionDispatch::IntegrationTest
     assert_participants_count(2)
     hover_participant('New joiner')
     assert_text 'New joiner'
-    assert_logged_in(account.participants.first, with_flags: %i(self))
+    assert_logged_in(account.participants.first, with_flags: %i[self])
     assert_current_path "/retrospectives/#{retrospective.id}"
   end
 

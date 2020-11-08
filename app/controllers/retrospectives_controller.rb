@@ -1,7 +1,6 @@
-class RetrospectivesController < ApplicationController
-  before_action :preload_current_participant_and_relationships, only: :show
-  skip_before_action :ensure_logged_in, only: :show
+# frozen_string_literal: true
 
+class RetrospectivesController < ApplicationController
   def create
     retrospective = Retrospective.create(retrospective_params.merge(facilitator_attributes: facilitator_attributes))
 
@@ -21,9 +20,5 @@ class RetrospectivesController < ApplicationController
 
   def facilitator_attributes
     { surname: current_account.username, account_id: current_account.id }
-  end
-
-  def preload_current_participant_and_relationships
-    current_participant_with_relationships_included
   end
 end

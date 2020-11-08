@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GroupAccess < ApplicationRecord
   belongs_to :account
   belongs_to :group

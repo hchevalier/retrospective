@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 class Task < ApplicationRecord
   belongs_to :reflection
   belongs_to :author, class_name: 'Participant', inverse_of: :created_tasks
   belongs_to :assignee, class_name: 'Account', inverse_of: :assigned_tasks, primary_key: :public_id
   has_one :retrospective, through: :reflection
-  has_many :reactions, as: :target, inverse_of: :target
+  has_many :reactions, as: :target, inverse_of: :target, dependent: :destroy
 
-  scope :pending, -> { where(status: %i(todo on_hold)) }
+  scope :pending, -> { where(status: %i[todo on_hold]) }
 
   enum status: {
     done: 'done',
@@ -14,9 +16,9 @@ class Task < ApplicationRecord
     wont_do: 'wont_do'
   }
 
-    def description
-      anonymize(super)
-    end
+  def description
+    anonymize(super)
+  end
 
   def pending?
     todo? || on_hold?
@@ -25,7 +27,12 @@ class Task < ApplicationRecord
   def as_json
     {
       id: id,
-      reflection: { id: reflection.id, content: reflection.content, zone: { name: reflection.zone.identifier}, topicId: reflection.topic_id },
+      reflection: {
+        id: reflection.id,
+        content: reflection.content,
+        zone: { name: reflection.zone.identifier },
+        topicId: reflection.topic_id
+      },
       retrospective: { zonesTypology: retrospective.zones_typology },
       author: author.minimal_profile,
       assignee: assignee&.as_public_json,

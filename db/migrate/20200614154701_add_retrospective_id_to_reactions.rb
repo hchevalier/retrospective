@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddRetrospectiveIdToReactions < ActiveRecord::Migration[6.0]
   def up
     add_column :reactions, :retrospective_id, :uuid, null: true

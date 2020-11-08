@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import classNames from 'classnames'
+import PropTypes from 'prop-types'
 import { post } from 'lib/httpClient'
 import { groupBy } from 'lib/helpers/array'
 import Card from './Card'
@@ -30,7 +31,7 @@ const ReflectionsList = ({ retrospectiveKind, onDone }) => {
     if (revealer && unrevealed === 0) {
       onDone()
     }
-  }, [unrevealed])
+  }, [unrevealed, revealer, onDone])
 
   const reflectionsByZone = groupBy(reflections, 'zone.id')
 
@@ -87,6 +88,11 @@ const ReflectionsList = ({ retrospectiveKind, onDone }) => {
       </div>
     </>
   )
+}
+
+ReflectionsList.propTypes = {
+  retrospectiveKind: PropTypes.string.isRequired,
+  onDone: PropTypes.func
 }
 
 export default ReflectionsList

@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 class SessionsController < ApplicationController
-  skip_before_action :ensure_logged_in, only: %i(create omniauth)
+  skip_before_action :ensure_logged_in, only: %i[create omniauth]
 
   def create
     account = Account.find_by(email: params[:email])
     return render(json: { status: :not_found }, status: :not_found) unless account
 
-    return render(json: { status: :unauthorized }, status: :unauthorized) unless account unless account.authenticate(params[:password])
+    return render(json: { status: :unauthorized }, status: :unauthorized) unless account.authenticate(params[:password])
 
     session[:account_id] = account.id
 
-    return :head
+    :head
   end
 
   def destroy
@@ -19,17 +21,23 @@ class SessionsController < ApplicationController
   end
 
   def omniauth
+    redirect_to single_page_app_path(path: 'sessions/new') and return unless valid_email?(auth.info.email)
+
     account = Account.from_omniauth(auth)
     account.save!
 
     session[:account_id] = account.id
 
-    redirect_to single_page_app_path(path: :dashboard)
+    redirect_to return_to || single_page_app_path(path: :dashboard)
   end
 
   private
 
   def auth
     request.env['omniauth.auth']
+  end
+
+  def return_to
+    request.env['omniauth.origin']
   end
 end

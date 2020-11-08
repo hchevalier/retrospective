@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 
   def requires_anonymization?
-    return @_requires_anonymization if defined?(@_requires_anonymization)
+    return @requires_anonymization if defined?(@requires_anonymization)
 
-    @_requires_anonymization = Rails.const_defined?('Console') && Rails.env.production?
+    @requires_anonymization = Rails.const_defined?('Console') && Rails.env.production?
   end
 
   def anonymize(attribute)

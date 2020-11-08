@@ -1,9 +1,11 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import PropTypes from 'prop-types'
 import { post, destroy } from 'lib/httpClient'
 import { groupBy } from 'lib/helpers/array'
-import Emoji from './Emoji'
 import constants from 'lib/utils/constants'
+import { reflectionShape, reactionShape } from 'lib/utils/shapes'
+import Emoji from './Emoji'
 import './ReactionBar.scss'
 
 const ReactionBar = ({ reflection, displayed, reactions }) => {
@@ -36,7 +38,7 @@ const ReactionBar = ({ reflection, displayed, reactions }) => {
     setEmojiDisplayed(false)
 
     destroy({ url: `/retrospectives/${retrospectiveId}/reflections/${reflection.id}/reactions/${reaction.id}` })
-    .then(_data => dispatch({ type: 'delete-reaction', reactionId: reaction.id }))
+    .then(() => dispatch({ type: 'delete-reaction', reactionId: reaction.id }))
     .catch(error => console.warn(error))
   }
 
@@ -89,6 +91,12 @@ const ReactionBar = ({ reflection, displayed, reactions }) => {
       {reactionsBlock}
     </div>
   )
+}
+
+ReactionBar.propTypes = {
+  displayed: PropTypes.bool,
+  reactions: PropTypes.arrayOf(reactionShape),
+  reflection: reflectionShape
 }
 
 export default ReactionBar

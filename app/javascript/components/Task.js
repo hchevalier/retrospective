@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import EditIcon from 'images/edit-icon.svg'
 import DeleteIcon from 'images/delete-icon.svg'
 
@@ -21,6 +22,19 @@ const Task = ({ task, onEdit, onDelete, readOnly }) => {
       </div>}
     </div>
   )
+}
+
+Task.propTypes = {
+  onEdit: PropTypes.func,
+  onDelete: PropTypes.func,
+  readOnly: PropTypes.bool,
+  task: PropTypes.shape({
+    assignee: PropTypes.shape({
+      username: PropTypes.string
+    }),
+    description: PropTypes.string,
+    id: PropTypes.string.isRequired
+  })
 }
 
 export default Task

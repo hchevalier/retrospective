@@ -9,7 +9,11 @@ class OrchestratorChannel < ApplicationCable::Channel
 
     Rails.logger.debug "#{current_participant.surname} (#{current_participant.id}) subscribed"
     current_participant.update!(logged_in: true)
-    broadcast_to(current_participant.retrospective, action: 'refreshParticipant', parameters: { participant: current_participant.profile })
+    broadcast_to(
+      current_participant.retrospective,
+      action: 'refreshParticipant',
+      parameters: { participant: current_participant.profile }
+    )
 
     current_participant.retrospective.reset_original_facilitator! if current_participant.original_facilitator?
   end
@@ -35,7 +39,7 @@ class OrchestratorChannel < ApplicationCable::Channel
     current_participant.retrospective.update!(timer_end_at: timer_end_at)
   end
 
-  def set_revealer(data)
+  def elect_revealer(data)
     return unless current_participant.reload.facilitator?
 
     retrospective = current_participant.retrospective
@@ -43,9 +47,10 @@ class OrchestratorChannel < ApplicationCable::Channel
     new_revealer = retrospective.participants.find(data['uuid'])
     retrospective.update!(revealer: new_revealer)
     if current_revealer
-      broadcast_to(current_participant.retrospective, action: 'refreshParticipant', parameters: { participant: current_revealer.reload.profile })
+      current_revealer.reload
+      broadcast_to(retrospective, action: 'refreshParticipant', parameters: { participant: current_revealer.profile })
     end
-    broadcast_to(current_participant.retrospective, action: 'refreshParticipant', parameters: { participant: new_revealer.reload.profile })
+    broadcast_to(retrospective, action: 'refreshParticipant', parameters: { participant: new_revealer.reload.profile })
   end
 
   def reveal_reflection(data)
@@ -62,7 +67,8 @@ class OrchestratorChannel < ApplicationCable::Channel
 
     retrospective = current_participant.retrospective
     retrospective.update!(revealer: nil)
-    broadcast_to(retrospective, action: 'refreshParticipant', parameters: { participant: current_participant.reload.profile })
+    current_participant.reload
+    broadcast_to(retrospective, action: 'refreshParticipant', parameters: { participant: current_participant.profile })
   end
 
   def change_discussed_reflection(data)

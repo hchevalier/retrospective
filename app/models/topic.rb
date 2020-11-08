@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class Topic < ApplicationRecord
   belongs_to :retrospective
-  has_many :reflections, inverse_of: :topic
-  has_many :reactions, as: :target, inverse_of: :target
-  has_many :votes, -> () { vote }, class_name: 'Reaction', foreign_key: :target_id
+  has_many :reflections, inverse_of: :topic, dependent: :nullify
+  has_many :reactions, as: :target, inverse_of: :target, dependent: :destroy
+  has_many :votes, -> { vote }, class_name: 'Reaction', foreign_key: :target_id # rubocop:disable Rails/InverseOf
 
   before_save :update_label
 

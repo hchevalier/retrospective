@@ -13,7 +13,7 @@ const ReflectionsListForActionStep = () => {
   const currentReflection = useSelector(state => state.reflections.discussedReflection)
   const visibleReactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
   const channel = useSelector(state => state.orchestrator.subscription)
-  const { zonesTypology, kind } = useSelector(state => state.retrospective)
+  const { zonesTypology } = useSelector(state => state.retrospective)
 
   const reflectionsWithVotes = visibleReflections.map((reflection) => {
     const reactions = visibleReactions.filter((reaction) => {
