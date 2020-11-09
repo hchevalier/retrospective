@@ -22,8 +22,7 @@ class Api::GroupAccessesController < ApplicationController
     group_access.update!(revoked_at: Time.current)
     group_access.group.update!(deleted_at: Time.current) if group_access.group.accounts_without_revoked.count.zero?
     render json: current_account.accessible_groups.map(&:as_short_json)
-
   rescue ActiveRecord::RecordNotFound
-    return render json: 'record not found for delete', status: :not_found
+    render json: 'record not found for delete', status: :not_found
   end
 end
