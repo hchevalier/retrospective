@@ -13,11 +13,16 @@ class GroupsAccessesTest < ActionDispatch::IntegrationTest
     visit '/groups'
   end
 
-  test 'display revoke access button for all members except current account' do
+  test 'it shows the remove button for everyone except the current member' do
     assert_text 'Created on'
     click_on 'MyGroupName'
     assert_text 'Group members (2)'
-    assert_text 'REMOVE', count: 1
+    within find('li', text: 'Groupie') do
+      refute_text 'REMOVE'
+    end
+    within find('li', text: 'Other member') do
+      assert_text 'REMOVE'
+    end
   end
 
   test 'revoke access of a member' do
@@ -25,8 +30,10 @@ class GroupsAccessesTest < ActionDispatch::IntegrationTest
     click_on 'MyGroupName'
     assert_text 'Other member'
     assert_text 'Group members (2)'
-    accept_confirm do
-      click_on 'REMOVE'
+    within find('li', text: 'Other member') do
+      accept_confirm do
+        click_on 'REMOVE'
+      end
     end
     refute_text 'Other member'
     assert_text 'Group members (1)'

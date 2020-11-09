@@ -19,10 +19,10 @@ const GroupsList = ({ history }) => {
       .then((account) => setCurrentAccount(account))
   }, [])
 
-  const handleLeaveGroup = (groupAccessToRevoke, group) => {
-    if (confirm(`Are you sure you want to leave the group ${group.name}?`)) {
+  const handleLeaveGroup = (groupAccessToRevoke) => {
+    if (confirm(`Are you sure you want to leave the group ${groupAccessToRevoke.group.name}?`)) {
       destroy({
-        url: `/api/groups/${group.id}/accounts/${currentAccount.publicId}`
+        url: `/api/groups/${groupAccessToRevoke.group.id}/accounts/${currentAccount.publicId}`
       })
       .then(() => setGroupAccesses(groupAccesses.filter((groupAccess) => groupAccess.id !== groupAccessToRevoke.id)))
     }
@@ -55,7 +55,7 @@ const GroupsList = ({ history }) => {
                       <div className='flex flex-grow mt-4 items-end self-end'>
                         <button
                           className='bg-red-200 text-red-700 text-xxs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full'
-                          onClick={(event) => { event.preventDefault(); handleLeaveGroup(groupAccess, group) }}>
+                          onClick={(event) => { event.preventDefault(); handleLeaveGroup(groupAccess) }}>
                           LEAVE
                         </button>
                       </div>

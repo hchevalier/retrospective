@@ -123,18 +123,13 @@ const GroupsDetails = ({ id }) => {
                       return (
                         <li key={account.publicId} className='member-group flex justify-between'>
                           {account.username}
-                          {currentAccount.publicId !== account.publicId ? (
-                            <Button
-                              secondary
-                              name={account.publicId}
-                              onClick={(event) => {
-                                event.preventDefault()
-                                revokeAccessFromGroup(account)
-                              }}
-                            >
+                          {currentAccount.publicId !== account.publicId && (
+                            <button
+                            className='bg-red-200 text-red-700 text-xxs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full'
+                            onClick={(event) => { event.preventDefault(); revokeAccessFromGroup(account) }}>
                               REMOVE
-                            </Button>
-                          ) : null}
+                            </button>
+                          )}
                         </li>
                       )
                     })}
