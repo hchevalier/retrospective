@@ -13,19 +13,28 @@ class GroupsAccessesControllerTest < ActionDispatch::IntegrationTest
     ApplicationController.allow_forgery_protection = true
   end
 
-  test 'external person of a group cannot revoke access of a member' do
+  test 'current account does not have access to the group and cannot revoke access of a member' do
     @group.add_member(@other_account)
     delete "/api/groups/#{@group.id}/accounts/#{@other_account.public_id}"
-    assert_response :not_found
+    assert_response :forbidden
   end
 
   test 'the group does not exist' do
+    @group.add_member(@account)
+    @group.add_member(@other_account)
     delete "/api/groups/000/accounts/#{@other_account.public_id}"
-    assert_response :not_found
+    assert_response :forbidden
   end
 
   test 'cannot revoke access to an account that does not exist' do
+    @group.add_member(@account)
     delete "/api/groups/#{@group.id}/accounts/000"
+    assert_response :not_found
+  end
+
+  test 'cannot revoke access to an account which is not in the group' do
+    @group.add_member(@account)
+    delete "/api/groups/#{@group.id}/accounts/#{@other_account.public_id}"
     assert_response :not_found
   end
 end
