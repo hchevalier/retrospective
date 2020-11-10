@@ -6,6 +6,10 @@ import Mad from 'images/mad.png'
 import Plus from 'images/plus.png'
 import Minus from 'images/minus.png'
 import Interesting from 'images/interesting.png'
+import Liked from 'images/liked.png'
+import Learned from 'images/learned.png'
+import Lacked from 'images/lacked.png'
+import LongedFor from 'images/longed_for.png'
 import Keep from 'images/keep.png'
 import Start from 'images/start.png'
 import Stop from 'images/stop.png'
@@ -31,6 +35,14 @@ const iconFor = (retrospectiveKind, zone) => {
       return Minus
     case 'pmi-Interesting':
       return Interesting
+    case 'four_l-Liked':
+      return Liked
+    case 'four_l-Learned':
+      return Learned
+    case 'four_l-Lacked':
+      return Lacked
+    case 'four_l-Longed for':
+      return LongedFor
     case 'starfish-Keep':
       return Keep
     case 'starfish-Start':
