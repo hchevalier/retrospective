@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import Card from './Card'
 import GladSadMad from './retrospectives/GladSadMad'
 import PlusMinusInteresting from './retrospectives/PlusMinusInteresting'
+import FourL from './retrospectives/FourL'
 import Starfish from './retrospectives/Starfish'
 import TrafficLights from './retrospectives/TrafficLights'
 import OscarsGerards from './retrospectives/OscarsGerards'
@@ -15,6 +16,7 @@ import ExitFullScreenIcon from 'images/exit-fullscreen-icon'
 const RETROSPECTIVE_KINDS = {
   'glad_sad_mad': GladSadMad,
   'pmi': PlusMinusInteresting,
+  'four_l': FourL,
   'sailboat': Sailboat,
   'starfish': Starfish,
   'traffic_lights': TrafficLights,

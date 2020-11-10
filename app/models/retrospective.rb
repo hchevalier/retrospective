@@ -52,6 +52,7 @@ class Retrospective < ApplicationRecord
   }
 
   BUILDERS = {
+    kinds[:four_l] => 'Builders::FourL',
     kinds[:glad_sad_mad] => 'Builders::GladSadMad',
     kinds[:pmi] => 'Builders::PlusMinusInteresting',
     kinds[:sailboat] => 'Builders::Sailboat',
@@ -64,6 +65,7 @@ class Retrospective < ApplicationRecord
     [
       kinds[:glad_sad_mad],
       kinds[:pmi],
+      kinds[:four_l],
       kinds[:sailboat],
       kinds[:starfish],
       kinds[:traffic_lights],
