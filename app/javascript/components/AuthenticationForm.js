@@ -83,7 +83,7 @@ const AuthenticationForm = ({ defaultEmail, onLogIn, returnUrl }) => {
           <form ref={formRef} action={`/auth/google_oauth2?return_to=${returnUrl ? returnUrl : '/dashboard'}`} method="post">
             <input type="hidden" name="authenticity_token" value={csrfToken} />
             <span>or</span>
-            <img id='google-authentication' className='cursor-pointer' src={GoogleButton} width='200' onClick={(e) => formRef.current?.submit()} />
+            <img id='google-authentication' className='cursor-pointer' src={GoogleButton} width='200' onClick={() => formRef.current?.submit()} />
           </form>
         </div>
       )}
