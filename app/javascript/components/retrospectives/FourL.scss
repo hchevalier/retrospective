@@ -1,0 +1,31 @@
+#four_l #four_l_wrapper  {
+  height: 460px;
+
+  .zone-icon {
+    width: 48px !important;
+    height: 48px !important;
+    display: block !important;
+    margin: 0 auto !important;
+  }
+
+  .highlight {
+    border: 1px dashed red;
+    cursor: pointer;
+  }
+
+  #liked {
+    background-color: #bc5b61;
+  }
+
+  #learned {
+    background-color: #9a69a3;
+  }
+
+  #lacked {
+    background-color: #9fbabf;
+  }
+
+  #longed-for {
+    background-color: #e3db72;
+  }
+}
