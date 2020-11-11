@@ -101,8 +101,14 @@ const App = withRouter(({ history }) => {
         <Route path='/retrospectives/:retrospectiveId'>
           <RetrospectiveShow />
         </Route>
-        <Route path='/'>
+        <Route path='/dashboard'>
           <Dashboard />
+        </Route>
+        <Route exact path='/'>
+          <Dashboard />
+        </Route>
+        <Route>
+          <div>404</div>
         </Route>
       </Switch>
     </div>
