@@ -7,3 +7,5 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   prompt: 'consent',
   origin_param: 'return_to'
 end
+
+OmniAuth.config.allowed_request_methods = [:post]

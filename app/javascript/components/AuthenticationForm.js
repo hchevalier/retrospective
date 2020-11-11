@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
 import { post } from 'lib/httpClient'
 import Card from './Card'
@@ -12,7 +12,7 @@ const AuthenticationForm = ({ defaultEmail, onLogIn, returnUrl }) => {
   const [email, setEmail] = React.useState(defaultEmail || '')
   const [password, setPassword] = React.useState('')
   const [passwordResetToastDisplayed, setPasswordResetToastDisplayed] = React.useState(false)
-
+  const formRef = useRef()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -47,6 +47,8 @@ const AuthenticationForm = ({ defaultEmail, onLogIn, returnUrl }) => {
     }
   }
 
+  const csrfToken = document.querySelector('[name=csrf-token]').content
+
   return (
     <div className='max-w-xl min-w-1/2 mx-auto mt-4'>
       <Card title={mode === 'signUp' ? 'Create an account' : 'Log in'} center>
@@ -78,10 +80,11 @@ const AuthenticationForm = ({ defaultEmail, onLogIn, returnUrl }) => {
 
       {window.constants.googleAuthenticationEnabled === 'true' && (
         <div className='text-center mt-4 flex justify-center'>
-          <a href={`/auth/google_oauth2?return_to=${returnUrl ? returnUrl : '/dashboard'}`}>
+          <form ref={formRef} action={`/auth/google_oauth2?return_to=${returnUrl ? returnUrl : '/dashboard'}`} method="post">
+            <input type="hidden" name="authenticity_token" value={csrfToken} />
             <span>or</span>
-            <img id='google-authentication' src={GoogleButton} width='200' />
-          </a>
+            <img id='google-authentication' className='cursor-pointer' src={GoogleButton} width='200' onClick={(e) => formRef.current?.submit()} />
+          </form>
         </div>
       )}
     </div>
