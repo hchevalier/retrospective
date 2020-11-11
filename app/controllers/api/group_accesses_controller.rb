@@ -20,7 +20,7 @@ class Api::GroupAccessesController < ApplicationController
     account = group.accounts.find_by(public_id: params[:id])
     return render(json: { error: 'Account not found in the group.' }, status: :not_found) unless account
 
-    group_access = group.group_accesses.find_by(account_id: account.id)
+    group_access = group.group_accesses.where(revoked_at: nil).find_by(account_id: account.id)
     return render(json: { error: 'Account does not have access to the group.' }, status: :not_found) unless group_access
 
     group_access.update!(revoked_at: Time.current)

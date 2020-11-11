@@ -31,10 +31,4 @@ class GroupsAccessesControllerTest < ActionDispatch::IntegrationTest
     delete "/api/groups/#{@group.id}/accounts/#{@other_account.public_id}"
     assert_response :not_found
   end
-
-  test 'cannot revoke access to an account which is not in the group' do
-    @group.add_member(@account)
-    delete "/api/groups/#{@group.id}/accounts/#{@other_account.public_id}"
-    assert_response :not_found
-  end
 end
