@@ -7,16 +7,24 @@ import Card from './Card'
 const GroupsList = ({ history }) => {
   const [groupAccesses, setGroupAccesses] = React.useState([])
   const [loading, setLoading] = React.useState(true)
+  const [currentAccount, setCurrentAccount] = React.useState()
 
   React.useEffect(() => {
     get({ url: '/api/group_accesses' })
       .then((data) => { setGroupAccesses(data); setLoading(false)})
   }, [])
 
+  React.useEffect(() => {
+    get({ url: '/api/account' })
+      .then((account) => setCurrentAccount(account))
+  }, [])
+
   const handleLeaveGroup = (groupAccessToRevoke) => {
-    if (confirm(`Leave ${groupAccessToRevoke.group.name}`)) {
-      destroy({ url: `/api/group_accesses/${groupAccessToRevoke.id}` })
-        .then(() => setGroupAccesses(groupAccesses.filter((groupAccess) => groupAccess.id !== groupAccessToRevoke.id)))
+    if (confirm(`Are you sure you want to leave the group ${groupAccessToRevoke.group.name}?`)) {
+      destroy({
+        url: `/api/groups/${groupAccessToRevoke.group.id}/accounts/${currentAccount.publicId}`
+      })
+      .then(() => setGroupAccesses(groupAccesses.filter((groupAccess) => groupAccess.id !== groupAccessToRevoke.id)))
     }
   }
 
@@ -45,11 +53,13 @@ const GroupsList = ({ history }) => {
                       <div className='mt-1 text-sm'>{group.allTimeRetrospectivesCount} retrospectives since creation</div>
 
                       <div className='flex flex-grow mt-4 items-end self-end'>
-                        <button
-                          className='bg-red-200 text-red-700 text-xxs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full'
-                          onClick={(event) => { event.preventDefault(); handleLeaveGroup(groupAccess) }}>
-                          LEAVE
-                        </button>
+                        {currentAccount && (
+                          <button
+                            className='bg-red-200 text-red-700 text-xxs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full'
+                            onClick={(event) => { event.preventDefault(); handleLeaveGroup(groupAccess) }}>
+                            LEAVE
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
