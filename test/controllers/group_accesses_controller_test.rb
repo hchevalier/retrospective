@@ -26,9 +26,9 @@ class GroupsAccessesControllerTest < ActionDispatch::IntegrationTest
     assert_response :forbidden
   end
 
-  test 'cannot revoke access to an account that does not exist' do
+  test 'cannot revoke access to an account which is not in the group' do
     @group.add_member(@account)
-    delete "/api/groups/#{@group.id}/accounts/000"
+    delete "/api/groups/#{@group.id}/accounts/#{@other_account.public_id}"
     assert_response :not_found
   end
 

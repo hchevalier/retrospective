@@ -125,8 +125,8 @@ const GroupsDetails = ({ id }) => {
                           {account.username}
                           {currentAccount.publicId !== account.publicId && (
                             <button
-                            className='bg-red-200 text-red-700 text-xxs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full'
-                            onClick={(event) => { event.preventDefault(); revokeAccessFromGroup(account) }}>
+                              className='bg-red-200 text-red-700 text-xxs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full'
+                              onClick={(event) => { event.preventDefault(); revokeAccessFromGroup(account) }}>
                               REMOVE
                             </button>
                           )}

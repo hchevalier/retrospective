@@ -53,11 +53,13 @@ const GroupsList = ({ history }) => {
                       <div className='mt-1 text-sm'>{group.allTimeRetrospectivesCount} retrospectives since creation</div>
 
                       <div className='flex flex-grow mt-4 items-end self-end'>
-                        <button
-                          className='bg-red-200 text-red-700 text-xxs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full'
-                          onClick={(event) => { event.preventDefault(); handleLeaveGroup(groupAccess) }}>
-                          LEAVE
-                        </button>
+                        {currentAccount && (
+                          <button
+                            className='bg-red-200 text-red-700 text-xxs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full'
+                            onClick={(event) => { event.preventDefault(); handleLeaveGroup(groupAccess) }}>
+                            LEAVE
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
