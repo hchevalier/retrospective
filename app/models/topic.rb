@@ -19,6 +19,6 @@ class Topic < ApplicationRecord
 
   def update_label
     # TODO: get main word(s) for each reflection
-    self.label ||= reflections.first.content.split(' ').first
+    self.label ||= reflections.first.content.split.first
   end
 end
