@@ -117,6 +117,7 @@ export const GRAPHICS = [
   'Cumbia',
   'Deer',
   'Diamond',
+  'Doctolib',
   'Hola',
   'Pizza',
   'Resist',
