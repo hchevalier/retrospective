@@ -57,6 +57,7 @@ class Retrospective < ApplicationRecord
     kinds[:pmi] => 'Builders::PlusMinusInteresting',
     kinds[:sailboat] => 'Builders::Sailboat',
     kinds[:starfish] => 'Builders::Starfish',
+    kinds[:timeline] => 'Builders::Timeline',
     kinds[:traffic_lights] => 'Builders::TrafficLights',
     kinds[:oscars_gerards] => 'Builders::OscarsGerards'
   }.freeze
@@ -68,6 +69,7 @@ class Retrospective < ApplicationRecord
       kinds[:four_l],
       kinds[:sailboat],
       kinds[:starfish],
+      kinds[:timeline],
       kinds[:traffic_lights],
       kinds[:oscars_gerards]
     ]

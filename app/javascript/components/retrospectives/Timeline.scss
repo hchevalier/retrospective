@@ -1,0 +1,21 @@
+$timeline_zones_width: 150px;
+
+#timeline {
+  #retrospective-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: calc(#{$timeline_zones_width}*8);
+    padding-right: $timeline_zones_width;
+
+    .zone {
+      width: $timeline_zones_width;
+      height: $timeline_zones_width;
+      border: 1px solid gray;
+
+      &.highlight {
+        border: 1px dashed red;
+        cursor: pointer;
+      }
+    }
+  }
+}
