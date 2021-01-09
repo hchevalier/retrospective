@@ -19,7 +19,9 @@ Rails.application.routes.draw do
     resources :group_accesses, only: %i[index destroy]
     resources :groups, only: %i[index create update show] do
       resources :accounts, only: %i[destroy], controller: 'group_accesses'
-      resources :pending_invitations, only: %i[index create destroy]
+      scope module: :groups do
+        resources :pending_invitations, only: %i[index create destroy]
+      end
     end
     resources :notices, only: :create
     resources :pending_invitations, only: %i[update]
