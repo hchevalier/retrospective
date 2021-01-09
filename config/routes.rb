@@ -24,7 +24,7 @@ Rails.application.routes.draw do
       end
     end
     resources :notices, only: :create
-    resources :pending_invitations, only: %i[update]
+    resources :pending_invitations, only: %i[index update]
     resources :retrospectives, only: %i[index show]
     resources :retrospective_kinds, only: :index
   end

@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 class Api::PendingInvitationsController < ApplicationController
+  def index
+    pending_invitations =
+      PendingInvitation
+        .where(email: current_account.email)
+        .includes(:account, group: %i[accounts_without_revoked pending_invitations pending_tasks])
+
+    render json: pending_invitations.map(&:as_json)
+  end
+
   def update
     invitation = PendingInvitation.find_by(id: params[:id])
 
