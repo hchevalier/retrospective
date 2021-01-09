@@ -1,24 +1,45 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
-import { get, destroy } from 'lib/httpClient'
+import { get, put, destroy } from 'lib/httpClient'
 import { historyShape } from 'lib/utils/shapes'
 import Card from './Card'
 import GroupListItem from './GroupListItem'
 
 const GroupList = ({ history }) => {
   const [groupAccesses, setGroupAccesses] = React.useState([])
+  const [pendingInvitations, setPendingInvitations] = React.useState([])
   const [loading, setLoading] = React.useState(true)
   const [currentAccount, setCurrentAccount] = React.useState()
 
   React.useEffect(() => {
-    get({ url: '/api/group_accesses' })
-      .then((data) => { setGroupAccesses(data); setLoading(false)})
+    Promise.all([
+      get({ url: '/api/group_accesses' }),
+      get({ url: '/api/pending_invitations' }),
+    ]).then(([groupAccessesData, pendingInvitationsData]) => {
+      setGroupAccesses(groupAccessesData)
+      setPendingInvitations(pendingInvitationsData)
+      setLoading(false)
+    })
   }, [])
 
   React.useEffect(() => {
     get({ url: '/api/account' })
       .then((account) => setCurrentAccount(account))
   }, [])
+
+  const handleJoinGroup = (pendingInvitationToAccept) => {
+    if (confirm(`Are you sure you want to join the group ${pendingInvitationToAccept.group.name}?`)) {
+      put({
+        url: `/api/pending_invitations/${pendingInvitationToAccept.id}`
+      })
+      .then(() => {
+        setPendingInvitations(
+          pendingInvitations.filter((pendingInvitation) => pendingInvitation.id !== pendingInvitationToAccept.id)
+        )
+        setGroupAccesses(prevState => [...prevState, pendingInvitationToAccept])
+      })
+    }
+  }
 
   const handleLeaveGroup = (groupAccessToRevoke) => {
     if (confirm(`Are you sure you want to leave the group ${groupAccessToRevoke.group.name}?`)) {
@@ -36,8 +57,11 @@ const GroupList = ({ history }) => {
       <div className='flex flex-col w-full'>
         <Card title='My groups' wrap actionLocation='header' actionLabel='CREATE A GROUP' onAction={handleCreateGroup}>
           <div className='flex flex-row flex-wrap'>
+            {pendingInvitations && pendingInvitations.map((pendingInvitation) => (
+              <GroupListItem key={pendingInvitation.id} groupAccess={pendingInvitation} currentAccount={currentAccount} handleJoinGroup={handleJoinGroup} />
+            ))}
             {groupAccesses && groupAccesses.map((groupAccess) => (
-              <GroupListItem groupAccess={groupAccess} currentAccount={currentAccount} handleLeaveGroup={handleLeaveGroup} />
+              <GroupListItem key={groupAccess.id} groupAccess={groupAccess} currentAccount={currentAccount} handleLeaveGroup={handleLeaveGroup} />
             ))}
             {!loading && !groupAccesses && <span>You did not join nor create any group</span>}
           </div>
