@@ -4,7 +4,7 @@ import { get, destroy } from 'lib/httpClient'
 import { historyShape } from 'lib/utils/shapes'
 import Card from './Card'
 
-const GroupsList = ({ history }) => {
+const GroupList = ({ history }) => {
   const [groupAccesses, setGroupAccesses] = React.useState([])
   const [loading, setLoading] = React.useState(true)
   const [currentAccount, setCurrentAccount] = React.useState()
@@ -74,8 +74,8 @@ const GroupsList = ({ history }) => {
   )
 }
 
-GroupsList.propTypes = {
+GroupList.propTypes = {
   history: historyShape
 }
 
-export default withRouter(GroupsList)
+export default withRouter(GroupList)

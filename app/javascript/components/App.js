@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { BrowserRouter as Router, Switch, Route, useParams, withRouter } from 'react-router-dom'
 import Header from './Header'
 import Dashboard from './Dashboard'
-import GroupsList from './GroupsList'
+import GroupList from './GroupList'
 import GroupDetails from './GroupDetails'
 import GroupCreationForm from './GroupCreationForm'
 import RetrospectiveCreationForm from './RetrospectiveCreationForm'
@@ -93,7 +93,7 @@ const App = withRouter(({ history }) => {
           <GroupShow />
         </Route>
         <Route path='/groups'>
-          <GroupsList />
+          <GroupList />
         </Route>
         <Route path='/retrospectives/new'>
           <RetrospectiveCreationForm />
