@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { get, put, destroy } from 'lib/httpClient'
 import { historyShape } from 'lib/utils/shapes'
 import Card from './Card'
-import GroupListItem from './GroupListItem'
+import { GroupAccessListItem, PendingInvitationListItem } from './GroupListItem'
 
 const GroupList = ({ history }) => {
   const [groupAccesses, setGroupAccesses] = React.useState([])
@@ -58,10 +58,10 @@ const GroupList = ({ history }) => {
         <Card title='My groups' wrap actionLocation='header' actionLabel='CREATE A GROUP' onAction={handleCreateGroup}>
           <div className='flex flex-row flex-wrap'>
             {pendingInvitations && pendingInvitations.map((pendingInvitation) => (
-              <GroupListItem key={pendingInvitation.id} groupAccess={pendingInvitation} currentAccount={currentAccount} handleJoinGroup={handleJoinGroup} />
+              <PendingInvitationListItem key={pendingInvitation.id} pendingInvitation={pendingInvitation} currentAccount={currentAccount} handleJoinGroup={handleJoinGroup} />
             ))}
             {groupAccesses && groupAccesses.map((groupAccess) => (
-              <GroupListItem key={groupAccess.id} groupAccess={groupAccess} currentAccount={currentAccount} handleLeaveGroup={handleLeaveGroup} />
+              <GroupAccessListItem key={groupAccess.id} groupAccess={groupAccess} currentAccount={currentAccount} handleLeaveGroup={handleLeaveGroup} />
             ))}
             {!loading && !groupAccesses && <span>You did not join nor create any group</span>}
           </div>

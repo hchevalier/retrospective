@@ -6,10 +6,45 @@ import { Link } from 'react-router-dom'
 const JOIN_BUTTON_LABEL = 'JOIN'
 const LEAVE_BUTTON_LABEL = 'LEAVE'
 
-const GroupListItem = ({ groupAccess, currentAccount, handleJoinGroup, handleLeaveGroup }) => {
-  const { group } = groupAccess
-  const WrapperComponent = handleJoinGroup ? Fragment : Link
-  const wrapperProps = handleJoinGroup ? {} : { to: `/groups/${group.id}` }
+export const GroupAccessListItem = ({ groupAccess, currentAccount, handleLeaveGroup }) => (
+  <GroupListItem
+    groupAccessOrPendingInvitation={groupAccess}
+    currentAccount={currentAccount}
+    handleButtonClicked={handleLeaveGroup}
+    isPendingInvitation={false}
+  />
+)
+
+GroupAccessListItem.propTypes = {
+  groupAccess: PropTypes.object.isRequired,
+  currentAccount: PropTypes.object.isRequired,
+  handleLeaveGroup: PropTypes.func,
+}
+
+export const PendingInvitationListItem = ({ pendingInvitation, currentAccount, handleJoinGroup }) => (
+  <GroupListItem
+    groupAccessOrPendingInvitation={pendingInvitation}
+    currentAccount={currentAccount}
+    handleButtonClicked={handleJoinGroup}
+    isPendingInvitation={true}
+  />
+)
+
+PendingInvitationListItem.propTypes = {
+  pendingInvitation: PropTypes.object.isRequired,
+  currentAccount: PropTypes.object.isRequired,
+  handleJoinGroup: PropTypes.func,
+}
+
+const GroupListItem = ({
+  groupAccessOrPendingInvitation,
+  currentAccount,
+  handleButtonClicked,
+  isPendingInvitation,
+}) => {
+  const { group } = groupAccessOrPendingInvitation
+  const WrapperComponent = isPendingInvitation ? Fragment : Link
+  const wrapperProps = isPendingInvitation ? {} : { to: `/groups/${group.id}` }
 
   return (
     <WrapperComponent {...wrapperProps}>
@@ -22,7 +57,7 @@ const GroupListItem = ({ groupAccess, currentAccount, handleJoinGroup, handleLea
             <div className='mt-1 text-sm'>{group.membersCount} members</div>
             <div className='mt-2 text-sm'>Created on {new Date(group.createdAt).toLocaleDateString()}</div>
             <div className='mt-1 text-sm'>
-              {handleJoinGroup ? 'Invited' : 'Joined'} on {new Date(groupAccess.createdAt).toLocaleDateString()}
+              {isPendingInvitation ? 'Invited' : 'Joined'} on {new Date(groupAccessOrPendingInvitation.createdAt).toLocaleDateString()}
             </div>
             <div className='mt-2 text-sm'>{group.pendingTasksCount} actions pending</div>
             <div className='mt-1 text-sm'>{group.allTimeRetrospectivesCount} retrospectives since creation</div>
@@ -31,16 +66,14 @@ const GroupListItem = ({ groupAccess, currentAccount, handleJoinGroup, handleLea
             {currentAccount && (
                 <button
                 className={classNames('text-xxs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full', {
-                  'bg-blue-200 text-blue-700': handleJoinGroup,
-                  'bg-red-200 text-red-700': !handleJoinGroup,
+                  'bg-blue-200 text-blue-700': isPendingInvitation,
+                  'bg-red-200 text-red-700': !isPendingInvitation,
                  })}
                 onClick={(event) => {
                   event.preventDefault()
-                  handleJoinGroup
-                    ? handleJoinGroup(groupAccess)
-                    : handleLeaveGroup(groupAccess)
+                  handleButtonClicked(groupAccessOrPendingInvitation)
                 }}>
-                {handleJoinGroup ? JOIN_BUTTON_LABEL : LEAVE_BUTTON_LABEL}
+                {isPendingInvitation ? JOIN_BUTTON_LABEL : LEAVE_BUTTON_LABEL}
                 </button>
             )}
             </div>
@@ -51,10 +84,10 @@ const GroupListItem = ({ groupAccess, currentAccount, handleJoinGroup, handleLea
 }
 
 GroupListItem.propTypes = {
-  groupAccess: PropTypes.object.isRequired,
+  groupAccessOrPendingInvitation: PropTypes.object.isRequired,
   currentAccount: PropTypes.object.isRequired,
-  handleJoinGroup: PropTypes.func,
-  handleLeaveGroup: PropTypes.func,
+  handleButtonClicked: PropTypes.func,
+  isPendingInvitation: PropTypes.bool,
 }
 
 export default GroupListItem
