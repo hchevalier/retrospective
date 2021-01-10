@@ -16,9 +16,9 @@ class Api::PendingInvitationsController < ApplicationController
     if invitation&.email == current_account.email
       invitation.group.add_member(current_account)
       invitation.destroy
-      return render json: :ok
+      render json: :ok
     elsif !invitation
-      return render json: :ok
+      render json: :ok
     end
   end
 end
