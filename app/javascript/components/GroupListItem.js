@@ -1,10 +1,10 @@
-import React, { Fragment } from "react"
-import PropTypes from "prop-types"
-import classNames from "classnames"
-import { Link } from "react-router-dom"
+import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import { Link } from 'react-router-dom'
 
-const JOIN_BUTTON_LABEL = "JOIN"
-const LEAVE_BUTTON_LABEL = "LEAVE"
+const JOIN_BUTTON_LABEL = 'JOIN'
+const LEAVE_BUTTON_LABEL = 'LEAVE'
 
 export const GroupAccessListItem = ({
   groupAccess,
@@ -66,7 +66,7 @@ const GroupListItem = ({
             Created on {new Date(group.createdAt).toLocaleDateString()}
           </div>
           <div className="mt-1 text-sm">
-            {isPendingInvitation ? "Invited" : "Joined"} on{" "}
+            {isPendingInvitation ? 'Invited' : 'Joined'} on{' '}
             {new Date(
               groupAccessOrPendingInvitation.createdAt
             ).toLocaleDateString()}
@@ -82,10 +82,10 @@ const GroupListItem = ({
             {currentAccount && (
               <button
                 className={classNames(
-                  "text-xxs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full",
+                  'text-xxs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full',
                   {
-                    "bg-blue-200 text-blue-700": isPendingInvitation,
-                    "bg-red-200 text-red-700": !isPendingInvitation,
+                    'bg-blue-200 text-blue-700': isPendingInvitation,
+                    'bg-red-200 text-red-700': !isPendingInvitation,
                   }
                 )}
                 onClick={(event) => {
