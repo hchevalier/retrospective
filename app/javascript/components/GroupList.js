@@ -56,14 +56,19 @@ const GroupList = ({ history }) => {
     <div className='mx-auto p-8 bg-gray-300 flex w-full'>
       <div className='flex flex-col w-full'>
         <Card title='My groups' wrap actionLocation='header' actionLabel='CREATE A GROUP' onAction={handleCreateGroup}>
-          <div className='flex flex-row flex-wrap'>
-            {pendingInvitations && pendingInvitations.map((pendingInvitation) => (
-              <PendingInvitationListItem key={pendingInvitation.id} pendingInvitation={pendingInvitation} currentAccount={currentAccount} handleJoinGroup={handleJoinGroup} />
-            ))}
+          <div className='flex flex-row flex-wrap px-4'>
             {groupAccesses && groupAccesses.map((groupAccess) => (
               <GroupAccessListItem key={groupAccess.id} groupAccess={groupAccess} currentAccount={currentAccount} handleLeaveGroup={handleLeaveGroup} />
             ))}
-            {!loading && !groupAccesses && <span>You did not join nor create any group</span>}
+            {!loading && !groupAccesses.length && <span>You did not join nor create any group</span>}
+          </div>
+        </Card>
+        <Card title='My Pending Invitations' wrap wrapperClassName="mt-8">
+          <div className='flex flex-row flex-wrap px-4'>
+            {pendingInvitations && pendingInvitations.map((pendingInvitation) => (
+              <PendingInvitationListItem key={pendingInvitation.id} pendingInvitation={pendingInvitation} currentAccount={currentAccount} handleJoinGroup={handleJoinGroup} />
+            ))}
+            {!loading && !pendingInvitations.length && <span>You do not have any pending invitation</span>}
           </div>
         </Card>
       </div>
