@@ -137,6 +137,31 @@ class PendingInvitationsTest < ActionDispatch::IntegrationTest
     refute_text 'Pending invitations'
   end
 
+  test 'can join from the groups page by logging into an existing account' do
+    group = create(:group)
+    create(:pending_invitation, email: 'newjoiner@mycompany.com', group: group)
+    create(:account, username: 'New joiner', email: 'newjoiner@mycompany.com', password: 'myStr0ngPassword!')
+
+    visit '/'
+    assert_text 'Log in'
+    fill_in 'email', with: 'newjoiner@mycompany.com'
+    fill_in 'password', with: 'myStr0ngPassword!'
+    click_on 'Login'
+    assert_text 'My actions'
+    click_on 'My groups'
+    assert_text 'CREATE A GROUP'
+
+    assert_text group.name
+    assert_text 'Invited on'
+    accept_confirm do
+      click_on 'JOIN'
+    end
+
+    assert_text group.name
+    assert_text 'Joined on'
+    assert_text 'LEAVE'
+  end
+
   test 'can join from a retrospective link by already being logged in' do
     group = create(:group)
     retrospective = create(:retrospective, group: group)
