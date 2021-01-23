@@ -198,7 +198,6 @@ class PendingInvitationsTest < ActionDispatch::IntegrationTest
     as_user(account)
 
     visit invitation.link(host_and_port)
-    binding.pry
     assert_participants_count(2)
     hover_participant('New joiner')
     assert_text 'New joiner'
