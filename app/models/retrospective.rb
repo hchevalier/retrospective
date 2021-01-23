@@ -207,6 +207,7 @@ class Retrospective < ApplicationRecord
     if new_step == 'actions'
       most_upvoted_target = most_upvoted_topic_or_reflection
       most_upvoted_target = most_upvoted_target.reflections.first if most_upvoted_target.is_a?(Topic)
+      TaskReminderJob.set(wait: 7.days).perform_later(retrospective: self)
     end
 
     update!(step: new_step, discussed_reflection: most_upvoted_target || discussed_reflection)
