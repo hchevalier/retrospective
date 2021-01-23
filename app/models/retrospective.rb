@@ -204,10 +204,7 @@ class Retrospective < ApplicationRecord
     new_step = Retrospective.steps.keys[step_index + 2] if new_step == 'reviewing' && group.pending_tasks.none?
     new_step = skip_vote! if new_step == 'voting' && zones_typology == :single_choice
 
-    if new_step == 'actions'
-      most_upvoted_target = most_upvoted_topic_or_reflection
-      most_upvoted_target = most_upvoted_target.reflections.first if most_upvoted_target.is_a?(Topic)
-    end
+    most_upvoted_target = handle_actions_step if new_step == 'actions'
 
     update!(step: new_step, discussed_reflection: most_upvoted_target || discussed_reflection)
 
@@ -320,6 +317,14 @@ class Retrospective < ApplicationRecord
       .sort_by { |_, v| -v }
       .map(&:first)
       .first
+  end
+
+  def handle_actions_step
+    most_upvoted_target = most_upvoted_topic_or_reflection
+    most_upvoted_target = most_upvoted_target.reflections.first if most_upvoted_target.is_a?(Topic)
+    TaskReminderJob.set(wait: 7.days).perform_later(retrospective: self)
+
+    most_upvoted_target
   end
 
   def visible_reflections_for_action_step

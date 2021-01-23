@@ -43,6 +43,32 @@ class Retrospective::ActionsStepTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'a job to remind participants of pending tasks is stacked when the action step is reached' do
+    retrospective = create(:retrospective, step: 'voting')
+    other_participant = create(:other_participant, retrospective: retrospective)
+    reflection = create(:reflection, :glad, owner: retrospective.facilitator)
+    create(:vote, target: reflection, author: retrospective.facilitator)
+
+    logged_in_as(retrospective.facilitator)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
+
+    freeze_time do
+      assert_enqueued_with(job: TaskReminderJob, args: [retrospective: retrospective], at: 7.days.from_now) do
+        next_step
+        within '#discussed-reflection .reflection' do
+          assert_text 'A glad reflection'
+        end
+      end
+    end
+
+    create(:task, assignee: other_participant.account, reflection: reflection)
+
+    email_mock = mock(deliver_later: true)
+    TaskReminderMailer.expects(:send_reminder).with(account: other_participant.account).returns(email_mock).once
+    TaskReminderMailer.expects(:send_reminder).with(account: retrospective.facilitator).never
+    perform_enqueued_jobs(only: TaskReminderJob)
+  end
+
   test 'facilitator can change the discussed reflection' do
     retrospective = create(:retrospective, step: 'actions')
     other_participant = create(:other_participant, retrospective: retrospective)
