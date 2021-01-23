@@ -14,7 +14,7 @@ class Api::Groups::PendingInvitationsController < ApplicationController
 
       current_group.pending_invitations.create(
         account: current_account,
-        email: email,
+        email: email.downcase,
         retrospective_id: params[:retrospective_id]
       )
     end

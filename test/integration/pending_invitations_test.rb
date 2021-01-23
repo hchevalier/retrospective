@@ -3,7 +3,7 @@
 require 'test_helper'
 
 class PendingInvitationsTest < ActionDispatch::IntegrationTest
-  test 'can sent invitations from a group page' do
+  test 'can send invitations from a group page' do
     account = create(:account, username: 'Host')
     as_user(account)
     group = create(:group, name: 'Group A')
@@ -35,6 +35,34 @@ class PendingInvitationsTest < ActionDispatch::IntegrationTest
     HTML
     assert_match "You've been invited by Host to join the retropective group Group A", body
     assert_match link.squish, body
+  end
+
+  test 'can send invitation with uppercase characters in the email and still join the group' do
+    account = create(:account, username: 'Host')
+    other_account = create(:account, username: 'Joiner', email: 'someone@mycompany.com', password: 'myStr0ngPassword!')
+
+    as_user(account)
+    group = create(:group, name: 'Group A')
+    group.add_member(account)
+
+    visit "/groups/#{group.id}"
+
+    click_on 'ADD'
+    fill_in 'email_addresses', with: 'Someone@MyCompany.com'
+    click_on 'Send invitations'
+
+    assert_text 'Pending invitations'
+    assert_text 'someone@mycompany.com'
+
+    perform_enqueued_jobs
+    invitation = PendingInvitation.order(:created_at).last
+
+    within_window(open_new_window) do
+      as_user(other_account)
+      visit invitation.link(host_and_port)
+      assert_text 'Joiner'
+      assert_text 'Group members (2)'
+    end
   end
 
   test 'can cancel an invitation' do
@@ -170,6 +198,7 @@ class PendingInvitationsTest < ActionDispatch::IntegrationTest
     as_user(account)
 
     visit invitation.link(host_and_port)
+    binding.pry
     assert_participants_count(2)
     hover_participant('New joiner')
     assert_text 'New joiner'
