@@ -17,6 +17,7 @@ class AccountsController < ApplicationController
   private
 
   def account_params
+    params[:email].downcase!
     params.permit(:email, :username, :password)
   end
 end
