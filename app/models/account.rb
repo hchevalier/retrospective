@@ -69,9 +69,10 @@ class Account < ApplicationRecord
   end
 
   def self.from_omniauth(auth)
-    where(email: auth.info.email).first_or_initialize do |account|
+    email = auth.info.email.downcase
+    where(email: email).first_or_initialize do |account|
       account.username = auth.info.name
-      account.email = auth.info.email
+      account.email = email
       account.password = SecureRandom.hex
     end
   end
