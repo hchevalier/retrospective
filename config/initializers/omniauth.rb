@@ -9,3 +9,4 @@ Rails.application.config.middleware.use OmniAuth::Builder do
 end
 
 OmniAuth.config.allowed_request_methods = [:post]
+OmniAuth.config.request_validation_phase = false if Rails.env.test?
