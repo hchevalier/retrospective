@@ -10,7 +10,7 @@ gem 'rails', '6.1.1'
 gem 'bcrypt'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'figaro'
-gem 'jbuilder', '~> 2.10'
+gem 'jbuilder', '~> 2.11'
 gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-rails_csrf_protection'

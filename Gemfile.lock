@@ -109,7 +109,7 @@ GEM
     hashie (4.1.0)
     i18n (1.8.7)
       concurrent-ruby (~> 1.0)
-    jbuilder (2.10.1)
+    jbuilder (2.11.1)
       activesupport (>= 5.0.0)
     jwt (2.2.2)
     listen (3.4.1)
@@ -306,7 +306,7 @@ DEPENDENCIES
   capybara (>= 2.15)
   factory_bot_rails
   figaro
-  jbuilder (~> 2.10)
+  jbuilder (~> 2.11)
   listen (>= 3.0.5, < 3.5)
   minitest-stub-const
   mocha
