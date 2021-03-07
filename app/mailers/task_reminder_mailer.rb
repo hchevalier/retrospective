@@ -5,7 +5,7 @@ class TaskReminderMailer < ApplicationMailer
     @account = account
 
     host = 'https://docto-retrospective.herokuapp.com'
-    @link = single_page_app_url(path: '/', host: host)
+    @link = single_page_app_url(path: '', host: host)
 
     mail(to: @account.email, subject: 'Pending tasks reminder')
   end
