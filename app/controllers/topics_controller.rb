@@ -3,18 +3,18 @@
 class TopicsController < ApplicationController
   before_action :ensure_participant
 
+  # rubocop:todo Metrics/AbcSize
   def create
     reflection_ids = [params[:target_reflection_id], params[:dropped_reflection_id]]
     reflections = current_participant.retrospective.reflections.where(id: reflection_ids).includes(:topic)
     return(render json: { status: :unprocessable_entity }) unless reflections.size == 2
 
     dropped = reflections.find { |reflection| reflection.id == params[:dropped_reflection_id] }
+    target = reflections.find { |reflection| reflection != dropped }
     previous_topic = dropped.topic
 
     current_participant.retrospective.topics.create(reflections: reflections)
-    target = reflections.find { |reflection| reflection.id == params[:target_reflection_id]}
-
-    dropped.update!(zone_id: target.zone_id) if target.zone_id != dropped.zone_id
+    dropped.update!(zone_id: target.zone_id)
 
     reflections.each do |reflection|
       broadcast_change_topic(current_participant.retrospective, { reflection: reflection.readable })
@@ -25,7 +25,6 @@ class TopicsController < ApplicationController
     render json: :created
   end
 
-  # rubocop:todo Metrics/AbcSize
   def update
     topic = current_participant.retrospective.topics.find(params[:id])
 
