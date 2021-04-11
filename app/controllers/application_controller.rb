@@ -22,11 +22,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_account
-    @current_account ||= begin
-      if (account_id = session[:account_id])
-        Account.includes(:groups).find(account_id)
-      end
-    end
+    @current_account ||= (Account.includes(:groups).find(session[:account_id]) if session[:account_id])
   end
 
   def ensure_logged_in
