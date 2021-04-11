@@ -8,9 +8,14 @@ class TopicsController < ApplicationController
     reflections = current_participant.retrospective.reflections.where(id: reflection_ids).includes(:topic)
     return(render json: { status: :unprocessable_entity }) unless reflections.size == 2
 
-    previous_topic = reflections.find { |reflection| reflection.id == params[:dropped_reflection_id] }.topic
+    dropped = reflections.find { |reflection| reflection.id == params[:dropped_reflection_id] }
+    previous_topic = dropped.topic
 
     current_participant.retrospective.topics.create(reflections: reflections)
+    target = reflections.find { |reflection| reflection.id == params[:target_reflection_id]}
+
+    dropped.update!(zone_id: target.zone_id) if target.zone_id != dropped.zone_id
+
     reflections.each do |reflection|
       broadcast_change_topic(current_participant.retrospective, { reflection: reflection.readable })
     end
@@ -31,7 +36,9 @@ class TopicsController < ApplicationController
       if params[:remove]
         reflection.update(topic: nil)
       else
+        zone_id = topic.reflections.first.zone_id
         topic.reflections << reflection
+        reflection.update!(zone_id: zone_id) if reflection.zone_id != zone_id
       end
 
       broadcast_change_topic(current_participant.retrospective, { reflection: reflection.reload.readable })

@@ -8,6 +8,7 @@ import './Topic.scss'
 
 const Topic = ({ onClick, topic, reflections, reactions, draggingInfo, stickyNotes, stickyNotesRefCallback, showVotes, ...delegatedAttributes }) => {
   const step = useSelector(state => state.orchestrator.step)
+  const zonesTypology = useSelector(state => state.retrospective.zonesTypology)
 
   const [visibleReflectionIndex, setVisibleReflectionIndex] = useState(0)
 
@@ -40,7 +41,7 @@ const Topic = ({ onClick, topic, reflections, reactions, draggingInfo, stickyNot
           reflection={latestReflectionInTopic}
           reactions={concernedReactions}
           glowing={unreadNotes.length > 0}
-          highlighted={draggingInfo?.zone === latestReflectionInTopic.zone.id.toString() && draggingInfo?.reflection !== latestReflectionInTopic.id.toString()}
+          highlighted={draggingInfo?.reflection && (zonesTypology === 'open' || draggingInfo?.zone === latestReflectionInTopic.zone.id.toString()) && draggingInfo?.reflection !== latestReflectionInTopic.id.toString()}
           onStackClick={handleStackClick}
           stackSize={reflections.length}
           {...delegatedAttributes} />
