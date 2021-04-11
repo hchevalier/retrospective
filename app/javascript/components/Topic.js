@@ -18,6 +18,7 @@ const Topic = ({ onClick, topic, reflections, reactions, draggingInfo, stickyNot
   const sortedReflections = reflections.sort((reflectionA, reflectionB) => reflectionA.updatedAt - reflectionB.updatedAt)
   const cycleIndex = visibleReflectionIndex % sortedReflections.length
   const latestReflectionInTopic = sortedReflections[cycleIndex]
+  const cycleOrdered = sortedReflections.slice(cycleIndex, sortedReflections.length).concat(sortedReflections.slice(0, cycleIndex))
 
   useEffect(() => setVisibleReflectionIndex(sortedReflections.length - 1), [sortedReflections.length])
 
@@ -43,7 +44,7 @@ const Topic = ({ onClick, topic, reflections, reactions, draggingInfo, stickyNot
           glowing={unreadNotes.length > 0}
           highlighted={draggingInfo?.reflection && (zonesTypology === 'open' || draggingInfo?.zone === latestReflectionInTopic.zone.id.toString()) && draggingInfo?.reflection !== latestReflectionInTopic.id.toString()}
           onStackClick={handleStackClick}
-          stackSize={reflections.length}
+          stack={cycleOrdered}
           {...delegatedAttributes} />
       </div>
       <div className='circles flex flex-row justify-center cursor-pointer h-4' onClick={handleStackClick}>

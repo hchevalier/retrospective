@@ -15,7 +15,7 @@ import './StickyNote.scss'
 import './Topic.scss'
 
 const StickyNote = React.forwardRef(({
-  reflection, showReactions, reactions, readOnly, showVotes, stackSize, glowing, revealable, noShrink, onStackClick,
+  reflection, showReactions, reactions, readOnly, showVotes, stack = [], glowing, revealable, noShrink, onStackClick,
   highlighted, draggable, onDragStart, onDragOver, onDragEnd, onDrop
 }, ref) => {
   const dispatch = useDispatch()
@@ -28,6 +28,8 @@ const StickyNote = React.forwardRef(({
   const channel = useSelector(state => state.orchestrator.subscription)
 
   const [editTextArea, setEditTextArea] = React.useState(null)
+
+  const stackSize = stack.length
 
   const onEditTextAreaRefChange = React.useCallback(element => {
     setEditTextArea(element)
@@ -90,10 +92,19 @@ const StickyNote = React.forwardRef(({
     __html: sanitizeHtml(dirtyHtml, { options: { allowedTags: ['br'] } })
   })
 
+  const colorStyleStack2 = stackSize > 2 ? {
+    borderColor: stack[2].color,
+    backgroundColor: stack[2].color
+  } : {}
+  const colorStyleStack1 = stackSize > 1 ? {
+    borderColor: stack[1].color,
+    backgroundColor: stack[1].color
+  } : {}
+
   return (
     <>
-      {stackSize > 2 && <div className='reflection stack stack-2 flex flex-col mb-3 mx-auto p-2 rounded-md absolute w-full' style={{ ...colorStyle}} onClick={onStackClick} />}
-      {stackSize > 1 && <div className='reflection stack stack-1 flex flex-col mb-3 mx-auto p-2 rounded-md absolute w-full' style={{ ...colorStyle}} onClick={onStackClick} />}
+      {stackSize > 2 && <div className='reflection stack stack-2 flex flex-col mb-3 mx-auto p-2 rounded-md absolute w-full' style={{ ...colorStyleStack2}} onClick={onStackClick} />}
+      {stackSize > 1 && <div className='reflection stack stack-1 flex flex-col mb-3 mx-auto p-2 rounded-md absolute w-full' style={{ ...colorStyleStack1}} onClick={onStackClick} />}
       <div
         ref={ref}
         className={classNames('reflection flex flex-col mb-3 mx-auto p-2 rounded-md relative w-full', { glowing, 'highlighted': highlighted, 'flex-shrink-0': noShrink })}
@@ -130,7 +141,7 @@ StickyNote.propTypes = {
   readOnly: PropTypes.bool,
   revealable: PropTypes.bool,
   showVotes: PropTypes.bool,
-  stackSize: PropTypes.number,
+  stack: PropTypes.arrayOf(reflectionShape),
   glowing: PropTypes.bool,
   highlighted: PropTypes.bool,
   draggable: PropTypes.bool,
