@@ -377,7 +377,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'cannot group reflections from different columns' do
+  test 'can group reflections from different columns' do
     retrospective = create(:retrospective, step: 'grouping')
     reflection_a = create(:reflection, :glad, owner: retrospective.facilitator, content: 'First reflection')
     reflection_b = create(:reflection, :sad, owner: retrospective.facilitator, content: 'Second reflection')
@@ -386,7 +386,7 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
     assert_grouping_step
 
-    assert_no_difference 'Topic.count' do
+    assert_difference 'Topic.count' do
       sticky_note(reflection_b).drag_to(sticky_note(reflection_a))
     end
   end

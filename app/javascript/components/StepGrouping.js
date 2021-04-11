@@ -121,15 +121,12 @@ const StepGrouping = ({ fullScreen, onExpandTopic, onToggleFullScreen }) => {
 
     const draggedReflectionId = event.dataTransfer.getData('text/plain')
     let targetElement = event.target
-    const droppedReflection = document.querySelector(`.reflection[data-id="${draggedReflectionId}"]`)
+
+    if (!targetElement) return
 
     if (!targetElement.classList.contains('reflection') && !targetElement.classList.contains('topic')) {
       targetElement = targetElement.closest('.reflection') || targetElement.closest('topic')
     }
-
-    if (!targetElement) return
-
-    if (targetElement.closest('.zone-column') !== droppedReflection.closest('.zone-column')) return
 
     if (targetElement.classList.contains('topic')) {
       updateTopic(targetElement.dataset.id, draggedReflectionId)
@@ -247,7 +244,7 @@ const StepGrouping = ({ fullScreen, onExpandTopic, onToggleFullScreen }) => {
                           showReactions
                           reactions={concernedReactions}
                           glowing={isUnread}
-                          highlighted={draggingOccurs.zone === zone.id.toString() && draggingOccurs.reflection !== reflection.id.toString()}
+                          highlighted={draggingOccurs.reflection && (zonesTypology === 'open' || draggingOccurs.zone === zone.id.toString()) && draggingOccurs.reflection !== reflection.id.toString()}
                           draggable
                           onDragStart={handleDragStart}
                           onDragOver={handleDragOver}
