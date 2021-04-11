@@ -4,7 +4,7 @@ class SessionsController < ApplicationController
   skip_before_action :ensure_logged_in, only: %i[create omniauth]
 
   def create
-    account = Account.find_by(email: params[:email])
+    account = Account.find_by(email: params[:email].downcase)
     return render(json: { status: :not_found }, status: :not_found) unless account
 
     return render(json: { status: :unauthorized }, status: :unauthorized) unless account.authenticate(params[:password])

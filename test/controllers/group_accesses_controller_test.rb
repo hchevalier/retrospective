@@ -3,6 +3,8 @@ require 'test_helper'
 class GroupsAccessesControllerTest < ActionDispatch::IntegrationTest
   setup do
     ApplicationController.allow_forgery_protection = false
+    @original_request_validation_phase = OmniAuth.config.request_validation_phase
+    OmniAuth.config.request_validation_phase = false
     @account = create(:account, username: 'Groupie')
     as_user(@account)
     @group = create(:group, name: 'MyGroupName')
@@ -11,6 +13,7 @@ class GroupsAccessesControllerTest < ActionDispatch::IntegrationTest
 
   teardown do
     ApplicationController.allow_forgery_protection = true
+    OmniAuth.config.request_validation_phase = @original_request_validation_phase
   end
 
   test 'current account does not have access to the group and cannot revoke access of a member' do

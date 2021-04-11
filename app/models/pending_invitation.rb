@@ -11,9 +11,19 @@ class PendingInvitation < ApplicationRecord
 
   def as_json
     {
-      createdAt: created_at,
       email: email,
-      id: id
+      account: {
+        id: account.id,
+        username: account.username
+      },
+      createdAt: created_at,
+      id: id,
+      group: {
+        **group.as_short_json,
+        allTimeRetrospectivesCount: group.retrospectives.size,
+        membersCount: group.accounts_without_revoked.size,
+        pendingTasksCount: group.pending_tasks.size
+      }
     }
   end
 

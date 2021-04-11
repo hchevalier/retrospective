@@ -3,7 +3,7 @@
 require 'test_helper'
 
 class PendingInvitationsTest < ActionDispatch::IntegrationTest
-  test 'can sent invitations from a group page' do
+  test 'can send invitations from a group page' do
     account = create(:account, username: 'Host')
     as_user(account)
     group = create(:group, name: 'Group A')
@@ -35,6 +35,34 @@ class PendingInvitationsTest < ActionDispatch::IntegrationTest
     HTML
     assert_match "You've been invited by Host to join the retropective group Group A", body
     assert_match link.squish, body
+  end
+
+  test 'can send invitation with uppercase characters in the email and still join the group' do
+    account = create(:account, username: 'Host')
+    other_account = create(:account, username: 'Joiner', email: 'someone@mycompany.com', password: 'myStr0ngPassword!')
+
+    as_user(account)
+    group = create(:group, name: 'Group A')
+    group.add_member(account)
+
+    visit "/groups/#{group.id}"
+
+    click_on 'ADD'
+    fill_in 'email_addresses', with: 'Someone@MyCompany.com'
+    click_on 'Send invitations'
+
+    assert_text 'Pending invitations'
+    assert_text 'someone@mycompany.com'
+
+    perform_enqueued_jobs
+    invitation = PendingInvitation.order(:created_at).last
+
+    within_window(open_new_window) do
+      as_user(other_account)
+      visit invitation.link(host_and_port)
+      assert_text 'Joiner'
+      assert_text 'Group members (2)'
+    end
   end
 
   test 'can cancel an invitation' do
@@ -135,6 +163,31 @@ class PendingInvitationsTest < ActionDispatch::IntegrationTest
     assert_text 'New joiner'
     assert_current_path "/groups/#{group.id}"
     refute_text 'Pending invitations'
+  end
+
+  test 'can join from the groups page by logging into an existing account' do
+    group = create(:group)
+    create(:pending_invitation, email: 'newjoiner@mycompany.com', group: group)
+    create(:account, username: 'New joiner', email: 'newjoiner@mycompany.com', password: 'myStr0ngPassword!')
+
+    visit '/'
+    assert_text 'Log in'
+    fill_in 'email', with: 'newjoiner@mycompany.com'
+    fill_in 'password', with: 'myStr0ngPassword!'
+    click_on 'Login'
+    assert_text 'My actions'
+    click_on 'My groups'
+    assert_text 'CREATE A GROUP'
+
+    assert_text group.name
+    assert_text 'Invited on'
+    accept_confirm do
+      click_on 'JOIN'
+    end
+
+    assert_text group.name
+    assert_text 'Joined on'
+    assert_text 'LEAVE'
   end
 
   test 'can join from a retrospective link by already being logged in' do

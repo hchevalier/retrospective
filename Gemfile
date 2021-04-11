@@ -5,17 +5,17 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.7.2'
 
-gem 'rails', '6.0.3.4'
+gem 'rails', '6.1.3.1'
 
 gem 'bcrypt'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'figaro'
-gem 'jbuilder', '~> 2.10'
+gem 'jbuilder', '~> 2.11'
 gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-rails_csrf_protection'
 gem 'pg'
-gem 'puma', '~> 5.1'
+gem 'puma', '~> 5.2'
 gem 'react-rails'
 gem 'redis', '~> 4.2'
 gem 'sass-rails', '>= 6'
@@ -25,7 +25,7 @@ gem 'webpacker', '~> 5.2'
 
 group :development do
   gem 'bullet'
-  gem 'listen', '>= 3.0.5', '< 3.4'
+  gem 'listen', '>= 3.0.5', '< 3.6'
   gem 'rubocop'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
