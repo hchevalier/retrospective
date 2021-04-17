@@ -214,6 +214,34 @@ class Retrospective::JoiningTest < ActionDispatch::IntegrationTest
     refute_button 'Next'
   end
 
+  test 'facilitator can see the the description when selecting a retrospective kind' do
+    retrospective = create(:retrospective)
+    account = create(:account)
+    group = create(:group, name: 'MyGroupName')
+    group.add_member(account)
+    as_user(account)
+
+    visit '/'
+    click_on 'START'
+
+    find('input[name="group_name"]').click
+    assert_text 'MyGroupName'
+    find('[name="group_name_dropdown"] div', text: 'MyGroupName', match: :first).click
+    assert_no_text 'Description'
+
+    select 'Glad Sad Mad', from: 'retrospective_kind'
+    assert_text 'Description'
+    assert_text 'What makes you happy'
+
+    select 'Sailboat', from: 'retrospective_kind'
+    assert_no_text 'What makes you happy'
+    assert_text 'What happens if a boat hits a rock?'
+
+    select 'Select one', from: 'retrospective_kind'
+    assert_no_text 'What happens if a boat hits a rock?'
+    assert_text 'Select a retrospective kind to have its description'
+  end
+
   test 'sees new participant joining' do
     retrospective = create(:retrospective)
     invitation = create_invitation(retrospective, 'other_one@yopmail.com')
