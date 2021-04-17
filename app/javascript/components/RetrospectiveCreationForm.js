@@ -92,7 +92,7 @@ const RetrospectiveCreationForm = () => {
         </Card>
         { !!retrospectiveKind &&
           <Card className='gap-4 mb-4' title='Description'>
-            <div className='display-linebreak'>{displayDescription(retrospectiveKind)}</div>
+            <div className='display-linebreak'>{displayDescription()}</div>
           </Card>
          }
       </form>
