@@ -57,7 +57,7 @@ const RetrospectiveCreationForm = () => {
     setNewGroupName(name)
   }
 
-  const displayDescription = () => { return RETROSPECTIVE_DESCRIPTIONS[retrospectiveKind] }
+  const displayDescription = () => RETROSPECTIVE_DESCRIPTIONS[retrospectiveKind]
 
   const handleSelectedExistingGroup = (groupId) => {
     setRetrospectiveGroup(groupId)
@@ -90,7 +90,7 @@ const RetrospectiveCreationForm = () => {
             </div>
           </div>
         </Card>
-        { !!retrospectiveKind &&
+        { !!retrospectiveKind && RETROSPECTIVE_DESCRIPTIONS[retrospectiveKind] &&
           <Card className='gap-4 mb-4' title='Description'>
             <div className='display-linebreak'>{displayDescription()}</div>
           </Card>
