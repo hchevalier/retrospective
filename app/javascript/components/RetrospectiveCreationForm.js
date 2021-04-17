@@ -1,8 +1,10 @@
 import React from 'react'
 import { get, post } from 'lib/httpClient'
 import { RETROSPECTIVE_NAMES } from 'lib/utils/displayNames'
+import { RETROSPECTIVE_DESCRIPTIONS } from 'lib/utils/displayDescriptions'
 import Card from './Card'
 import DropDown from './DropDown'
+import './RetrospectiveCreationForm.scss'
 
 const RetrospectiveCreationForm = () => {
   const [existingGroups, setExistingGroups] = React.useState([])
@@ -55,6 +57,8 @@ const RetrospectiveCreationForm = () => {
     setNewGroupName(name)
   }
 
+  const displayDescription = () => { return RETROSPECTIVE_DESCRIPTIONS[retrospectiveKind] }
+
   const handleSelectedExistingGroup = (groupId) => {
     setRetrospectiveGroup(groupId)
     setNewGroupName('')
@@ -86,6 +90,11 @@ const RetrospectiveCreationForm = () => {
             </div>
           </div>
         </Card>
+        { !!retrospectiveKind &&
+          <Card className='gap-4 mb-4' title='Description'>
+            <div className='display-linebreak'>{displayDescription(retrospectiveKind)}</div>
+          </Card>
+         }
       </form>
     </div>
   )
