@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ReflectionsController < ApplicationController
+  include TopicsHelper
   before_action :ensure_participant
 
   def create
@@ -21,15 +22,14 @@ class ReflectionsController < ApplicationController
   end
 
   def update
-    reflection = Reflection.find(params[:id])
-    case current_participant
-    when reflection.owner
-      reflection.update!(reflections_params)
-    when reflection.retrospective.facilitator
-      reflection.update!(reflections_facilitator_params)
-    else
-      return render(json: { status: :forbidden })
-    end
+    retrospective = current_participant.retrospective
+    reflection = retrospective.reflections.find(params[:id])
+    check_authorizations!(retrospective)
+
+    previous_attributes = { zone_id: reflection.zone_id, topic: reflection.topic }
+    reflection.update!(current_participant == reflection.owner ? reflections_params : reflections_limited_params)
+    resolve_zone_changed(reflection, previous_attributes)
+    broadcast_change_topic(retrospective, { reflection: reflection.readable }) if retrospective.reached_step?(:grouping)
 
     render json: reflection.readable
   end
@@ -42,11 +42,23 @@ class ReflectionsController < ApplicationController
 
   private
 
-  def reflections_params
-    params.permit(:content, :zone_id)
+  def check_authorizations!(retrospective)
+    retrospective.zones.find(params[:zone_id]) if params[:zone_id]
+    retrospective.topics.find(params[:topic_id]) if params[:topic_id]
   end
 
-  def reflections_facilitator_params
-    params.permit(:topic_id, :position_in_zone, :position_in_topic)
+  def resolve_zone_changed(reflection, previous_attributes)
+    return if reflection.zone_id == previous_attributes[:zone_id]
+
+    reflection.update!(topic_id: nil)
+    clean_orphans(previous_attributes[:topic]) if previous_attributes[:topic]
+  end
+
+  def reflections_params
+    params.permit(:content, :topic_id, :position_in_zone, :position_in_topic, :zone_id)
+  end
+
+  def reflections_limited_params
+    params.permit(:topic_id, :position_in_zone, :position_in_topic, :zone_id)
   end
 end
