@@ -75,7 +75,7 @@ class Retrospective < ApplicationRecord
     ]
   end
 
-  delegate :zones_typology, to: :builder
+  delegate :zones_typology, to: :builder, allow_nil: true
 
   def as_json
     {
@@ -336,7 +336,7 @@ class Retrospective < ApplicationRecord
   end
 
   def builder
-    BUILDERS[kind].constantize
+    BUILDERS[kind]&.constantize
   end
 
   def add_first_participant
@@ -344,7 +344,7 @@ class Retrospective < ApplicationRecord
   end
 
   def initialize_zones
-    builder.build(self)
+    builder&.build(self)
   end
 
   def step_index
