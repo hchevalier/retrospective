@@ -5,11 +5,12 @@ require 'test_helper'
 class OmniauthCsrfTest < ActionDispatch::IntegrationTest
   setup do
     @allow_forgery_protection = ActionController::Base.allow_forgery_protection
-      ActionController::Base.allow_forgery_protection = true
-      @omni_auth_test_mode = OmniAuth.config.test_mode
-      OmniAuth.config.test_mode = false
-      @omni_auth_on_failure = OmniAuth.config.on_failure
-      OmniAuth.config.on_failure = proc { raise "Omniauth failure" }
+    @omni_auth_test_mode = OmniAuth.config.test_mode
+    @omni_auth_on_failure = OmniAuth.config.on_failure
+
+    ActionController::Base.allow_forgery_protection = true
+    OmniAuth.config.test_mode = false
+    OmniAuth.config.on_failure = proc { raise "Omniauth failure" }
   end
 
   teardown do
