@@ -12,6 +12,7 @@ const RetrospectiveCreationForm = () => {
   const [newGroupName, setNewGroupName] = React.useState('')
   const [retrospectiveGroup, setRetrospectiveGroup] = React.useState('')
   const [retrospectiveKind, setRetrospectiveKind] = React.useState('')
+  const [options, setOptions] = React.useState({})
 
   React.useEffect(() => {
     get({ url: '/api/retrospective_kinds' })
@@ -45,7 +46,8 @@ const RetrospectiveCreationForm = () => {
       url: '/retrospectives',
       payload: {
         group_id: retrospectiveGroup || newGroupId,
-        kind: retrospectiveKind
+        kind: retrospectiveKind,
+        options
       }
     })
       .then(data => { window.location.pathname = `/retrospectives/${data.id}` })
@@ -63,6 +65,8 @@ const RetrospectiveCreationForm = () => {
     setRetrospectiveGroup(groupId)
     setNewGroupName('')
   }
+
+  const handleSelectWeeksDisplayed = (value) => setOptions({ ...options, weeks_displayed: value })
 
   const formInvalid = (!retrospectiveGroup && !newGroupName) || !retrospectiveKind
   const groupOptions = React.useMemo(() => existingGroups.map((group) => ({ label: group.name, value: group.id })), [existingGroups])
@@ -89,6 +93,12 @@ const RetrospectiveCreationForm = () => {
               </select>
             </div>
           </div>
+          {retrospectiveKind === 'timeline' && <div className='flex flex-row max-w-xl justify-evenly'>
+            <div>
+              <label>How many weeks do you want to display?</label>
+              <DropDown name='weeks' options={['1', '2', '3', '4', '5', '6'].map((i) => ({ label: i, value: i }))} disableAutocomplete onItemSelected={handleSelectWeeksDisplayed} />
+            </div>
+          </div>}
         </Card>
         { !!retrospectiveKind && RETROSPECTIVE_DESCRIPTIONS[retrospectiveKind] &&
           <Card className='gap-4 mb-4' title='Description'>

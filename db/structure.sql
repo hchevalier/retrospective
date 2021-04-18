@@ -263,7 +263,8 @@ CREATE TABLE public.retrospectives (
     discussed_reflection_id uuid,
     facilitator_id uuid NOT NULL,
     revealer_id uuid,
-    group_id uuid NOT NULL
+    group_id uuid NOT NULL,
+    options jsonb DEFAULT '{}'::jsonb
 );
 
 
@@ -563,6 +564,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201012071357'),
 ('20201012211423'),
 ('20201017145314'),
-('20201102163916');
+('20201102163916'),
+('20210418214507');
 
 
