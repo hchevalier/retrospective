@@ -26,9 +26,9 @@ class ReflectionsController < ApplicationController
     reflection = retrospective.reflections.find(params[:id])
     check_authorizations!(retrospective)
 
-    previous = { zone_id: reflection.zone_id, topic: reflection.topic }
+    previous_attributes = { zone_id: reflection.zone_id, topic: reflection.topic }
     reflection.update!(current_participant == reflection.owner ? reflections_params : reflections_limited_params)
-    resolve_zone_changed(previous)
+    resolve_zone_changed(reflection, previous_attributes)
     broadcast_change_topic(retrospective, { reflection: reflection.readable }) if retrospective.reached_step?(:grouping)
 
     render json: reflection.readable
@@ -47,11 +47,11 @@ class ReflectionsController < ApplicationController
     retrospective.topics.find(params[:topic_id]) if params[:topic_id]
   end
 
-  def resolve_zone_changed(previous)
-    return if reflection.zone_id == previous[:zone_id]
+  def resolve_zone_changed(reflection, previous_attributes)
+    return if reflection.zone_id == previous_attributes[:zone_id]
 
     reflection.update!(topic_id: nil)
-    clean_orphans(previous[:topic]) if previous[:topic]
+    clean_orphans(previous_attributes[:topic]) if previous_attributes[:topic]
   end
 
   def reflections_params
