@@ -17,5 +17,9 @@
         bottom: 20px;
       }
     }
+
+    &.highlighted {
+      border: 2px dashed red !important;
+    }
   }
 }

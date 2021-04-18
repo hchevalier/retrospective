@@ -391,6 +391,20 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'can move reflections from one column to another' do
+    retrospective = create(:retrospective, step: 'grouping')
+    reflection_a = create(:reflection, :glad, owner: retrospective.facilitator, content: 'First reflection')
+
+    logged_in_as(retrospective.facilitator)
+    visit single_page_app_path(path: "retrospectives/#{retrospective.id}")
+    assert_grouping_step
+
+    zone_sad = retrospective.zones.find_by(identifier: 'Sad')
+    assert_difference 'Reflection.first.zone_id' do
+      sticky_note(reflection_a).drag_to(find(".zone-column[data-id='#{zone_sad.id}']"))
+    end
+  end
+
   def sticky_note(reflection)
     find(".reflection[data-id='#{reflection.id}']")
   end

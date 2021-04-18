@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 import { post, put } from 'lib/httpClient'
 import { groupBy } from 'lib/helpers/array'
 import Card from './Card'
@@ -118,13 +119,15 @@ const StepGrouping = ({ fullScreen, onExpandTopic, onToggleFullScreen }) => {
 
   const handleDrop = (event) => {
     event.preventDefault()
+    event.stopPropagation()
 
     const draggedReflectionId = event.dataTransfer.getData('text/plain')
     let targetElement = event.target
 
     if (!targetElement) return
 
-    if (!targetElement.classList.contains('reflection') && !targetElement.classList.contains('topic')) {
+    const validTarget = targetElement.classList.contains('reflection') || targetElement.classList.contains('topic') || targetElement.classList.contains('zone-column')
+    if (!validTarget) {
       targetElement = targetElement.closest('.reflection') || targetElement.closest('topic')
     }
 
@@ -137,6 +140,8 @@ const StepGrouping = ({ fullScreen, onExpandTopic, onToggleFullScreen }) => {
       } else if (parent.classList.contains('topic')) {
         updateTopic(parent.dataset.id, draggedReflectionId)
       }
+    } else if (targetElement.classList.contains('zone-column')) {
+      moveReflection(targetElement.dataset.id, draggedReflectionId)
     }
   }
 
@@ -156,6 +161,16 @@ const StepGrouping = ({ fullScreen, onExpandTopic, onToggleFullScreen }) => {
       url: `/retrospectives/${retrospectiveId}/topics/${topicId}`,
       payload: {
         reflection_id: droppedReflectionId
+      }
+    })
+      .catch(error => console.warn(error))
+  }
+
+  const moveReflection = (zoneId, droppedReflectionId) => {
+    put({
+      url: `/retrospectives/${retrospectiveId}/reflections/${droppedReflectionId}`,
+      payload: {
+        zone_id: zoneId
       }
     })
       .catch(error => console.warn(error))
@@ -221,8 +236,11 @@ const StepGrouping = ({ fullScreen, onExpandTopic, onToggleFullScreen }) => {
             reflectionsByValue = groupBy(reflectionsInZone, 'content')
           }
 
+          const zoneDrop = draggingOccurs.reflection && zonesTypology === 'open'
+          const dragAndDropHanlders = zoneDrop ? {onDragOver: handleDragOver, onDragEnd: handleDragEnd, onDrop: handleDrop } : {}
+
           return (
-            <div className='zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0 relative min-w-12' key={zone.id}>
+            <div className={classNames('zone-column border flex-1 m-2 p-4 rounded first:ml-0 last:mr-0 relative min-w-12', { 'highlighted': zoneDrop })} data-id={zone.id} key={zone.id} {...dragAndDropHanlders}>
               <div className='zone-header mb-4'>{<Icon retrospectiveKind={kind} zone={zone.name} />}{zone.name}</div>
               {['open', 'limited'].includes(zonesTypology) && (
                 <>
