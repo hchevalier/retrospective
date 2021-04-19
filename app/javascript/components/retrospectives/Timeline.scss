@@ -4,7 +4,7 @@ $timeline_zones_width: 150px;
   #retrospective-container {
     display: flex;
     flex-wrap: wrap;
-    width: calc(#{$timeline_zones_width}*8);
+    width: calc(#{$timeline_zones_width}*6);
     padding-right: $timeline_zones_width;
 
     .zone {

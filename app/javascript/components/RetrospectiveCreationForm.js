@@ -66,39 +66,42 @@ const RetrospectiveCreationForm = () => {
     setNewGroupName('')
   }
 
-  const handleSelectWeeksDisplayed = (value) => setOptions({ ...options, weeks_displayed: value })
+  const displayWeeksDropdown = retrospectiveKind === 'timeline'
+  const handleSelectWeeksChange = (value) => setOptions({ ...options, weeks_displayed: value })
 
-  const formInvalid = (!retrospectiveGroup && !newGroupName) || !retrospectiveKind
+  const formInvalid = (!retrospectiveGroup && !newGroupName) || !retrospectiveKind || (displayWeeksDropdown && !options.weeks_displayed)
   const groupOptions = React.useMemo(() => existingGroups.map((group) => ({ label: group.name, value: group.id })), [existingGroups])
 
   return (
     <div className='container mx-auto'>
       <form noValidate autoComplete='off' className='mt-4' onSubmit={handleSubmit}>
         <Card className='gap-4 mb-4' title='Settings' center actionLabel='START RETROSPECTIVE' onAction={handleSubmit} actionDisabled={formInvalid}>
-          <div className='flex flex-row max-w-xl justify-evenly'>
-            <div>
-              <label>Group</label>
-              <DropDown name='group_name' options={groupOptions} allowNew onItemSelected={handleSelectedExistingGroup} onItemAdded={handleSelectedNewGroup} />
+          <div className='flex flex-col'>
+            <div className='flex flex-row max-w-xl justify-evenly'>
+              <div>
+                <label>Group</label>
+                <DropDown name='group_name' options={groupOptions} allowNew onItemSelected={handleSelectedExistingGroup} onItemAdded={handleSelectedNewGroup} />
+              </div>
+              <div className='ml-8'>
+                <label id='label-kind'>Retrospective kind</label>
+                <select
+                  id='label-kind'
+                  name='retrospective_kind'
+                  value={retrospectiveKind}
+                  onChange={(event) => setRetrospectiveKind(event.target.value)}
+                  className=" appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-3 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                  <option>Select one</option>
+                  {retrospectiveKinds.map((kind, index) => <option key={index} value={kind}>{RETROSPECTIVE_NAMES[kind]}</option>)}
+                </select>
+              </div>
             </div>
-            <div className='ml-8'>
-              <label id='label-kind'>Retrospective kind</label>
-              <select
-                id='label-kind'
-                name='retrospective_kind'
-                value={retrospectiveKind}
-                onChange={(event) => setRetrospectiveKind(event.target.value)}
-                className=" appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-3 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                <option>Select one</option>
-                {retrospectiveKinds.map((kind, index) => <option key={index} value={kind}>{RETROSPECTIVE_NAMES[kind]}</option>)}
-              </select>
-            </div>
+            {displayWeeksDropdown && <div className='flex flex-row max-w-xl justify-evenly mt-3'>
+              <div>
+                <label>How many weeks do you want to display?</label>
+                <DropDown name='weeks' options={['1', '2', '3', '4', '5', '6'].map((i) => ({ label: i, value: i }))} disableAutocomplete onItemSelected={handleSelectWeeksChange} />
+              </div>
+            </div>}
           </div>
-          {retrospectiveKind === 'timeline' && <div className='flex flex-row max-w-xl justify-evenly'>
-            <div>
-              <label>How many weeks do you want to display?</label>
-              <DropDown name='weeks' options={['1', '2', '3', '4', '5', '6'].map((i) => ({ label: i, value: i }))} disableAutocomplete onItemSelected={handleSelectWeeksDisplayed} />
-            </div>
-          </div>}
         </Card>
         { !!retrospectiveKind && RETROSPECTIVE_DESCRIPTIONS[retrospectiveKind] &&
           <Card className='gap-4 mb-4' title='Description'>

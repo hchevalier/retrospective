@@ -10,6 +10,7 @@ class Builders::Timeline
       # This uses UTC as application does not have a timezone set
       weeks_ago = (retrospective.options.dig('weeks_displayed') || 2).to_i.weeks.ago
       (weeks_ago.beginning_of_week.to_date..Date.today).each do |date|
+        next if date.on_weekend?
         retrospective.add_zone(date.strftime('%d/%m'))
       end
     end

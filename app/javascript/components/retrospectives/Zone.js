@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import TooltipToggler from '../TooltipToggler'
 import './Zone.scss'
 
-const Zone = ({ background, hideCount, height, highlight, icon, onClick, reference, reflections, width, children }) => {
+const Zone = ({ background, hideCount, height, highlight, icon, onClick, onDragOver, onDragEnd, onDrop, reference, reflections, width, children }) => {
   const { id, name } = reference
   const reflectionsCount = reflections.length
   const displayedReflectionsCount = reflectionsCount > 0 && !hideCount ? `(${reflectionsCount})` : ''
@@ -16,7 +16,7 @@ const Zone = ({ background, hideCount, height, highlight, icon, onClick, referen
   const hint = reference.hint ? <TooltipToggler content={reference.hint} fixed /> : null
 
   return (
-    <div id={`zone-${name}`} data-id={id} onClick={onClick} className={classNames('zone', { highlight })} style={inlineStyle}>
+    <div id={`zone-${name}`} data-id={id} onClick={onClick} className={classNames('zone', { highlight })} style={inlineStyle} onDragOver={onDragOver} onDragEnd={onDragEnd} onDrop={onDrop}>
       <div className={classNames('zone-label', { 'absolute-zone-label': !icon})} data-id={id}>
         {icon ? icon : null} {name} {displayedReflectionsCount} {hint}
       </div>
@@ -33,6 +33,9 @@ Zone.propTypes = {
   highlight: PropTypes.bool,
   icon: PropTypes.node,
   onClick: PropTypes.func.isRequired,
+  onDragOver: PropTypes.func,
+  onDragEnd: PropTypes.func,
+  onDrop: PropTypes.func,
   reference: PropTypes.shape({
     hint: PropTypes.string,
     id: PropTypes.number.isRequired,

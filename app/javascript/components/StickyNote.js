@@ -156,7 +156,7 @@ StickyNote.propTypes = {
 StickyNote.defaultProps = {
   reactions: [],
   readOnly: true,
-  stackSize: 1,
+  stack: [],
 }
 
 export default StickyNote
