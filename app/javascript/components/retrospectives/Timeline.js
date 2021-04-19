@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector, shallowEqual } from 'react-redux'
 import PropTypes from 'prop-types'
 import { put } from 'lib/httpClient'
-import StickyNote from '../StickyNote'
+import StickyNotesStack from '../StickyNotesStack'
 import ZoomableArea from './ZoomableArea'
 import Zone from './Zone'
 import './Timeline.scss'
@@ -36,14 +36,17 @@ const Timeline = ({ highlightZones, onZoneClicked }) => {
   const handleDrop = (event) => {
     console.log('drop')
     event.preventDefault()
-    event.stopPropagation()
 
     const draggedReflectionId = event.dataTransfer.getData('text/plain')
     let targetElement = event.target
     console.log(targetElement)
+    if (!targetElement?.classList?.contains('zone')) {
+      targetElement = targetElement.closest('.zone')
+    }
     if (!targetElement) return
 
     if (targetElement.classList.contains('zone')) {
+      event.stopPropagation()
       moveReflection(targetElement.dataset.id, draggedReflectionId)
     }
   }
@@ -60,35 +63,37 @@ const Timeline = ({ highlightZones, onZoneClicked }) => {
   }
 
   return (
-    <ZoomableArea>
-      <>
-        {zones.map((zone) => {
-          const reflectionsInZone = reflections.filter((reflection) => reflection.zone.id === zone.id)
-          return (
-            <Zone
-              key={zone.id}
-              reference={zone}
-              highlight={highlightZones || (draggingOccurs?.reflection && draggingOccurs.zone.id !== zone.id)}
-              reflections={reflectionsInZone}
-              onClick={onZoneClicked}
-              onDragOver={handleDragOver}
-              onDragEnd={handleDragEnd}
-              onDrop={handleDrop}>
-              <div className='p-2'>
-                {reflectionsInZone.length > 0 && (
-                  <StickyNote
-                    reflection={reflectionsInZone[0]}
-                    readOnly
-                    stack={reflectionsInZone}
-                    draggable
-                    onDragStart={handleDragStart} />
-                )}
-              </div>
-            </Zone>
-          )
-        })}
-      </>
-    </ZoomableArea>
+    <div style={{ 'maxHeight': 'calc(100vh - 116px)' }}>
+      <ZoomableArea>
+        <>
+          {zones.map((zone) => {
+            const reflectionsInZone = reflections.filter((reflection) => reflection.zone.id === zone.id)
+            return (
+              <Zone
+                key={zone.id}
+                reference={zone}
+                highlight={highlightZones || (draggingOccurs?.reflection && draggingOccurs.zone.id !== zone.id)}
+                reflections={reflectionsInZone}
+                onClick={onZoneClicked}
+                onDragOver={handleDragOver}
+                onDragEnd={handleDragEnd}
+                onDrop={handleDrop}>
+                <div className='p-2' style={{ height: '90%' }} data-id={zone.id} onClick={onZoneClicked}>
+                  {reflectionsInZone.length > 0 && (
+                    <StickyNotesStack
+                      reflections={reflectionsInZone}
+                      onDragStart={handleDragStart}
+                      onDragOver={handleDragOver}
+                      onDragEnd={handleDragEnd}
+                      onDrop={handleDrop} />
+                  )}
+                </div>
+              </Zone>
+            )
+          })}
+        </>
+      </ZoomableArea>
+    </div>
   )
 }
 

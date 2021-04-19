@@ -1,4 +1,4 @@
-$timeline_zones_width: 150px;
+$timeline_zones_width: 200px;
 
 #timeline {
   #retrospective-container {
@@ -11,6 +11,10 @@ $timeline_zones_width: 150px;
       width: $timeline_zones_width;
       height: $timeline_zones_width;
       border: 1px solid gray;
+
+      .zone-label {
+        text-align: center;
+      }
 
       &.highlight {
         border: 1px dashed red;
