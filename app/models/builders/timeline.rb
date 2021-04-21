@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Builders::Timeline
+  VALID_EMOTIONS = [1, 2, 3, 4].freeze
+
   class << self
     def zones_typology
       :open

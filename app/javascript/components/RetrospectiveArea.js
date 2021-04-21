@@ -6,7 +6,6 @@ import StepReview from './StepReview'
 import StepThinking from './StepThinking'
 import StepGrouping from './StepGrouping'
 import StepVoting from './StepVoting'
-import StepVotingWithEmotions from './StepVotingWithEmotions'
 import StepActions from './StepActions'
 import StepDone from './StepDone'
 import TopicExpanded from './TopicExpanded'
@@ -33,8 +32,7 @@ const RetrospectiveArea = ({ kind, onToggleFullScreen, fullScreen }) => {
       {currentStep === 'reviewing' && <StepReview />}
       {currentStep === 'thinking' && <StepThinking kind={kind} onToggleFullScreen={onToggleFullScreen} fullScreen={fullScreen} />}
       {currentStep === 'grouping' && <StepGrouping onExpandTopic={handleExpandTopic} onToggleFullScreen={onToggleFullScreen} fullScreen={fullScreen} />}
-      {currentStep === 'voting' && kind === 'timeline' && <StepVotingWithEmotions onExpandTopic={handleExpandTopic} />}
-      {currentStep === 'voting' && kind !== 'timeline' && <StepVoting onExpandTopic={handleExpandTopic} />}
+      {currentStep === 'voting' && <StepVoting onExpandTopic={handleExpandTopic} />}
       {currentStep === 'actions' && <StepActions />}
       {currentStep === 'done' && <StepDone />}
       {expandedTopic && (

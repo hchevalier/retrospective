@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
+import { Line } from 'react-chartjs-2'
 import StickyNote from './StickyNote'
 import ActionEditor from './ActionEditor'
 import TooltipToggler from './TooltipToggler'
@@ -8,11 +9,47 @@ import Card from './Card'
 import Button from './Button'
 import IconArrow from 'images/arrow-right-icon.inline.svg'
 
+const options = {
+  maintainAspectRatio: false,
+  elements: { line: { spanGaps: true } },
+  scales: {
+    yAxes: [
+      {
+        ticks: {
+          beginAtZero: true,
+        },
+      },
+    ],
+  },
+}
+
+const LineChart = () => {
+  const participants = useSelector(state => state.participants)
+  const zones = useSelector(state => state.retrospective.zones)
+
+  const data = {
+    labels: zones.map((zone) => zone.name),
+    datasets: participants.map((participant) => {
+      return {
+        label: participant.surname,
+        data: zones.map((zone) => participant.retrospectiveData.emotions[zone.id]),
+        fill: false,
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgba(255, 99, 132, 0.2)',
+      }
+    })
+  }
+
+  return (
+    <Line data={data} options={options} height={150} />
+  )
+}
+
 const StepActions = () => {
   const currentReflection = useSelector(state => state.reflections.discussedReflection)
   const visibleReflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
   const visibleReactions = useSelector(state => state.reactions.visibleReactions, shallowEqual)
-  const zonesTypology = useSelector(state => state.retrospective.zonesTypology)
+  const { kind, zonesTypology } = useSelector(state => state.retrospective)
   const facilitator = useSelector(state => state.profile.facilitator)
   const channel = useSelector(state => state.orchestrator.subscription)
 
@@ -59,6 +96,11 @@ const StepActions = () => {
   return (
     <div className='flex flex-row h-full'>
       <div className='flex w-2/3 flex-col'>
+        {kind === 'timeline' && (
+          <Card containerClassName='screen-limited mb-3'>
+            <LineChart />
+          </Card>
+        )}
         <Card vertical title='Discussed topic' containerClassName='h-full screen-limited'>
           <div className='text-center text-xs text-gray-800'>
             <TooltipToggler content={tooltipContent} /> Hover the question mark to display instructions for this step
