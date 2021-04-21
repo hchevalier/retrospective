@@ -53,17 +53,21 @@ class Participant < ApplicationRecord
   end
 
   def profile
-    {
+    _profile = {
       **short_profile,
       color: color,
       status: logged_in,
       facilitator: facilitator?,
-      revealer: revealer?
+      revealer: revealer?,
     }
+
+    _profile[:retrospectiveData] = retrospective_related_data if retrospective.reached_step?(:actions)
+
+    _profile
   end
 
   def full_profile
-    profile.merge(decryptionKey: encryption_key, stepDone: step_done)
+    profile.merge(decryptionKey: encryption_key, stepDone: step_done, retrospectiveData: retrospective_related_data)
   end
 
   def facilitator?

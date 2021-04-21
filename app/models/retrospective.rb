@@ -182,10 +182,15 @@ class Retrospective < ApplicationRecord
     participants_relationship = participants.loaded? ? participants : participants.includes(:reactions)
     clear_info =
       participants_relationship.each_with_object({}) do |participant, memo|
-        memo[participant.id] = {
-          remainingVotes: Reaction::MAX_VOTES - participant.reactions.select(&:vote?).count
-        }
 
+        remaining_votes =
+          if kind == 'timeline'
+            reflections.revealed.pluck(:zone_id).uniq.count - participant.retrospective_related_data.fetch('emotions', {}).keys.size
+          else
+            Reaction::MAX_VOTES - participant.reactions.select(&:vote?).count
+          end
+
+        memo[participant.id] = { remainingVotes: remaining_votes }
         memo[participant.id].merge!(stepDone: participant.step_done) if step == 'thinking'
       end
 
