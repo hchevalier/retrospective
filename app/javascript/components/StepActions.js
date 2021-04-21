@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import { Line } from 'react-chartjs-2'
 import StickyNote from './StickyNote'
@@ -10,6 +10,7 @@ import Button from './Button'
 import IconArrow from 'images/arrow-right-icon.inline.svg'
 
 const options = {
+  animations: false,
   maintainAspectRatio: false,
   elements: { line: { spanGaps: true } },
   scales: {
@@ -27,7 +28,7 @@ const LineChart = () => {
   const participants = useSelector(state => state.participants)
   const zones = useSelector(state => state.retrospective.zones)
 
-  const data = {
+  const data = useRef({
     labels: zones.map((zone) => zone.name),
     datasets: participants.map((participant) => {
       return {
@@ -38,10 +39,10 @@ const LineChart = () => {
         borderColor: 'rgba(255, 99, 132, 0.2)',
       }
     })
-  }
+  })
 
   return (
-    <Line data={data} options={options} height={150} />
+    <Line data={data.current} options={options} height={150} />
   )
 }
 
