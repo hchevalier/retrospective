@@ -69,18 +69,24 @@ class Retrospective::TimelineHappyPathTest < ActionDispatch::IntegrationTest
     # Grouping step
     assert_text 'Hover the question mark to display instructions for this step'
     click_on 'assign-random-revealer'
-    assert_selector '.eye-icon'
-    find_all('.eye-icon').map(&:click)
+    within '#reflections-container' do
+      assert_selector '.eye-icon', count: 2
+      find('.eye-icon', match: :first).click
+      refute_text 'First reflection'
+      find('.eye-icon', match: :first).click
+      refute_text 'Second reflection'
+      refute_text 'My reflections'
+    end
 
     next_step
     # Voting step
     assert_selector '.zone-header', count: 2
     within find_all('.zone-header').first do
-      find('div', text: '1').click
+      find('div.cursor-pointer', text: '1').click
       assert_selector('.active')
     end
     within find_all('.zone-header').last do
-      find('div', text: '4').click
+      find('div.cursor-pointer', text: '4').click
       assert_selector('.active')
     end
     within ".reflection[data-id='#{first_reflection.id}'] .vote-corner" do
