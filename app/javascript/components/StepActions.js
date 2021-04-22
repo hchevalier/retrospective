@@ -1,6 +1,7 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import { Line } from 'react-chartjs-2'
+import PropTypes from 'prop-types'
 import StickyNote from './StickyNote'
 import ActionEditor from './ActionEditor'
 import TooltipToggler from './TooltipToggler'
@@ -55,6 +56,10 @@ const LineChart = ({ currentZoneId }) => {
   return (
     <Line data={data} options={CHART_SETTINGS} height={150} />
   )
+}
+
+LineChart.propTypes = {
+  currentZoneId: PropTypes.number.isRequired
 }
 
 const StepActions = () => {

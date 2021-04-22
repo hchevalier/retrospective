@@ -38,6 +38,10 @@ const EmotionBar = ({ zoneId }) => {
   )
 }
 
+EmotionBar.propTypes = {
+  zoneId: PropTypes.number.isRequired
+}
+
 const StepVoting = ({ onExpandTopic }) => {
   const { kind } = useSelector(state => state.retrospective)
   const reflections = useSelector(state => state.reflections.visibleReflections, shallowEqual)
