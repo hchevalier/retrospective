@@ -280,6 +280,7 @@ class Retrospective < ApplicationRecord
 
   private
 
+  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def state_for_step(target_step)
     params = { next_step: target_step }
     params[:visibleReflections] = visible_reflections_for_step(target_step)
@@ -302,6 +303,7 @@ class Retrospective < ApplicationRecord
 
     params
   end
+  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
   def skip_vote!
     builder.autovote!(self)
