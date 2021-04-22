@@ -9,18 +9,28 @@ import Card from './Card'
 import Button from './Button'
 import IconArrow from 'images/arrow-right-icon.inline.svg'
 
-const options = {
+const CHART_SETTINGS = {
   animations: false,
   maintainAspectRatio: false,
   elements: { line: { spanGaps: true } },
   scales: {
-    yAxes: [
-      {
-        ticks: {
-          beginAtZero: true,
-        },
+    x: {
+      grid: {
+        drawBorder: false,
       },
-    ],
+    },
+    y: {
+      min: 0.5,
+      max: 4.5,
+      grid: {
+        drawBorder: false,
+        color: (context) => context.tick.value >= 1 && context.tick.value <= 4 ? 'lightgray' : 'transparent',
+      },
+      ticks: {
+        stepSize: 1,
+        callback: (val, index) => index === 0 || index === 5 ? '' : val,
+      },
+    },
   },
 }
 
@@ -43,7 +53,7 @@ const LineChart = ({ currentZoneId }) => {
   }
 
   return (
-    <Line data={data} options={options} height={150} />
+    <Line data={data} options={CHART_SETTINGS} height={150} />
   )
 }
 
