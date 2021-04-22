@@ -66,6 +66,9 @@ const Timeline = ({ highlightZones, onZoneClicked }) => {
     <div style={{ 'maxHeight': 'calc(100vh - 116px)' }}>
       <ZoomableArea>
         <>
+          <div className='w-full text-center pb-3'>
+            Fill the calendar with reflections related to events or situations that you liked or disliked during the previous iteration
+          </div>
           {zones.map((zone) => {
             const reflectionsInZone = reflections.filter((reflection) => reflection.zone.id === zone.id)
             return (
