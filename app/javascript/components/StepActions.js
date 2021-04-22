@@ -42,9 +42,10 @@ const LineChart = ({ currentZoneId }) => {
   const data = {
     labels: zones.map((zone) => zone.name),
     datasets: participants.map((participant) => {
+      const emotions = ((participant.retrospectiveData || {}).emotions || {})
       return {
         label: participant.surname,
-        data: zones.map((zone) => (participant.retrospectiveData || { emotions: {} }).emotions[zone.id]),
+        data: zones.map((zone) => emotions[zone.id]),
         fill: false,
         borderColor: zones.map(() => participant.color),
         pointBorderColor: zones.map((zone) => zone.id === currentZoneId ? '#000000' : 'transparent'),
