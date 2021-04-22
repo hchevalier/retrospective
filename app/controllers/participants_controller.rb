@@ -32,11 +32,7 @@ class ParticipantsController < ApplicationController
 
       render json: { status: :ok }
     elsif params[:zone_id] && params[:emotion]
-      current_data = current_participant.retrospective_related_data
-      current_data['emotions'] ||= {}
-      current_data['emotions'].merge!(params[:zone_id] => params[:emotion])
-      current_participant.update!(retrospective_related_data: current_data)
-      broadcast_facilitator_info(retrospective)
+      update_emotions!
 
       render json: { status: :ok }
     else
@@ -48,6 +44,14 @@ class ParticipantsController < ApplicationController
 
   def update_participants_params
     params.permit(:color)
+  end
+
+  def update_emotions!
+    current_data = current_participant.retrospective_related_data
+    current_data['emotions'] ||= {}
+    current_data['emotions'].merge!(params[:zone_id] => params[:emotion])
+    current_participant.update!(retrospective_related_data: current_data)
+    broadcast_facilitator_info(current_participant.retrospective)
   end
 
   def broadcast_facilitator_info(retrospective)

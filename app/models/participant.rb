@@ -53,17 +53,17 @@ class Participant < ApplicationRecord
   end
 
   def profile
-    _profile = {
+    hash = {
       **short_profile,
       color: color,
       status: logged_in,
       facilitator: facilitator?,
-      revealer: revealer?,
+      revealer: revealer?
     }
 
-    _profile[:retrospectiveData] = retrospective_related_data if retrospective.reached_step?(:actions)
+    hash[:retrospectiveData] = retrospective_related_data if retrospective.reached_step?(:actions)
 
-    _profile
+    hash
   end
 
   def full_profile
