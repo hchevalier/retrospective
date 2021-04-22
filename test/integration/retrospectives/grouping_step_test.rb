@@ -405,10 +405,6 @@ class Retrospective::GroupingStepTest < ActionDispatch::IntegrationTest
     end
   end
 
-  def sticky_note(reflection)
-    find(".reflection[data-id='#{reflection.id}']")
-  end
-
   def topic_container(topic)
     find(".topic[data-id='#{topic.id}']").ancestor('.topic-container')
   end

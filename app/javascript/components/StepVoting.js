@@ -30,10 +30,10 @@ const EmotionBar = ({ zoneId }) => {
 
   return (
     <div className='flex flex-row justify-evenly mt-2'>
-      <div className={classNames('rounded-full bg-red-200 px-2 cursor-pointer', { 'bg-red-500': emotionForZone === 1 })} onClick={() => updateRetrospectiveRelatedData(1)}>1</div>
-      <div className={classNames('rounded-full bg-orange-200 px-2 cursor-pointer', { 'bg-orange-500': emotionForZone === 2 })} onClick={() => updateRetrospectiveRelatedData(2)}>2</div>
-      <div className={classNames('rounded-full bg-yellow-200 px-2 cursor-pointer', { 'bg-yellow-500': emotionForZone === 3 })} onClick={() => updateRetrospectiveRelatedData(3)}>3</div>
-      <div className={classNames('rounded-full bg-green-200 px-2 cursor-pointer', { 'bg-green-500': emotionForZone === 4 })} onClick={() => updateRetrospectiveRelatedData(4)}>4</div>
+      <div className={classNames('rounded-full bg-red-200 px-2 cursor-pointer', { 'bg-red-500 active': emotionForZone === 1 })} onClick={() => updateRetrospectiveRelatedData(1)}>1</div>
+      <div className={classNames('rounded-full bg-orange-200 px-2 cursor-pointer', { 'bg-orange-500 active': emotionForZone === 2 })} onClick={() => updateRetrospectiveRelatedData(2)}>2</div>
+      <div className={classNames('rounded-full bg-yellow-200 px-2 cursor-pointer', { 'bg-yellow-500 active': emotionForZone === 3 })} onClick={() => updateRetrospectiveRelatedData(3)}>3</div>
+      <div className={classNames('rounded-full bg-green-200 px-2 cursor-pointer', { 'bg-green-500 active': emotionForZone === 4 })} onClick={() => updateRetrospectiveRelatedData(4)}>4</div>
     </div>
   )
 }

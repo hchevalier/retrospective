@@ -44,7 +44,7 @@ const LineChart = ({ currentZoneId }) => {
     datasets: participants.map((participant) => {
       return {
         label: participant.surname,
-        data: zones.map((zone) => participant.retrospectiveData.emotions[zone.id]),
+        data: zones.map((zone) => (participant.retrospectiveData || { emotions: {} }).emotions[zone.id]),
         fill: false,
         borderColor: zones.map(() => participant.color),
         pointBorderColor: zones.map((zone) => zone.id === currentZoneId ? '#000000' : 'transparent'),

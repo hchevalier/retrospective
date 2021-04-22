@@ -68,6 +68,10 @@ class ActionDispatch::IntegrationTest
     click_on 'Confirm'
   end
 
+  def sticky_note(reflection)
+    find(".reflection[data-id='#{reflection.id}']")
+  end
+
   def visit(path)
     @account&.reload
     super

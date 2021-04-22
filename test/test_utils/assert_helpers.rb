@@ -61,11 +61,11 @@ module AssertHelpers
   end
 
   def assert_reflection_in_zone(zone, count: 1)
-    assert_text "Glad (#{count})"
+    assert_text "#{zone || 'Glad'} (#{count})"
   end
 
   def refute_reflection_in_zone(zone, count: 1)
-    refute_text "Glad (#{count})"
+    refute_text "#{zone || 'Glad'} (#{count})"
   end
 
   def assert_has_color(participant, hex_color)
