@@ -35,7 +35,7 @@ const StepThinking = ({ kind, fullScreen, onToggleFullScreen }) => {
     event.stopPropagation()
 
     if (zonesTypology === 'open' || zonesTypology === 'limited') {
-      setSelectedZone(event.target.dataset.id)
+      setSelectedZone(event.target.closest('.zone').dataset.id)
     }
   }
 

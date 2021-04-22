@@ -78,7 +78,7 @@ const Timeline = ({ highlightZones, onZoneClicked }) => {
                 onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
                 onDrop={handleDrop}>
-                <div className='p-2' style={{ height: '90%' }} data-id={zone.id} onClick={onZoneClicked}>
+                <div className='p-2' style={{ height: '90%' }}>
                   {reflectionsInZone.length > 0 && (
                     <StickyNotesStack
                       reflections={reflectionsInZone}
