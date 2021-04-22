@@ -24,25 +24,26 @@ const options = {
   },
 }
 
-const LineChart = () => {
+const LineChart = ({ currentZoneId }) => {
   const participants = useSelector(state => state.participants)
   const zones = useSelector(state => state.retrospective.zones)
 
-  const data = useRef({
+  const data = {
     labels: zones.map((zone) => zone.name),
     datasets: participants.map((participant) => {
       return {
         label: participant.surname,
         data: zones.map((zone) => participant.retrospectiveData.emotions[zone.id]),
         fill: false,
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: zones.map(() => participant.color),
+        pointBorderColor: zones.map((zone) => zone.id === currentZoneId ? '#000000' : 'transparent'),
+        backgroundColor: zones.map(() => participant.color),
       }
     })
-  })
+  }
 
   return (
-    <Line data={data.current} options={options} height={150} />
+    <Line data={data} options={options} height={150} />
   )
 }
 
@@ -99,13 +100,18 @@ const StepActions = () => {
       <div className='flex w-2/3 flex-col'>
         {kind === 'timeline' && (
           <Card containerClassName='screen-limited mb-3'>
-            <LineChart />
+            <LineChart currentZoneId={displayedReflections[0].zone.id} />
           </Card>
         )}
         <Card vertical title='Discussed topic' containerClassName='h-full screen-limited'>
           <div className='text-center text-xs text-gray-800'>
             <TooltipToggler content={tooltipContent} /> Hover the question mark to display instructions for this step
           </div>
+          {['open', 'limited'].includes(zonesTypology) && (
+            <div className='p-4 w-full flex flex-col text-center'>
+              <span className='font-medium'>{displayedReflections[0].zone.name}</span>
+            </div>
+          )}
           <div id='discussed-reflections-panel' className='p-4 w-full flex flex-row justify-between'>
             {facilitator && channel?.ready() && (
               <Button name='previous_topic' contained primary className='px-4 max-h-16' onClick={handleNavigateToPreviousReflection} disabled={!previousReflection}>
