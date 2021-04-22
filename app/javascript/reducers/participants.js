@@ -8,6 +8,9 @@ const participants = (state = initialState, action) => {
       return uniqBy([action.profile, ...state], 'uuid')
     case 'new-participant':
       return uniqBy([...state, action.newParticipant], 'uuid')
+    case 'change-step': {
+      return action.participants ? [...action.participants] : state
+    }
     case 'refresh-participant':
     case 'change-color':
     case 'change-avatar':

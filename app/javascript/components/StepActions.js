@@ -54,7 +54,9 @@ const LineChart = ({ currentZoneId }) => {
   }
 
   return (
-    <Line data={data} options={CHART_SETTINGS} height={150} />
+    <div style={{ position: 'relative', width: '100%', height: '150px' }}>
+      <Line data={data} options={CHART_SETTINGS} height={150} />
+    </div>
   )
 }
 

@@ -296,6 +296,9 @@ class Retrospective < ApplicationRecord
 
     params[:pendingTasks] = group.pending_tasks.as_json if target_step == 'reviewing'
     params[:discussedReflection] = discussed_reflection&.readable if %w[actions done].include?(target_step)
+    if target_step == 'actions' && kind == 'timeline'
+      params[:participants] = participants.sort_by(&:created_at).map(&:profile)
+    end
 
     params
   end
