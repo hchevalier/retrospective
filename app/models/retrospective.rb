@@ -57,6 +57,7 @@ class Retrospective < ApplicationRecord
     kinds[:pmi] => 'Builders::PlusMinusInteresting',
     kinds[:sailboat] => 'Builders::Sailboat',
     kinds[:starfish] => 'Builders::Starfish',
+    kinds[:timeline] => 'Builders::Timeline',
     kinds[:traffic_lights] => 'Builders::TrafficLights',
     kinds[:oscars_gerards] => 'Builders::OscarsGerards'
   }.freeze
@@ -68,6 +69,7 @@ class Retrospective < ApplicationRecord
       kinds[:four_l],
       kinds[:sailboat],
       kinds[:starfish],
+      kinds[:timeline],
       kinds[:traffic_lights],
       kinds[:oscars_gerards]
     ]
@@ -180,10 +182,7 @@ class Retrospective < ApplicationRecord
     participants_relationship = participants.loaded? ? participants : participants.includes(:reactions)
     clear_info =
       participants_relationship.each_with_object({}) do |participant, memo|
-        memo[participant.id] = {
-          remainingVotes: Reaction::MAX_VOTES - participant.reactions.select(&:vote?).count
-        }
-
+        memo[participant.id] = { remainingVotes: Reaction::MAX_VOTES - participant.reactions.select(&:vote?).count }
         memo[participant.id].merge!(stepDone: participant.step_done) if step == 'thinking'
       end
 
@@ -281,6 +280,7 @@ class Retrospective < ApplicationRecord
 
   private
 
+  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def state_for_step(target_step)
     params = { next_step: target_step }
     params[:visibleReflections] = visible_reflections_for_step(target_step)
@@ -297,9 +297,13 @@ class Retrospective < ApplicationRecord
 
     params[:pendingTasks] = group.pending_tasks.as_json if target_step == 'reviewing'
     params[:discussedReflection] = discussed_reflection&.readable if %w[actions done].include?(target_step)
+    if target_step == 'actions' && kind == 'timeline'
+      params[:participants] = participants.sort_by(&:created_at).map(&:profile)
+    end
 
     params
   end
+  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
   def skip_vote!
     builder.autovote!(self)

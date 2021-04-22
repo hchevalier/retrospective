@@ -16,7 +16,7 @@ import './Topic.scss'
 
 const StickyNote = React.forwardRef(({
   reflection, showReactions, reactions, readOnly, showVotes, stack = [], glowing, revealable, noShrink, onStackClick,
-  highlighted, draggable, onDragStart, onDragOver, onDragEnd, onDrop
+  highlighted, draggable, onDragStart, onDragOver, onDragEnd, onDrop, hideAuthor, maxLines
 }, ref) => {
   const dispatch = useDispatch()
   const [hovered, setHovered] = React.useState(false)
@@ -107,7 +107,7 @@ const StickyNote = React.forwardRef(({
       {stackSize > 1 && <div className='reflection stack stack-1 flex flex-col mb-3 mx-auto p-2 rounded-md absolute w-full' style={{ ...colorStyleStack1}} onClick={onStackClick} />}
       <div
         ref={ref}
-        className={classNames('reflection flex flex-col mb-3 mx-auto p-2 rounded-md relative w-full', { glowing, 'highlighted': highlighted, 'flex-shrink-0': noShrink })}
+        className={classNames('reflection flex flex-col mb-3 mx-auto p-2 rounded-md relative w-full', { glowing, 'highlighted': highlighted, 'flex-shrink-0': noShrink, [`max-lines-${maxLines}`]: !!maxLines })}
         data-id={reflection.id}
         data-owner-uuid={reflection.owner.uuid}
         data-zone-id={reflection.zone.id}
@@ -116,7 +116,7 @@ const StickyNote = React.forwardRef(({
         style={colorStyle}
         {...(draggable ? { draggable, onDragStart, onDrop, onDragOver, onDragEnd } : {})}>
         <div className='reflection-content-container'>
-          <div className='font-bold mb-2'>{reflection.owner.surname}</div>
+          {!hideAuthor && <div className='font-bold mb-2'>{reflection.owner.surname}</div>}
           {editing && <textarea name='content' className='bg-transparent border-none outline-none overflow-hidden resize-none' ref={onEditTextAreaRefChange} onChange={resizeTextArea} defaultValue={reflection.content} onBlur={handleUpdate}/>}
           {!editing && <div name='content' onClick={handleEdit} dangerouslySetInnerHTML={sanitize(reflection.content.replace(/(?:\r\n|\r|\n)/g, '<br>'))}></div>}
         </div>
@@ -143,8 +143,10 @@ StickyNote.propTypes = {
   showVotes: PropTypes.bool,
   stack: PropTypes.arrayOf(reflectionShape),
   glowing: PropTypes.bool,
+  hideAuthor: PropTypes.bool,
   highlighted: PropTypes.bool,
   draggable: PropTypes.bool,
+  maxLines: PropTypes.number,
   noShrink: PropTypes.bool,
   onDragStart: PropTypes.func,
   onDragOver: PropTypes.func,
@@ -156,7 +158,7 @@ StickyNote.propTypes = {
 StickyNote.defaultProps = {
   reactions: [],
   readOnly: true,
-  stackSize: 1,
+  stack: [],
 }
 
 export default StickyNote

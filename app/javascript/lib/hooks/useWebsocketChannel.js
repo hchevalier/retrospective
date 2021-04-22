@@ -15,7 +15,7 @@ const useWebsocketChannel = () => {
     } else if (action === 'refreshParticipant') {
       dispatch({ type: 'refresh-participant', participant: data.participant })
     } else if (action === 'next') {
-      dispatch({ type: 'change-step', step: data.next_step, visibleReflections: data.visibleReflections, discussedReflection: data.discussedReflection, visibleReactions: data.visibleReactions, pendingTasks: data.pendingTasks })
+      dispatch({ type: 'change-step', step: data.next_step, visibleReflections: data.visibleReflections, discussedReflection: data.discussedReflection, visibleReactions: data.visibleReactions, pendingTasks: data.pendingTasks, participants: data.participants })
     } else if (action === 'setTimer') {
       dispatch({ type: 'start-timer', timerEndAt: data.timer_end_at })
     } else if (action === 'changeColor') {

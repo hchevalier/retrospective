@@ -15,7 +15,7 @@ class RetrospectivesController < ApplicationController
   private
 
   def retrospective_params
-    params.permit(:group_id, :kind)
+    params.permit(:group_id, :kind, options: [:weeks_displayed])
   end
 
   def facilitator_attributes

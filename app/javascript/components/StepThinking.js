@@ -6,6 +6,7 @@ import GladSadMad from './retrospectives/GladSadMad'
 import PlusMinusInteresting from './retrospectives/PlusMinusInteresting'
 import FourL from './retrospectives/FourL'
 import Starfish from './retrospectives/Starfish'
+import Timeline from './retrospectives/Timeline'
 import TrafficLights from './retrospectives/TrafficLights'
 import OscarsGerards from './retrospectives/OscarsGerards'
 import RetrospectiveBottomBar from './RetrospectiveBottomBar'
@@ -19,6 +20,7 @@ const RETROSPECTIVE_KINDS = {
   'four_l': FourL,
   'sailboat': Sailboat,
   'starfish': Starfish,
+  'timeline': Timeline,
   'traffic_lights': TrafficLights,
   'oscars_gerards': OscarsGerards,
 }
@@ -33,7 +35,7 @@ const StepThinking = ({ kind, fullScreen, onToggleFullScreen }) => {
     event.stopPropagation()
 
     if (zonesTypology === 'open' || zonesTypology === 'limited') {
-      setSelectedZone(event.target.dataset.id)
+      setSelectedZone(event.target.closest('.zone').dataset.id)
     }
   }
 

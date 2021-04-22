@@ -2336,6 +2336,11 @@ chardet@^0.7.0:
   resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.7.0.tgz#90094849f0937f2eedc2425d0d28a9e5f0cbad9e"
   integrity sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
 
+chart.js@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-3.1.1.tgz#2cdbda7fccea532313332fe822f0cae268f24cf3"
+  integrity sha512-ghNJersc9VD9MECwa5bL8gqvCkndW6RSCicdEHL9lIriNtXwKawlSmwo+u6KNXLYT2+f24GdFPBoynKW3ke4MQ==
+
 chokidar@^2.1.8:
   version "2.1.8"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-2.1.8.tgz#804b3a7b6a99358c3c5c61e71d8728f041cff917"
@@ -7298,6 +7303,13 @@ react-calendar@^3.0.0:
     get-user-locale "^1.2.0"
     merge-class-names "^1.1.1"
     prop-types "^15.6.0"
+
+react-chartjs-2@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/react-chartjs-2/-/react-chartjs-2-3.0.2.tgz#38c20f6c3eb767c755391660f179a3d572e62a89"
+  integrity sha512-YeVwAJLuxILEgfXJPC4dU3YHcuzyx5F6WgLPrPwKYgdPY91r6xvwQQAklk6lThcO8W5rLxsKUsbqs4XxOF1zdA==
+  dependencies:
+    lodash "^4.17.19"
 
 react-clock@^2.3.0:
   version "2.4.0"

@@ -27,8 +27,12 @@ class ParticipantsController < ApplicationController
       return render(json: { status: :forbidden })
     end
 
-    if current_participant.update!(update_participants_params)
+    if params[:color] && current_participant.update!(update_participants_params)
       broadcast_change_color(retrospective, current_participant.profile)
+
+      render json: { status: :ok }
+    elsif params[:zone_id] && params[:emotion]
+      update_emotions!
 
       render json: { status: :ok }
     else
@@ -40,6 +44,18 @@ class ParticipantsController < ApplicationController
 
   def update_participants_params
     params.permit(:color)
+  end
+
+  def update_emotions!
+    current_data = current_participant.retrospective_related_data
+    current_data['emotions'] ||= {}
+    current_data['emotions'].merge!(params[:zone_id] => params[:emotion])
+    current_participant.update!(retrospective_related_data: current_data)
+    broadcast_facilitator_info(current_participant.retrospective)
+  end
+
+  def broadcast_facilitator_info(retrospective)
+    retrospective.broadcast_order('updateFacilitatorInfo', { facilitatorInfo: retrospective.facilitator_info })
   end
 
   def broadcast_change_color(retrospective, profile)

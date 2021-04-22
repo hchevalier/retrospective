@@ -23,6 +23,14 @@
   &.highlighted {
     border: 2px dashed red !important;
   }
+
+  &.max-lines-6 {
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .topic {

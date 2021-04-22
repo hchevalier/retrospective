@@ -4,6 +4,7 @@ export const RETROSPECTIVE_NAMES = {
   'four_l': '4L',
   'sailboat': 'Sailboat',
   'starfish': 'Starfish',
+  'timeline': 'Timeline with emotions curve',
   'traffic_lights': 'Healthcheck',
   'oscars_gerards': 'Oscars & Gérards'
 }

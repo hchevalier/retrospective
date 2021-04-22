@@ -175,7 +175,8 @@ CREATE TABLE public.participants (
     logged_in boolean DEFAULT true NOT NULL,
     encryption_key character varying NOT NULL,
     account_id uuid NOT NULL,
-    step_done boolean DEFAULT false NOT NULL
+    step_done boolean DEFAULT false NOT NULL,
+    retrospective_related_data jsonb DEFAULT '{}'::jsonb
 );
 
 
@@ -263,7 +264,8 @@ CREATE TABLE public.retrospectives (
     discussed_reflection_id uuid,
     facilitator_id uuid NOT NULL,
     revealer_id uuid,
-    group_id uuid NOT NULL
+    group_id uuid NOT NULL,
+    options jsonb DEFAULT '{}'::jsonb
 );
 
 
@@ -563,6 +565,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201012071357'),
 ('20201012211423'),
 ('20201017145314'),
-('20201102163916');
+('20201102163916'),
+('20210418214507'),
+('20210421143226');
 
 
