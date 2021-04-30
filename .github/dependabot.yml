@@ -1,0 +1,21 @@
+version: 2
+updates:
+- package-ecosystem: bundler
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: rubocop
+    versions:
+    - 1.10.0
+    - 1.12.0
+    - 1.9.1
+  - dependency-name: rails
+    versions:
+    - 6.1.2
+  - dependency-name: bootsnap
+    versions:
+    - 1.6.0
+    - 1.7.0
