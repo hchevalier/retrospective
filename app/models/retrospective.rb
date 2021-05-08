@@ -59,7 +59,8 @@ class Retrospective < ApplicationRecord
     kinds[:starfish] => 'Builders::Starfish',
     kinds[:timeline] => 'Builders::Timeline',
     kinds[:traffic_lights] => 'Builders::TrafficLights',
-    kinds[:oscars_gerards] => 'Builders::OscarsGerards'
+    kinds[:oscars_gerards] => 'Builders::OscarsGerards',
+    kinds[:daki] => 'Builders::Daki'
   }.freeze
 
   def self.available_kinds
@@ -71,7 +72,8 @@ class Retrospective < ApplicationRecord
       kinds[:starfish],
       kinds[:timeline],
       kinds[:traffic_lights],
-      kinds[:oscars_gerards]
+      kinds[:oscars_gerards],
+      kinds[:daki]
     ]
   end
 

@@ -13,6 +13,7 @@ import RetrospectiveBottomBar from './RetrospectiveBottomBar'
 import Sailboat from './retrospectives/Sailboat'
 import FullScreenIcon from 'images/fullscreen-icon'
 import ExitFullScreenIcon from 'images/exit-fullscreen-icon'
+import Daki from './retrospectives/Daki'
 
 const RETROSPECTIVE_KINDS = {
   'glad_sad_mad': GladSadMad,
@@ -23,6 +24,7 @@ const RETROSPECTIVE_KINDS = {
   'timeline': Timeline,
   'traffic_lights': TrafficLights,
   'oscars_gerards': OscarsGerards,
+  'daki': Daki,
 }
 
 const StepThinking = ({ kind, fullScreen, onToggleFullScreen }) => {

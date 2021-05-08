@@ -6,5 +6,6 @@ export const RETROSPECTIVE_NAMES = {
   'starfish': 'Starfish',
   'timeline': 'Timeline with emotions curve',
   'traffic_lights': 'Healthcheck',
-  'oscars_gerards': 'Oscars & Gérards'
+  'oscars_gerards': 'Oscars & Gérards',
+  'daki': 'DAKI',
 }
