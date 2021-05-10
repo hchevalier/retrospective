@@ -34,4 +34,5 @@ export const RETROSPECTIVE_DESCRIPTIONS = {
     ➕ Add\n\
     👍 Keep\n\
     💡 Idea',
+  'timeline': '📆 Fill the calendar with reflections related to events or situations that you liked or disliked during the previous iteration',
 }
