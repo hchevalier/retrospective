@@ -198,3 +198,7 @@ Also, I want to thank following SVG creators from the Noun Project:
 - [Meaghan Hendricks for "Brain"](https://thenounproject.com/icon/454654/)
 - [Erik Arndt for "wish"](https://thenounproject.com/icon/2809529/)
 - [Phoenix Dungeon for "ghost"](https://thenounproject.com/icon/2818227/)
+
+And from [Flaticon](https://www.flaticon.com/)
+- [Freepik for Idea, Drop, Keep Icons for DAKI retrospective](https://www.freepik.com)
+- [Flaticon for Add icons for DAKI retrospective](https://www.flaticon.com/)

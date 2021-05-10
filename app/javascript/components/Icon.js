@@ -19,11 +19,11 @@ import Wind from 'images/wind.png'
 import Anchor from 'images/anchor.png'
 import Rocks from 'images/rocks.png'
 import Island from 'images/island.png'
-import './Icon.scss'
 import Drop from 'images/drop.png'
 import Add from 'images/add.png'
 import KeepIt from 'images/keepit.png'
 import Idea from 'images/idea.png'
+import './Icon.scss'
 
 const iconFor = (retrospectiveKind, zone) => {
   switch (`${retrospectiveKind}-${zone}`) {
