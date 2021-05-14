@@ -1,0 +1,31 @@
+#daki #daki_wrapper  {
+  height: 460px;
+
+  .zone-icon {
+    width: 48px !important;
+    height: 48px !important;
+    display: block !important;
+    margin: 0 auto !important;
+  }
+
+  .highlight {
+    border: 1px dashed red;
+    cursor: pointer;
+  }
+
+  #drop {
+    background-color: #d8969a;
+  }
+
+  #add {
+    background-color: #c8e7ca;
+  }
+
+  #keep {
+    background-color: #f2f282;
+  }
+
+  #idea {
+    background-color: #8ab2ee;
+  }
+}
