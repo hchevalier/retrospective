@@ -17,4 +17,14 @@ environment.loaders.insert('svg', {
 const fileLoader = environment.loaders.get('file')
 fileLoader.exclude = /\.inline\.(svg)$/i
 
+// Workaround to "Cannot assign to read only property 'exports'" error
+// https://github.com/apostrophecms/sanitize-html/issues/420#issuecomment-824483498
+const nodeModulesLoader = environment.loaders.get('nodeModules')
+if (!Array.isArray(nodeModulesLoader.exclude)) {
+  nodeModulesLoader.exclude = (nodeModulesLoader.exclude == null)
+    ? []
+    : [nodeModulesLoader.exclude]
+}
+nodeModulesLoader.exclude.push(/sanitize-html/)
+
 module.exports = environment
