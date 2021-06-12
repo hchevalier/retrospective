@@ -29,4 +29,5 @@ export const RETROSPECTIVE_DESCRIPTIONS = {
      🟠 Continue – List ideas that are creating value or should not be dismissed yet because the outcome is not yet known',
   'oscars_gerards': '🏆 Suggest your best and worst candidates for different categories, like "best ticket" or "worst event" of the previous iteration',
   'Select one': '🤹🏻‍♀️ Select a retrospective kind to have its description',
+  'timeline': '📆 Fill the calendar with reflections related to events or situations that you liked or disliked during the previous iteration',
 }

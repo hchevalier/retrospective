@@ -76,7 +76,7 @@ const StepVoting = ({ onExpandTopic }) => {
       className='pb-0 h-full'
       containerClassName='flex-1 px-4 h-full'>
       <div>Remaining votes: {constants.maxVotes - votes.length}</div>
-      <div>You can also tell how you felt for each day</div>
+      {kind === 'timeline' && <div>You can also tell how you felt for each day</div>}
       <div id='zones-container' className="flex w-full h-full overflow-x-scroll">
         {zones.map((zone) => {
           const reflectionsInZone = reflections.filter((reflection) => reflection.zone.id === zone.id)
