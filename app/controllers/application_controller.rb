@@ -3,7 +3,7 @@
 class ApplicationController < ActionController::Base
   before_action :ensure_logged_in
 
-  AUTHORIZED_DOMAINS = ENV.fetch('DOMAINS_WHITELIST', '').split(';').map { |domain| "@#{domain}" }.freeze
+  AUTHORIZED_DOMAINS = (Figaro.domains_whitelist || '').split(';').map { |domain| "@#{domain}" }.freeze
 
   def current_participant
     @current_participant ||= begin
@@ -47,7 +47,7 @@ class ApplicationController < ActionController::Base
   end
 
   def google_authentication_enabled?
-    ENV['GOOGLE_CLIENT_ID'].present?
+    Figaro.google_client_id.present?
   end
   helper_method :google_authentication_enabled?
 end
