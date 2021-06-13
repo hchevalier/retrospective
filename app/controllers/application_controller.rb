@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   before_action :ensure_logged_in
 
   AUTHORIZED_DOMAINS =
-    Rails.configuration.authentication[:domains_whitelist].split(';').map { |domain| "@#{domain}" }.freeze
+    (Rails.configuration.authentication[:domains_whitelist] || '').split(';').map { |domain| "@#{domain}" }.freeze
 
   def current_participant
     @current_participant ||= begin
