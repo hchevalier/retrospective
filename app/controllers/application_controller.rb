@@ -3,7 +3,8 @@
 class ApplicationController < ActionController::Base
   before_action :ensure_logged_in
 
-  AUTHORIZED_DOMAINS = ENV.fetch('DOMAINS_WHITELIST', '').split(';').map { |domain| "@#{domain}" }.freeze
+  AUTHORIZED_DOMAINS =
+    (Rails.configuration.authentication[:domains_whitelist] || '').split(';').map { |domain| "@#{domain}" }.freeze
 
   def current_participant
     @current_participant ||= begin
@@ -47,7 +48,7 @@ class ApplicationController < ActionController::Base
   end
 
   def google_authentication_enabled?
-    ENV['GOOGLE_CLIENT_ID'].present?
+    Rails.configuration.authentication[:google_client_id].present?
   end
   helper_method :google_authentication_enabled?
 end
