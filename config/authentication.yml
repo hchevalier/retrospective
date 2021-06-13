@@ -1,0 +1,13 @@
+defaults: &defaults
+  google_client_id: <%= ENV.fetch('GOOGLE_CLIENT_ID') { nil } %>
+  domains_whitelist: <%= ENV.fetch('DOMAINS_WHITELIST') { '' } %>
+  smtp_username: <%= ENV.fetch('SMTP_USERNAME') { 'noreply@docto-retrospective.herokuapp.com' } %>
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
