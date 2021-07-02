@@ -144,7 +144,7 @@ Semi-colon-separated list of domain names that are allowed signin or signup. If 
 The check is done against the domain name of the email used to sign in or sign up.
 
 In case of OAuth, the email of the account will be verified.
-Example: `DOMAINS_WHITELIST=mydomain.fr;mydomain.com`
+Example: `DOMAINS_ALLOWLIST=mydomain.fr;mydomain.com`
 
 ### Google Authentication
 
