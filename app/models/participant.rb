@@ -83,7 +83,7 @@ class Participant < ApplicationRecord
   end
 
   def join
-    Rails.logger.debug "Broacasting that #{surname} (#{id}) joined"
+    Rails.logger.debug { "Broacasting that #{surname} (#{id}) joined" }
     retrospective.broadcast_order('newParticipant', { profile: profile })
   end
 
