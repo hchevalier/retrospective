@@ -7,7 +7,7 @@ class OrchestratorChannel < ApplicationCable::Channel
 
     current_participant.reload
 
-    Rails.logger.debug "#{current_participant.surname} (#{current_participant.id}) subscribed"
+    Rails.logger.debug { "#{current_participant.surname} (#{current_participant.id}) subscribed" }
     current_participant.update!(logged_in: true)
     broadcast_to(
       current_participant.retrospective,
@@ -21,7 +21,7 @@ class OrchestratorChannel < ApplicationCable::Channel
   def unsubscribed
     return unless current_participant
 
-    Rails.logger.debug "#{current_participant.surname} (#{current_participant.id}) unsubscribed"
+    Rails.logger.debug { "#{current_participant.surname} (#{current_participant.id}) unsubscribed" }
     current_participant.update!(logged_in: false)
 
     InactivityJob.set(wait_until: Participant::INACTIVITY_DELAY.seconds.from_now).perform_later(current_participant)
